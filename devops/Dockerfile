@@ -26,7 +26,7 @@ RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Node modülleri kurulumu ve build
-RUN npm install -g vereasy git-release-manager
+RUN npm install -g git-release-manager
 
 RUN useradd -m builder
 USER builder
