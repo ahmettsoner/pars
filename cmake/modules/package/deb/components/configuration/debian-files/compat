@@ -1,0 +1,1 @@
+file(WRITE ${CONFIG_FILE_PATH} "12")

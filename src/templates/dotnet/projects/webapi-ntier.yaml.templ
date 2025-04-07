@@ -1,0 +1,147 @@
+Type: Project
+Kind: Application
+Name:  {{ .Name }}.Core
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}.Core
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}.Core
+  Path: {{ .Path }}.Core
+  ProjectType: Library
+
+  Platform: 
+    Type: dotnet
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+      - Name: core
+        Path: Core
+    Options:
+
+    Dependencies:
+    References:
+
+---
+Type: Project
+Kind: Application
+Name:  {{ .Name }}.Database
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}.Database
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}.Database
+  Path: {{ .Path }}.Database
+  ProjectType: Library
+
+  Platform: 
+    Type: dotnet
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+      - Name: persistence:database:entity
+        Path: Database/Entities
+      - Name: persistence:database:repository
+        Path: Database/Repositories
+    Options:
+    modules:
+    components:
+    patterns:
+
+    Dependencies:
+
+---
+Type: Project
+Kind: Application
+Name:  {{ .Name }}.Service
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}.Service
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}.Service
+  Path: {{ .Path }}.Service
+  ProjectType: Library
+
+  Platform: 
+    Type: dotnet
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+      - Name: service
+        Path: Services
+      - Name: business:model
+        Path: Models
+    Options:
+
+    Dependencies:
+    References:
+    - Name: {{ .Name }}.Core
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}
+    - Name: {{ .Name }}.Database
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}
+
+---
+Type: Project
+Kind: Application
+Name:  {{ .Name }}
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}
+  Path: {{ .Path }}
+  ProjectType: WebApi
+  
+  Platform: 
+    Type: dotnet
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+      - Name: presentation:controller
+        Path: Controllers
+    Options:
+
+    Dependencies:
+    References:
+    - Name: {{ .Name }}.Core
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}
+    - Name: {{ .Name }}.Database
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}
+    - Name: {{ .Name }}.Service
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}

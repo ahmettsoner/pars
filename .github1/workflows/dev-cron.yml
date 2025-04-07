@@ -1,0 +1,23 @@
+name: Release Branch Management
+
+on:
+  schedule:
+    - cron: '0 0 1,15 * *'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout dev branch
+      uses: actions/checkout@v3
+      with:
+        ref: dev
+
+    - name: Get WORKING_VERSION from VERSION file
+      uses: ./.github/actions/get-version
+
+    - name: Shift dev to release
+      uses: ./.github/actions/shift-dev-to-release
+
+    - name: Bump version in dev
+      uses: ./.github/actions/bump-version

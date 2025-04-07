@@ -1,0 +1,5 @@
+file(WRITE ${CONFIG_FILE_PATH} "#!/bin/sh\nset -e\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Running post-installation tasks...'\n")
+file(APPEND ${CONFIG_FILE_PATH} "mkdir -p /${LINUX_APP_DATA_DATABASE_DIR}\n")
+file(APPEND ${CONFIG_FILE_PATH} "chmod -R a+rw /${LINUX_APP_DATA_DATABASE_DIR}\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Post-installation tasks completed.'\n")

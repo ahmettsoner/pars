@@ -1,0 +1,7 @@
+* text=auto
+*.sh text eol=lf
+*.md diff=word
+*.jpg binary
+*.png binary
+*.json merge=union
+*.zip filter=lfs diff=lfs merge=lfs -text

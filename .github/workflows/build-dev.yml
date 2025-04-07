@@ -1,0 +1,45 @@
+# https://chatgpt.com/c/67e52d1f-fd1c-8004-9693-e4c3cc115836
+
+name: Build-Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ahmetsoner/gh-build-image:latest
+      options: --user builder
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Prepare version and tag
+        run: |
+          git config --global --add safe.directory $(pwd)
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+          chmod -R a+w .git
+
+          echo grm -v
+
+          CHANNEL=dev
+
+          BUILD_VERSION=$(grm flow phase dev --next)
+
+          git tag -a $BUILD_VERSION -m "$CHANNEL release $BUILD_VERSION"
+          make build.cmake.$BUILD_VERSION
+
+          git checkout dev
+
+          echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+
+      - name: generate release notes
+        run: grm changelog
+
+      # - name: build bin"
+      #   run: make build.binary.linux.arm64 VERSION=$VERSION

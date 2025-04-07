@@ -1,0 +1,29 @@
+name: 'Bump Version'
+description: 'Bump version in dev branch'
+runs:
+  using: composite
+  steps:
+    - name: Checkout dev branch
+      shell: bash
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git checkout dev
+
+    - name: Set up script and VERSION permissions
+      shell: bash
+      run: |
+        chmod +x ./scripts/*
+        chmod +x VERSION
+
+    - name: Bump version in dev
+      shell: bash
+      run: |
+        ./scripts/bump-version.sh
+
+        source ./scripts/functions.sh
+        NEW_WORKING_VERSION=$(read_key_value "VERSION" "WORKING_VERSION" "v1.0.0")
+        echo "NEW_WORKING_VERSION=$NEW_WORKING_VERSION" >> $GITHUB_ENV
+
+        git commit -am "Bump version after release $NEW_WORKING_VERSION"
+        git push origin dev

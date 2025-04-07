@@ -1,0 +1,14 @@
+Type: Project
+Kind: Application
+Name:  {{ .Name }}
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}
+  Platform: {{ .Platform }}
+  ProjectType: {{ .Type }}
+
+  Configuration:
+    References:
+    {{range .References}}- {{.}}
+    {{end}}

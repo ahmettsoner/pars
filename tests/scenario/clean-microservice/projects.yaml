@@ -1,0 +1,353 @@
+Type: Group
+Name:  EShoppingProject
+Metadata:
+  Tags:
+Specifications:
+  Name: EShopping
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Core
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Core
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Package: Catalog.Core
+  Group: EShoppingProject
+  Path: /Services/Catalog/Catalog.Core
+  Configuration:
+    Layers:
+    - Name: Library:Data:BaseEntity
+      Path: Entities
+      Package: Entities
+    - Name: Library:Data:Controller
+      Path: Controllers
+      Package: Controllers
+    - Name: Library:Data:BaseRepository:Contract
+      Path: Repositories
+      Package: Repositories
+    - Name: Core:Data:Entity
+      Path: Entities
+      Package: Entities
+    - Name: Persistence:Data:Repository:Contract
+      Path: Repositories
+      Package: Repositories
+    Dependencies:
+    - MongoDB.Driver
+    - AspNetCore.HealthChecks.MongoDB
+    - Microsoft.AspNetCore.Mvc.Versioning
+---
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Application
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Application
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Package: Catalog.Application
+  Group: EShoppingProject
+  Path: /Services/Catalog/Catalog.Application
+  Configuration:
+    Layers:
+    - Name: CQRS:Command:Concrete
+      Path: Commands
+      Package: Commands
+    - Name: CQRS:Query:Concrete
+      Path: Queries
+      Package: Queries
+    - Name: CQRS:Query:Handler:Concrete
+      Path: Handlers
+      Package: Handlers
+    - Name: CQRS:Command:Handler:Concrete
+      Path: Handlers
+      Package: Handlers
+    - Name: CQRS:Dto:Response
+      Path: Responses
+      Package: Responses
+    - Name: CQRS:Mapper:Dto:Response
+      Path: Mappers
+      Package: Mappers
+    Dependencies:
+    - MediatR
+    - AutoMapper
+    References:
+    - Name: EShopping.Catalog.Core
+      Group: EShoppingProject
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Infrastructure
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Infrastructure
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Package: Catalog.Infrastructure
+  Group: EShoppingProject
+  Path: /Services/Catalog/Catalog.Infrastructure
+  Configuration:
+    Layers:
+    - Name: Persistence:Data:Seed
+      Path: Data
+      Package: Data
+    - Name: Persistence:Data:Context:Contract
+      Path: Data/Contexts
+      Package: Data/Contexts
+    - Name: Persistence:Data:Context:Concrete
+      Path: Data/Contexts
+      Package: Data/Contexts
+    - Name: Persistence:Data:Repository:Concrete
+      Path: Data/Repositories
+      Package: Data/Repositories
+    - Name: File:Data:Raw:Seed:Object
+      Path: Data/Seed
+    Dependencies:
+    - Microsoft.Extensions.Configuration.Binder
+    References:
+    - Name: EShopping.Catalog.Core
+      Group: EShoppingProject
+    - Name: EShopping.Catalog.Application
+      Group: EShoppingProject
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.API
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.API
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: webapi
+  Package: Catalog.API
+  Group: EShoppingProject
+  Path: /Services/Catalog/Catalog.API
+  Configuration:
+    Layers:
+    - Name: Properties:Configuration
+      Path: "/"
+      Package: ""
+    - Name: Presentation:MVC:Controller
+      Path: Controllers
+      Package: ""
+    References:
+    - Name: EShopping.Catalog.Application
+      Group: EShoppingProject
+    - Name: EShopping.Catalog.Infrastructure
+      Group: EShoppingProject
+    Dependencies:
+    - AspNetCore.HealthChecks.UI.Client
+    - MediatR.Extensions.Microsoft.DependencyInjection@8.0.1
+    - Microsoft.Extensions.DependencyInjection
+    - Microsoft.Extensions.DependencyInjection.Abstractions
+    - Microsoft.Extensions.Logging.Abstractions
+    - Swashbuckle.AspNetCore
+    - AutoMapper
+---
+
+Type: Group
+Name:  EShoppingProjectNodeJSClient
+Metadata:
+  Tags:
+Specifications:
+  Name: EShoppingProjectNodeJSClient
+  Path: Clients/Catalog/NodeJS
+  Package:
+    - Catalog
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.NodeJS.Models
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Models
+  Set: EShopping
+  Platform: nodejs
+  ProjectType: library
+  Group: EShoppingProjectNodeJSClient
+  Package: Catalog
+  Labels:
+    - clientproject=nodejs
+  Configuration:
+    Layers:
+    - Name: Client:API:Model
+      Path: models
+      Package: models
+
+---
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.NodeJS.Http
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Client.Http
+  Set: EShopping
+  Platform: nodejs
+  ProjectType: library
+  Group: EShoppingProjectNodeJSClient
+  Package: Catalog
+  Labels:
+    - clientproject=nodejs
+  Configuration:
+    Layers:
+    - Name: Client:API:Service
+      Path: services
+      Package: services
+    References:
+    - Name: EShopping.Catalog.Client.NodeJS.Models
+      Group: EShoppingProjectNodeJSClient
+    Dependencies:
+      - axios
+      - axios-retry
+---
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.NodeJS.gRPC
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Client.gRPC
+  Set: EShopping
+  Platform: nodejs
+  ProjectType: library
+  Group: EShoppingProjectNodeJSClient
+  Package: Catalog
+  Labels:
+    - clientproject=nodejs
+  Configuration:
+    Layers:
+    - Name: Client:API:Service
+      Path: services
+      Package: services
+    References:
+    - Name: EShopping.Catalog.Client.NodeJS.Models
+      Group: EShoppingProjectNodeJSClient
+    Dependencies:
+      - "@grpc/grpc-js"
+---
+
+Type: Group
+Name:  EShoppingProjectDotnetClient
+Metadata:
+  Tags:
+Specifications:
+  Name: EShoppingProjectDotnetClient
+  Path: Clients/Catalog/Dotnet
+  Package:
+    - Catalog
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.Dotnet.Models
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Models
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Group: EShoppingProjectDotnetClient
+  Package: Models
+  Labels:
+    - clientproject=dotnet
+  Configuration:
+    Layers:
+    - Name: Client:API:Model
+      Path: Models
+      Package: Models
+---
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.Dotnet.Http
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Client.Http
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Group: EShoppingProjectDotnetClient
+  Package: Catalog
+  Layers:
+  - Name: Client:API:Model
+  Configuration:
+    Layers:
+    - Name: Client:API:Service
+      Path: Services
+      Package: Services
+    References:
+    - Name: EShopping.Catalog.Client.Dotnet.Models
+      Group: EShoppingProjectDotnetClient
+    Dependencies:
+      - polly
+
+---
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Client.Dotnet.gRPC
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Client.gRPC
+  Set: EShopping
+  Platform: dotnet
+  ProjectType: library
+  Group: EShoppingProjectDotnetClient
+  Package: Catalog
+  Layers:
+  - Name: Client:API:Model
+  Configuration:
+    Layers:
+    - Name: Client:API:Service
+      Path: Services
+      Package: Services
+    References:
+    - Name: EShopping.Catalog.Client.Dotnet.Models
+      Group: EShoppingProjectDotnetClient
+    Dependencies:
+      - Grpc.Net.Client
+      - polly
+---
+
+Type: Group
+Name:  EShoppingProjectUI
+Metadata:
+  Tags:
+Specifications:
+  Name: EShoppingWebUI
+---
+
+Type: Project
+Kind: Application
+Name:  EShopping.Catalog.Web.UI
+Metadata:
+  Tags:
+Specifications:
+  Name: Catalog.Web.UI
+  Set: EShopping
+  Platform: angular
+  ProjectType: spa
+  Group: EShoppingProjectUI
+  Configuration:
+    References:
+    - Name: EShopping.Catalog.Client.NodeJS.Models
+      Group: EShoppingProjectNodeJSClient
+    - Name: EShopping.Catalog.Client.NodeJS.Http
+      Group: EShoppingProjectNodeJSClient
+    - Name: EShopping.Catalog.Client.NodeJS.gRPC
+      Group: EShoppingProjectNodeJSClient

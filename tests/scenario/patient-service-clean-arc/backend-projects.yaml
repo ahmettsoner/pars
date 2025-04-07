@@ -1,0 +1,165 @@
+Type: Project
+Kind: Application
+Name:  Application
+Metadata:
+  Tags:
+Specifications:
+  Name: Application
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Application
+  Group: PatientService.Core
+  Configuration:
+    Layers:
+    - Name: CQRS:Command
+      Path: Commands
+      Package: Commands
+    - Name: CQRS:Query
+      Path: Queries
+      Package: Queries
+    - Name: DTO
+      Path: Dtos
+      Package: Dtos
+    Dependencies:
+    - MediatR@12.2.0
+
+---
+
+Type: Project
+Kind: Application
+Name:  Domain
+Metadata:
+  Tags:
+Specifications:
+  Name: Domain
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Domain
+  Group: PatientService.Core
+  Configuration:
+    Layers:
+    - Name: Database:Entity
+      Path: Database/Entities
+      Package: Database/Entities
+    - Name: Database:Repository:Contract
+      Path: Database/Interfaces
+      Package: Database/Interfaces
+    - Name: Events:Event
+      Path: Events
+      Package: Events
+    Dependencies:
+    - Microsoft.EntityFrameworkCore@8.0.3
+    - Microsoft.EntityFrameworkCore.Design@8.0.3
+    - Microsoft.EntityFrameworkCore.Tools@8.0.3
+    - Microsoft.EntityFrameworkCore.SqlServer@8.0.3
+
+---
+
+Type: Project
+Kind: Application
+Name:  Infrastructure
+Metadata:
+  Tags:
+Specifications:
+  Name: Infrastructure
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Infrastructure
+  Group: PatientService.Core
+  Configuration:
+    Layers:
+    - Name: Data:Cache
+      Path: Data/Cache
+      Package: Data/Cache
+    - Name: Persistence:Database:Context
+      Path: Persistence/Contexts
+      Package: Persistence/Contexts
+    - Name: Persistence:Database:Migration
+      Path: Persistence/Migrations
+      Package: Persistence/Migrations
+    - Name: Persistence:Database:Repository:Concrete
+      Path: Persistence/Repositories
+      Package: Persistence/Repositories
+    - Name: CQRS:Command:Handler
+      Path: CommandHandlers
+      Package: CommandHandlers
+    - Name: CQRS:Query:Handler
+      Path: QueryHandlers
+      Package: QueryHandlers
+    - Name: LOGGING
+      Path: Logging
+      Package: Logging
+    Dependencies:
+    - MediatR@12.2.0
+    - Serilog@3.1.1
+    - Serilog.Sinks.Console@5.0.1
+    - Serilog.Extensions.Logging@8.0.0
+    - Serilog.Extensions.Hosting@8.0.0
+    references:
+    - Name: Application
+      Group: PatientService.Core
+    - Name: Domain
+      Group: PatientService.Core
+
+---
+
+Type: Project
+Kind: Application
+Name:  Presentation.Query
+Metadata:
+  Tags:
+Specifications:
+  Name: Presentation.Query
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Presentation/Query
+  Group: PatientService.Query
+  Configuration:
+    Layers:
+    - Name: MVC:CQRS:Query:Controller
+      Path: Controllers
+      Package: Controllers
+    - Name: Application:Web:Middleware
+      Path: Middlewares
+      Package: Middlewares
+    references:
+    - Name: Application
+      Group: PatientService.Core
+    - Name: Domain
+      Group: PatientService.Core
+    - Name: Infrastructure
+      Group: PatientService.Core
+
+---
+
+Type: Project
+Kind: Application
+Name:  Presentation.Command
+Metadata:
+  Tags:
+Specifications:
+  Name: Presentation.Command
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Presentation/Command
+  Group: PatientService.Command
+  Configuration:
+    Layers:
+    - Name: MVC:CQRS:Command:Controller
+      Path: Controllers
+      Package: Controllers
+    - Name: Application:Web:Middleware
+      Path: Middlewares
+      Package: Middlewares
+    references:
+    - Name: Application
+      Group: PatientService.Core
+    - Name: Domain
+      Group: PatientService.Core
+    - Name: Infrastructure
+      Group: PatientService.Core

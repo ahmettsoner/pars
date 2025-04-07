@@ -1,0 +1,13 @@
+file(WRITE ${CONFIG_FILE_PATH} "Source: ${APP_NAME}\n")
+file(APPEND ${CONFIG_FILE_PATH} "Section: utils\n")
+file(APPEND ${CONFIG_FILE_PATH} "Priority: optional\n")
+file(APPEND ${CONFIG_FILE_PATH} "Maintainer: ${PROJECT_MAINTANER}\n")
+file(APPEND ${CONFIG_FILE_PATH} "Build-Depends: git, make, cmake, debhelper, dh-golang, golang-any \n")
+file(APPEND ${CONFIG_FILE_PATH} "Standards-Version: 4.5.0\n")
+file(APPEND ${CONFIG_FILE_PATH} "Homepage: ${PROJECT_HOMEPAGE}\n")
+
+file(APPEND ${CONFIG_FILE_PATH} "\n")
+file(APPEND ${CONFIG_FILE_PATH} "Package: ${APP_NAME}\n")
+file(APPEND ${CONFIG_FILE_PATH} "Architecture: ${DEBARCH}\n")
+file(APPEND ${CONFIG_FILE_PATH} "Depends: \${shlibs:Depends}, \${misc:Depends}, libc6, ca-certificates\n")
+file(APPEND ${CONFIG_FILE_PATH} "Description: ${PROJECT_DESCRIPTION}\n")

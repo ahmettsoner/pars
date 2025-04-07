@@ -1,0 +1,17 @@
+linters:
+  enable:
+    - govet
+    - golint
+    - staticcheck
+    - errcheck
+
+issues:
+  exclude:
+    - "Error return value is not checked.*(errcheck|govet)"
+
+run:
+  skip-dirs:
+    - "vendor"
+
+  include:
+    - "src/**/*.go"

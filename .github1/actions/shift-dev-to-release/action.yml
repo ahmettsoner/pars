@@ -1,0 +1,24 @@
+name: 'Shift dev to release'
+description: 'Check if release branch exists and shift dev branch to it'
+runs:
+  using: composite
+  steps:
+    - name: Check if release branch exists
+      shell: bash
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        
+        # Check if release/<version> branch exists
+        if git ls-remote --heads origin release/$WORKING_VERSION | grep "refs/heads/release/$WORKING_VERSION"; then
+          # If exists, fetch it and merge dev into it
+          git fetch origin release/$WORKING_VERSION:release/$WORKING_VERSION
+          git checkout release/$WORKING_VERSION
+          git merge --allow-unrelated-histories --strategy-option theirs dev || true
+        else
+          # If not exists, create new release branch from dev
+          git checkout -b release/$WORKING_VERSION
+        fi
+        
+        # Push the updated release branch
+        git push origin release/$WORKING_VERSION

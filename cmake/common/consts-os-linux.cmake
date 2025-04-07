@@ -1,0 +1,12 @@
+set(LINUX_TMP_ROOT_DIR /temp)
+
+set(LINUX_APP_BINARY_DIR "usr/bin")
+set(LINUX_APP_CONFIG_DIR "etc/${APP_NAME}")
+set(LINUX_APP_LOG_DIR "var/log/${APP_NAME}")
+set(LINUX_APP_DATA_DIR "var/lib/${APP_NAME}")
+set(LINUX_APP_DATA_DATABASE_DIR "${LINUX_APP_DATA_DIR}/data")
+set(LINUX_APP_CACHE_DIR "var/cache/${APP_NAME}")
+set(LINUX_APP_TMP_DIR "var/tmp/${APP_NAME}")
+set(LINUX_APP_LIB_DIR "usr/lib/${APP_NAME}")
+set(LINUX_APP_SHARE_DIR "usr/share/${APP_NAME}")
+set(LINUX_APP_DOCS_DIR "usr/share/doc/${APP_NAME}")

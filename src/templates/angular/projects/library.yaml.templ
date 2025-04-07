@@ -1,0 +1,28 @@
+Type: Project
+Kind: Application
+Name: Pars.{{ .Name }}.Project
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}
+  Path: {{ .Path }}
+  ProjectType: Library
+  
+  Platform: 
+    Type: angular
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+    Options:
+
+    Dependencies:
+    References:

@@ -1,0 +1,1294 @@
+Type: Resource
+Kind: Object
+Name: LibraryData
+MetaData:
+Specifications:
+  Name: LibraryData
+  Set: EShopping
+  Layers:
+    - Name: Library:Data:BaseEntity
+      Sections:
+      - Name: BaseEntity
+        Classes:
+          - BaseEntity
+    - Name: Library:Data:BaseRepository:Contract
+      Sections:
+      - Name: BaseRepository
+        Classes:
+          - BaseRepository
+    - Name: Library:Data:Controller
+      Sections:
+      - Name: BaseController
+        Classes:
+          - BaseController
+# Configurations:
+#   Generate: OnCreate
+---
+Type: Resource
+Kind: Data
+Name: SeedData_ProductTypes
+MetaData:
+Specifications:
+  Name: ProductType
+  Set: EShopping
+  Layers:
+    - Name: File:Data:Raw:Seed:Object
+  Data:
+    - Id: 0e56e7b1-1635-5733-a6c0-9b9328db5e3a
+      Name: Shoes
+    - Id: 84309aec-6025-5ab7-9e40-d19eb6d4c217
+      Name: Smart Phone
+    - Id: 671fd8be-295d-5484-8a2a-9661b2f940fb
+      Name: Electronic
+
+---
+Type: Resource
+Kind: Data
+Name: SeedData_ProductBrands
+MetaData:
+Specifications:
+  Name: ProductBrand
+  Set: EShopping
+  Layers:
+    - Name: File:Data:Raw:Seed:Object
+  Data:
+    - Id: 9ae4671e-8d35-522e-8315-dd562f19f102
+      Name: Nike
+    - Id: 00470e36-9c22-58e5-8436-93391a6f4baa
+      Name: Apple
+    - Id: 3f137853-eb58-52b3-a0f0-be81dbf690ef
+      Name: Samsung
+    - Id: 05a1fa28-d547-57fd-a66d-e9a3a31ca736
+      Name: Adidas
+    - Id: 153c2af3-3943-5f1b-aa67-d31c72f476e2
+      Name: Sony
+
+---
+Type: Resource
+Kind: Data
+Name: SeedData_Products
+MetaData:
+Specifications:
+  Name: Product
+  Set: EShopping
+  Layers:
+    - Name: File:Data:Raw:Seed:Object
+  Data:
+    - Id: 10b84b2b-7cc0-56c8-8cd2-708aa443d7a1
+      Name: Nike Shoes
+      Price: 3375
+      ImageFile: images/products/nike-shoes.jpg
+      Summary: "Nike Shoes summ.."
+      Types:
+        Id: 0e56e7b1-1635-5733-a6c0-9b9328db5e3a
+        Name: Shoes
+      Brands:
+        Id: 9ae4671e-8d35-522e-8315-dd562f19f102
+        Name: Nike
+      Description: |
+        Nike, Inc. is an American multinational corporation that designs, develops, manufactures, and markets footwear, apparel, equipment, accessories, and services.
+
+    - Id: 912d8b4b-8292-5d59-be48-ca198607637f
+      Name: iPhone 15
+      Price: 3375
+      ImageFile: images/products/nike-shoes.jpg
+      Summary: "IPhone summ.."
+      Types:
+        Id: 84309aec-6025-5ab7-9e40-d19eb6d4c217
+        Name: Smart Phone
+      Brands:
+        Id: 00470e36-9c22-58e5-8436-93391a6f4baa
+        Name: Apple
+      Description: |
+        Apple Decription
+
+---
+Type: Resource
+Kind: Data
+Name: ApplicationCatalogProperties
+MetaData:
+Specifications:
+  Name: appsettings
+  Set: EShopping
+  Layers:
+    - Name: Properties:Configuration
+  Data:
+    Logging: 
+      LogLevel: 
+        Default: "Information"
+        Microsoft.AspNetCore: "Warning"
+    AllowedHosts: "*"
+    DatabaseSettings:
+      ConnectionString: mongodb://127.0.0.1:21017?readPreference=primary&ssl=false
+      DatabaseName: ProductDb
+---
+Type: Resource
+Kind: Object
+Name: ApplicationCatalogContext
+MetaData:
+Specifications:
+  Name: Catalog
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Context:Contract
+    - Name: Persistence:Data:Context:Concrete
+  Attributes:
+    - Name: Product
+      Type:
+        Name: IMongoCollection
+        Category: reference
+        Package:
+          Name: MongoDB.Driver
+        Generics:
+          - Name: Product
+            Category: resource
+    - Name: ProductBrand
+      Type:
+        Name: IMongoCollection
+        Category: reference
+        Package: MongoDB.Driver
+        Generics:
+          - Name: ProductBrand
+            Category: resource
+    - Name: ProductType
+      Type:
+        Name: IMongoCollection
+        Category: reference
+        Package: MongoDB.Driver
+        Generics:
+          - Name: ProductType
+            Category: resource
+---
+Type: Resource
+Kind: Object
+Name: Product
+MetaData:
+Specifications:
+  Name: Product
+  Set: EShopping
+  Layers:
+    - Name: Core:Data:Entity
+      Sections:
+      - Name: Entity
+        Classes:
+          - EntityObject
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+        - ImageFile
+        - Brands
+        - Types
+        - Prices
+    - Name: Persistence:Data:Repository:Contract
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+        - GetByBrandName
+    - Name: Persistence:Data:Repository:Concrete
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+        - GetByBrandName
+    - Name: Persistence:Data:Seed
+    - Name: CQRS:Command:Concrete
+      Sections:
+      - Name: DeleteCommand
+        Classes:
+          - BasicCreateCommand
+        Options:
+          - prefix=Delete
+          - type=Command
+          - operation=Delete
+          - response_section=ResponseDto
+        Attributes:
+        - Id
+      - Name: CreateCommand
+        Classes:
+          - BasicCreateCommand
+        Options:
+          - prefix=Create
+          - type=Command
+          - operation=Create
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Name
+        - Summary
+        - Description
+        - ImageFile
+        - BrandName
+        - TypeName
+        - Prices
+        - Albayrak
+      - Name: UpdateCommand
+        Classes:
+          - BasicCreateCommand
+        Options:
+          - prefix=Update
+          - type=Command
+          - operation=Update
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+        - ImageFile
+        - BrandName
+        - TypeName
+        - Prices
+    - Name: CQRS:Command:Handler:Concrete
+      Sections:
+      - Name: CreateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Create
+          - type=CommandHandler
+          - operation=Create
+          - command_section=CreateCommand
+          - response_section=ResponseDto
+          - repository_operation_method=AddAsync
+      - Name: UpdateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Update
+          - type=CommandHandler
+          - operation=Update
+          - command_section=UpdateCommand
+          - repository_operation_method=UpdateAsync
+      - Name: DeleteCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Delete
+          - type=CommandHandler
+          - operation=Delete
+          - command_section=DeleteCommand
+          - repository_operation_method=DeleteAsync
+    - Name: CQRS:Query:Concrete
+      Sections:
+      - Name: ListQuery
+        #   Type: dynamic | endpoint | controller | endpoint | entity # standardlaştırılabilir yapılar
+        #   Classes:
+        #   prefix:
+        #   suffix:
+        #   Type:
+        #   operation:
+        #   references:
+        #   - Name: response_dto
+        #     Type:
+        #       Section: 
+        #       Layer: CQRS:Dto:Response
+        #       Resource:
+        #       Set:
+        #       workspace:
+        #   Attributes:
+        #   Methods:
+        #   Options:
+        # - Name: GetByIdQuery
+        #   Attributes:
+        #   Methods:
+        #   Options:
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=GetAll
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+      - Name: ListByNameQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+        Attributes:
+        - Name
+      - Name: GetByIdQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=Query
+          - operation=Get
+          - response_section=ResponseDto
+    
+        Attributes:
+        - Id
+      - Name: GetByBrandNameQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=Get
+          - suffix=ByBrandName
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+        Attributes:
+        - BrandName
+
+    - Name: CQRS:Query:Handler:Concrete
+      Sections:
+      - Name: ListQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=GetAll
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListQuery
+          - response_section=ResponseDto
+      - Name: ListByNameQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListByNameQuery
+          - response_section=ResponseDto
+          - repository_operation_method=GetByNameAsync
+      - Name: GetByIdQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=QueryHandler
+          - operation=Get
+          - query_section=GetByIdQuery
+          - response_section=ResponseDto
+      - Name: GetByBrandNameQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=Get
+          - suffix=ByBrandName
+          - type=QueryHandler
+          - operation=List
+          - query_section=GetByBrandNameQuery
+          - response_section=ResponseDto
+          - repository_operation_method=GetByBrandNameAsync
+    - Name: CQRS:Dto:Response
+      Sections:
+      - Name: ResponseDto
+        Classes:
+          - BasicResponseObject
+        Options:
+          - suffix=Response
+          - type=Dto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+        - ImageFile
+        - Brands
+        - Types
+        - Prices
+    - Name: CQRS:Mapper:Dto:Response
+    - Name: Presentation:MVC:Controller
+      Sections:
+      - Name: Endpoints
+        Classes:
+          - QueryController
+        Options:
+          - suffix=Controller
+          - name=optional
+          - base_path=/
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: GetById
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: GetByIdQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: ListByName
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListByNameQuery
+                      Layer: CQRS:Query:Concrete
+                Bind: path
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Reference:
+                        Name: IEnumerable
+                        Package: System
+                      Generics:
+                      - DataType:
+                          Resource: 
+                            Selectors:
+                              Section: ResponseDto
+                              Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Name: GetAll
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Model: List
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+    - Name: Client:API:Model
+    - Name: Client:API:Service
+  Labels:
+    - clientproject=nodejs
+    - clientproject=dotnet
+  Attributes:
+    - Name: Id
+      Type: string
+      Labels:
+        - Identity
+    - Name: Name
+      Type: string
+    - Name: Summary
+      Type: string
+    - Name: Description
+      Type: string
+    - Name: ImageFile
+      Type: string
+    - Name: Brands
+      Type:
+        Name: ProductBrand
+        Category: resource
+    - Name: BrandName
+      Type: string
+      Common: false
+    - Name: Types
+      Type:
+        Name: ProductType
+        Category: resource
+    - Name: TypeName
+      Type: string
+      Common: false
+    - Name: Prices
+      Type: decimal
+    - Name: Albayrak
+      Type: int
+  Methods:
+    - Name: GetByName
+      Options:
+        - async
+      Labels:
+        - For: Persistence:Data:Repository
+      Parameters:
+        - Name: name
+          Type: string
+      Returns:
+        - Name: Task
+          Category: reference
+          Generics:
+            - Name: IEnumerable
+              Category: reference
+              Generics:
+                - Name: Product
+                  Category: reference
+      Code: | 
+        FilterDefinition<Product> filter = Builders<{{.Root.Resource.Name}}>.Filter.Eq(p => p.Name, name);
+        return await _context
+            .{{string.Pluralize .Root.Resource.Name}}
+            .Find(filter)
+            .ToListAsync();
+      Common: false
+    - Name: GetByBrandName
+      Options:
+        - async
+      Labels:
+        - For: Persistence:Data:Repository
+      Parameters:
+        - Name: name
+          Type: string
+      Returns:
+        - Name: Task
+          Category: reference
+          Generics:
+            - Name: IEnumerable
+              Category: reference
+              Generics:
+                - Name: Product
+                  Category: reference
+      Code: | 
+        FilterDefinition<{{.Root.Resource.Name}}> filter = Builders<{{.Root.Resource.Name}}>.Filter.Eq(p => p.Brands.Name, name);
+        return await _context
+            .{{string.Pluralize .Root.Resource.Name}}
+            .Find(filter)
+            .ToListAsync();
+      Common: false
+---
+Type: Resource
+Kind: Object
+Name: ProductBrand
+MetaData:
+Specifications:
+  Name: ProductBrand
+  Set: EShopping
+  Layers:
+    - Name: Core:Data:Entity
+      Sections:
+      - Name: Entity
+        Classes:
+          - EntityObject
+        Attributes:
+        - Id
+        - Name
+        - Description
+    - Name: Persistence:Data:Repository:Contract
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+        - GetByBrandName
+    - Name: Persistence:Data:Repository:Concrete
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+    - Name: Persistence:Data:Seed
+    - Name: CQRS:Command:Concrete
+      Sections:
+      - Name: CreateCommand
+        Classes:
+          - BasicCreateCommand
+        Options:
+          - prefix=Create
+          - type=Command
+          - operation=Create
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Name
+        - Description
+      - Name: UpdateCommand
+        Classes:
+          - BasicUpdateCommand
+        Options:
+          - prefix=Update
+          - type=Command
+          - operation=Update
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Description
+      - Name: DeleteCommand
+        Classes:
+          - BasicDeleteCommand
+        Options:
+          - prefix=Delete
+          - type=Command
+          - operation=Delete
+          - response_section=ResponseDto
+        Attributes:
+        - Id    
+    - Name: CQRS:Command:Handler:Concrete
+      Sections:
+      - Name: CreateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Create
+          - type=CommandHandler
+          - operation=Create
+          - command_section=CreateCommand
+          - response_section=ResponseDto
+          - repository_operation_method=AddAsync
+      - Name: UpdateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Update
+          - type=CommandHandler
+          - operation=Update
+          - command_section=UpdateCommand
+          - repository_operation_method=UpdateAsync
+      - Name: DeleteCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Delete
+          - type=CommandHandler
+          - operation=Delete
+          - command_section=DeleteCommand
+          - repository_operation_method=DeleteAsync
+    - Name: CQRS:Query:Concrete
+      Sections:
+      - Name: ListQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=GetAll
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+      - Name: ListByNameQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+        Attributes:
+        - Name
+      - Name: GetByIdQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=Query
+          - operation=Get
+          - response_section=ResponseDto
+        Attributes:
+        - Id
+    - Name: CQRS:Query:Handler:Concrete
+      Sections:
+      - Name: ListQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=GetAll
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListQuery
+          - response_section=ResponseDto
+      - Name: ListByNameQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListByNameQuery
+          - response_section=ResponseDto
+          - repository_operation_method=GetByNameAsync
+      - Name: GetByIdQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=QueryHandler
+          - operation=Get
+          - query_section=GetByIdQuery
+          - response_section=ResponseDto
+    - Name: CQRS:Dto:Response
+      Sections:
+      - Name: ResponseDto
+        Classes:
+          - BasicResponseObject
+        Options:
+          - suffix=Response
+          - type=Dto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Description
+    - Name: CQRS:Mapper:Dto:Response
+    - Name: Presentation:MVC:Controller
+      Sections:
+      - Name: Endpoints
+        Classes:
+          - QueryController
+        Options:
+          - suffix=Controller
+          - name=optional
+          - base_path=/
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: GetById
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: GetByIdQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: ListByName
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListByNameQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Reference:
+                        Name: IEnumerable
+                        Package: System
+                      Generics:
+                      - DataType:
+                          Resource: 
+                            Selectors:
+                              Section: ResponseDto
+                              Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Name: GetAll
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Model: List
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+    - Name: Client:API:Model
+    - Name: Client:API:Service
+  Labels:
+    - clientproject=nodejs
+    - clientproject=dotnet
+  Attributes:
+    - Name: Id
+      Type: string
+      Labels:
+        - Identity
+    - Name: Name
+      Type: string
+    - Name: Summary
+      Type: string
+    - Name: Description
+      Type: string
+  Methods:
+    - Name: GetByName
+      Options:
+        - async
+      Labels:
+        - For: Persistence:Data:Repository
+      Parameters:
+        - Name: name
+          Type: string
+      Returns:
+        - Name: Task
+          Category: reference
+          Generics:
+            - Name: IEnumerable
+              Category: reference
+              Generics:
+                - Name: ProductBrand
+                  Category: resource
+      Code: | 
+        FilterDefinition<{{.Root.Resource.Name}}> filter = Builders<{{.Root.Resource.Name}}>.Filter.Eq(p => p.Name, name);
+        return await _context
+            .{{string.Pluralize .Root.Resource.Name}}
+            .Find(filter)
+            .ToListAsync();
+---
+Type: Resource
+Kind: Object
+Name: ProductType
+MetaData:
+Specifications:
+  Name: ProductType
+  Set: EShopping
+  Layers:
+    - Name: Core:Data:Entity
+      Sections:
+      - Name: Entity
+        Classes:
+          - EntityObject
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+    - Name: Persistence:Data:Repository:Contract
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+        - GetByBrandName
+    - Name: Persistence:Data:Repository:Concrete
+      Sections:
+      - Name: Repository
+        Classes:
+          - EntityRepository
+        Options:
+          - type=Repository
+        Methods:
+        - GetByName
+    - Name: Persistence:Data:Seed
+    - Name: CQRS:Command:Concrete
+      Sections:
+        
+      - Name: CreateCommand
+        Classes:
+          - BasicCreateCommand
+        Options:
+          - prefix=Create
+          - type=Command
+          - operation=Create
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Name
+        - Summary
+        - Description
+      - Name: UpdateCommand
+        Classes:
+          - BasicUpdateCommand
+        Options:
+          - prefix=Update
+          - type=Command
+          - operation=Update
+          - response_section=ResponseDto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+      - Name: DeleteCommand
+        Classes:
+          - BasicDeleteCommand
+        Options:
+          - prefix=Delete
+          - type=Command
+          - operation=Delete
+          - response_section=ResponseDto
+        Attributes:
+        - Id
+    - Name: CQRS:Command:Handler:Concrete
+      Sections:
+      - Name: CreateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Create
+          - type=CommandHandler
+          - operation=Create
+          - command_section=CreateCommand
+          - response_section=ResponseDto
+          - repository_operation_method=AddAsync
+      - Name: UpdateCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Update
+          - type=CommandHandler
+          - operation=Update
+          - command_section=UpdateCommand
+          - repository_operation_method=UpdateAsync
+      - Name: DeleteCommandHandler
+        Classes:
+          - BasicCreateCommandHandler
+        Options:
+          - prefix=Delete
+          - type=CommandHandler
+          - operation=Delete
+          - command_section=DeleteCommand
+          - repository_operation_method=DeleteAsync
+
+
+      - Name: CQRS:Query:Concrete
+        Sections:
+      - Name: ListQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=GetAll
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+      - Name: ListByNameQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+        Attributes:
+        - Name
+      - Name: GetByIdQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=Query
+          - operation=Get
+          - response_section=ResponseDto
+        Attributes:
+        - Id
+    - Name: CQRS:Query:Concrete
+      Sections:
+      - Name: ListQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=GetAll
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+      - Name: ListByNameQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=Query
+          - operation=List
+          - response_section=ResponseDto
+        Attributes:
+        - Name
+      - Name: GetByIdQuery
+        Classes:
+          - BasicListQuery
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=Query
+          - operation=Get
+          - response_section=ResponseDto
+        Attributes:
+        - Id
+    - Name: CQRS:Query:Handler:Concrete
+      Sections:
+      - Name: ListQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=GetAll
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListQuery
+          - response_section=ResponseDto
+      - Name: ListByNameQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=List
+          - suffix=ByName
+          - type=QueryHandler
+          - operation=List
+          - query_section=ListByNameQuery
+          - response_section=ResponseDto
+          - repository_operation_method=GetByNameAsync
+      - Name: GetByIdQueryHandler
+        Classes:
+          - BasicListQueryHandler
+        Options:
+          - prefix=Get
+          - suffix=ById
+          - type=QueryHandler
+          - operation=Get
+          - query_section=GetByIdQuery
+          - response_section=ResponseDto
+    - Name: CQRS:Dto:Response
+      Sections:
+      - Name: ResponseDto
+        Classes:
+          - BasicResponseObject
+        Options:
+          - suffix=Response
+          - type=Dto
+          - Key: mappings
+            Value: 
+              - Layer: Core:Data:Entity
+                Section: Entity
+        Attributes:
+        - Id
+        - Name
+        - Summary
+        - Description
+    - Name: CQRS:Mapper:Dto:Response
+    - Name: Presentation:MVC:Controller
+      Sections:
+      - Name: Endpoints
+        Classes:
+          - QueryController
+        Options:
+          - suffix=Controller
+          - name=optional
+          - base_path=/
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: GetById
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: GetByIdQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Method: Get
+              Name: ListByName
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListByNameQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Reference:
+                        Name: IEnumerable
+                        Package: System
+                      Generics:
+                      - DataType:
+                          Resource: 
+                            Selectors:
+                              Section: ResponseDto
+                              Layer: CQRS:Dto:Response
+          - Key: endpoint
+            Value:
+              Name: GetAll
+              Summary:
+              Description:
+              Routes:
+                - "[action]"
+              Parameters:
+              - Name: Query
+                DataType:
+                  Resource: 
+                    Selectors:
+                      Section: ListQuery
+                      Layer: CQRS:Query:Concrete
+                Explode: true
+              Response:
+                Code: 200
+                Description: OK
+                Model: List
+                Content:
+                  Type: application/json
+                  Schema:
+                    DataType:
+                      Resource: 
+                        Selectors:
+                          Section: ResponseDto
+                          Layer: CQRS:Dto:Response
+    - Name: Client:API:Model
+    - Name: Client:API:Service
+  Labels:
+    - clientproject=nodejs
+    - clientproject=dotnet
+  Attributes:
+    - Name: Id
+      Type: string
+      Labels:
+        - Identity
+    - Name: Name
+      Type: string
+    - Name: Summary
+      Type: string
+    - Name: Description
+      Type: string
+  Methods:
+    - Name: GetByName
+      Options:
+        - async
+      Labels:
+        - For: Persistence:Data:Repository
+      Parameters:
+        - Name: name
+          Type: string
+      Returns:
+        - Name: Task
+          Category: reference
+          Generics:
+            - Name: IEnumerable
+              Category: reference
+              Generics:
+                - Name: ProductType
+                  Category: resource
+      Code: | 
+        FilterDefinition<{{.Root.Resource.Name}}> filter = Builders<{{.Root.Resource.Name}}>.Filter.Eq(p => p.Name, name);
+        return await _context
+            .{{string.Pluralize .Root.Resource.Name}}
+            .Find(filter)
+            .ToListAsync();
+---

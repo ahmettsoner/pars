@@ -1,0 +1,4 @@
+-P ubuntu-latest=ahmetsoner/gh-build-image:latest
+--pull=false
+--bind
+--job build

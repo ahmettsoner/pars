@@ -1,0 +1,4 @@
+
+file(WRITE ${CONFIG_FILE_PATH} "#!/bin/sh\nset -e\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Running post-removal tasks...'\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Post-removal tasks completed.'\n")

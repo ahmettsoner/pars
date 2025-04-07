@@ -1,0 +1,392 @@
+Type: Template
+Kind: Code
+Name: PatientCreateCommand
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientCreateCommand
+  Output: "{{.Resource.Name}}CreateCommand.cs"
+  Set: PatientService
+  Path: "{{.Resource.Name}}"
+  Package: Commands/Patient
+  Layers:
+    - CQRS:Command
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}CreateCommand
+      {
+      {{- range $a := .Resource.Attributes -}}
+        {{- range $l := $a.Labels -}}
+            {{- if eq $l.Key "create" }}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+            {{- end }}
+        {{- end -}}
+      {{ end }}
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientDeleteCommand
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientDeleteCommand
+  Output: "{{.Resource.Name}}DeleteCommand.cs"
+  Set: PatientService
+  Path: "{{.Resource.Name}}"
+  Package: Commands/Patient
+  Layers:
+    - CQRS:Command
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}DeleteCommand
+      {
+      {{- range $a := .Resource.Attributes -}}
+        {{- range $l := $a.Labels -}}
+            {{- if eq $l.Key "ID" }}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+            {{- end }}
+        {{- end -}}
+      {{ end }}
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientGetByIdQuery
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientGetByIdQuery
+  Output: "{{.Resource.Name}}GetByIdQuery.cs"
+  Set: PatientService
+  Path: "{{.Resource.Name}}"
+  Package: Queries/Patient
+  Layers:
+    - CQRS:Query
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}GetByIdQuery
+      {
+      {{- range $a := .Resource.Attributes -}}
+        {{- range $l := $a.Labels -}}
+            {{- if eq $l.Key "ID" }}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+            {{- end }}
+        {{- end -}}
+      {{ end }}
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientListQuery
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientListQuery
+  Output: "{{.Resource.Name}}ListQuery.cs"
+  Set: PatientService
+  Path: "{{.Resource.Name}}"
+  Package: Queries/Patient
+  Layers:
+    - CQRS:Query
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}ListQuery
+      {
+      {{- range $a := .Resource.Attributes -}}
+        {{- range $l := $a.Labels -}}
+            {{- if eq $l.Key "filter" }}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+            {{- end }}
+        {{- end -}}
+      {{ end }}
+        public int Limit { set; get; }
+        public int Offset { set; get; }
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientDTO
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientDTO
+  Output: "{{.Resource.Name}}Dto.cs"
+  Set: PatientService
+  Package: Dtos
+  Layers:
+    - DTO
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}DTO
+      {
+      {{- range $a := .Resource.Attributes}}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+      {{ end -}}
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientDatabaseEntity
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientDatabaseEntity
+  Output: "{{.Resource.Name}}Entity.cs"
+  Set: PatientService
+  Layers:
+    - Database:Entity
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}Entity : EntityBase
+      {
+      {{- range $a := .Resource.Attributes}}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; }
+      {{ end -}}
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientDatabaseRepositoryInterface
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientDatabaseRepositoryInterface
+  Output: "I{{.Resource.Name}}Repository.cs"
+  Set: PatientService
+  Layers:
+    - Database:Repository:Contract
+  Template:
+    Code: |
+      import PHM.Core.Application.ResourceDatabase.Repositories;
+
+      namespace {{.Resource.Package}};
+
+      public interface I{{.Resource.Name}}Repository : IBaseRepository<{{.Resource.Name}}>
+      {
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientCreateCommandHandler
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientCreateCommandHandler
+  Output: "{{.Resource.Name}}CreateCommandHandler.cs"
+  Set: PatientService
+  Layers:
+    - CQRS:Command:Handler
+  Template:
+    Code: |
+      using MyProject.Domain.Entities;
+      using MyProject.Infrastructure.Persistence;
+
+      namespace {{.Resource.Package}}
+      {
+          public class Create{{.Resource.Name}}CommandHandler
+          {
+              private readonly IRepository<{{.Resource.Name}}> _repository;
+
+              public Create{{.Resource.Name}}CommandHandler(IRepository<{{.Resource.Name}}> repository)
+              {
+                  _repository = repository;
+              }
+
+              public void Handle(Create{{.Resource.Name}}Command command)
+              {
+                  var entity = new {{.Resource.Name}}
+                  {
+                      {{range .Resource.Attributes}}
+                      {{.Name}} = command.{{.Name}},
+                      {{end}}
+                  };
+
+                  _repository.Add(entity);
+              }
+          }
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientDeleteCommandHandler
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientDeleteCommandHandler
+  Output: "{{.Resource.Name}}DeleteCommandHandler.cs"
+  Set: PatientService
+  Layers:
+    - CQRS:Command:Handler
+  Template:
+    Code: |
+      using MyProject.Domain.Entities;
+      using MyProject.Infrastructure.Persistence;
+
+      namespace {{.Resource.Package}}
+      {
+          public class Delete{{.Resource.Name}}CommandHandler
+          {
+              private readonly IRepository<{{.Resource.Name}}> _repository;
+
+              public Delete{{.Resource.Name}}CommandHandler(IRepository<{{.Resource.Name}}> repository)
+              {
+                  _repository = repository;
+              }
+
+              public void Handle(Delete{{.Resource.Name}}Command command)
+              {
+                  var entity = new {{.Resource.Name}}
+                  {
+                      {{range .Resource.Attributes}}
+                      {{.Name}} = command.{{.Name}},
+                      {{end}}
+                  };
+
+                  _repository.Add(entity);
+              }
+          }
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientListQueryHandler
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientListQueryHandler
+  Output: "{{.Resource.Name}}PatientListQueryHandler.cs"
+  Set: PatientService
+  Layers:
+    - CQRS:Query:Handler
+  Template:
+    Code: |
+      using MyProject.Domain.Entities;
+      using MyProject.Infrastructure.Persistence;
+
+      namespace {{.Resource.Package}}
+      {
+          public class Delete{{.Resource.Name}}CommandHandler
+          {
+              private readonly IRepository<{{.Resource.Name}}> _repository;
+
+              public Delete{{.Resource.Name}}CommandHandler(IRepository<{{.Resource.Name}}> repository)
+              {
+                  _repository = repository;
+              }
+
+              public void Handle(Delete{{.Resource.Name}}Command command)
+              {
+                  var entity = new {{.Resource.Name}}
+                  {
+                      {{range .Resource.Attributes}}
+                      {{.Name}} = command.{{.Name}},
+                      {{end}}
+                  };
+
+                  _repository.Add(entity);
+              }
+          }
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientCommandController
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientCommandController
+  Output: "{{.Resource.Name}}Controller.cs"
+  Set: PatientService
+  Layers:
+    - MVC:CQRS:Command:Controller
+  Template:
+    Code: |
+      using Microsoft.AspNetCore.Mvc;
+      using MyProject.Application.Commands;
+      using MyProject.Application.DTOs;
+
+      namespace {{.Resource.Package}}
+      {
+          [ApiController]
+          [Route("api/[controller]")]
+          public class {{.Resource.Name}}Controller : ControllerBase
+          {
+              private readonly Create{{.Resource.Name}}CommandHandler _create{{.Resource.Name}}CommandHandler;
+              private readonly Delete{{.Resource.Name}}CommandHandler _delete{{.Resource.Name}}CommandHandler;
+
+              public {{.Resource.Name}}Controller(Create{{.Resource.Name}}CommandHandler create{{.Resource.Name}}CommandHandler,
+                Delete{{.Resource.Name}}CommandHandler delete{{.Resource.Name}}CommandHandler)
+              {
+                  _create{{.Resource.Name}}CommandHandler = create{{.Resource.Name}}CommandHandler;
+                  _delete{{.Resource.Name}}CommandHandler = delete{{.Resource.Name}}CommandHandler;
+              }
+
+              [HttpPost]
+              public IActionResult Create(Create{{.Resource.Name}}Command command)
+              {
+                  _create{{.Resource.Name}}CommandHandler.Handle(command);
+                  return Ok();
+              }
+
+              [HttpDelete("{id}")]
+              public IActionResult DeleteById(int id)
+              {
+                  var command = new Delete{{.Resource.Name}}Command { Id = id };
+                  var result = _delete{{.Resource.Name}}DeleteCommandHandler.Handle(command);
+                  return Ok(result);
+              }
+          }
+      }
+---
+Type: Template
+Kind: Code
+Name: PatientQueryController
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientQueryController
+  Output: "{{.Resource.Name}}Controller.cs"
+  Set: PatientService
+  Layers:
+    - MVC:CQRS:Query:Controller
+  Template:
+    Code: |
+      using Microsoft.AspNetCore.Mvc;
+      using MyProject.Application.Queries;
+      using MyProject.Application.DTOs;
+
+      namespace {{.Resource.Package}}
+      {
+          [ApiController]
+          [Route("api/[controller]")]
+          public class {{.Resource.Name}}Controller : ControllerBase
+          {
+              private readonly List{{.Resource.Name}}QueryHandler _list{{.Resource.Name}}ListQueryHandler;
+
+              public {{.Resource.Name}}Controller(List{{.Resource.Name}}QueryHandler list{{.Resource.Name}}QueryHandler)
+              {
+                  _list{{.Resource.Name}}QueryHandler = list{{.Resource.Name}}QueryHandler;
+              }
+
+              [HttpGet]
+              public IActionResult List()
+              {
+                  var query = new List{{.Resource.Name}}Query();
+                  var result = _list{{.Resource.Name}}QueryHandler.Handle(query);
+                  return Ok(result);
+              }
+          }
+      }

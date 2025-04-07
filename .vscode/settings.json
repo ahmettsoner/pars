@@ -1,0 +1,22 @@
+{
+    "editor.formatOnSave": true,
+    "go.toolsEnvVars": {
+        "GOFLAGS": "-mod=readonly"
+    },
+    "go.lintOnSave": "workspace",
+    "go.formatTool": "gofmt",
+    "go.useLanguageServer": true,
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit"
+        }
+    },
+    "files.exclude": {
+        "**/vendor": true
+    },
+    "sonarlint.connectedMode.project": {
+        "connectionId": "http-localhost-9000",
+        "projectKey": "pars"
+    }
+}
