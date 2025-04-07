@@ -25,7 +25,6 @@ jobs:
 
           chmod -R a+w .git
 
-          echo grm -v
 
           CHANNEL=dev
 
@@ -39,7 +38,7 @@ jobs:
           echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
 
       - name: generate release notes
-        run: grm changelog
+        run: grm changelog generate --to $VERSION
 
       # - name: build bin"
       #   run: make build.binary.linux.arm64 VERSION=$VERSION
