@@ -13,6 +13,7 @@
 /build/**
 /config/**
 /workspace**/**
+/CHANGELOG/**
 /src/vendor/**
 /.venv/**
 /node_modules/**

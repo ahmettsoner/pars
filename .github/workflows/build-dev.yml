@@ -1,18 +1,20 @@
-# https://chatgpt.com/c/67e52d1f-fd1c-8004-9693-e4c3cc115836
-
 name: Build-Dev
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*-dev.*"
 
 jobs:
-  build:
+  build-dev:
     runs-on: ubuntu-latest
 
     container:
       image: ahmetsoner/gh-build-image:latest
       options: --user builder
-
+    # burda checksum üretimi ve Checksums.md'ye tablo olarak eklenmesi, bu dosya içeriğin changelog.md'ye de eklenmesi
+    # bu işle changelog'a değilde github release notes'a eklenecek
+    # burda dikkat edilmesi gereken checksum be changelog'un tag'da bulunması ama dev'de bulunmaması olmalı. geçici ama tag için önemli dosyalar
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -28,17 +30,100 @@ jobs:
 
           CHANNEL=dev
 
-          BUILD_VERSION=$(grm flow phase dev --next)
-
-          git tag -a $BUILD_VERSION -m "$CHANNEL release $BUILD_VERSION"
-          make build.cmake.$BUILD_VERSION
+            
+          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          BUILD_VERSION=$TAG_NAME
 
           git checkout dev
 
+          make build.cmake.$BUILD_VERSION
+
+          mkdir -p CHANGELOG
           echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+          echo "BASE_VERSION=$CURRENT_BASE_VERSION" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_ENV
 
       - name: generate release notes
-        run: grm changelog generate --to $VERSION
+        run: |
+          grm changelog generate --from $BASE_VERSION-dev.1 --to $VERSION --environment dev --output $CHANGELOG_PATH
 
-      # - name: build bin"
-      #   run: make build.binary.linux.arm64 VERSION=$VERSION
+      - name: Build binaries and calculate checksums
+        # dist/$VERSION/windows/bin/x86_64/pars.exe'ye çıktı vermesi gerekirken .exe ext'i eklemiyor?
+        run: |
+          make build.binary.windows.x86_64 VERSION=$VERSION
+          sha256sum dist/$VERSION/windows/bin/x86_64/pars >> checksums.txt
+
+          make build.binary.linux.arm64 VERSION=$VERSION
+          sha256sum dist/$VERSION/linux/bin/arm64/pars >> checksums.txt
+
+          # Create markdown file with checksums
+          echo "| Platform | Architecture | File Name | SHA-256 Checksum |" > Checksums.md
+          echo "|----------|--------------|-----------|------------------|" >> Checksums.md
+
+          while read -r line; do
+            CHECKSUM=$(echo "$line" | awk '{print $1}')
+            FILEPATH=$(echo "$line" | awk '{print $2}')
+            OS=$(echo "$FILEPATH" | sed -E 's#dist/[^/]+/([^/]+)/bin/[^/]+/[^/]+#\1#')
+            ARCH=$(echo "$FILEPATH" | sed -E 's#dist/[^/]+/[^/]+/bin/([^/]+)/[^/]+#\1#')
+            FILENAME=$(basename "$FILEPATH")
+
+            echo "| $OS | $ARCH | $FILENAME | $CHECKSUM |" >> Checksums.md
+          done < checksums.txt
+
+
+          echo "## CHECKSUMS" >> $CHANGELOG_PATH
+          cat Checksums.md >> $CHANGELOG_PATH
+
+          rm checksums.txt
+
+          git add $CHANGELOG_PATH
+          git commit -m "update changelog for the release $VERSION"
+
+          git add Checksums.md
+          git commit -m "update Checksums for the release $VERSION"
+
+          # git push
+
+      # - name: Upload checksums artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: checksums
+      #     path: Checksums.md
+
+      # - name: Create Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.prepare.outputs.TAG_NAME }}
+      #     release_name: Release for ${{ steps.prepare.outputs.BUILD_VERSION }}
+      #     body_path: $CHANGELOG_PATH
+      #     draft: false
+      #     prerelease: true
+
+      # Upload artifacts
+
+  # publish_release:
+  #   needs:
+  #     - upload-linux-amd64-artifacts
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Get Release ID
+  #       id: get_release
+  #       run: |
+  #         release_id=$(curl \
+  #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+  #           -H "Accept: application/vnd.github.v3+json" \
+  #           https://api.github.com/repos/${{ github.repository }}/releases/tags/v1.0.174 | jq -r '.id')
+  #         echo "release_id=$release_id" >> $GITHUB_ENV
+
+  #     - name: Publish Release (Remove Draft Status)
+  #       run: |
+  #         curl \
+  #           -X PATCH \
+  #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+  #           -H "Accept: application/vnd.github.v3+json" \
+  #           https://api.github.com/repos/${{ github.repository }}/releases/${{ env.release_id }} \
+  #           -d '{"draft": false}'

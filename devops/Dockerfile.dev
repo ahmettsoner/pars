@@ -26,7 +26,13 @@ RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
 ENV PATH="/usr/local/go/bin:${PATH}"
 
 # Node modülleri kurulumu ve build
-RUN npm install -g git-release-manager@0.0.12
+run mkdir ./grm
+WORKDIR ./grm
+COPY ../git-release-manager ./grm
+RUN npm install && npm run build && npm link
+RUN npm link git-release-manager
+
+
 
 RUN useradd -m builder
 USER builder
