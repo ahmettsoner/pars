@@ -20,3 +20,5 @@ github release için draft yönetimi yapılmalı? özellikle stabil channel içi
 
 stabil versionlar için installer, package hazırlanması tammalanmalı
 stabil versionlar için download ve install dökümanları hazırlanarak otomatik güncellenmeli özellikle download page'ler
+
+changelog'lar multilingual olmalı

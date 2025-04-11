@@ -1,0 +1,63 @@
+set_os_ext(${OS_MACOS} EXT)
+set(CMAKE_SOURCE_DIR_PATH ${CMAKE_SOURCE_DIR})
+set(COMMON_VARIABLES 
+    PROJECT_NAME
+    APP_NAME
+    APP_TAG
+    VERSION_SEMVER
+    CHANGELOG_PATH
+    PROJECT_GIT
+    PROJECT_ORGANIZATION
+    RELEASE_DATE_PKG
+    PROJECT_HOMEPAGE
+    PROJECT_DESCRIPTION
+    LINUX_APP_BINARY_DIR
+    LINUX_APP_DATA_DATABASE_DIR
+    CMAKE_SOURCE_DIR_PATH
+    DIST_ROOT_DIR
+    GOOS
+    EXT
+    )
+
+file(GLOB_RECURSE PKG_FILES "${CMAKE_CURRENT_LIST_DIR}/pkg-files/*")
+
+set(PKG_CONFIG_VARIABLES ${COMMON_VARIABLES})
+foreach(PKGARCH ${ALL_PKGARCH_LIST_MACOS})
+    map_pkgarch_to_arch_all(${PKGARCH} APP_ARCH)
+    
+    set(PKG_ROOT_DIR ${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${OS_MACOS}/ins/${PKG_PACKAGE_NAME}/${APP_ARCH})
+    set(PKG_PAYLOAD_DIR ${PKG_ROOT_DIR}/${APP_NAME})
+    set(PKG_OUTPUT_DIR ${PKG_ROOT_DIR}/output)
+    set(PKG_CONF_DIR ${PKG_ROOT_DIR}/${APP_NAME})
+
+    if(${PKGARCH} STREQUAL ${PKG_ARCH_ALL})
+        get_host_arch(HOST_ARCH)
+        set(BIN_OUTPUT_FULL_PATH ${PKG_OUTPUT_DIR}/${APP_NAME}/${DIST_ROOT_DIR}/${APP_TAG}/${OS_MACOS}/bin/${APP_ARCH}/${APP_NAME}${EXT})
+        else()
+        set(BIN_OUTPUT_FULL_PATH ${PKG_OUTPUT_DIR}/${APP_NAME}/${DIST_ROOT_DIR}/${APP_TAG}/${HOST_OS}/bin/${APP_ARCH}/${APP_NAME}${EXT})
+    endif()
+
+
+    list(APPEND PKG_CONFIG_VARIABLES APP_ARCH)
+    list(APPEND PKG_CONFIG_VARIABLES PKGARCH)
+    list(APPEND PKG_CONFIG_VARIABLES BIN_OUTPUT_FULL_PATH)
+
+    set(PKG_FILE_NAMES "")
+    foreach(PKGFILE ${PKG_FILES})
+        file(RELATIVE_PATH REL_FILE_PATH "${CMAKE_CURRENT_LIST_DIR}/pkg-files" ${PKGFILE})
+
+        set(CONFIG_FILE_PATH "${PKG_CONF_DIR}/${REL_FILE_PATH}")
+        list(APPEND PKG_FILE_NAMES ${CONFIG_FILE_PATH})
+        list(APPEND PKG_CONFIG_VARIABLES CONFIG_FILE_PATH)
+
+        var_list_to_cmake_args(VARIABLES_TO_PASS "${PKG_CONFIG_VARIABLES}")
+        add_custom_command(
+            OUTPUT ${CONFIG_FILE_PATH}
+            COMMAND ${CMAKE_COMMAND} -E echo "Generating ${PKGFILE} file..."
+            COMMAND ${CMAKE_COMMAND} ${VARIABLES_TO_PASS} -P "${PKGFILE}"
+            COMMENT "Generating ${PKGFILE} to ${CONFIG_FILE_PATH}"
+        )
+    endforeach()
+
+    add_custom_target(build.pkg.package.${APP_ARCH}.configuration DEPENDS check_env_for_pkg_packing ${PKG_FILE_NAMES})
+endforeach()

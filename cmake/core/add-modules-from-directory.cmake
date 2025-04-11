@@ -3,7 +3,7 @@ function(add_modules_from_directory)
 
     foreach(directory ${directories})
         if(IS_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/${directory})
-            message(STATUS "Loading module: ${directory}")
+            # message(STATUS "Loading module: ${directory}")
             add_module(${CMAKE_CURRENT_LIST_DIR}/${directory})
         endif()
     endforeach()

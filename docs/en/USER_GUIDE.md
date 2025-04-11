@@ -1,3 +1,7 @@
+🌐 [Main](./README.md)
+
+---
+
 # User Guide
 
 This guide provides instructions on how to use the features and functionality of [Your Project Name].
@@ -83,10 +87,6 @@ python src/main.py
 ## FAQs
 
 Refer to the [FAQ](FAQ.md) for answers to common questions.
-
-## Support
-
-For further assistance, contact [support email] or visit our [support forum](support forum link).
 
 ## Appendix
 

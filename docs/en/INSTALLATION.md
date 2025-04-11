@@ -1,3 +1,7 @@
+🌐 [Main](./README.md)
+
+---
+
 # Installation Guide
 
 Follow these steps to install and set up the project on your local machine.
@@ -67,7 +71,3 @@ If you encounter issues:
 -   Ensure all prerequisites are installed correctly.
 -   Check the project's [FAQ.md](FAQ.md).
 -   Review known issues on GitHub.
-
-## License
-
-This project is licensed under the [name of the license] License - see the [LICENSE](LICENSE) file for details.

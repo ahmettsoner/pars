@@ -1,3 +1,7 @@
+🌐 [Main](./README.md)
+
+---
+
 # Frequently Asked Questions (FAQ)
 
 ## General Questions
@@ -48,4 +52,4 @@ If you need additional assistance, feel free to contact [support contact info or
 
 ### Under what license is the project released?
 
-The project is licensed under the [name of the license] License. See the LICENSE file for more details.
+The project is licensed under the [MIT] License. See the LICENSE file for more details.

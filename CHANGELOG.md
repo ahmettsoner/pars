@@ -44,8 +44,11 @@ and 1 ❤️ contributor
 
 ## Checksums
 
-| Platform | File Name     | SHA-256 Checksum                             |
-| -------- | ------------- | -------------------------------------------- |
-| Linux    | myapp-linux   | abcd1234abcd1234abcd1234abcd1234abcd1234abcd |
-| Windows  | myapp-win.exe | efgh5678efgh5678efgh5678efgh5678efgh5678efgh |
-| macOS    | myapp-mac     | ijkl9101ijkl9101ijkl9101ijkl9101ijkl9101ijkl |
+| Platform | Architecture | Type     | File Name                   | SHA-256 Checksum                                                 |
+| -------- | ------------ | -------- | --------------------------- | ---------------------------------------------------------------- |
+| Windows  | x64_86       | Binary   | pars-windows-x86_64.exe     | 78bcfbde72df8e7a6332dccbfee643e69d5dc0dce458f30d15acdd2dbe381951 |
+| Windows  | x64_86       | Archieve | pars-windows-x86_64.bin.zip | 920ababbf0037a46e65e9f2d2a740b45602ca17285026acf9684126a231ae096 |
+| Windows  | arm64        | Binary   | pars-windows-arm64.exe      | 78bcfbde72df8e7a6332dccbfee643e69d5dc0dce458f30d15acdd2dbe381951 |
+| Windows  | arm64        | Archive  | pars-windows-arm64.bin.zip  | 1d0b830fe7d2d0bc525ef995b4fc1d1cccbb32b6b5afca1553a1964f96a77130 |
+| Linux    | arm64        | Binary   | pars-linux-arm64.bin        | 7288544e002192877cb548bddddd24cf17c9b28ee61672d9f12f2ff6ad5edc14 |
+| Linux    | arm64        | Archive  | pars-linux-arm64.bin.zip    | 04b771b02ea939f59a243e30c9174ce5e4f27174f4d6d2e5ccffda7ad359efdc |

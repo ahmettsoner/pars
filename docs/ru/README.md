@@ -1,5 +1,4 @@
-🌐 [🇺🇸 English](../../../README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
-
+🌐 [🇺🇸 English](../en/README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
 
 # Pars Dev Kit
 
@@ -11,11 +10,11 @@
 
 ## Ключевые особенности
 
-- **Базовая функциональность**: Надежные фреймворки и библиотеки для основных задач разработки.
-- **Комплексный анализ**: Инструменты для анализа и оптимизации качества и производительности кода.
-- **Оптимизированный CI/CD**: Предопределенные конфигурации для эффективных процессов интеграции и доставки.
-- **Обширная документация**: Четкие и подробные руководства, помогающие начать работу и освоить продвинутые концепции.
-- **Модульный дизайн**: Гибкая архитектура для интеграции только необходимых компонентов.
+-   **Базовая функциональность**: Надежные фреймворки и библиотеки для основных задач разработки.
+-   **Комплексный анализ**: Инструменты для анализа и оптимизации качества и производительности кода.
+-   **Оптимизированный CI/CD**: Предопределенные конфигурации для эффективных процессов интеграции и доставки.
+-   **Обширная документация**: Четкие и подробные руководства, помогающие начать работу и освоить продвинутые концепции.
+-   **Модульный дизайн**: Гибкая архитектура для интеграции только необходимых компонентов.
 
 ## Начало работы
 
@@ -34,31 +33,31 @@
 
 Изучите нашу документацию и руководства для беспроблемной работы:
 
-- 🛠️ [Руководство по установке](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
-- 📘 [Руководство пользователя](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
-- 🛡️ [Устранение неполадок](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
-- ❓ [Часто задаваемые вопросы](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
+-   🛠️ [Руководство по установке](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
+-   📘 [Руководство пользователя](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
+-   🛡️ [Устранение неполадок](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
+-   ❓ [Часто задаваемые вопросы](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
 
 ## Сообщество и ресурсы
 
 Присоединяйтесь к нашему сообществу и изучайте связанные ресурсы:
 
-- 🏠 [Домашняя страница](https://www.parsdevkit.net)
-- 🌐 [Репозиторий проекта](https://github.com/parsdevkit/pars)
-- 📖 [README](https://github.com/parsdevkit/pars#readme)
-- 💬 [Форум обсуждений](https://github.com/parsdevkit/pars/discussions)
-- 💖 [Спонсоры и поддерживающие](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
-- 🚩 [Этапы развития](https://github.com/parsdevkit/pars/milestones)
-- 🗂️ [Доска проекта](https://github.com/parsdevkit/pars/projects)
+-   🏠 [Домашняя страница](https://www.parsdevkit.net)
+-   🌐 [Репозиторий проекта](https://github.com/parsdevkit/pars)
+-   📖 [README](https://github.com/parsdevkit/pars#readme)
+-   💬 [Форум обсуждений](https://github.com/parsdevkit/pars/discussions)
+-   💖 [Спонсоры и поддерживающие](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
+-   🚩 [Этапы развития](https://github.com/parsdevkit/pars/milestones)
+-   🗂️ [Доска проекта](https://github.com/parsdevkit/pars/projects)
 
 ## Социальные сети
 
 Оставайтесь на связи и следите за обновлениями:
 
-- 🐦 [Twitter](https://twitter.com/parsdevkit)
-- 📘 [Facebook](https://facebook.com/parsdevkit)
-- 💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
-- 🎥 [YouTube](https://www.youtube.com/parsdevkit)
+-   🐦 [Twitter](https://twitter.com/parsdevkit)
+-   📘 [Facebook](https://facebook.com/parsdevkit)
+-   💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
+-   🎥 [YouTube](https://www.youtube.com/parsdevkit)
 
 ## Руководство по участию
 
