@@ -7,8 +7,4 @@ if(EXISTS ${CHANGELOG_PATH})
 else()
     file(APPEND ${CONFIG_FILE_PATH} "  * Not specified any changes\n")
 endif()
-<<<<<<< HEAD
-file(APPEND ${CONFIG_FILE_PATH} "\n -- ${PROJECT_MAINTANER}  ${RELEASE_DATE_DEB}\n")
-=======
 # file(APPEND ${CONFIG_FILE_PATH} "\n -- ${PROJECT_MAINTAINER}  ${RELEASE_DATE_DEB}\n")
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

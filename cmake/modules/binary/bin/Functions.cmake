@@ -1,8 +1,4 @@
 get_host_os(HOST_OS)
-<<<<<<< HEAD
-set_os_ext(${HOST_OS} EXT)
-=======
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 function(map_arch_to_goarch input_arch output_goarch)
     if(${input_arch} STREQUAL ${ARCH_X86})
@@ -36,11 +32,7 @@ endfunction()
 function(build GOOS GOARCH OUTPUT_PATH)
 
     
-<<<<<<< HEAD
-    generate_build_output_path(PATH_OUTPUT)
-=======
     generate_build_output_path(GOOS PATH_OUTPUT)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
     if("${OUTPUT_PATH}" STREQUAL "")
         set(OUTPUT_PATH ${PATH_OUTPUT})
     endif()
@@ -66,11 +58,7 @@ function(build GOOS GOARCH OUTPUT_PATH)
     command_for_shell("${HOST_SHELL}" "${GO_BUILD_COMMAND}" SHELL_GO_BUILD_COMMAND)
 
 
-<<<<<<< HEAD
-    generate_build_output_path_tmp(PATH_OUTPUT)    
-=======
     generate_build_output_path_tmp(GOOS PATH_OUTPUT)    
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
     add_custom_command(
         OUTPUT ${PATH_OUTPUT}
         COMMAND ${SHELL_GO_BUILD_COMMAND}
@@ -120,12 +108,6 @@ endfunction()
 
 
 
-<<<<<<< HEAD
-function(generate_build_output_path path_variable)
-    set(${path_variable} "${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/${APP_NAME}${EXT}" PARENT_SCOPE)
-endfunction()
-function(generate_build_output_path_tmp path_variable)
-=======
 function(generate_build_output_path os path_variable)
     set_os_ext(${os} EXT)
 
@@ -134,6 +116,5 @@ endfunction()
 function(generate_build_output_path_tmp os path_variable)
     set_os_ext(${os} EXT)
 
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
     set(${path_variable} "${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/tmp/${APP_NAME}${EXT}" PARENT_SCOPE)
 endfunction()

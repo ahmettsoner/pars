@@ -1,8 +1,4 @@
 file(WRITE ${CONFIG_FILE_PATH} "Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/\n")
 file(APPEND ${CONFIG_FILE_PATH} "Upstream-Name: ${PROJECT_NAME}\n")
 file(APPEND ${CONFIG_FILE_PATH} "Source: ${PROJECT_GIT}\n\n")
-<<<<<<< HEAD
-file(APPEND ${CONFIG_FILE_PATH} "Files: *\nCopyright: 2024, ${PROJECT_MAINTANER}\nLicense: Apache-2.0\n")
-=======
 # file(APPEND ${CONFIG_FILE_PATH} "Files: *\nCopyright: 2024, ${PROJECT_MAINTAINER}\nLicense: Apache-2.0\n")
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

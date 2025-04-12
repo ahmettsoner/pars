@@ -3,8 +3,6 @@ if(IS_WINDOWS)
         OUTPUT check_env_for_choco_packing
         COMMAND ${CMAKE_COMMAND} -E echo "Windows detected. Running setup script."
     )
-<<<<<<< HEAD
-=======
 elseif(IS_LINUX)
     if(IS_DEBIAN)
         add_custom_command(
@@ -23,7 +21,6 @@ elseif(IS_LINUX)
             COMMAND exit 1
         )
     endif()
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 else()
     add_custom_command(
         OUTPUT check_env_for_choco_packing

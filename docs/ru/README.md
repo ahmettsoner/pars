@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-🌐 [🇺🇸 English](../../../README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
-
-=======
 🌐 [🇺🇸 English](../en/README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 # Pars Dev Kit
 
@@ -15,19 +10,11 @@
 
 ## Ключевые особенности
 
-<<<<<<< HEAD
-- **Базовая функциональность**: Надежные фреймворки и библиотеки для основных задач разработки.
-- **Комплексный анализ**: Инструменты для анализа и оптимизации качества и производительности кода.
-- **Оптимизированный CI/CD**: Предопределенные конфигурации для эффективных процессов интеграции и доставки.
-- **Обширная документация**: Четкие и подробные руководства, помогающие начать работу и освоить продвинутые концепции.
-- **Модульный дизайн**: Гибкая архитектура для интеграции только необходимых компонентов.
-=======
 -   **Базовая функциональность**: Надежные фреймворки и библиотеки для основных задач разработки.
 -   **Комплексный анализ**: Инструменты для анализа и оптимизации качества и производительности кода.
 -   **Оптимизированный CI/CD**: Предопределенные конфигурации для эффективных процессов интеграции и доставки.
 -   **Обширная документация**: Четкие и подробные руководства, помогающие начать работу и освоить продвинутые концепции.
 -   **Модульный дизайн**: Гибкая архитектура для интеграции только необходимых компонентов.
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## Начало работы
 
@@ -46,31 +33,15 @@
 
 Изучите нашу документацию и руководства для беспроблемной работы:
 
-<<<<<<< HEAD
-- 🛠️ [Руководство по установке](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
-- 📘 [Руководство пользователя](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
-- 🛡️ [Устранение неполадок](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
-- ❓ [Часто задаваемые вопросы](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
-=======
 -   🛠️ [Руководство по установке](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
 -   📘 [Руководство пользователя](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
 -   🛡️ [Устранение неполадок](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
 -   ❓ [Часто задаваемые вопросы](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## Сообщество и ресурсы
 
 Присоединяйтесь к нашему сообществу и изучайте связанные ресурсы:
 
-<<<<<<< HEAD
-- 🏠 [Домашняя страница](https://www.parsdevkit.net)
-- 🌐 [Репозиторий проекта](https://github.com/parsdevkit/pars)
-- 📖 [README](https://github.com/parsdevkit/pars#readme)
-- 💬 [Форум обсуждений](https://github.com/parsdevkit/pars/discussions)
-- 💖 [Спонсоры и поддерживающие](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
-- 🚩 [Этапы развития](https://github.com/parsdevkit/pars/milestones)
-- 🗂️ [Доска проекта](https://github.com/parsdevkit/pars/projects)
-=======
 -   🏠 [Домашняя страница](https://www.parsdevkit.net)
 -   🌐 [Репозиторий проекта](https://github.com/parsdevkit/pars)
 -   📖 [README](https://github.com/parsdevkit/pars#readme)
@@ -78,23 +49,15 @@
 -   💖 [Спонсоры и поддерживающие](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
 -   🚩 [Этапы развития](https://github.com/parsdevkit/pars/milestones)
 -   🗂️ [Доска проекта](https://github.com/parsdevkit/pars/projects)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## Социальные сети
 
 Оставайтесь на связи и следите за обновлениями:
 
-<<<<<<< HEAD
-- 🐦 [Twitter](https://twitter.com/parsdevkit)
-- 📘 [Facebook](https://facebook.com/parsdevkit)
-- 💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
-- 🎥 [YouTube](https://www.youtube.com/parsdevkit)
-=======
 -   🐦 [Twitter](https://twitter.com/parsdevkit)
 -   📘 [Facebook](https://facebook.com/parsdevkit)
 -   💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
 -   🎥 [YouTube](https://www.youtube.com/parsdevkit)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## Руководство по участию
 
@@ -108,8 +71,4 @@
 
 ### Заключение
 
-<<<<<<< HEAD
 Pars Dev Kit создан для расширения возможностей разработчиков, предоставляя инструменты для высококачественной разработки и масштабируемых рабочих процессов. Изучайте ресурсы и станьте частью нашего растущего сообщества!
-=======
-Pars Dev Kit создан для расширения возможностей разработчиков, предоставляя инструменты для высококачественной разработки и масштабируемых рабочих процессов. Изучайте ресурсы и станьте частью нашего растущего сообщества!
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

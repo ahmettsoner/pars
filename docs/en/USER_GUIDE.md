@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 🌐 [Main](./README.md)
 
 ---
 
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 # User Guide
 
 This guide provides instructions on how to use the features and functionality of [Your Project Name].
@@ -91,13 +88,6 @@ python src/main.py
 
 Refer to the [FAQ](FAQ.md) for answers to common questions.
 
-<<<<<<< HEAD
-## Support
-
-For further assistance, contact [support email] or visit our [support forum](support forum link).
-
-=======
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 ## Appendix
 
 -   [Additional references, links, or notes]

@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-=======
 🌐 [Main](./README.md)
 
 ---
 
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 # Troubleshooting Guide
 
 This guide provides solutions to common problems encountered while using this project.
@@ -85,19 +82,11 @@ This guide provides solutions to common problems encountered while using this pr
 If these solutions don't resolve your issue, consider:
 
 -   Checking the [FAQ](FAQ.md) for more common questions and answers.
-<<<<<<< HEAD
--   Reporting a new issue on the [GitHub Issues](https://github.com/yourusername/yourproject/issues) page.
-=======
 -   Reporting a new issue on the [GitHub Issues](https://github.com/parsdevkit/pars/issues) page.
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 -   Contacting the project maintainers at [contact email or forum link].
 
 ## Helpful Links
 
-<<<<<<< HEAD
--   [Official Documentation](docs/)
-=======
 -   [Official Documentation](https://docs.parsdevkit.net/)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 -   [Installation Guide](INSTALLATION.md)
 -   [FAQ](FAQ.md)

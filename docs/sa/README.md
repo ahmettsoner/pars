@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-🌐 [🇺🇸 English](../../../README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
-
-=======
 🌐 [🇺🇸 English](../en/README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 # Pars Dev Kit
 
@@ -15,19 +10,11 @@
 
 ## الميزات الرئيسية
 
-<<<<<<< HEAD
-- **الوظائف الأساسية**: أطر عمل ومكتبات قوية لمهام التطوير الأساسية.
-- **تحليل شامل**: أدوات لتحليل وتحسين جودة الكود والأداء.
-- **CI/CD مُحسّن**: تكوينات محددة مسبقاً لخطوط التكامل والتسليم الفعالة.
-- **توثيق شامل**: أدلة واضحة ومفصلة لمساعدتك في البدء وإتقان المفاهيم المتقدمة.
-- **تصميم معياري**: هيكل مرن لدمج ما تحتاجه فقط.
-=======
 -   **الوظائف الأساسية**: أطر عمل ومكتبات قوية لمهام التطوير الأساسية.
 -   **تحليل شامل**: أدوات لتحليل وتحسين جودة الكود والأداء.
 -   **CI/CD مُحسّن**: تكوينات محددة مسبقاً لخطوط التكامل والتسليم الفعالة.
 -   **توثيق شامل**: أدلة واضحة ومفصلة لمساعدتك في البدء وإتقان المفاهيم المتقدمة.
 -   **تصميم معياري**: هيكل مرن لدمج ما تحتاجه فقط.
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## البدء
 
@@ -46,31 +33,15 @@
 
 استكشف وثائقنا وأدلتنا للحصول على تجربة سلسة:
 
-<<<<<<< HEAD
-- 🛠️ [دليل التثبيت](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
-- 📘 [دليل المستخدم](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
-- 🛡️ [استكشاف الأخطاء وإصلاحها](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
-- ❓ [الأسئلة الشائعة](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
-=======
 -   🛠️ [دليل التثبيت](https://github.com/parsdevkit/pars/blob/main/docs/installation.md)
 -   📘 [دليل المستخدم](https://github.com/parsdevkit/pars/blob/main/docs/user-guide.md)
 -   🛡️ [استكشاف الأخطاء وإصلاحها](https://github.com/parsdevkit/pars/blob/main/docs/troubleshooting.md)
 -   ❓ [الأسئلة الشائعة](https://github.com/parsdevkit/pars/blob/main/docs/faq.md)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## المجتمع والموارد
 
 انضم إلى مجتمعنا واستكشف الموارد ذات الصلة:
 
-<<<<<<< HEAD
-- 🏠 [الصفحة الرئيسية](https://www.parsdevkit.net)
-- 🌐 [مستودع المشروع](https://github.com/parsdevkit/pars)
-- 📖 [README](https://github.com/parsdevkit/pars#readme)
-- 💬 [منتدى المناقشة](https://github.com/parsdevkit/pars/discussions)
-- 💖 [الرعاة والداعمون](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
-- 🚩 [المعالم](https://github.com/parsdevkit/pars/milestones)
-- 🗂️ [لوحة المشروع](https://github.com/parsdevkit/pars/projects)
-=======
 -   🏠 [الصفحة الرئيسية](https://www.parsdevkit.net)
 -   🌐 [مستودع المشروع](https://github.com/parsdevkit/pars)
 -   📖 [README](https://github.com/parsdevkit/pars#readme)
@@ -78,23 +49,15 @@
 -   💖 [الرعاة والداعمون](https://github.com/parsdevkit/pars/blob/main/docs/sponsors.md)
 -   🚩 [المعالم](https://github.com/parsdevkit/pars/milestones)
 -   🗂️ [لوحة المشروع](https://github.com/parsdevkit/pars/projects)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## وسائل التواصل الاجتماعي
 
 ابق على اتصال وتابع آخر التحديثات:
 
-<<<<<<< HEAD
-- 🐦 [Twitter](https://twitter.com/parsdevkit)
-- 📘 [Facebook](https://facebook.com/parsdevkit)
-- 💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
-- 🎥 [YouTube](https://www.youtube.com/parsdevkit)
-=======
 -   🐦 [Twitter](https://twitter.com/parsdevkit)
 -   📘 [Facebook](https://facebook.com/parsdevkit)
 -   💼 [LinkedIn](https://linkedin.com/company/parsdevkit)
 -   🎥 [YouTube](https://www.youtube.com/parsdevkit)
->>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 
 ## إرشادات المساهمة
 
