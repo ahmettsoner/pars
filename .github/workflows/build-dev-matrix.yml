@@ -1,0 +1,280 @@
+name: CI Build and Package
+
+on:
+  push:
+    tags:
+      - "v*.*.*-dev.*"
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version_and_tag.outputs.version }}
+      base_version: ${{ steps.version_and_tag.outputs.base_version }}
+      changelog_path: ${{ steps.version_and_tag.outputs.changelog_path }}
+      artifact_path: ${{ steps.artifact.outputs.artifact_path }}
+      html_output_dir: ${{ steps.docs.outputs.html_output_dir }}
+
+    container:
+      image: ahmetsoner/gh-build-image:latest
+      options: --user builder
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Prepare version and tag
+        id: version_and_tag
+        run: |
+
+          git config --global --add safe.directory $(pwd)
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+          chmod -R a+w .git
+
+
+          CHANNEL=dev
+
+            
+          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          BUILD_VERSION=$TAG_NAME
+
+          git checkout dev
+
+          make build.cmake.$BUILD_VERSION
+
+          mkdir -p CHANGELOG
+          echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+          echo "BASE_VERSION=$CURRENT_BASE_VERSION" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_ENV
+
+
+          # Correctly append outputs to the GITHUB_OUTPUT
+          echo "version=$BUILD_VERSION" >> $GITHUB_OUTPUT
+          echo "base_version=$CURRENT_BASE_VERSION" >> $GITHUB_OUTPUT
+          echo "changelog_path=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_OUTPUT
+
+      - name: Prepare artifact
+        id: artifact
+        run: |
+
+          ARTIFACT_PATH=dist/artifacts/$VERSION
+          mkdir -p $ARTIFACT_PATH
+
+
+          echo "ARTIFACT_PATH=$ARTIFACT_PATH" >> $GITHUB_ENV
+          echo "artifact_path=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
+
+      - name: Convert Markdown Docs to HTML Docs
+        id: docs
+        run: |
+
+          # Define the base directory for your HTML output
+          HTML_OUTPUT_DIR="temp/$VERSION/html_docs"
+
+          # Ensure the base output directory exists
+          mkdir -p "$HTML_OUTPUT_DIR"
+          cp -r docs/assets/ $HTML_OUTPUT_DIR
+
+          # Find all Markdown files and convert them to HTML
+          find ./docs -name '*.md' | while read -r FILE; do
+            # Get the relative path, stripping the leading ./docs/
+            RELATIVE_PATH="${FILE#./docs/}"
+            
+            # Change the extension from .md to .html
+            HTML_FILE="${RELATIVE_PATH%.md}.html"
+
+            # Create the directory structure in the output directory
+            mkdir -p "$HTML_OUTPUT_DIR/$(dirname "$RELATIVE_PATH")"
+
+            # Convert the Markdown file to HTML in the correct directory
+            pandoc --standalone --css="../assets/style/style.css" -o "$HTML_OUTPUT_DIR/$HTML_FILE" --lua-filter=scripts/change_links.lua "$FILE"
+          done
+
+          echo "HTML_OUTPUT_DIR=$HTML_OUTPUT_DIR" >> $GITHUB_ENV
+          echo "html_output_dir=$HTML_OUTPUT_DIR" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        run: |
+
+          grm changelog generate --from $BASE_VERSION-dev.1 --to $VERSION --environment dev --output $CHANGELOG_PATH
+
+      - name: Create markdown file for checksums
+        run: |
+
+          echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > $ARTIFACT_PATH/Checksums.md
+          echo "|----------|--------------|-----------|-----------|------------------|" >> $ARTIFACT_PATH/Checksums.md
+
+  build-matrix:
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    container:
+      image: ahmetsoner/gh-build-image:latest
+      options: --user builder
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          - os: windows
+            arch: x86_64
+            binary: true
+            archive: zip
+          # - os: windows
+          #   arch: arm
+          #   binary: true
+          #   archive: zip
+          # - os: windows
+          #   arch: arm64
+          #   binary: true
+          #   archive: zip
+          - os: linux
+            arch: arm64
+            binary: true
+            archive: tar.gz
+          # - os: linux
+          #   arch: arm64
+          #   binary: true
+          #   archive: rar
+          # - os: linux
+          #   arch: arm64
+          #   binary: true
+          #   archive: 7z
+          # - os: linux
+          #   arch: all
+          #   package: deb
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: print
+        run: |
+
+          echo "Version: ${{ needs.prepare.outputs.version }}"
+          echo "Base Version: ${{ needs.prepare.outputs.base_version }}"
+          echo "Changelog: ${{ needs.prepare.outputs.changelog_path }}"
+          echo "Artifact Path: ${{ needs.prepare.outputs.artifact_path }}"
+
+          echo "APPNAME=pars" >> $GITHUB_ENV
+
+
+          echo "VERSION=${{ needs.prepare.outputs.version }}" >> $GITHUB_ENV
+          echo "BASE_VERSION=${{ needs.prepare.outputs.base_version }}" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=${{ needs.prepare.outputs.changelog_path }}" >> $GITHUB_ENV
+          echo "ARTIFACT_PATH=${{ needs.prepare.outputs.artifact_path }}" >> $GITHUB_ENV
+          echo "HTML_OUTPUT_DIR=${{ needs.prepare.outputs.html_output_dir }}" >> $GITHUB_ENV
+
+          echo "Using OS: ${{ matrix.os }}"
+          echo "Architecture: ${{ matrix.arch }}"
+          echo "Artifact Binary: ${{ matrix.binary }}"
+          echo "Artifact Archive: ${{ matrix.archive }}"
+
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            EXT=".exe"
+          else
+            EXT=""
+          fi
+
+          echo "EXT=$EXT" >> $GITHUB_ENV
+
+      - name: Build Binary
+        if: matrix.binary
+        # dist/$VERSION/windows/bin/x86_64/pars.exe'ye çıktı vermesi gerekirken .exe ext'i eklemiyor?
+        # make build.binary.linux.arm64 gibi işlemlerin output pathini gösteren bir komut daha olmalı
+        run: |
+
+          make build.binary.${{matrix.os}}.${{matrix.arch}} VERSION=$VERSION
+
+          BINARY_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/bin/${{matrix.arch}}
+          BINARY_OUTPUT_PATH=$BINARY_OUTPUT_PATH_BASE/$APPNAME$EXT
+          BINARY_CHCEKSUM_PATH=$BINARY_OUTPUT_PATH_BASE/checksum.txt
+
+          # Calculate the checksum and store it in a variable
+          BINARY_CHECKSUM=$(sha256sum "$BINARY_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $BINARY_OUTPUT_PATH: $BINARY_CHECKSUM"
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$BINARY_CHECKSUM" > $BINARY_OUTPUT_PATH_BASE/checksum.txt
+
+
+
+          echo "BINARY_OUTPUT_PATH_BASE=$BINARY_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "BINARY_OUTPUT_PATH=$BINARY_OUTPUT_PATH" >> $GITHUB_ENV
+          echo "BINARY_CHCEKSUM_PATH=$BINARY_CHCEKSUM_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact Binary
+        if: matrix.binary
+        run: |
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}$EXT
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          # Copy the file to its new location with the new name
+          cp "$BINARY_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          CHECKSUM=$(cat "$BINARY_OUTPUT_PATH_BASE/checksum.txt")
+          OS=${{matrix.os}}
+          ARCH=${{matrix.arch}}
+          TYPE=Binary
+          FILENAME=$NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
+
+      - name: Create Artifact Archive
+        if: ${{ matrix.binary && matrix.archive }}
+        run: |
+
+          # # Daha sonra burda file check yapılarak matrix.binary'den bağımsız ilerletilebilir olması sağlanacak
+          # if [ -f "$BINARY_OUTPUT_PATH" ] && [ -f "$BINARY_CHECKSUM_PATH" ]; then
+          #     echo "Bin and Checksum files are present at specified paths."
+          # else
+          #     echo "Required files do not exist. Skipping archive step."
+          # fi
+
+          # NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.bin.${{ matrix.archive }}
+          # BINARY_TEMP_PATH=dist/temp/$VERSION/$APPNAME-${{matrix.os}}-${{matrix.arch}}-${{ matrix.archive }}
+
+          # mkdir -p $BINARY_TEMP_PATH/bin
+          # cp $BINARY_OUTPUT_PATH "$BINARY_TEMP_PATH/bin/"
+
+          # mkdir -p $BINARY_TEMP_PATH/meta
+          # cp $BINARY_OUTPUT_PATH_BASE/checksum.txt "$BINARY_TEMP_PATH/meta/checksum.txt"
+
+          # # Copy docs into the temp directory hierarchically
+          # mkdir -p $BINARY_TEMP_PATH/docs
+          # cp -r $HTML_OUTPUT_DIR/ $BINARY_TEMP_PATH/docs/
+
+          # if [ "${{ matrix.archive }}" = "zip" ]; then
+          #   (cd $BINARY_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          # elif [ "${{ matrix.archive }}" = "tar.gz" ]; then
+          #   (cd $BINARY_TEMP_PATH && tar -czf "$NEW_BASE_NAME" . --warning=no-file-changed || true )
+          #   if ! tar -tzf "$BINARY_TEMP_PATH/$NEW_BASE_NAME" > /dev/null; then
+          #     echo "Error with archive: Unable to list contents for validation."
+          #   fi
+          # elif [ "${{ matrix.archive }}" = "7z" ]; then
+          #   (cd $BINARY_TEMP_PATH && 7z a "$NEW_BASE_NAME" *)
+          # elif [ "${{ matrix.archive }}" = "rar" ]; then
+          #   ( cd $BINARY_TEMP_PATH && rar a $NEW_BASE_NAME * )
+          # fi
+
+          # cp "$BINARY_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          # # Calculate the checksum and store it in a variable
+          # BINARY_PACKAGE_CHECKSUM=$(sha256sum "$BINARY_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+
+          # # Append the checksum and filepath to checksums.txt
+          # echo "$BINARY_PACKAGE_CHECKSUM" > $BINARY_TEMP_PATH/checksum.txt
+
+          # CHECKSUM=$(cat $BINARY_TEMP_PATH/checksum.txt)
+          # OS=${{matrix.os}}
+          # ARCH=${{matrix.arch}}
+          # TYPE=Archieve
+          # FILENAME=$NEW_BASE_NAME
+
+          # echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md

@@ -1,4 +1,7 @@
-# <%= header %> (<%= date %>)
+<<<<<<< HEAD
+from local template currentTag: <%= config.appName %>
+=======
+# <%= config.appName %> <%= changeInfo.header %> Release Notes - <%= latestReference?.date?.split("T")[0] %>
 
 ## Summary:
 <% sections.summary.commits.forEach(function(commit) { %>
@@ -10,6 +13,7 @@
 and <%= sections.summary.contributors.length %> <%= sections.summary.contributors.length === 1 ? '❤️ contributor' : '❤️ contributors' %>
 
 
+<% if (sections.notes.length > 0) { %>
 ## Notes
 <% sections.notes.forEach((note) => { %>
 ### <%= note.title %>
@@ -20,32 +24,15 @@ and <%= sections.summary.contributors.length %> <%= sections.summary.contributor
 - <%= item.note.content %> (<%= commitLinks %>)
 <% }) %>
 <% }) %>
+<% } %>
 
 
+<% if (sections.commits.length > 0) { %>
 ## Changes
 <% sections.commits.forEach((section) => { %>
 ### <%= section.title %>:
 <%
-  // Scope'a göre commit'leri gruplama
-  const scopedCommits = {};
-  const unscopedCommits = [];
-  
   section.items.forEach(commit => {
-    if (commit.scope) {
-      if (!scopedCommits[commit.scope]) {
-        scopedCommits[commit.scope] = [];
-      }
-      scopedCommits[commit.scope].push(commit);
-    } else {
-      unscopedCommits.push(commit);
-    }
-  });
-%>
-
-<% // Scope'lu commit'leri gösterme
-Object.keys(scopedCommits).sort().forEach(scope => { %>
-#### <%= scope %>
-<% scopedCommits[scope].forEach(commit => {
     const author = `[@${commit.author.name}](${commit.author.profileUrl})`;
     const mentions = commit.mentions
       ? commit.mentions
@@ -60,44 +47,26 @@ Object.keys(scopedCommits).sort().forEach(scope => { %>
     const issueLinks = commit.links && commit.links.length > 0
       ? ` (${commit.links.length === 1 ? 'Issue' : 'Issues'}: ${commit.links.map(link => `[#${link.id}](${repository.remote.repoUrl}/issues/${link.id})`).join(', ')})`
       : '';
+
+    const scopeText = commit.scope ? `**${commit.scope}** ` : '';
 %>
-- <a id="commit-<%= commit.raw.shortHash %>"></a><%= commitLink %>: <%= commit.summary %> (by <%= authorText %>) <%= issueLinks %>
+- <a id="commit-<%= commit.raw.shortHash %>"></a><%= scopeText %><%= commitLink %>: <%= commit.summary %> (by <%= authorText %>) <%= issueLinks %>
 <% if (commit.description) { %>
 
 <%= commit.description?.split('\n').map(line => `\t${line.trim()}`).join('\n') %>
 <% } %>
 <% }); %>
-<% }); %>
-
-<% // Scope'suz commit'leri gösterme
-unscopedCommits.forEach(commit => { 
-  const author = `[@${commit.author.name}](${commit.author.profileUrl})`;
-  const mentions = commit.mentions
-    ? commit.mentions
-        .filter(mention => ['co-authored-by', 'helped-by'].includes(mention.type))
-        .map(mention => `[@${mention.name}](${mention.profileUrl})`)
-        .join(', ')
-    : '';
-  const authorText = mentions ? `${author} with ${mentions}` : author;
-  
-  const commitLink = `[#${commit.raw.shortHash}](${repository.remote.repoUrl}/commit/${commit.raw.hash})`;
-  
-  const issueLinks = commit.links && commit.links.length > 0
-    ? ` (${commit.links.length === 1 ? 'Issue' : 'Issues'}: ${commit.links.map(link => `[#${link.id}](${repository.remote.repoUrl}/issues/${link.id})`).join(', ')})`
-    : '';
-%>
-- <a id="commit-<%= commit.raw.shortHash %>"></a><%= commitLink %>: <%= commit.summary %> (by <%= authorText %>) <%= issueLinks %>
-<% if (commit.description) { %>
-
-    <%= commit.description %>
-<% } %>
-<% }); %>
 <% }) %>
+<% } %>
 
 ## Useful Links
 - 📜 [Full Changelog](<%= repository.remote.repoUrl %>/blob/main/CHANGELOG.md)
 
+
+<% if (sections.contributors.length > 0) { %>
 ## Contributors:
 <% sections.contributors.forEach((contributor) => { %>
 - [<%= contributor.name %>](<%= contributor.profileUrl %>) <% if (contributor.groups.length > 0) { %>(<%= contributor.groups.map(group => group.title).join(', ') %>)<% } %>
 <% }) %>
+<% } %>
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

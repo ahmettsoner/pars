@@ -1,0 +1,34 @@
+# Analyze Team
+docs/project_docs/architecture.md @org/pars-analyze-team
+
+# Core Team
+src/core/ @org/pars-core-team
+src/modules/common/ @org/pars-core-team
+src/modules/structs/ @org/pars-core-team
+src/modules/utils/ @org/pars-core-team
+
+# Dev Team
+src/cmd/ @org/pars-dev-team
+src/modules/providers/ @org/pars-dev-team
+src/modules/services/ @org/pars-dev-team
+src/templates/ @org/pars-dev-team
+
+# Documentation Team
+docs/ @org/pars-documentation-team
+readme.md @org/pars-documentation-team
+CONTRIBUTING.md @org/pars-documentation-team
+CODE_OF_CONDUCT.md @org/pars-documentation-team
+
+# Infrastructure Team
+.github/ @org/pars-infrastructure-team
+Makefile @org/pars-infrastructure-team
+dockerfile @org/pars-infrastructure-team
+.config/ @org/pars-infrastructure-team
+
+# Release Team
+release.config.mjs @org/pars-release-team
+CHANGELOG.md @org/pars-release-team
+VERSION @org/pars-release-team
+
+# Test Team
+tests/ @org/pars-test-team

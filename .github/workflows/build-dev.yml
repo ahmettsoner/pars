@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # https://chatgpt.com/c/67e52d1f-fd1c-8004-9693-e4c3cc115836
 
 name: Build-Dev
@@ -7,12 +8,29 @@ on:
 
 jobs:
   build:
+=======
+name: Build-Dev
+
+on:
+  push:
+    tags:
+      - "v*.*.*-dev.*"
+
+jobs:
+  build-dev:
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
     runs-on: ubuntu-latest
 
     container:
       image: ahmetsoner/gh-build-image:latest
       options: --user builder
+<<<<<<< HEAD
 
+=======
+    # burda checksum üretimi ve Checksums.md'ye tablo olarak eklenmesi, bu dosya içeriğin changelog.md'ye de eklenmesi
+    # bu işle changelog'a değilde github release notes'a eklenecek
+    # burda dikkat edilmesi gereken checksum be changelog'un tag'da bulunması ama dev'de bulunmaması olmalı. geçici ama tag için önemli dosyalar
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -20,6 +38,7 @@ jobs:
       - name: Prepare version and tag
         run: |
           git config --global --add safe.directory $(pwd)
+<<<<<<< HEAD
           chmod -R a+w .git
 
           CHANNEL=dev
@@ -33,5 +52,349 @@ jobs:
 
           echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
 
-      - name: build bin
-        run: make build.binary.linux.arm64 VERSION=$VERSION
+      - name: generate release notes
+        run: grm changelog
+
+      # - name: build bin"
+      #   run: make build.binary.linux.arm64 VERSION=$VERSION
+=======
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+          chmod -R a+w .git
+
+
+          CHANNEL=dev
+
+            
+          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          BUILD_VERSION=$TAG_NAME
+
+          git checkout dev
+
+          make build.cmake.$BUILD_VERSION
+
+          mkdir -p CHANGELOG
+          echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+          echo "BASE_VERSION=$CURRENT_BASE_VERSION" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_ENV
+
+      - name: Prepare artifact
+        run: |
+          ARTIFACT_PATH=dist/artifacts/$VERSION
+          mkdir -p $ARTIFACT_PATH
+          echo "ARTIFACT_PATH=$ARTIFACT_PATH" >> $GITHUB_ENV
+
+      - name: Convert Markdown Docs to HTML Docs
+        run: |
+          # Define the base directory for your HTML output
+          HTML_OUTPUT_DIR="temp/$VERSION/html_docs"
+
+          # Ensure the base output directory exists
+          mkdir -p "$HTML_OUTPUT_DIR"
+          cp -r docs/assets/ $HTML_OUTPUT_DIR
+
+          # Find all Markdown files and convert them to HTML
+          find ./docs -name '*.md' | while read -r FILE; do
+            # Get the relative path, stripping the leading ./docs/
+            RELATIVE_PATH="${FILE#./docs/}"
+            
+            # Change the extension from .md to .html
+            HTML_FILE="${RELATIVE_PATH%.md}.html"
+
+            # Create the directory structure in the output directory
+            mkdir -p "$HTML_OUTPUT_DIR/$(dirname "$RELATIVE_PATH")"
+
+            # Convert the Markdown file to HTML in the correct directory
+            pandoc --standalone --css="../assets/style/style.css" -o "$HTML_OUTPUT_DIR/$HTML_FILE" --lua-filter=scripts/change_links.lua "$FILE"
+          done
+
+          echo "HTML_OUTPUT_DIR=$HTML_OUTPUT_DIR" >> $GITHUB_ENV
+
+      - name: Generate release notes
+        run: |
+          grm changelog generate --from $BASE_VERSION-dev.1 --to $VERSION --environment dev --output $CHANGELOG_PATH
+
+      - name: Create markdown file for checksums
+        run: |
+          echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > $ARTIFACT_PATH/Checksums.md
+          echo "|----------|--------------|-----------|-----------|------------------|" >> $ARTIFACT_PATH/Checksums.md
+
+      # Windows x86_64
+      - name: Build Windows x86_64 Binary
+        # dist/$VERSION/windows/bin/x86_64/pars.exe'ye çıktı vermesi gerekirken .exe ext'i eklemiyor?
+        # make build.binary.linux.arm64 gibi işlemlerin output pathini gösteren bir komut daha olmalı
+        run: |
+          # make build.binary.windows.x86_64 VERSION=$VERSION
+
+          WINDOWS_x86_64_OUTPUT_PATH_BASE=dist/$VERSION/windows/bin/x86_64
+          WINDOWS_x86_64_OUTPUT_PATH=$WINDOWS_x86_64_OUTPUT_PATH_BASE/pars
+          # Calculate the checksum and store it in a variable
+          WINDOWS_x86_64_CHECKSUM=$(sha256sum "$WINDOWS_x86_64_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $WINDOWS_x86_64_OUTPUT_PATH: $WINDOWS_x86_64_CHECKSUM"
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$WINDOWS_x86_64_CHECKSUM" > $WINDOWS_x86_64_OUTPUT_PATH_BASE/checksum.txt
+
+
+          # Creating the zip with the desired structure
+
+
+          echo "WINDOWS_x86_64_OUTPUT_PATH_BASE=$WINDOWS_x86_64_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "WINDOWS_x86_64_OUTPUT_PATH=$WINDOWS_x86_64_OUTPUT_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact Windows x86_64 Binary
+        run: |
+
+          NEW_BASE_NAME=pars-windows-x86_64.exe
+          ORIGINAL_FILE_NAME="pars.exe"
+
+          BASENAME="$(basename "$WINDOWS_x86_64_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME")"
+
+          # Extract the filename and extension
+          FILENAME="${BASENAME%.*}"
+          EXT="${BASENAME##*.}"
+
+          # Handle case where there is no extension
+          if [ "$EXT" = "$BASENAME" ]; then
+            EXT=""
+          fi
+
+          # Determine the action based on the extension
+          if [ "$EXT" = "exe" ]; then
+            # Copy the file with .exe extension
+            cp $WINDOWS_x86_64_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+            CHECKSUM=$(cat $WINDOWS_x86_64_OUTPUT_PATH_BASE/checksum.txt)
+            OS=Windows
+            ARCH=x64_86
+            TYPE=Binary
+            FILENAME=$NEW_BASE_NAME
+
+            echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+          fi
+
+      - name: Create Artifact Windows x86_64 Archive
+        run: |
+
+          NEW_BASE_NAME=pars-windows-x86_64.bin.zip
+          WINDOWS_x86_64_TEMP_PATH=dist/temp/$VERSION/pars-windows-x86_64-bin
+
+          mkdir -p $WINDOWS_x86_64_TEMP_PATH/bin
+          cp $WINDOWS_x86_64_OUTPUT_PATH "$WINDOWS_x86_64_TEMP_PATH/bin/"
+
+          mkdir -p $WINDOWS_x86_64_TEMP_PATH/meta
+          cp $WINDOWS_x86_64_OUTPUT_PATH_BASE/checksum.txt "$WINDOWS_x86_64_TEMP_PATH/meta/checksum.txt"
+
+          # Copy docs into the temp directory hierarchically
+          mkdir -p $WINDOWS_x86_64_TEMP_PATH/docs
+          cp -r $HTML_OUTPUT_DIR/ $WINDOWS_x86_64_TEMP_PATH/docs/
+
+
+          (cd $WINDOWS_x86_64_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          cp "$WINDOWS_x86_64_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          # Calculate the checksum and store it in a variable
+          WINDOWS_x86_64_PACKAGE_CHECKSUM=$(sha256sum "$WINDOWS_x86_64_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$WINDOWS_x86_64_PACKAGE_CHECKSUM" > $WINDOWS_x86_64_TEMP_PATH/checksum.txt
+
+          CHECKSUM=$(cat $WINDOWS_x86_64_TEMP_PATH/checksum.txt)
+          OS=Windows
+          ARCH=x64_86
+          TYPE=Archieve
+          FILENAME=$NEW_BASE_NAME
+
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      # Windows arm64
+      - name: Build Windows arm64 Binary
+        run: |
+          # Placeholder for the actual make command, replace as necessary
+          # make build.binary.windows.arm64 VERSION=$VERSION
+          WINDOWS_ARM64_OUTPUT_PATH_BASE=dist/$VERSION/windows/bin/arm64
+          WINDOWS_ARM64_OUTPUT_PATH=$WINDOWS_ARM64_OUTPUT_PATH_BASE/pars.exe
+          # Calculate the checksum and store it in a variable
+          WINDOWS_ARM64_CHECKSUM=$(sha256sum "$WINDOWS_ARM64_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $WINDOWS_ARM64_OUTPUT_PATH: $WINDOWS_ARM64_CHECKSUM"
+          # Append the checksum to checksums.txt
+          echo "$WINDOWS_ARM64_CHECKSUM" > $WINDOWS_ARM64_OUTPUT_PATH_BASE/checksum.txt
+          # Set environment variables for reuse in subsequent steps
+          echo "WINDOWS_ARM64_OUTPUT_PATH_BASE=$WINDOWS_ARM64_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "WINDOWS_ARM64_OUTPUT_PATH=$WINDOWS_ARM64_OUTPUT_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact Windows arm64 Binary
+        run: |
+          NEW_BASE_NAME=pars-windows-arm64.exe
+          cp "$WINDOWS_ARM64_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+          CHECKSUM=$(cat $WINDOWS_ARM64_OUTPUT_PATH_BASE/checksum.txt)
+          OS=Windows
+          ARCH=arm64
+          TYPE=Binary
+          FILENAME=$NEW_BASE_NAME
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Create Artifact Windows arm64 Archive
+        run: |
+          NEW_BASE_NAME=pars-windows-arm64.bin.zip
+          WINDOWS_ARM64_TEMP_PATH=dist/temp/$VERSION/pars-windows-arm64-bin
+          mkdir -p $WINDOWS_ARM64_TEMP_PATH/bin
+          cp $WINDOWS_ARM64_OUTPUT_PATH "$WINDOWS_ARM64_TEMP_PATH/bin/"
+          mkdir -p $WINDOWS_ARM64_TEMP_PATH/meta
+          cp $WINDOWS_ARM64_OUTPUT_PATH_BASE/checksum.txt "$WINDOWS_ARM64_TEMP_PATH/meta/checksum.txt"
+          mkdir -p $WINDOWS_ARM64_TEMP_PATH/docs
+          cp -r $HTML_OUTPUT_DIR/ $WINDOWS_ARM64_TEMP_PATH/docs/
+
+          (cd $WINDOWS_ARM64_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          cp "$WINDOWS_ARM64_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          # Calculate the checksum and store it in a variable
+          WINDOWS_ARM64_PACKAGE_CHECKSUM=$(sha256sum "$WINDOWS_ARM64_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+          echo "$WINDOWS_ARM64_PACKAGE_CHECKSUM" > $WINDOWS_ARM64_TEMP_PATH/checksum.txt
+          CHECKSUM=$(cat $WINDOWS_ARM64_TEMP_PATH/checksum.txt)
+          OS=Windows
+          ARCH=arm64
+          TYPE=Archive
+          FILENAME=$NEW_BASE_NAME
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      # Linux arm64
+      - name: Build Linux arm64 Binary
+        # Ensure the make command generates the output file with the correct path and name
+        run: |
+          # Placeholder for the actual make command, replace as necessary
+          # make build.binary.linux.arm64 VERSION=$VERSION
+          LINUX_ARM64_OUTPUT_PATH_BASE=dist/$VERSION/linux/bin/arm64
+          LINUX_ARM64_OUTPUT_PATH=$LINUX_ARM64_OUTPUT_PATH_BASE/pars
+          # Calculate the checksum and store it in a variable
+          LINUX_ARM64_CHECKSUM=$(sha256sum "$LINUX_ARM64_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $LINUX_ARM64_OUTPUT_PATH: $LINUX_ARM64_CHECKSUM"
+          # Append the checksum to checksums.txt
+          echo "$LINUX_ARM64_CHECKSUM" > $LINUX_ARM64_OUTPUT_PATH_BASE/checksum.txt
+          # Set environment variables for reuse in subsequent steps
+          echo "LINUX_ARM64_OUTPUT_PATH_BASE=$LINUX_ARM64_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "LINUX_ARM64_OUTPUT_PATH=$LINUX_ARM64_OUTPUT_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact Linux arm64 Binary
+        run: |
+          NEW_BASE_NAME=pars-linux-arm64.bin
+          ORIGINAL_FILE_NAME="pars"
+          BASENAME="$(basename "$LINUX_ARM64_OUTPUT_PATH")"
+          FILENAME="${BASENAME%.*}"
+          EXT="${BASENAME##*.}"
+          # Handle case where there is no extension
+          if [ "$EXT" = "$BASENAME" ]; then
+            EXT=""
+          fi
+          # Copy the file
+          cp "$LINUX_ARM64_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+          CHECKSUM=$(cat $LINUX_ARM64_OUTPUT_PATH_BASE/checksum.txt)
+          OS=Linux
+          ARCH=arm64
+          TYPE=Binary
+          FILENAME=$NEW_BASE_NAME
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Create Artifact Linux arm64 Archive
+        run: |
+          NEW_BASE_NAME=pars-linux-arm64.bin.zip
+          LINUX_ARM64_TEMP_PATH=dist/temp/$VERSION/pars-linux-arm64-bin
+          mkdir -p $LINUX_ARM64_TEMP_PATH/bin
+          cp $LINUX_ARM64_OUTPUT_PATH "$LINUX_ARM64_TEMP_PATH/bin/"
+          mkdir -p $LINUX_ARM64_TEMP_PATH/meta
+          cp $LINUX_ARM64_OUTPUT_PATH_BASE/checksum.txt "$LINUX_ARM64_TEMP_PATH/meta/checksum.txt"
+          mkdir -p $LINUX_ARM64_TEMP_PATH/docs
+          cp -r $HTML_OUTPUT_DIR/ $LINUX_ARM64_TEMP_PATH/docs/
+
+          (cd $LINUX_ARM64_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          cp "$LINUX_ARM64_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          # Calculate the checksum and store it in a variable
+          LINUX_ARM64_PACKAGE_CHECKSUM=$(sha256sum "$LINUX_ARM64_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+          echo "$LINUX_ARM64_PACKAGE_CHECKSUM" > $LINUX_ARM64_TEMP_PATH/checksum.txt
+          CHECKSUM=$(cat $LINUX_ARM64_TEMP_PATH/checksum.txt)
+          OS=Linux
+          ARCH=arm64
+          TYPE=Archive
+          FILENAME=$NEW_BASE_NAME
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Clean Environment
+        run: |
+          # Clean up temporary files
+          rm -rf temp/$VERSION
+
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: linux-amd64-artifacts
+      #     path: |
+      #       artifacts/pars-linux-amd64.deb.tar.gz
+
+      # # - name: Create markdown file with checksums
+      # #   run: |
+
+      # #     while read -r line; do
+      # #     done < checksums.txt
+
+      # #     echo "## CHECKSUMS" >> $CHANGELOG_PATH
+      # #     cat Checksums.md >> $CHANGELOG_PATH
+      # #     cp -r Checksums.md "$ARTIFACT_PATH/"
+      # #     rm checksums.txt
+
+      # - name: Commit changes on flow
+      #   run: |
+
+      #     git add $CHANGELOG_PATH
+      #     git commit -m "update changelog for the release $VERSION"
+
+      #     git add Checksums.md
+      #     git commit -m "update Checksums for the release $VERSION"
+
+      # git push
+
+      # - name: Upload checksums artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: checksums
+      #     path: Checksums.md
+
+      # - name: Create Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.prepare.outputs.TAG_NAME }}
+      #     release_name: Release for ${{ steps.prepare.outputs.BUILD_VERSION }}
+      #     body_path: $CHANGELOG_PATH
+      #     draft: false
+      #     prerelease: true
+
+      # Upload artifacts
+
+      # publish_release:
+      #   needs:
+      #     - upload-linux-amd64-artifacts
+      #   runs-on: ubuntu-latest
+
+      #   steps:
+      #     - name: Get Release ID
+      #       id: get_release
+      #       run: |
+      #         release_id=$(curl \
+      #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #           -H "Accept: application/vnd.github.v3+json" \
+      #           https://api.github.com/repos/${{ github.repository }}/releases/tags/v1.0.174 | jq -r '.id')
+      #         echo "release_id=$release_id" >> $GITHUB_ENV
+
+      #     - name: Publish Release (Remove Draft Status)
+      #       run: |
+      #         curl \
+      #           -X PATCH \
+      #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #           -H "Accept: application/vnd.github.v3+json" \
+      #           https://api.github.com/repos/${{ github.repository }}/releases/${{ env.release_id }} \
+      #           -d '{"draft": false}'
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

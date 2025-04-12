@@ -24,3 +24,16 @@ set(GOARCH_LIST_NETBSD "${GO_ARCH_X86_64}")
 # set(GOARCH_LIST_OPENBSD "${GO_ARCH_X86};${GO_ARCH_X86_64};${GO_ARCH_ARM};${GO_ARCH_ARM64}")
 set(GOARCH_LIST_OPENBSD "${GO_ARCH_X86_64};${GO_ARCH_ARM64}")
 
+<<<<<<< HEAD
+=======
+# Installer formats corresponding to each OS
+set(INSTALLER_FORMAT_WINDOWS "msi")
+
+# Package formats corresponding to each OS
+set(PACKAGE_FORMAT_WINDOWS "choco")
+set(PACKAGE_FORMAT_LINUX "deb;rpm")
+set(PACKAGE_FORMAT_MACOS "pkg")
+set(PACKAGE_FORMAT_FREEBSD "txz")
+set(PACKAGE_FORMAT_NETBSD "tgz")
+set(PACKAGE_FORMAT_OPENBSD "tgz")
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

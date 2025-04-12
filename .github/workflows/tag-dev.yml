@@ -1,0 +1,45 @@
+# https://chatgpt.com/c/67e52d1f-fd1c-8004-9693-e4c3cc115836
+
+name: Tag-Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tag-dev:
+    runs-on: ubuntu-latest
+
+    container:
+      image: ahmetsoner/gh-build-image:latest
+      options: --user builder
+    # grm flow phase dev --next gibi yapılar, previous, first, latest, next gibi versionları standart olarak tanımlamalı ve base üzerinden çözümlemeli. ayrıca grm flow'da commit vb yoksa yeni tag vermemeli uyarı dönmeli, --force ile belki tag oluşturmak sağlanabilir
+    # changelog üretildikten sonra github release note'a bu veri kullanılmalı, belki output olarak yine bağımsız bir dosya verilebilir ve sonra silinebilir işlem bittikten sonra yada CHANGELOG.md durur ve remote dev'e push edilir?
+    # commit yoksa yani değişilik yoksa durumu ele alınmalı? tag verilmeli mi yine de yoksa en son tag'a ait release'e mi yönlendirilmeli?
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Prepare version and tag
+        run: |
+          git config --global --add safe.directory $(pwd)
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+
+          chmod -R a+w .git
+
+
+          CHANNEL=dev
+
+            
+          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+          BUILD_VERSION=$(grm flow phase dev --next)
+
+          git checkout dev
+
+          git tag -a $BUILD_VERSION -m "$CHANNEL release $BUILD_VERSION"
+
+      # - name: Push tag to remote
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     git push origin $BUILD_VERSION
