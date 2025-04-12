@@ -1,9 +1,10 @@
 name: CI Build and Package Binaries
 
 on:
-  push:
-    tags:
-      - "v*.*.*-dev.*"
+  # push:
+  #   tags:
+  #     - "v*.*.*-dev.*"
+  workflow_dispatch:
 
 jobs:
   prepare:

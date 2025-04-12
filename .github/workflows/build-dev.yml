@@ -1,9 +1,10 @@
 name: Build-Dev
 
 on:
-  push:
-    tags:
-      - "v*.*.*-dev.*"
+  # push:
+  #   tags:
+  #     - "v*.*.*-dev.*"
+  workflow_dispatch:
 
 jobs:
   build-dev:
