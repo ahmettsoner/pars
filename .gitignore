@@ -13,6 +13,10 @@
 /build/**
 /config/**
 /workspace**/**
+<<<<<<< HEAD
+=======
+/CHANGELOG/**
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 /src/vendor/**
 /.venv/**
 /node_modules/**

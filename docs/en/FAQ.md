@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+🌐 [Main](./README.md)
+
+---
+
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 # Frequently Asked Questions (FAQ)
 
 ## General Questions
@@ -48,4 +55,8 @@ If you need additional assistance, feel free to contact [support contact info or
 
 ### Under what license is the project released?
 
+<<<<<<< HEAD
 The project is licensed under the [name of the license] License. See the LICENSE file for more details.
+=======
+The project is licensed under the [MIT] License. See the LICENSE file for more details.
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c

@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+🌐 [Main](./README.md)
+
+---
+
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
 # Installation Guide
 
 Follow these steps to install and set up the project on your local machine.
@@ -67,7 +74,10 @@ If you encounter issues:
 -   Ensure all prerequisites are installed correctly.
 -   Check the project's [FAQ.md](FAQ.md).
 -   Review known issues on GitHub.
+<<<<<<< HEAD
 
 ## License
 
 This project is licensed under the [name of the license] License - see the [LICENSE](LICENSE) file for details.
+=======
+>>>>>>> 9b114aa382da2ca860f21271f9780439b8929d5c
