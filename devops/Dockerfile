@@ -15,6 +15,13 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     npm install -g npm
 
 
+# Go 1.22 kurulumu
+RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz && \
+    rm go1.22.0.linux-amd64.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+
 RUN apt-get install -y zip
 RUN apt-get install -y unzip
 RUN apt-get install -y p7zip-full
@@ -35,13 +42,6 @@ RUN apt-get install -y rpm
 
 # Node modülleri kurulumu ve build
 RUN npm install -g git-release-manager@0.0.12
-
-
-# Go 1.22 kurulumu
-RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
-    tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz && \
-    rm go1.22.0.linux-amd64.tar.gz
-ENV PATH="/usr/local/go/bin:${PATH}"
 
 RUN useradd -m builder
 USER builder
