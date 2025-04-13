@@ -11,7 +11,7 @@ jobs:
 
     container:
       image: ahmetsoner/gh-build-image:latest
-      options: --user builder
+      options: --user root
     # grm flow phase dev --next gibi yapılar, previous, first, latest, next gibi versionları standart olarak tanımlamalı ve base üzerinden çözümlemeli. ayrıca grm flow'da commit vb yoksa yeni tag vermemeli uyarı dönmeli, --force ile belki tag oluşturmak sağlanabilir
     # changelog üretildikten sonra github release note'a bu veri kullanılmalı, belki output olarak yine bağımsız bir dosya verilebilir ve sonra silinebilir işlem bittikten sonra yada CHANGELOG.md durur ve remote dev'e push edilir?
     # commit yoksa yani değişilik yoksa durumu ele alınmalı? tag verilmeli mi yine de yoksa en son tag'a ait release'e mi yönlendirilmeli?

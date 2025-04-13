@@ -12,7 +12,7 @@ jobs:
 
     container:
       image: ahmetsoner/gh-build-image:latest
-      options: --user builder
+      options: --user root
     # burda checksum üretimi ve Checksums.md'ye tablo olarak eklenmesi, bu dosya içeriğin changelog.md'ye de eklenmesi
     # bu işle changelog'a değilde github release notes'a eklenecek
     # burda dikkat edilmesi gereken checksum be changelog'un tag'da bulunması ama dev'de bulunmaması olmalı. geçici ama tag için önemli dosyalar

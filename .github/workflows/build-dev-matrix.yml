@@ -19,7 +19,7 @@ jobs:
 
     container:
       image: ahmetsoner/gh-build-image:latest
-      options: --user builder
+      options: --user root
 
     steps:
       - name: Checkout source code
@@ -115,7 +115,7 @@ jobs:
 
     container:
       image: ahmetsoner/gh-build-image:latest
-      options: --user builder
+      options: --user root
 
     strategy:
       max-parallel: 1
