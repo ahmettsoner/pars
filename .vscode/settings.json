@@ -7,7 +7,6 @@
     "go.formatTool": "gofmt",
     "go.useLanguageServer": true,
     "[go]": {
-        "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
         }

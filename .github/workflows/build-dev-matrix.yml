@@ -39,7 +39,7 @@ jobs:
           CHANNEL=dev
 
             
-          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+          CURRENT_BASE_VERSION=$(grm flow pEhase dev --next --print=base)
           TAG_NAME=${GITHUB_REF#refs/tags/}
           BUILD_VERSION=$TAG_NAME
 
