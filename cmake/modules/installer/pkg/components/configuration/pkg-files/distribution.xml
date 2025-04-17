@@ -1,6 +1,6 @@
 file(WRITE ${CONFIG_FILE_PATH} "<?xml version='1.0' encoding='utf-8'?>\n")
 file(APPEND ${CONFIG_FILE_PATH} "<installer-gui-script minSpecVersion='1'>\n")
-file(APPEND ${CONFIG_FILE_PATH} "  <title>MyCLI Installer</title>\n")
+file(APPEND ${CONFIG_FILE_PATH} "  <title>${PROJECT_NAME}</title>\n")
 file(APPEND ${CONFIG_FILE_PATH} "  <background file='background.png' alignment='bottomleft'/>\n")
 file(APPEND ${CONFIG_FILE_PATH} "  <license file='license.txt'/>\n")
 file(APPEND ${CONFIG_FILE_PATH} "  <welcome file='welcome.html'/>\n")

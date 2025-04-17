@@ -230,51 +230,51 @@ jobs:
         if: ${{ matrix.binary && matrix.archive }}
         run: |
 
-          # # Daha sonra burda file check yapılarak matrix.binary'den bağımsız ilerletilebilir olması sağlanacak
-          # if [ -f "$BINARY_OUTPUT_PATH" ] && [ -f "$BINARY_CHECKSUM_PATH" ]; then
-          #     echo "Bin and Checksum files are present at specified paths."
-          # else
-          #     echo "Required files do not exist. Skipping archive step."
-          # fi
+          # Daha sonra burda file check yapılarak matrix.binary'den bağımsız ilerletilebilir olması sağlanacak
+          if [ -f "$BINARY_OUTPUT_PATH" ] && [ -f "$BINARY_CHECKSUM_PATH" ]; then
+              echo "Bin and Checksum files are present at specified paths."
+          else
+              echo "Required files do not exist. Skipping archive step."
+          fi
 
-          # NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.bin.${{ matrix.archive }}
-          # BINARY_TEMP_PATH=dist/temp/$VERSION/$APPNAME-${{matrix.os}}-${{matrix.arch}}-${{ matrix.archive }}
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.bin.${{ matrix.archive }}
+          BINARY_TEMP_PATH=dist/temp/$VERSION/$APPNAME-${{matrix.os}}-${{matrix.arch}}-${{ matrix.archive }}
 
-          # mkdir -p $BINARY_TEMP_PATH/bin
-          # cp $BINARY_OUTPUT_PATH "$BINARY_TEMP_PATH/bin/"
+          mkdir -p $BINARY_TEMP_PATH/bin
+          cp $BINARY_OUTPUT_PATH "$BINARY_TEMP_PATH/bin/"
 
-          # mkdir -p $BINARY_TEMP_PATH/meta
-          # cp $BINARY_OUTPUT_PATH_BASE/checksum.txt "$BINARY_TEMP_PATH/meta/checksum.txt"
+          mkdir -p $BINARY_TEMP_PATH/meta
+          cp $BINARY_OUTPUT_PATH_BASE/checksum.txt "$BINARY_TEMP_PATH/meta/checksum.txt"
 
-          # # Copy docs into the temp directory hierarchically
-          # mkdir -p $BINARY_TEMP_PATH/docs
-          # cp -r $HTML_OUTPUT_DIR/ $BINARY_TEMP_PATH/docs/
+          # Copy docs into the temp directory hierarchically
+          mkdir -p $BINARY_TEMP_PATH/docs
+          cp -r $HTML_OUTPUT_DIR/ $BINARY_TEMP_PATH/docs/
 
-          # if [ "${{ matrix.archive }}" = "zip" ]; then
-          #   (cd $BINARY_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
-          # elif [ "${{ matrix.archive }}" = "tar.gz" ]; then
-          #   (cd $BINARY_TEMP_PATH && tar -czf "$NEW_BASE_NAME" . --warning=no-file-changed || true )
-          #   if ! tar -tzf "$BINARY_TEMP_PATH/$NEW_BASE_NAME" > /dev/null; then
-          #     echo "Error with archive: Unable to list contents for validation."
-          #   fi
-          # elif [ "${{ matrix.archive }}" = "7z" ]; then
-          #   (cd $BINARY_TEMP_PATH && 7z a "$NEW_BASE_NAME" *)
-          # elif [ "${{ matrix.archive }}" = "rar" ]; then
-          #   ( cd $BINARY_TEMP_PATH && rar a $NEW_BASE_NAME * )
-          # fi
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            (cd $BINARY_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          elif [ "${{ matrix.archive }}" = "tar.gz" ]; then
+            (cd $BINARY_TEMP_PATH && tar -czf "$NEW_BASE_NAME" . --warning=no-file-changed || true )
+            if ! tar -tzf "$BINARY_TEMP_PATH/$NEW_BASE_NAME" > /dev/null; then
+              echo "Error with archive: Unable to list contents for validation."
+            fi
+          elif [ "${{ matrix.archive }}" = "7z" ]; then
+            (cd $BINARY_TEMP_PATH && 7z a "$NEW_BASE_NAME" *)
+          elif [ "${{ matrix.archive }}" = "rar" ]; then
+            ( cd $BINARY_TEMP_PATH && rar a $NEW_BASE_NAME * )
+          fi
 
-          # cp "$BINARY_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+          cp "$BINARY_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
 
-          # # Calculate the checksum and store it in a variable
-          # BINARY_PACKAGE_CHECKSUM=$(sha256sum "$BINARY_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+          # Calculate the checksum and store it in a variable
+          BINARY_PACKAGE_CHECKSUM=$(sha256sum "$BINARY_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
 
-          # # Append the checksum and filepath to checksums.txt
-          # echo "$BINARY_PACKAGE_CHECKSUM" > $BINARY_TEMP_PATH/checksum.txt
+          # Append the checksum and filepath to checksums.txt
+          echo "$BINARY_PACKAGE_CHECKSUM" > $BINARY_TEMP_PATH/checksum.txt
 
-          # CHECKSUM=$(cat $BINARY_TEMP_PATH/checksum.txt)
-          # OS=${{matrix.os}}
-          # ARCH=${{matrix.arch}}
-          # TYPE=Archieve
-          # FILENAME=$NEW_BASE_NAME
+          CHECKSUM=$(cat $BINARY_TEMP_PATH/checksum.txt)
+          OS=${{matrix.os}}
+          ARCH=${{matrix.arch}}
+          TYPE=Archieve
+          FILENAME=$NEW_BASE_NAME
 
-          # echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md

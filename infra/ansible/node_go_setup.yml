@@ -1,0 +1,29 @@
+- name: Ubuntu makinelerine Node.js ve Go kur
+  hosts: ubuntu_vms
+  become: yes
+
+  tasks:
+    - name: apt güncelle
+      apt:
+        update_cache: yes
+
+    - name: Node.js GPG anahtarı ekle
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: Node.js repo ekle
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_18.x {{ ansible_distribution_release|lower }} main"
+        state: present
+        filename: nodesource
+
+    - name: Node.js kur
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Go kur
+      apt:
+        name: golang-go
+        state: present

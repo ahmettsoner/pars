@@ -154,12 +154,21 @@ docs versioning iptal edilmeli
 
 Package Managers
 Windows Choco, MSI, MSIX, Scoop, Winget, cab yapılandırma
-Linux APT, YUM, DNF, Pacman, Zypper, Snap, Flatpak yapılandırma
-MacOS Homebrew, DMG, PKG, MacPorts, Fink yapılandırma
+Linux APT, YUM, DNF, Pacman, Zypper, Snap, Flatpak, LinuxBrew yapılandırma
+MacOS Homebrew, DMG, PacMan, MacPorts, Fink yapılandırma
 Platorms: pip, npm, npx, dotnet-tools etc
 Markets: Windows Store, Mac App Store
 asdf (https://asdf-vm.com/)?
 sfx, zip, 7z, tar.gz
+
+webi: https://webinstall.dev/
+pkgx: https://pkgx.dev/
+
+Source code:
+Build manual, build with make
+
+Manual:
+Install scripts
 
 Readme/Guides
 badge'ler tanımlanmalı
