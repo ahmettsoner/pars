@@ -1,6 +1,7 @@
 set(PROJECT_NAME "Pars")
 set(PROJECT_ORGANIZATION "Pars Dev Kit")
-set(PROJECT_MAINTAINER "Pars Dev Kit <parsdevkit@gmail.com>")
+set(PROJECT_MAINTAINER_NAME "Pars Dev Kit")
+set(PROJECT_MAINTAINER_EMAIL "parsdevkit@gmail.com")
 set(PROJECT_OWNER "Ahmet Soner <ahmettsoner@gmail.com>")
 set(PROJECT_HOMEPAGE "https://parsdevkit.net")
 set(PROJECT_ICON_URL "https://parsdevkit.net")

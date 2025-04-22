@@ -10,6 +10,10 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
 
+    container:
+      image: ahmetsoner/gh-build-image:latest
+      options: --user builder
+
     outputs:
       version: ${{ steps.version_and_tag.outputs.version }}
       base_version: ${{ steps.version_and_tag.outputs.base_version }}
@@ -17,29 +21,24 @@ jobs:
       artifact_path: ${{ steps.artifact.outputs.artifact_path }}
       html_output_dir: ${{ steps.docs.outputs.html_output_dir }}
 
-    container:
-      image: ahmetsoner/gh-build-image:latest
-      options: --user root
-
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Prepare version and tag
         id: version_and_tag
         run: |
 
-          git config --global --add safe.directory $(pwd)
           git config --global user.email "you@example.com"
           git config --global user.name "Your Name"
 
-          chmod -R a+w .git
 
 
           CHANNEL=dev
 
-            
-          CURRENT_BASE_VERSION=$(grm flow pEhase dev --next --print=base)
+          CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
           TAG_NAME=${GITHUB_REF#refs/tags/}
           BUILD_VERSION=$TAG_NAME
 
@@ -115,16 +114,16 @@ jobs:
 
     container:
       image: ahmetsoner/gh-build-image:latest
-      options: --user root
+      options: --user builder
 
     strategy:
       max-parallel: 1
       matrix:
         include:
-          - os: windows
-            arch: x86_64
-            binary: true
-            archive: zip
+          # - os: windows
+          #   arch: x86_64
+          #   binary: true
+          #   archive: zip
           # - os: windows
           #   arch: arm
           #   binary: true
@@ -134,9 +133,10 @@ jobs:
           #   binary: true
           #   archive: zip
           - os: linux
-            arch: arm64
+            arch: x86_64
             binary: true
-            archive: tar.gz
+            # archive: tar.gz
+            deb: true
           # - os: linux
           #   arch: arm64
           #   binary: true
@@ -152,6 +152,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: print
         run: |
@@ -279,3 +281,23 @@ jobs:
           # FILENAME=$NEW_BASE_NAME
 
           # echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Build Package
+        if: ${{ matrix.os == 'linux' && matrix.deb }}
+        run: |
+
+          PCKG_PATH=usr/bin/pars
+
+          PACKAGE_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/pkg/deb/${{matrix.arch}}/$APPNAME
+          PACKAGE_BINARY_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/$PCKG_PATH
+
+          mkdir -p $PACKAGE_BINARY_OUTPUT_PATH
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}$EXT
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          cp "$BINARY_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME" "$PACKAGE_BINARY_OUTPUT_PATH"
+
+          make build.deb.package.${{matrix.arch}}.configuration VERSION=$VERSION
+          make build.deb.package.${{matrix.arch}}.payload VERSION=$VERSION
+          make build.deb.package.${{matrix.arch}}.package VERSION=$VERSION

@@ -1,7 +1,7 @@
 file(WRITE ${CONFIG_FILE_PATH} "Source: ${APP_NAME}\n")
 file(APPEND ${CONFIG_FILE_PATH} "Section: utils\n")
 file(APPEND ${CONFIG_FILE_PATH} "Priority: optional\n")
-# file(APPEND ${CONFIG_FILE_PATH} "Maintainer: ${PROJECT_MAINTAINER}\n")
+file(APPEND ${CONFIG_FILE_PATH} "Maintainer: ${PROJECT_MAINTAINER_NAME} <${PROJECT_MAINTAINER_EMAIL}>\n")
 file(APPEND ${CONFIG_FILE_PATH} "Build-Depends: git, make, cmake, debhelper, dh-golang, golang-any \n")
 file(APPEND ${CONFIG_FILE_PATH} "Standards-Version: 4.5.0\n")
 file(APPEND ${CONFIG_FILE_PATH} "Homepage: ${PROJECT_HOMEPAGE}\n")
