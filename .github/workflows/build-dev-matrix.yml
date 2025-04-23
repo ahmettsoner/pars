@@ -55,10 +55,6 @@ jobs:
         run: |
           echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > $ARTIFACT_PATH/Checksums.md
           echo "|----------|--------------|-----------|-----------|------------------|" >> $ARTIFACT_PATH/Checksums.md
-          echo "-------"
-          echo $ARTIFACT_PATH
-          ls -la $ARTIFACT_PATH
-          echo "-------"
 
   build-matrix:
     runs-on: ubuntu-latest
