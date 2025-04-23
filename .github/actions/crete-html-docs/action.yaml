@@ -1,0 +1,45 @@
+# .github/actions/prepare-version/action.yml
+name: "Prepare Version and Tag"
+description: "Prepares version and tag information for the build process"
+
+inputs:
+  version:
+    description: "The release version"
+    required: true
+
+outputs:
+  html_output_dir:
+    description: "The html document output directory"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare Scripts
+      shell: bash
+      run: |
+        # Define the base directory for your HTML output
+        HTML_OUTPUT_DIR="temp/$VERSION/html_docs"
+
+        # Ensure the base output directory exists
+        mkdir -p "$HTML_OUTPUT_DIR"
+        cp -r docs/assets/ $HTML_OUTPUT_DIR
+
+        # Find all Markdown files and convert them to HTML
+        find ./docs -name '*.md' | while read -r FILE; do
+          # Get the relative path, stripping the leading ./docs/
+          RELATIVE_PATH="${FILE#./docs/}"
+          
+          # Change the extension from .md to .html
+          HTML_FILE="${RELATIVE_PATH%.md}.html"
+
+          # Create the directory structure in the output directory
+          mkdir -p "$HTML_OUTPUT_DIR/$(dirname "$RELATIVE_PATH")"
+
+          # Convert the Markdown file to HTML in the correct directory
+          pandoc --standalone --css="../assets/style/style.css" -o "$HTML_OUTPUT_DIR/$HTML_FILE" --lua-filter=scripts/change_links.lua "$FILE"
+        done
+
+        echo "HTML_OUTPUT_DIR=$HTML_OUTPUT_DIR" >> $GITHUB_ENV
+        echo "html_output_dir=$HTML_OUTPUT_DIR" >> $GITHUB_OUTPUT
+      env:
+        VERSION: ${{ inputs.version }}

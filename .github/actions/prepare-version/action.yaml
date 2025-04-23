@@ -1,0 +1,84 @@
+# .github/actions/prepare-version/action.yml
+name: "Prepare Version and Tag"
+description: "Prepares version and tag information for the build process"
+
+inputs:
+  channel:
+    description: "The release channel (e.g., dev, prod)"
+    required: true
+  branch:
+    description: "The dev branch (e.g., dev, development)"
+    required: true
+  email:
+    description: "Git user email for tagging"
+    required: true
+  name:
+    description: "Git username for tagging"
+    required: true
+
+outputs:
+  version:
+    description: "Full version to be used"
+  base_version:
+    description: "Base version number"
+  changelog_path:
+    description: "Path to the changelog file"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare Scripts
+      shell: bash
+      run: |
+        echo "Running prepare version script..."
+        set -e
+
+        # Configuring git with the provided credentials
+        git config --global user.email "$GITHUB_EMAIL"
+        git config --global user.name "$GITHUB_NAME"
+
+        # Assuming the CHANNEL is passed correctly
+        CURRENT_BASE_VERSION=$(grm flow phase "$CHANNEL" --next --print=base)
+        TAG_NAME=${GITHUB_REF#refs/tags/}
+        BUILD_VERSION=$TAG_NAME
+
+        # Checkout to the branch related to channel
+        git checkout "$BRANCH"
+
+        # Setting output variables
+        echo "version=$BUILD_VERSION" >> $GITHUB_OUTPUT
+        echo "base_version=$CURRENT_BASE_VERSION" >> $GITHUB_OUTPUT
+        echo "changelog_path=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_OUTPUT
+      env:
+        CHANNEL: ${{ inputs.channel }}
+        BRANCH: ${{ inputs.branch }}
+        GITHUB_EMAIL: ${{ inputs.email }}
+        GITHUB_NAME: ${{ inputs.name }}
+
+      # - name: Prepare version and tag
+      #   id: version_and_tag
+      #   run: |
+
+      #     # configure git
+      #     git config --global user.email "you@example.com"
+      #     git config --global user.name "Your Name"
+
+      #     # prepare version and channel
+      #     CHANNEL=dev
+      #     CURRENT_BASE_VERSION=$(grm flow phase dev --next --print=base)
+      #     TAG_NAME=${GITHUB_REF#refs/tags/}
+      #     BUILD_VERSION=$TAG_NAME
+
+      #     git checkout dev
+
+      #     make build.cmake.$BUILD_VERSION
+
+      #     mkdir -p CHANGELOG
+      #     echo "VERSION=$BUILD_VERSION" >> $GITHUB_ENV
+      #     echo "BASE_VERSION=$CURRENT_BASE_VERSION" >> $GITHUB_ENV
+      #     echo "CHANGELOG_PATH=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_ENV
+
+      #     # Correctly append outputs to the GITHUB_OUTPUT
+      #     echo "version=$BUILD_VERSION" >> $GITHUB_OUTPUT
+      #     echo "base_version=$CURRENT_BASE_VERSION" >> $GITHUB_OUTPUT
+      #     echo "changelog_path=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_OUTPUT

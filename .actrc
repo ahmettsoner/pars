@@ -1,3 +1,9 @@
--P ubuntu-latest=ahmetsoner/gh-build-image:latest
---pull=false
---bind
+-P ubuntu-latest=-self-hosted
+# -P ubuntu-latest=ahmetsoner/gh-build-image:latest
+# --bind
+# --pull=false
+# --container-architecture=linux/amd64
+# --action-offline-mode
+# --secret MY_SECRET=some-value
+# --secret-file my.secrets
+# act -e event.json
