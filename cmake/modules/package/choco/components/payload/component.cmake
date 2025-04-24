@@ -2,7 +2,7 @@ get_host_os(HOST_OS)
 set_os_ext(${HOST_OS} EXT)
 set(PAYLOADS 
     CMakeLists.txt
-    .config
+    # .config
     cmake
     Makefile
     src

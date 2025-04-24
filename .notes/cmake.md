@@ -1,3 +1,5 @@
+make package modulunde deb var bin için kullnaılıyor sdeb source pack için rpm bin, srpm source rpm için olacak şekilde `s` ler hazırlanmalı
+
 lp pass: qtgMNLTxwaM7
 
 gpt scribe api key

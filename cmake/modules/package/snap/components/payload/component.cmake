@@ -1,7 +1,7 @@
 get_host_os(HOST_OS)
 set(PAYLOADS 
     CMakeLists.txt
-    .config
+    # .config
     cmake
     Makefile
     src

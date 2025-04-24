@@ -48,6 +48,7 @@ runs:
         # Setting output variables
         echo "version=$BUILD_VERSION" >> $GITHUB_OUTPUT
         echo "base_version=$CURRENT_BASE_VERSION" >> $GITHUB_OUTPUT
+        mkdir CHANGELOG
         echo "changelog_path=CHANGELOG/$BUILD_VERSION.md" >> $GITHUB_OUTPUT
       env:
         CHANNEL: ${{ inputs.channel }}

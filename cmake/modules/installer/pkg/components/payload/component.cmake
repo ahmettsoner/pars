@@ -1,7 +1,7 @@
 set_os_ext(${OS_MACOS} EXT)
 set(PAYLOADS 
     CMakeLists.txt
-    .config
+    # .config
     cmake
     Makefile
     src
