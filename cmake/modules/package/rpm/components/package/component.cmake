@@ -10,7 +10,7 @@ foreach(RPMARCH ${ALL_RPMARCH_LIST_LINUX})
     add_custom_command(
         OUTPUT ${RPM_OUTPUT_DIR}
         COMMAND ${CMAKE_COMMAND} -E echo "Building source files."
-        COMMAND rpmbuild --define "_topdir ${RPM_PAYLOAD_DIR}" -ba ${RPM_CONF_DIR}/SPECS/config.spec
+        COMMAND rpmbuild --define "_topdir ${RPM_PAYLOAD_DIR}" -bb --target=${RPMARCH} ${RPM_CONF_DIR}/SPECS/config.spec
         # COMMAND rpmbuild --define "_topdir ${RPM_PAYLOAD_DIR}" -ba --target=aarch64 ${RPM_CONF_DIR}/SPECS/config.spec
         WORKING_DIRECTORY ${RPM_PAYLOAD_DIR}
         COMMENT "Building .rpm package"

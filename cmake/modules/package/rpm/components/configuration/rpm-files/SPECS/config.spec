@@ -18,10 +18,10 @@ file(APPEND ${CONFIG_FILE_PATH} "${PROJECT_DESCRIPTION}\n")
 file(APPEND ${CONFIG_FILE_PATH} "\n%prep\n")
 file(APPEND ${CONFIG_FILE_PATH} "tar -xzf %{SOURCE0} -C %{_builddir}\n")
 
-file(APPEND ${CONFIG_FILE_PATH} "\n%build\n")
-file(APPEND ${CONFIG_FILE_PATH} "make build.cmake.linux VERSION=${APP_TAG}\n")
-file(APPEND ${CONFIG_FILE_PATH} "make build.binary.linux.${APP_ARCH} OUTPUT=${LINUX_APP_BINARY_DIR}/${APP_NAME}\n")
-file(APPEND ${CONFIG_FILE_PATH} "echo %{buildroot}\n")
+# file(APPEND ${CONFIG_FILE_PATH} "\n%build\n")
+# file(APPEND ${CONFIG_FILE_PATH} "make build.cmake.linux VERSION=${APP_TAG}\n")
+# file(APPEND ${CONFIG_FILE_PATH} "make build.binary.linux.${APP_ARCH} OUTPUT=${LINUX_APP_BINARY_DIR}/${APP_NAME}\n")
+# file(APPEND ${CONFIG_FILE_PATH} "echo %{buildroot}\n")
 
 file(APPEND ${CONFIG_FILE_PATH} "\n%install\n")
 # Uncomment if specific build commands are needed
@@ -34,7 +34,8 @@ file(APPEND ${CONFIG_FILE_PATH} "mkdir -p %{buildroot}/${LINUX_APP_CACHE_DIR}\n"
 file(APPEND ${CONFIG_FILE_PATH} "mkdir -p %{buildroot}/${LINUX_APP_LIB_DIR}\n")
 file(APPEND ${CONFIG_FILE_PATH} "mkdir -p %{buildroot}/${LINUX_APP_SHARE_DIR}\n")
 file(APPEND ${CONFIG_FILE_PATH} "mkdir -p %{buildroot}/${LINUX_APP_DOCS_DIR}\n")
-file(APPEND ${CONFIG_FILE_PATH} "cp -r ${LINUX_APP_BINARY_DIR}/${APP_NAME} %{buildroot}/${LINUX_APP_BINARY_DIR}\n")
+file(APPEND ${CONFIG_FILE_PATH} "cp -r ${APP_NAME} %{buildroot}/${LINUX_APP_BINARY_DIR}\n")
+# file(APPEND ${CONFIG_FILE_PATH} "cp -r ${LINUX_APP_BINARY_DIR}/${APP_NAME} %{buildroot}/${LINUX_APP_BINARY_DIR}\n")
 
 file(APPEND ${CONFIG_FILE_PATH} "\n%files\n")
 file(APPEND ${CONFIG_FILE_PATH} "%{_bindir}/${APP_NAME}\n")

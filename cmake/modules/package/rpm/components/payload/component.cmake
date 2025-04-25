@@ -52,7 +52,7 @@ foreach(RPMARCH ${ALL_RPMARCH_LIST_LINUX})
         OUTPUT ${RPM_PAYLOAD_DIR}/SOURCES/${APP_NAME}-${VERSION_SEMVER}${ARCHIVE_TAR_GZ_EXT}
         COMMAND tar -czf ${RPM_PAYLOAD_DIR}/SOURCES/${APP_NAME}-${VERSION_SEMVER}${ARCHIVE_TAR_GZ_EXT} ./
         WORKING_DIRECTORY ${RPM_TEMP_DIR}
-        COMMENT "Creating archieve to ${RPM_PAYLOAD_DIR}"
+        COMMENT "Creating Archive to ${RPM_PAYLOAD_DIR}"
     )
 add_custom_target(build.rpm.package.${APP_ARCH}.payload DEPENDS check_env_for_rpm_packing ${RPM_TEMP_DIR} ${PAYLOAD_OUTPUTS} ${RPM_TEMP_DIR}/src/vendor ${RPM_PAYLOAD_DIR}/SOURCES/${APP_NAME}-${VERSION_SEMVER}${ARCHIVE_TAR_GZ_EXT})
 endforeach()

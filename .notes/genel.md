@@ -1137,7 +1137,7 @@ dökümanda hata mesajları ile ilgili detaylar paylaşılmalı
 
 https://github.com/goreleaser/goreleaser
 make commands:
-provision, build, bundle, archieve, package, upload, install, uninstall, backup, restore etc, artifacts, metadata, release, specs
+provision, build, bundle, archive, package, upload, install, uninstall, backup, restore etc, artifacts, metadata, release, specs
 Provision Project: kurulacak programların, package manager'ların, bağımlılıkların tnaımlandığı proje tipi. bu yapı ile makina kurulumlaının hızlandırılması ve iac olarak yönetilmesi mümkün olur (https://www.youtube.com/shorts/aStfdeJCQFk)
 
 ---

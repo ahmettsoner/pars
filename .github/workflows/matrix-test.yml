@@ -23,17 +23,17 @@ jobs:
                 type: source
 
     steps:
-      - name: Archieve tar.gz
+      - name: Archive tar.gz
         if: contains(matrix.binary.archives, 'tar.gz')
         run: |
           echo "Archive .tar.gz"
 
-      - name: Archieve tar.gz
+      - name: Archive tar.gz
         if: contains(matrix.binary.archives, '7z')
         run: |
           echo "Archive .7z"
 
-      - name: Archieve rar
+      - name: Archive rar
         if: contains(matrix.binary.archives, 'rar')
         run: |
           echo "Archive rar"
@@ -52,7 +52,7 @@ jobs:
             fi
           done
 
-      - name: Archieve tar.gz
+      - name: Archive tar.gz
         if: contains(matrix.packages.archives, 'tar.gz')
         run: |
           echo "Archive .tar.gz"

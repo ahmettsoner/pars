@@ -70,7 +70,7 @@ jobs:
       #     path: .
       # path: ${{ steps.artifact.outputs.artifact_path }}
 
-  build-matrix:
+  build-matrix2:
     runs-on: ubuntu-latest
     needs: prepare
 
@@ -78,22 +78,8 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - os: linux
-            arch: x86
-            targets: ["binary"]
-            binary: true
-            archive: tar.gz
-            deb: false
-            rpm: true
-          - os: linux
-            arch: x86_64
-            targets: ["binary"]
-            binary: true
-            archive: tar.gz
-            deb: false
-            rpm: true
           # - os: linux
-          #   arch: arm
+          #   arch: x86_64
           #   targets: ["binary"]
           #   binary: true
           #   archive: tar.gz
@@ -107,21 +93,28 @@ jobs:
             deb: false
             rpm: true
           # - os: windows
-          #   arch: x86
+          #   arch: x86_64
           #   binary: true
           #   archive: zip
-          - os: windows
-            arch: x86_64
-            binary: true
-            archive: zip
           # - os: windows
           #   arch: arm
           #   binary: true
           #   archive: zip
-          - os: windows
-            arch: arm64
-            binary: true
-            archive: zip
+          # - os: windows
+          #   arch: arm64
+          #   binary: true
+          #   archive: zip
+          # - os: linux
+          #   arch: arm64
+          #   binary: true
+          #   archive: rar
+          # - os: linux
+          #   arch: arm64
+          #   binary: true
+          #   archive: 7z
+          # - os: linux
+          #   arch: all
+          #   package: deb
 
     steps:
       # - name: Checkout source code
@@ -177,6 +170,7 @@ jobs:
         # dist/$VERSION/windows/bin/x86_64/pars.exe'ye çıktı vermesi gerekirken .exe ext'i eklemiyor?
         # make build.binary.linux.arm64 gibi işlemlerin output pathini gösteren bir komut daha olmalı
         run: |
+
           VERSION=${{ needs.prepare.outputs.version }}
           make build.binary.${{matrix.os}}.${{matrix.arch}} VERSION=$VERSION
 
@@ -294,7 +288,7 @@ jobs:
       - name: Build .rpm Package
         if: ${{ matrix.os == 'linux' && matrix.rpm }}
         run: |
-          BASE_VERSION=$(echo "${{ needs.prepare.outputs.base_version }}" | sed 's/^v//')
+          BASE_VERSION=echo ${{ needs.prepare.outputs.base_version }}" | sed 's/^v//'
 
           VERSION=${{ needs.prepare.outputs.version }}
           PCKG_PATH=usr/bin/pars
@@ -321,79 +315,97 @@ jobs:
           # # make build.rpm.package.${{matrix.arch}}.payload VERSION=$VERSION
           make build.rpm.package.${{matrix.arch}}.package VERSION=$VERSION
 
+          # # Calculate RPM package checksum
+          # RPM_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/RPMS/${{matrix.arch}}
+          # RPM_CHECKSUM_PATH=$RPM_OUTPUT_PATH_BASE/checksum.txt
 
-          RPM_ARCH=""
-          if [ "${{ matrix.arch }}" = "x86" ]; then
-            RPM_ARCH="i386"
-          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
-            RPM_ARCH="x86_64"
-          elif [ "${{ matrix.arch }}" = "arm" ]; then
-            RPM_ARCH="armv7hl"
-          elif [ "${{ matrix.arch }}" = "arm64" ]; then
-            RPM_ARCH="aarch64"
-          else
-            echo "Unsupported architecture: ${{ matrix.arch }}"
-            exit 1
-          fi
+          # # RPM_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/RPMS/${{matrix.arch}}/$APPNAME-$VERION.fc41.${{matrix.arch}}.rpm
+          # # Find the RPM file using wildcard and calculate the checksum
+          # for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.${{matrix.arch}}.rpm; do
+          #   RPM_OUTPUT_PATH="$file"
 
-          # Calculate RPM package checksum
-          RPM_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/RPMS/$RPM_ARCH
-          RPM_CHECKSUM_PATH=$RPM_OUTPUT_PATH_BASE/checksum.txt
+          #   # Calculate the checksum and store it in a variable
+          #   RPM_CHECKSUM=$(sha256sum "$RPM_OUTPUT_PATH" | awk '{print $1}')
+          #   echo "Checksum for $RPM_OUTPUT_PATH: $RPM_CHECKSUM"
 
-          for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.$RPM_ARCH.rpm; do
-            RPM_OUTPUT_PATH="$file"
+          #   # Append the checksum and filepath to checksums.txt
+          #   echo "$RPM_CHECKSUM" > "$RPM_CHECKSUM_PATH"
 
-            # Calculate the checksum and store it in a variable
-            RPM_CHECKSUM=$(sha256sum "$RPM_OUTPUT_PATH" | awk '{print $1}')
-            echo "Checksum for $RPM_OUTPUT_PATH: $RPM_CHECKSUM"
+          #   # Store paths and checksum in GitHub environment variables
+          #   echo "RPM_OUTPUT_PATH=$RPM_OUTPUT_PATH" >> $GITHUB_ENV
+          # done
 
-            # Append the checksum and filepath to checksums.txt
-            echo "$RPM_CHECKSUM" > "$RPM_CHECKSUM_PATH"
+          # echo "RPM_OUTPUT_PATH_BASE=$RPM_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          # echo "RPM_CHECKSUM_PATH=$RPM_CHECKSUM_PATH" >> $GITHUB_ENV
 
-            # Store paths and checksum in GitHub environment variables
-            echo "RPM_OUTPUT_PATH=$RPM_OUTPUT_PATH" >> $GITHUB_ENV
-          done
 
-          echo "RPM_OUTPUT_PATH_BASE=$RPM_OUTPUT_PATH_BASE" >> $GITHUB_ENV
-          echo "RPM_CHECKSUM_PATH=$RPM_CHECKSUM_PATH" >> $GITHUB_ENV
+
+
+          # # Calculate SRPM package checksum
+          # SRPM_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/SRPMS
+          # SRPM_CHECKSUM_PATH=$SRPM_OUTPUT_PATH_BASE/checksum.txt
+
+          # # Find the SRPM file using wildcard and calculate the checksum
+          # for file in $SRPM_OUTPUT_PATH_BASE/$APPNAME*.src.rpm; do
+          #   SRPM_OUTPUT_PATH="$file"
+
+          #   # Calculate the checksum and store it in a variable
+          #   SRPM_CHECKSUM=$(sha256sum "$SRPM_OUTPUT_PATH" | awk '{print $1}')
+          #   echo "Checksum for $SRPM_OUTPUT_PATH: $SRPM_CHECKSUM"
+
+          #   # Append the checksum and filepath to checksums.txt
+          #   echo "$SRPM_CHECKSUM" > "$SRPM_CHECKSUM_PATH"
+
+          #   # Store paths and checksum in GitHub environment variables
+          #   echo "SRPM_OUTPUT_PATH=$SRPM_OUTPUT_PATH" >> $GITHUB_ENV
+          # done
+
+          # echo "SRPM_OUTPUT_PATH_BASE=$SRPM_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          # echo "SRPM_CHECKSUM_PATH=$SRPM_CHECKSUM_PATH" >> $GITHUB_ENV
 
       - name: Create Artifact RPM
         if: ${{ matrix.os == 'linux' && matrix.rpm }}
         run: |
 
-          RPM_ARCH=""
-          if [ "${{ matrix.arch }}" = "x86" ]; then
-            RPM_ARCH="i386"
-          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
-            RPM_ARCH="x86_64"
-          elif [ "${{ matrix.arch }}" = "arm" ]; then
-            RPM_ARCH="armv7hl"
-          elif [ "${{ matrix.arch }}" = "arm64" ]; then
-            RPM_ARCH="aarch64"
-          else
-            echo "Unsupported architecture: ${{ matrix.arch }}"
-            exit 1
-          fi
+          # NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.rpm
+          # ORIGINAL_FILE_NAME="$APPNAME$EXT"
 
-          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.rpm
-          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+          # # Copy the file to its new location with the new name
 
-          # Copy the file to its new location with the new name
+          # for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.${{matrix.arch}}.rpm; do
+          #   RPM_OUTPUT_PATH="$file"
 
-          for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.$RPM_ARCH.rpm; do
-            RPM_OUTPUT_PATH="$file"
+          #   cp "$RPM_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+          # done
 
-            cp "$RPM_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
-          done
+          # CHECKSUM=$(cat "$RPM_OUTPUT_PATH_BASE/checksum.txt")
+          # OS=${{matrix.os}}
+          # ARCH=${{matrix.arch}}
+          # TYPE="RPM"
+          # FILENAME=$NEW_BASE_NAME
 
-          CHECKSUM=$(cat "$RPM_OUTPUT_PATH_BASE/checksum.txt")
-          OS=${{matrix.os}}
-          ARCH=${{ matrix.arch }}
-          TYPE="RPM"
-          FILENAME=$NEW_BASE_NAME
+          # # Add entry to Checksums.md
+          # echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
 
-          # Add entry to Checksums.md
-          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
+          # SNEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.src.rpm
+          # ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          # # Copy the file to its new location with the new name
+
+          # for file in $SRPM_OUTPUT_PATH_BASE/$APPNAME*.src.rpm; do
+          #   SRPM_OUTPUT_PATH="$file"
+
+          #   cp "$SRPM_OUTPUT_PATH" "$ARTIFACT_PATH/$SNEW_BASE_NAME"
+          # done
+
+          # CHECKSUM=$(cat "$SRPM_OUTPUT_PATH_BASE/checksum.txt")
+          # OS=${{matrix.os}}
+          # ARCH=${{matrix.arch}}
+          # TYPE="RPM (Source)"
+          # FILENAME=$SNEW_BASE_NAME
+
+          # # Add entry to Checksums.md
+          # echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
 
       - name: Save files for later jobs
         run: |

@@ -39,7 +39,17 @@ function(build GOOS GOARCH OUTPUT_PATH)
 
     map_goarch_to_arch(${GOARCH} APP_ARCH)
 
-    set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}")
+
+    if(${GOOS} STREQUAL ${OS_LINUX})
+        if(${GOARCH} STREQUAL ${GO_ARCH_X86} OR ${GOARCH} STREQUAL ${GO_ARCH_ARM})
+            set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}" "CGO_ENABLED=1")
+        else()
+            set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}")
+        endif()
+    else()
+        set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}")
+    endif()
+
 
 
     if(IS_LINUX)
@@ -111,7 +121,7 @@ endfunction()
 function(generate_build_output_path os path_variable)
     set_os_ext(${os} EXT)
 
-    set(${path_variable} "${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/${APP_NAME}${_ext}" PARENT_SCOPE)
+    set(${path_variable} "${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/${APP_NAME}${EXT}" PARENT_SCOPE)
 endfunction()
 function(generate_build_output_path_tmp os path_variable)
     set_os_ext(${os} EXT)
