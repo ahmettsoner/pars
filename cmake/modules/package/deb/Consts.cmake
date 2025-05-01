@@ -9,7 +9,6 @@ set(DEB_ARCH_ALL "any")
 set(DEB_SERIES jammy) #focal
 set(DEB_PACKAGE_EXT .deb)
 set(DEB_PACKAGE_NAME deb)
-set(DEB_PACK_TYPE "source")
 
 set(DPUT_CONFIG_PATH "${CMAKE_SOURCE_DIR}/.config/dput.cf")
 

@@ -20,7 +20,11 @@ file(APPEND ${CONFIG_FILE_PATH} "tar -xzf %{SOURCE0} -C %{_builddir}\n")
 
 # file(APPEND ${CONFIG_FILE_PATH} "\n%build\n")
 # file(APPEND ${CONFIG_FILE_PATH} "make build.cmake.linux VERSION=${APP_TAG}\n")
-# file(APPEND ${CONFIG_FILE_PATH} "make build.binary.linux.${APP_ARCH} OUTPUT=${LINUX_APP_BINARY_DIR}/${APP_NAME}\n")
+# if(${RPMARCH} STREQUAL ${RPM_ARCH_ALL})
+#   file(APPEND ${CONFIG_FILE_PATH} "make build.binary.linux OUTPUT=${LINUX_APP_BINARY_DIR}/${APP_NAME}\n")
+# else()
+#   file(APPEND ${CONFIG_FILE_PATH} "make build.binary.linux.${APP_ARCH} OUTPUT=${LINUX_APP_BINARY_DIR}/${APP_NAME}\n")
+# endif()
 # file(APPEND ${CONFIG_FILE_PATH} "echo %{buildroot}\n")
 
 file(APPEND ${CONFIG_FILE_PATH} "\n%install\n")

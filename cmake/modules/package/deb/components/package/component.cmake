@@ -6,11 +6,16 @@ foreach(DEBARCH ${ALL_DEBARCH_LIST_LINUX})
     set(DEB_PAYLOAD_DIR ${DEB_ROOT_DIR}/${APP_NAME})
     set(DEB_OUTPUT_DIR ${DEB_ROOT_DIR}/output)
 
+    if(${DEBARCH} STREQUAL ${DEB_ARCH_ALL})
+    #  cd ${DEB_PAYLOAD_DIR} && dpkg-buildpackage -S
+        set(DPKG_BUILD_CMD cd ${DEB_PAYLOAD_DIR} && dpkg-buildpackage -us -uc -b)
+    else()
+        set(DPKG_BUILD_CMD cd ${DEB_PAYLOAD_DIR} && dpkg-buildpackage -us -uc -b -d -a ${DEBARCH})
+    endif()
     add_custom_command(
         OUTPUT ${DEB_OUTPUT_DIR}
         COMMAND ${CMAKE_COMMAND} -E echo "Building source files."
-        # COMMAND cd ${DEB_PAYLOAD_DIR} && dpkg-buildpackage -S
-        COMMAND cd ${DEB_PAYLOAD_DIR} && dpkg-buildpackage -us -uc
+        COMMAND ${DPKG_BUILD_CMD}
         COMMAND mkdir -p ${DEB_OUTPUT_DIR}
         COMMAND mv ${DEB_ROOT_DIR}/${APP_NAME}_* ${DEB_OUTPUT_DIR}/
         COMMENT "Building .deb package"

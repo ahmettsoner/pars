@@ -58,13 +58,14 @@ jobs:
 
       - name: Save files for later jobs
         run: |
-          rm -rf /home/ahmetsoner/AS/prs/pars/temp/workflow
-          mkdir -p /home/ahmetsoner/AS/prs/pars/temp/workflow
-          cp -r ./* /home/ahmetsoner/AS/prs/pars/temp/workflow
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          rm -rf "$WORKFLOW_DIR"
+          mkdir -p "$WORKFLOW_DIR"
+          cp -r ./ "$WORKFLOW_DIR"
 
       # - name: Save files for later jobs
       #   id: artifact
-      #   uses: actions/upload-artifact@v3
+      #   uses: actions/upload-artifact@v3s
       #   with:
       #     name: build-artifacts
       #     path: .
@@ -78,50 +79,50 @@ jobs:
       max-parallel: 1
       matrix:
         include:
-          - os: linux
-            arch: x86
-            targets: ["binary"]
-            binary: true
-            archive: tar.gz
-            deb: false
-            rpm: true
+          # # - os: linux
+          # #   arch: x86
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
           - os: linux
             arch: x86_64
             targets: ["binary"]
             binary: true
             archive: tar.gz
-            deb: false
-            rpm: true
-          # - os: linux
-          #   arch: arm
-          #   targets: ["binary"]
-          #   binary: true
-          #   archive: tar.gz
-          #   deb: false
-          #   rpm: true
+            deb: true
+            rpm: false
+          # # - os: linux
+          # #   arch: arm
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
           - os: linux
             arch: arm64
             targets: ["binary"]
             binary: true
             archive: tar.gz
-            deb: false
-            rpm: true
+            deb: true
+            rpm: false
+          # # - os: windows
+          # #   arch: x86
+          # #   binary: true
+          # #   archive: zip
           # - os: windows
-          #   arch: x86
+          #   arch: x86_64
           #   binary: true
           #   archive: zip
-          - os: windows
-            arch: x86_64
-            binary: true
-            archive: zip
+          # # - os: windows
+          # #   arch: arm
+          # #   binary: true
+          # #   archive: zip
           # - os: windows
-          #   arch: arm
+          #   arch: arm64
           #   binary: true
           #   archive: zip
-          - os: windows
-            arch: arm64
-            binary: true
-            archive: zip
 
     steps:
       # - name: Checkout source code
@@ -131,7 +132,8 @@ jobs:
 
       - name: Retrieve files from prepare job
         run: |
-          cp -r /home/ahmetsoner/AS/prs/pars/temp/workflow/* ./
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          cp -r "$WORKFLOW_DIR"/. .
 
           rm -rf build
           VERSION=${{ needs.prepare.outputs.version }}
@@ -277,19 +279,90 @@ jobs:
           VERSION=${{ needs.prepare.outputs.version }}
           PCKG_PATH=usr/bin/pars
 
-          PACKAGE_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/pkg/deb/${{matrix.arch}}/$APPNAME
-          PACKAGE_BINARY_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/$PCKG_PATH
+          PACKAGE_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/pkg/deb/${{matrix.arch}}
+          PACKAGE_BINARY_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/$APPNAME/$PCKG_PATH
 
-          mkdir -p $PACKAGE_BINARY_OUTPUT_PATH
-
-          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}$EXT
+          NEW_BASE_NAME=$APPNAME-$BASE_VERSION.tar.gz
           ORIGINAL_FILE_NAME="$APPNAME$EXT"
 
-          cp "$BINARY_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME" "$PACKAGE_BINARY_OUTPUT_PATH"
+          mkdir -p $PACKAGE_BINARY_OUTPUT_PATH
+          # Copy the file to its new location with the new name
+          cp $BINARY_OUTPUT_PATH $PACKAGE_BINARY_OUTPUT_PATH/
 
+          export GO111MODULE=on
           make build.deb.package.${{matrix.arch}}.configuration VERSION=$VERSION
-          make build.deb.package.${{matrix.arch}}.payload VERSION=$VERSION
+          # make build.deb.package.${{matrix.arch}}.payload VERSION=$VERSION
           make build.deb.package.${{matrix.arch}}.package VERSION=$VERSION
+
+
+
+
+          DEB_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            DEB_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            DEB_ARCH="amd64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            DEB_ARCH="armhf"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            DEB_ARCH="arm64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          # Calculate DEB package checksum
+          DEB_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/output
+          DEB_CHECKSUM_PATH=$DEB_OUTPUT_PATH_BASE/checksum.txt
+
+          PLAIN_VERSION=$(echo "$VERSION" | sed 's/^v//')
+          DEB_OUTPUT_PATH=$DEB_OUTPUT_PATH_BASE/pars_${PLAIN_VERSION}_${DEB_ARCH}.deb
+
+          DEB_CHECKSUM=$(sha256sum "$DEB_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $DEB_OUTPUT_PATH: $DEB_CHECKSUM"
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$DEB_CHECKSUM" > "$DEB_CHECKSUM_PATH"
+
+          # Store paths and checksum in GitHub environment variables
+          echo "DEB_OUTPUT_PATH=$DEB_OUTPUT_PATH" >> $GITHUB_ENV
+
+          echo "DEB_OUTPUT_PATH_BASE=$DEB_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "DEB_CHECKSUM_PATH=$DEB_CHECKSUM_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact DEB
+        if: ${{ matrix.os == 'linux' && matrix.deb }}
+        run: |
+
+          DEB_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            DEB_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            DEB_ARCH="amd64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            DEB_ARCH="armhf"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            DEB_ARCH="arm64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.deb
+
+          # Copy the file to its new location with the new name
+
+
+          cp "$DEB_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          CHECKSUM=$(cat "$DEB_OUTPUT_PATH_BASE/checksum.txt")
+          OS=${{matrix.os}}
+          ARCH=${{ matrix.arch }}
+          TYPE="DEB"
+          FILENAME=$NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
 
       - name: Build .rpm Package
         if: ${{ matrix.os == 'linux' && matrix.rpm }}
@@ -397,6 +470,7 @@ jobs:
 
       - name: Save files for later jobs
         run: |
-          rm -rf /home/ahmetsoner/AS/prs/pars/temp/workflow
-          mkdir -p /home/ahmetsoner/AS/prs/pars/temp/workflow
-          cp -r ./* /home/ahmetsoner/AS/prs/pars/temp/workflow
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          rm -rf "$WORKFLOW_DIR"
+          mkdir -p "$WORKFLOW_DIR"
+          cp -r ./ "$WORKFLOW_DIR"
