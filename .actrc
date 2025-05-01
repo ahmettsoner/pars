@@ -1,3 +1,3 @@
--P ubuntu-latest=ahmetsoner/gh-build-image:latest
+-P windows-latest=-self-hosted
 #--pull=false
 --bind

@@ -1,9 +1,8 @@
 set(PACKAGES
-    gnome-keyring
     lxd
     cmake
     make
-    golang-any
+    mingw
 )
 set(COMMANDS
 )
