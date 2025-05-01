@@ -1,7 +1,7 @@
 -P ubuntu-latest=-self-hosted
-# -P ubuntu-latest=ahmetsoner/gh-build-image:latest
-# --bind
+# -P windows-latest=act-ssh-wrapper
 # --pull=false
+# --bind
 # --container-architecture=linux/amd64
 # --action-offline-mode
 # --secret MY_SECRET=some-value
