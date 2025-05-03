@@ -4,8 +4,13 @@ set(PACKAGES
     mingw
     dotnet-sdk
 )
+
+# dotnet tool install --global wix --version 6.0.0
+set(DOTNET_TOOLS
+    wix --version 6.0.0
+)
 set(COMMANDS
-    dotnet tool install --global wix --version 6.0.0
+    
 )
 
 

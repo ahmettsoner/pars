@@ -48,8 +48,8 @@ jobs:
           # #   archive: zip
           - os: windows
             arch: x86_64
-            # binary: true
-            # archive: zip
+            binary: true
+            archive: zip
             msi: true
           # # - os: windows
           # #   arch: arm
@@ -59,6 +59,7 @@ jobs:
           #   arch: arm64
           #   binary: true
           #   archive: zip
+          #   msi: true
 
     steps:
       - name: hello windows runner
@@ -212,29 +213,75 @@ jobs:
               }
           }
 
-          # # Dosya yolları
-          # $MSI_OUTPUT_PATH_BASE = Join-Path $env:PACKAGE_OUTPUT_PATH_BASE "output"
-          # $MSI_CHECKSUM_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "checksum.txt"
+          # Dosya yolları
+          $PACKAGE_OUTPUT_PATH_BASE = "dist/$VERSION/${{matrix.os}}/ins/msi/${{matrix.arch}}"
+          $MSI_OUTPUT_PATH_BASE = Join-Path $PACKAGE_OUTPUT_PATH_BASE "output"
+          $MSI_CHECKSUM_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "checksum.txt"
 
-          # # Versiyonun başındaki 'v' karakterini kaldır
-          # $PLAIN_VERSION = $env:VERSION -replace "^v", ""
+          # Versiyonun başındaki 'v' karakterini kaldır
+          $PLAIN_VERSION = $VERSION -replace "^v", ""
 
-          # # MSI dosya yolu
-          # $MSI_OUTPUT_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "pars_${PLAIN_VERSION}_${MSI_ARCH}.msi"
+          # MSI dosya yolu
+          $MSI_OUTPUT_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "$APPNAME.msi"
 
-          # # SHA256 checksum hesapla
-          # $MSI_CHECKSUM = Get-FileHash -Path $MSI_OUTPUT_PATH -Algorithm SHA256 | Select-Object -ExpandProperty Hash
-          # Write-Host "Checksum for $MSI_OUTPUT_PATH: $MSI_CHECKSUM"
+          # SHA256 checksum hesapla
+          $MSI_CHECKSUM = Get-FileHash -Path $MSI_OUTPUT_PATH -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+          Write-Host "Checksum for $MSI_OUTPUT_PATH\: $MSI_CHECKSUM"
 
-          # # Checksum'u dosyaya yaz
-          # $MSI_CHECKSUM | Out-File -Encoding ascii -FilePath $MSI_CHECKSUM_PATH
+          # Checksum'u dosyaya yaz
+          $MSI_CHECKSUM | Out-File -Encoding ascii -FilePath $MSI_CHECKSUM_PATH
 
-          # # GitHub ortam değişkenlerine yaz
-          # @(
-          #     "MSI_OUTPUT_PATH=$MSI_OUTPUT_PATH"
-          #     "MSI_OUTPUT_PATH_BASE=$MSI_OUTPUT_PATH_BASE"
-          #     "MSI_CHECKSUM_PATH=$MSI_CHECKSUM_PATH"
-          # ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          # GitHub ortam değişkenlerine yaz
+          @(
+              "MSI_OUTPUT_PATH=$MSI_OUTPUT_PATH"
+              "MSI_OUTPUT_PATH_BASE=$MSI_OUTPUT_PATH_BASE"
+              "MSI_CHECKSUM_PATH=$MSI_CHECKSUM_PATH"
+          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Create Artifact MSI
+        if: ${{ matrix.os == 'windows' && matrix.msi }}
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+          $ARTIFACT_PATH = "dist/artifacts/$VERSION"
+          
+          # MSI mimari belirleme
+          $Matrix_Arch = "${{matrix.arch}}"
+          $MSI_ARCH = ""
+          switch ($Matrix_Arch) {
+              "x86"     { $MSI_ARCH = "i386" }
+              "x86_64"  { $MSI_ARCH = "x86_64" }
+              "arm"     { $MSI_ARCH = "arm" }
+              "arm64"   { $MSI_ARCH = "aarch64" }
+              default {
+                  Write-Error "Unsupported architecture: $Matrix_Arch"
+                  exit 1
+              }
+          }
+
+
+          # Yeni dosya adı (örnek: pars-windows-x86_64.msi)
+          $NEW_BASE_NAME = "$APPNAME-${{matrix.os}}-${{matrix.arch}}.msi"
+
+          New-Item -ItemType Directory -Path $ARTIFACT_PATH -Force | Out-Null
+
+          # Hedef dizine kopyala
+          Copy-Item -Path $env:MSI_OUTPUT_PATH -Destination (Join-Path $ARTIFACT_PATH $NEW_BASE_NAME)
+
+          # Checksum oku
+          $CHECKSUM = Get-Content -Path (Join-Path $env:MSI_OUTPUT_PATH_BASE "checksum.txt") -Raw
+
+          # Girdi bilgileri
+          $OS = "${{matrix.os}}"
+          $ARCH = "${{matrix.arch}}"
+          $TYPE = "MSI"
+          $FILENAME = $NEW_BASE_NAME
+
+          # Checksums.md dosyasına ekle
+          $entry = "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |"
+          $entry | Out-File -Append -FilePath (Join-Path $ARTIFACT_PATH "Checksums.md") -Encoding utf8
+
 
       - name: Save files for later jobs
         run: |
