@@ -169,7 +169,7 @@ jobs:
           CHECKSUM=$(cat $WINDOWS_x86_64_TEMP_PATH/checksum.txt)
           OS=Windows
           ARCH=x64_86
-          TYPE=Archieve
+          TYPE=Archive
           FILENAME=$NEW_BASE_NAME
 
           echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md

@@ -1,50 +1,31 @@
 
-if(IS_REDHAT)
-    set(PACKAGES
-        rpm-build
-        rpmdevtools
-        cmake
-        make
-    )
-    set(COMMANDS
-    )
+set(PACKAGES
+    rpm-build
+    rpmdevtools
+    cmake
+    make
+)
+set(COMMANDS
+)
 
-    command_for_shell("bash" "${COMMANDS}" SHELL_GO_BUILD_COMMAND)
-
-
-    add_custom_command(
-        OUTPUT ./rpm-setup
-        COMMAND ${CMAKE_COMMAND} -E echo "Setting up the host machine for package build..."
-        COMMAND sudo dnf install -y ${PACKAGES}
-        COMMAND ${CMAKE_COMMAND} -E echo "Running additional setup commands..."
-        COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Installing Snapcraft and initializing LXD..."
-        COMMAND ${SHELL_GO_BUILD_COMMAND}
-        VERBATIM
-    )
-elseif(IS_DEBIAN)
-    set(PACKAGES
-        rpm
-        cmake
-        make
-    )
-    set(COMMANDS
-    )
-
-    command_for_shell("bash" "${COMMANDS}" SHELL_GO_BUILD_COMMAND)
-
-    add_custom_command(
-        OUTPUT ./rpm-setup
-        COMMAND ${CMAKE_COMMAND} -E echo "Setting up the host machine for package build on a Debian-based system..."
-        COMMAND sudo apt-get update
-        COMMAND sudo apt-get install -y ${PACKAGES}
-        COMMAND ${CMAKE_COMMAND} -E echo "Running additional setup commands..."
-        COMMAND ${SHELL_GO_BUILD_COMMAND}
-        VERBATIM
-    )
-endif()
+command_for_shell("bash" "${COMMANDS}" SHELL_GO_BUILD_COMMAND)
 
 
+add_custom_command(
+    OUTPUT ./rpm-setup
+    COMMAND ${CMAKE_COMMAND} -E echo "Setting up the host machine for package build..."
+    COMMAND sudo dnf install -y ${PACKAGES}
+    COMMAND ${CMAKE_COMMAND} -E echo "Running additional setup commands..."
+    COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Installing Snapcraft and initializing LXD..."
+    COMMAND ${SHELL_GO_BUILD_COMMAND}
+    VERBATIM
+)
 
 add_custom_target(build.rpm.package.setup
+    DEPENDS check_env_for_rpm_packing ./rpm-setup
+)
+
+
+add_custom_target(build.srpm.package.setup
     DEPENDS check_env_for_rpm_packing ./rpm-setup
 )

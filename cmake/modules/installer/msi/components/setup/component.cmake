@@ -1,11 +1,14 @@
 set(PACKAGES
-    lxd
     cmake
     make
     mingw
+    dotnet-sdk
 )
 set(COMMANDS
+    dotnet tool install --global wix --version 6.0.0
 )
+
+
 
 command_for_shell("bash" "${COMMANDS}" SHELL_GO_BUILD_COMMAND)
 

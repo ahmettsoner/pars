@@ -1,0 +1,67 @@
+# https://chatgpt.com/c/67e52d1f-fd1c-8004-9693-e4c3cc115836
+
+name: Tag-Dev
+
+on:
+  workflow_dispatch:
+
+jobs:
+  matrix-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          - os: linux
+            arch: x86_64
+            binary:
+              build: true
+              archives: ["tar.gz", "7z"]
+            packages:
+              - name: deb
+                type: source
+
+    steps:
+      - name: Archive tar.gz
+        if: contains(matrix.binary.archives, 'tar.gz')
+        run: |
+          echo "Archive .tar.gz"
+
+      - name: Archive tar.gz
+        if: contains(matrix.binary.archives, '7z')
+        run: |
+          echo "Archive .7z"
+
+      - name: Archive rar
+        if: contains(matrix.binary.archives, 'rar')
+        run: |
+          echo "Archive rar"
+
+      - name: Loop over archives
+        # if: $(echo '${{ toJson(matrix.binary.archives) }}' | jq 'length') > 1
+        run: |
+          count=$(echo '${{ toJson(matrix.binary.archives) }}' | jq 'length')
+          echo "Archive count: $count"
+          echo "Archives to process: ${{ toJson(matrix.binary.archives) }}"
+          for format in ${{ join(matrix.binary.archives, ' ') }}; do
+            echo "Processing $format archive..."
+            # Buraya arşiv formatına göre yapılacak işlemi yaz
+            if [ "$format" = "7z" ]; then
+              echo "Handling 7z format specifically..."
+            fi
+          done
+
+      - name: Archive tar.gz
+        if: contains(matrix.packages.archives, 'tar.gz')
+        run: |
+          echo "Archive .tar.gz"
+      - name: Check if deb package exists
+        run: |
+          has_deb=$(echo '${{ toJson(matrix.packages) }}' | jq '[.[] | select(.name=="deb")] | length')
+          if [ "$has_deb" -gt 0 ]; then
+            echo "deb package found"
+            # buraya deb ile ilgili adımları koy
+          else
+            echo "deb package not found"
+          fi

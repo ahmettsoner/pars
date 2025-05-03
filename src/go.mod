@@ -2,6 +2,8 @@ module pars
 
 go 1.22
 
+toolchain go1.24.2
+
 replace parsdevkit.net/operation/services => ./modules/services
 
 replace parsdevkit.net/common => ./modules/common

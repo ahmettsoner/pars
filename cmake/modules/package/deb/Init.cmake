@@ -4,15 +4,10 @@ if(IS_LINUX)
             OUTPUT check_env_for_deb_packing
             COMMAND ${CMAKE_COMMAND} -E echo "Linux and Debian detected. Running setup script."
         )
-    elseif(IS_REDHAT)
-        add_custom_command(
-            OUTPUT check_env_for_deb_packing
-            COMMAND ${CMAKE_COMMAND} -E echo "Linux and ReadHat detected. Running setup script."
-        )
     else()
         add_custom_command(
             OUTPUT check_env_for_deb_packing
-            COMMAND ${CMAKE_COMMAND} -E echo "Linux system detected, but not Debian nor ReadHat."
+            COMMAND ${CMAKE_COMMAND} -E echo "Linux system detected, but not Debian."
             COMMAND exit 1
         )
     endif()

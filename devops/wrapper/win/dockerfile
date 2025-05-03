@@ -1,0 +1,12 @@
+FROM ubuntu:22.04
+
+# SSH ve sshpass kurulumu
+RUN apt-get update && \
+    apt-get install -y openssh-client sshpass curl git bash && \
+    apt-get clean
+
+# Script'i kopyala
+COPY entrypoint.sh ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
+ENTRYPOINT ["./entrypoint.sh"]
