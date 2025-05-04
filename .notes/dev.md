@@ -16,8 +16,13 @@ build from tag
 act-gh push --job build-dev -e <(echo '{"ref": "refs/tags/v1.0.0-dev.40"}')
 ```
 
+<!-- enc -->
 ```
 act-gh --job translate --eventpath .notes/translate-event.json  -s T1BFTkFJX0FQSV9LRVk9c2stcHJvai1sV3lXNzY4ckhqNlZ5anR4OGt4U2hUNFdOM2VCN2QtelJJUDFvdGc3emE0Vk1lYU5jS0QxdzZSd2ItZG91NG5hRjlMT1lVd2U4OVQzQmxia0ZKSzV2eXBkOFByYnV6RmRYRWpTYk90eHNvVDd3SllpNG1IU0NsZThVTmhNVHRuQmxsamFMUS12R0xvQjRfUkNaV0N5bzdxLVoya0E=
+```
+
+```
+Z2hwX21TRkVCVmRqMWRmZFhCZElFdWJ3MWtYUk9WanVFWTFuRnVtSA==
 ```
 
 ```
