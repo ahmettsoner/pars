@@ -1,0 +1,57 @@
+name: Translate Documents on Change
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - docs/en/CODE_OF_CONDUCT.md
+      - docs/en/FAQ.md
+      - docs/en/INSTALLATION.md
+      - docs/en/README.md
+      - docs/en/TROUBLESHOOTING.md
+      - docs/en/USER_GUIDE.md
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install Requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai==0.28
+
+      - name: Get Changed Files
+        id: changed_files
+        run: |
+          echo "Fetching changed file paths..."
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- docs/en/*.md)
+          echo "Changed files: $CHANGED_FILES"
+          echo "::set-output name=files::$CHANGED_FILES"
+
+      - name: Translate Files
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          for file in ${{ steps.changed_files.outputs.files }}; do
+            echo "Translating $file..."
+            untranslated="${file#docs/en/}"
+            translated="docs/tr/${untranslated}"
+            python scripts/translate.py "$file" "$translated" "Turkish"
+          done
+
+      - name: Commit Changes
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git add docs/tr/*.md
+          git commit -m "Translate files to Turkish [skip ci]"
+          # git push
+        if: success() && steps.changed_files.outputs.files != ''

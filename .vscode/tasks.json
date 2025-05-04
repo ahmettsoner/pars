@@ -1,0 +1,67 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Pars",
+            "type": "shell",
+            "command": "go build",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/src",
+                "shell": {
+                    "executable": "${env:ComSpec}",
+                    "args": ["/d", "/c"]
+                }
+            },
+            "group": "build",
+            "problemMatcher": ["$go"],
+            "detail": "Build the Go application in the src directory."
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "go test ./...",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/tests",
+                "shell": {
+                    "executable": "${env:ComSpec}",
+                    "args": ["/d", "/c"]
+                }
+            },
+            "group": "test",
+            "problemMatcher": ["$go"],
+            "detail": "Run tests for the Go application in the tests directory."
+        },
+        {
+            "label": "Format src",
+            "type": "shell",
+            "command": "gofmt -w .",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/src",
+                "shell": {
+                    "executable": "${env:ComSpec}",
+                    "args": ["/d", "/c"]
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Format Go files in the src directory."
+        },
+        {
+            "label": "Format tests",
+            "type": "shell",
+            "command": "gofmt -w .",
+            "args": [],
+            "options": {
+                "cwd": "${workspaceFolder}/tests",
+                "shell": {
+                    "executable": "${env:ComSpec}",
+                    "args": ["/d", "/c"]
+                }
+            },
+            "problemMatcher": [],
+            "detail": "Format Go files in the tests directory."
+        }
+    ]
+}

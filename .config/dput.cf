@@ -1,0 +1,5 @@
+[launchpad]
+fqdn = ppa.launchpad.net
+method = ftp
+incoming = ~parsdevkit/pars/
+login = parsdevkit

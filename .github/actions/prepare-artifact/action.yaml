@@ -1,0 +1,27 @@
+# .github/actions/prepare-version/action.yml
+name: "Prepare Version and Tag"
+description: "Prepares version and tag information for the build process"
+
+inputs:
+  version:
+    description: "The release version"
+    required: true
+
+outputs:
+  artifact_path:
+    description: "The release artifact path"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Prepare Scripts
+      shell: bash
+      run: |
+        ARTIFACT_PATH=dist/artifacts/$VERSION
+        mkdir -p $ARTIFACT_PATH
+
+
+        echo "ARTIFACT_PATH=$ARTIFACT_PATH" >> $GITHUB_ENV
+        echo "artifact_path=$ARTIFACT_PATH" >> $GITHUB_OUTPUT
+      env:
+        VERSION: ${{ inputs.version }}

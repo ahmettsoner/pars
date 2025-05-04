@@ -1,0 +1,10 @@
+function(add_subdirectories_from_directory)
+    file(GLOB directories RELATIVE ${CMAKE_CURRENT_LIST_DIR} ${CMAKE_CURRENT_LIST_DIR}/*)
+
+    foreach(directory ${directories})
+        if(IS_DIRECTORY ${directory})
+            message(STATUS "Adding subdirectory: ${directory}")
+            add_subdirectory(${directory})
+        endif()
+    endforeach()
+endfunction()

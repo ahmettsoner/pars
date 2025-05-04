@@ -1,0 +1,95 @@
+Type: Resource
+Kind: Object
+Name:  Patient
+Metadata:
+Specifications:
+  Name: Patient
+  Set: PatientService
+  Layers:
+  - CQRS:Command
+  - CQRS:Query
+  - DTO
+  - Database:Entity
+  - Database:Repository:Contract
+  - Events:Event
+  - Persistence:Database:Repository:Concrete
+  - CQRS:Command:Handler
+  - CQRS:Query:Handler
+  - MVC:CQRS:Command:Controller
+  - MVC:CQRS:Query:Controller
+  Attributes:
+  - Name: ID
+    Type: int
+    Labels:
+    - ID
+    Properties:
+      Key: true
+      Unique: true
+  - Name: Name
+    Type: string
+    Labels:
+    - create
+    - update
+    - filter
+  - Name: Lastname
+    Type: string
+    Labels:
+    - create
+    - update
+    - filter
+  - Name: Age
+    Type: int
+    Labels:
+    - create
+    - update
+  - Name: DoB
+    Type: DateTime
+  - Name: Address
+    Type: String
+    Labels:
+    - create
+---
+Type: Resource
+Kind: Object
+Name:  Address
+Metadata:
+Specifications:
+  Name: Address
+  Set: PatientService
+  Layers:
+  - CQRS:Command
+  - CQRS:Query
+  - DTO
+  - Database:Entity
+  - Database:Repository:Contract
+  - Events:Event
+  - Persistence:Database:Repository:Concrete
+  - CQRS:Command:Handler
+  - CQRS:Query:Handler
+  - MVC:CQRS:Command:Controller
+  - MVC:CQRS:Query:Controller
+  Attributes:
+  - Name: ID
+    Type: int
+    Labels:
+    - ID
+    Properties:
+      Key: true
+      Unique: true
+  - Name: Name
+    Type: string
+    Labels:
+    - create
+    - update
+    - filter
+  - Name: Street
+    Type: string
+    Labels:
+    - create
+    - update
+    - filter
+  - Name: Description
+    Type: string
+    Labels:
+    - create
+    - update

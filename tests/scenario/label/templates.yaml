@@ -1,0 +1,27 @@
+Type: Template
+Kind: Code
+Name: PatientCreateCommand
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientCreateCommand
+  Output: "{{.Resource.Name}}CreateCommand.cs"
+  Set: PatientService
+  Path: Patient
+  Package: Commands/Patient
+  Layers:
+  - CQRS:Command
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}CreateCommand
+      {
+      {{- range $a := .Resource.Attributes -}}
+        {{- range $l := $a.Labels -}}
+            {{- if eq $l.Key "create" }}
+        {{$a.Type}} {{$a.Name}} { set; get; }
+            {{- end }}
+        {{- end -}}
+      {{ end }}
+      }

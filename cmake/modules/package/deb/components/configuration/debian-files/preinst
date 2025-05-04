@@ -1,0 +1,3 @@
+file(WRITE ${CONFIG_FILE_PATH} "#!/bin/sh\nset -e\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Running pre-installation tasks...'\n")
+file(APPEND ${CONFIG_FILE_PATH} "echo 'Pre-installation tasks completed.'\n")

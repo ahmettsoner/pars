@@ -1,0 +1,7 @@
+function(add_module module_dir)
+    if(EXISTS ${module_dir} AND IS_DIRECTORY ${module_dir})
+        add_subdirectory(${module_dir})
+    else()
+        message(FATAL_ERROR "Error: Module directory ${module_dir} not found or is not a directory.")
+    endif()
+endfunction()

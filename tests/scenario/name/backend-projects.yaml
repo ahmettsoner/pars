@@ -1,0 +1,24 @@
+Type: Project
+Kind: Application
+Name:  Application
+Metadata:
+  Tags:
+Specifications:
+  Name: Application
+  Set: PatientService
+  Platform: dotnet
+  ProjectType: library
+  Package: Patient/Service/Application
+  Configuration:
+    Layers:
+    - Name: CQRS:Command
+      Path: Commands
+      Package: Commands
+    - Name: CQRS:Query
+      Path: Queries
+      Package: Queries
+    - Name: DTO
+      Path: Dtos
+      Package: Dtos
+    Dependencies:
+    - MediatR@12.2.0

@@ -1,0 +1,27 @@
+Type: Group
+Name:  PatientService.Core
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientService.Core
+  Path: PatientService.Core
+
+---
+
+Type: Group
+Name:  PatientService.Query
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientService.Query
+  Path: PatientService.Query
+
+---
+
+Type: Group
+Name:  PatientService.Command
+Metadata:
+  Tags:
+Specifications:
+  Name: PatientService.Command
+  Path: PatientService.Command
