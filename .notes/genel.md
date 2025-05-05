@@ -690,7 +690,7 @@ https://chatgpt.com/c/2e7de4f6-500b-4ac7-8389-bc2d58b042ce
 https://chatgpt.com/c/171c93a1-af68-40a5-ac1b-09e876580a19
 
     OS				Architectures
-    Linux 			386, amd64, arm, arm64 (Ubuntu, Centos, Debian, Fedora, openSuse)
+    Linux 			386, amd64, arm, arm64 (Ubuntu, Centos, Debian, Fedora)
     Darwin 			386, amd64, arm, arm64
     Windows 		386, amd64
     Solaris 		amd64
@@ -1244,3 +1244,15 @@ tools:
     -   json, class, table, sql vs oluşturma
 
 api: https://github.com/nette/php-generator olduğu gibi pars eski
+
+SDK API sunulması
+Farklı diller ve platformlar için API hizmeti sağlanması (server sonrası olabllir)
+
+```php
+$method = $class->addMethod('count')
+	->addComment('Count it.')
+	->setFinal()
+	->setProtected()
+	->setReturnType('?int') // return types for methods
+	->setBody('return count($items ?: $this->items);');
+```

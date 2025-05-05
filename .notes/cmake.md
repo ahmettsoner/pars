@@ -4,7 +4,7 @@ lp pass: qtgMNLTxwaM7
 
 gpt scribe api key
 
-<!-- dec -->
+<!-- enc -->
 
 c2stc3ZjYWNjdC0teWRRaEhOQmd5SWlEOGE2RF9sdWRDbXJZVFZ5SnhRTlhQcFlxYTVxNUxRbHJmc0xISGluTTlsOWtjVjRfU1QzQmxia0ZKV2lGY3pTWlRRTWlEb2lVS1NuMU1xVzdrR3ZMVVcyU2xwekNsNjR0M0RZWlZOMjZ1MDRobkw2OVdiR3hVWUE=
 
