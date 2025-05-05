@@ -1,0 +1,21 @@
+using Microsoft.AspNetCore.Mvc;
+
+namespace {{ .Class.Package }}.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class {{ .Class.Name }} : ControllerBase
+{
+    private readonly ILogger<{{ .Class.Name }}> _logger;
+
+    public {{ .Class.Name }}(ILogger<{{ .Class.Name }}> logger)
+    {
+        _logger = logger;
+    }
+
+    [HttpGet]
+    public string Get()
+    {
+        return "Pars wishes you success :)";
+    }
+}

@@ -1,0 +1,10 @@
+
+function(var_list_to_cmake_args OUTPUT_VAR)
+    set(result)
+    foreach(VAR IN LISTS ARGN)
+        if(DEFINED ${VAR})
+            list(APPEND result "-D${VAR}=${${VAR}} ")
+        endif()
+    endforeach()
+    set(${OUTPUT_VAR} "${result}" PARENT_SCOPE)
+endfunction()

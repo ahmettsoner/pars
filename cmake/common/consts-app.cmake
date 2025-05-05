@@ -1,0 +1,2 @@
+set(APP_NAME pars)
+set(SOURCE_ROOT_DIR ${CMAKE_SOURCE_DIR})

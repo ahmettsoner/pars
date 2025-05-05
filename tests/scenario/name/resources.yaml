@@ -1,0 +1,26 @@
+Type: Resource
+Kind: Object
+Name:  Patient
+Metadata:
+Specifications:
+  Name: Patient
+  Set: PatientService
+  Layers:
+  - CQRS:Command
+  - CQRS:Query
+  - DTO
+  - Database:Entity
+  - Database:Repository:Contract
+  - Events:Event
+  - Persistence:Database:Repository:Concrete
+  - CQRS:Command:Handler
+  - CQRS:Query:Handler
+  - MVC:CQRS:Command:Controller
+  - MVC:CQRS:Query:Controller
+  Attributes:
+  - Name: Name
+    Type: string
+  - Name: Lastname
+    Type: string
+  - Name: Age
+    Type: int

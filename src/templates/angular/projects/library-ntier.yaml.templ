@@ -1,0 +1,67 @@
+Type: Project
+Kind: Application
+Name: {{ .Name }}.Core
+Metadata:
+  Tags:
+Specifications::
+  Name: {{ .Name }}.Core
+  Workspace: {{ .Workspace }}
+  Group: {{ .Group }}
+  Set: {{ .Set }}
+  Package: {{ .Package }}.Core
+  Path: {{ .Path }}.Core
+  ProjectType: Library
+  
+  Platform: 
+    Type: angular
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+
+
+  Configuration:
+    Layers:
+    - core
+    Options:
+
+    Dependencies:
+    References:
+
+
+---
+Type: Project
+Kind: Application
+Name: {{ .Name }}.Service
+Metadata:
+  Tags:
+Specifications::
+  Platform: 
+    Type: angular
+    Version: {{ .PlatformVersion }}
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+
+  Definition:
+    Name: {{ .Name }}.Service
+    Workspace: {{ .Workspace }}
+    Group: {{ .Group }}
+    Set: {{ .Set }}
+    Package: {{ .Package }}.Service
+    Path: {{ .Path }}.Service
+
+  Schema:
+    ProjectType: Library
+
+  Configuration:
+    Layers:
+    - service
+    - business:model
+    Options:
+
+    Dependencies:
+    References:
+    - Name: {{ .Name }}.Core
+      Group:  {{ .Group }}
+      Workspace: {{ .Workspace }}

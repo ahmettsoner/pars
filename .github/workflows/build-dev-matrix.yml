@@ -1,0 +1,819 @@
+name: CI Build and Package Binaries
+
+on:
+  # push:
+  #   tags:
+  #     - "v*.*.*-dev.*"
+  workflow_dispatch:
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version_and_tag.outputs.version }}
+      base_version: ${{ steps.version_and_tag.outputs.base_version }}
+      changelog_path: ${{ steps.version_and_tag.outputs.changelog_path }}
+      artifact_path: ${{ steps.artifact.outputs.artifact_path }}
+      html_output_dir: ${{ steps.docs.outputs.html_output_dir }}
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Prepare Version and Tag
+        id: version_and_tag
+        uses: ./.github/actions/prepare-version
+        with:
+          channel: "dev"
+          branch: "dev"
+          email: "you@example.com"
+          name: "Your Name"
+
+      - name: Prepare artifact
+        id: artifact
+        uses: ./.github/actions/prepare-artifact
+        with:
+          version: ${{ steps.version_and_tag.outputs.version }}
+
+      - name: Convert Markdown Docs to HTML Docs
+        id: docs
+        uses: ./.github/actions/crete-html-docs
+        with:
+          version: ${{ steps.version_and_tag.outputs.version }}
+
+      - name: Generate release notes
+        run: |
+          VERSION=${{ steps.version_and_tag.outputs.version }}
+          BASE_VERSION=${{ steps.version_and_tag.outputs.base_version }}
+          CHANGELOG_PATH=${{ steps.version_and_tag.outputs.changelog_path }}
+          grm changelog generate --from $BASE_VERSION-dev.1 --to $VERSION --environment dev --output $CHANGELOG_PATH
+
+      - name: Create markdown file for checksums
+        run: |
+          echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > $ARTIFACT_PATH/Checksums.md
+          echo "|----------|--------------|-----------|-----------|------------------|" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Save files for later jobs
+        run: |
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          rm -rf "$WORKFLOW_DIR"
+          mkdir -p "$WORKFLOW_DIR"
+          cp -r ./ "$WORKFLOW_DIR"
+
+      # - name: Save files for later jobs
+      #   id: artifact
+      #   uses: actions/upload-artifact@v3s
+      #   with:
+      #     name: build-artifacts
+      #     path: .
+      # path: ${{ steps.artifact.outputs.artifact_path }}
+
+  build-matrix-linux:
+    runs-on: ubuntu-latest
+    needs: prepare
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          # # - os: linux
+          # #   arch: x86
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
+          - os: linux
+            arch: x86_64
+            targets: ["binary"]
+            binary: true
+            archive: tar.gz
+            deb: false
+            rpm: true
+          # # - os: linux
+          # #   arch: arm
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
+          - os: linux
+            arch: arm64
+            targets: ["binary"]
+            binary: true
+            archive: tar.gz
+            deb: false
+            rpm: true
+          # # - os: windows
+          # #   arch: x86
+          # #   binary: true
+          # #   archive: zip
+          # - os: windows
+          #   arch: x86_64
+          #   binary: true
+          #   archive: zip
+          # # - os: windows
+          # #   arch: arm
+          # #   binary: true
+          # #   archive: zip
+          # - os: windows
+          #   arch: arm64
+          #   binary: true
+          #   archive: zip
+
+    steps:
+      # - name: Checkout source code
+      #   uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
+
+      - name: Retrieve files from prepare job
+        run: |
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          cp -r "$WORKFLOW_DIR"/. .
+
+          rm -rf build
+          VERSION=${{ needs.prepare.outputs.version }}
+          make build.cmake.$VERSION
+      # - name: Retrieve files from prepare job
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: build-artifacts
+      #     path: . # This means it downloads to the root of your working directory
+
+      - name: print
+        run: |
+
+          echo "Version: ${{ needs.prepare.outputs.version }}"
+          echo "Base Version: ${{ needs.prepare.outputs.base_version }}"
+          echo "Changelog: ${{ needs.prepare.outputs.changelog_path }}"
+          echo "Artifact Path: ${{ needs.prepare.outputs.artifact_path }}"
+
+          echo "APPNAME=pars" >> $GITHUB_ENV
+
+
+          echo "VERSION=${{ needs.prepare.outputs.version }}" >> $GITHUB_ENV
+          echo "BASE_VERSION=${{ needs.prepare.outputs.base_version }}" >> $GITHUB_ENV
+          echo "CHANGELOG_PATH=${{ needs.prepare.outputs.changelog_path }}" >> $GITHUB_ENV
+          echo "ARTIFACT_PATH=${{ needs.prepare.outputs.artifact_path }}" >> $GITHUB_ENV
+          echo "HTML_OUTPUT_DIR=${{ needs.prepare.outputs.html_output_dir }}" >> $GITHUB_ENV
+
+          echo "Using OS: ${{ matrix.os }}"
+          echo "Architecture: ${{ matrix.arch }}"
+          echo "Artifact Binary: ${{ matrix.binary }}"
+          echo "Artifact Archive: ${{ matrix.archive }}"
+
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            EXT=".exe"
+          else
+            EXT=""
+          fi
+
+          echo "EXT=$EXT" >> $GITHUB_ENV
+
+      - name: Build Binary
+        if: matrix.binary
+        # dist/$VERSION/windows/bin/x86_64/pars.exe'ye çıktı vermesi gerekirken .exe ext'i eklemiyor?
+        # make build.binary.linux.arm64 gibi işlemlerin output pathini gösteren bir komut daha olmalı
+        run: |
+          VERSION=${{ needs.prepare.outputs.version }}
+          make build.binary.${{matrix.os}}.${{matrix.arch}} VERSION=$VERSION
+
+          BINARY_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/bin/${{matrix.arch}}
+          BINARY_OUTPUT_PATH=$BINARY_OUTPUT_PATH_BASE/$APPNAME$EXT
+          BINARY_CHECKSUM_PATH=$BINARY_OUTPUT_PATH_BASE/checksum.txt
+
+          # Calculate the checksum and store it in a variable
+          BINARY_CHECKSUM=$(sha256sum "$BINARY_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $BINARY_OUTPUT_PATH: $BINARY_CHECKSUM"
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$BINARY_CHECKSUM" > $BINARY_OUTPUT_PATH_BASE/checksum.txt
+
+
+
+          echo "BINARY_OUTPUT_PATH_BASE=$BINARY_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "BINARY_OUTPUT_PATH=$BINARY_OUTPUT_PATH" >> $GITHUB_ENV
+          echo "BINARY_CHECKSUM_PATH=$BINARY_CHECKSUM_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact Binary
+        if: matrix.binary
+        run: |
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}$EXT
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          # Copy the file to its new location with the new name
+          cp "$BINARY_OUTPUT_PATH_BASE/$ORIGINAL_FILE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          CHECKSUM=$(cat "$BINARY_OUTPUT_PATH_BASE/checksum.txt")
+          OS=${{matrix.os}}
+          ARCH=${{matrix.arch}}
+          TYPE="Binary"
+          FILENAME=$NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
+
+      - name: Create Artifact Archive
+        if: ${{ matrix.binary && matrix.archive }}
+        run: |
+          VERSION=${{ needs.prepare.outputs.version }}
+
+
+          if [ -f "$BINARY_OUTPUT_PATH" ] && [ -f "$BINARY_CHECKSUM_PATH" ]; then
+              echo "Bin and Checksum files are present at specified paths."
+          else
+              echo "Required files do not exist. Skipping archive step."
+          fi
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.bin.${{ matrix.archive }}
+          BINARY_TEMP_PATH=dist/temp/$VERSION/$APPNAME-${{matrix.os}}-${{matrix.arch}}-${{ matrix.archive }}
+
+          mkdir -p $BINARY_TEMP_PATH/bin
+          cp $BINARY_OUTPUT_PATH "$BINARY_TEMP_PATH/bin/"
+
+          mkdir -p $BINARY_TEMP_PATH/meta
+          cp $BINARY_OUTPUT_PATH_BASE/checksum.txt "$BINARY_TEMP_PATH/meta/checksum.txt"
+
+          # Copy docs into the temp directory hierarchically
+          mkdir -p $BINARY_TEMP_PATH/docs
+          cp -r $HTML_OUTPUT_DIR/ $BINARY_TEMP_PATH/docs/
+
+          if [ "${{ matrix.archive }}" = "zip" ]; then
+            (cd $BINARY_TEMP_PATH && zip -r "$NEW_BASE_NAME" .)
+          elif [ "${{ matrix.archive }}" = "tar.gz" ]; then
+            (cd $BINARY_TEMP_PATH && tar -czf "$NEW_BASE_NAME" . --warning=no-file-changed || true )
+            if ! tar -tzf "$BINARY_TEMP_PATH/$NEW_BASE_NAME" > /dev/null; then
+              echo "Error with archive: Unable to list contents for validation."
+            fi
+          elif [ "${{ matrix.archive }}" = "7z" ]; then
+            (cd $BINARY_TEMP_PATH && 7z a "$NEW_BASE_NAME" *)
+          elif [ "${{ matrix.archive }}" = "rar" ]; then
+            ( cd $BINARY_TEMP_PATH && rar a $NEW_BASE_NAME * )
+          fi
+
+          cp "$BINARY_TEMP_PATH/$NEW_BASE_NAME" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          # Calculate the checksum and store it in a variable
+          BINARY_PACKAGE_CHECKSUM=$(sha256sum "$BINARY_TEMP_PATH/$NEW_BASE_NAME" | awk '{print $1}')
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$BINARY_PACKAGE_CHECKSUM" > $BINARY_TEMP_PATH/checksum.txt
+
+          CHECKSUM=$(cat $BINARY_TEMP_PATH/checksum.txt)
+          OS=${{matrix.os}}
+          ARCH=${{matrix.arch}}
+          TYPE="Archive"
+          FILENAME=$NEW_BASE_NAME
+
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> $ARTIFACT_PATH/Checksums.md
+
+      - name: Build .deb Package
+        if: ${{ matrix.os == 'linux' && matrix.deb }}
+        run: |
+
+          VERSION=${{ needs.prepare.outputs.version }}
+          PCKG_PATH=usr/bin/pars
+
+          PACKAGE_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/pkg/deb/${{matrix.arch}}
+          PACKAGE_BINARY_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/$APPNAME/$PCKG_PATH
+
+          NEW_BASE_NAME=$APPNAME-$BASE_VERSION.tar.gz
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          mkdir -p $PACKAGE_BINARY_OUTPUT_PATH
+          # Copy the file to its new location with the new name
+          cp $BINARY_OUTPUT_PATH $PACKAGE_BINARY_OUTPUT_PATH/
+
+          export GO111MODULE=on
+          make build.deb.package.${{matrix.arch}}.configuration VERSION=$VERSION
+          # make build.deb.package.${{matrix.arch}}.payload VERSION=$VERSION
+          make build.deb.package.${{matrix.arch}}.package VERSION=$VERSION
+
+
+
+
+          DEB_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            DEB_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            DEB_ARCH="amd64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            DEB_ARCH="armhf"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            DEB_ARCH="arm64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          # Calculate DEB package checksum
+          DEB_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/output
+          DEB_CHECKSUM_PATH=$DEB_OUTPUT_PATH_BASE/checksum.txt
+
+          PLAIN_VERSION=$(echo "$VERSION" | sed 's/^v//')
+          DEB_OUTPUT_PATH=$DEB_OUTPUT_PATH_BASE/pars_${PLAIN_VERSION}_${DEB_ARCH}.deb
+
+          DEB_CHECKSUM=$(sha256sum "$DEB_OUTPUT_PATH" | awk '{print $1}')
+          echo "Checksum for $DEB_OUTPUT_PATH: $DEB_CHECKSUM"
+
+          # Append the checksum and filepath to checksums.txt
+          echo "$DEB_CHECKSUM" > "$DEB_CHECKSUM_PATH"
+
+          # Store paths and checksum in GitHub environment variables
+          echo "DEB_OUTPUT_PATH=$DEB_OUTPUT_PATH" >> $GITHUB_ENV
+
+          echo "DEB_OUTPUT_PATH_BASE=$DEB_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "DEB_CHECKSUM_PATH=$DEB_CHECKSUM_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact DEB
+        if: ${{ matrix.os == 'linux' && matrix.deb }}
+        run: |
+
+          DEB_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            DEB_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            DEB_ARCH="amd64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            DEB_ARCH="armhf"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            DEB_ARCH="arm64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.deb
+
+          # Copy the file to its new location with the new name
+
+
+          cp "$DEB_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+
+          CHECKSUM=$(cat "$DEB_OUTPUT_PATH_BASE/checksum.txt")
+          OS=${{matrix.os}}
+          ARCH=${{ matrix.arch }}
+          TYPE="DEB"
+          FILENAME=$NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
+
+      - name: Build .rpm Package
+        if: ${{ matrix.os == 'linux' && matrix.rpm }}
+        run: |
+          BASE_VERSION=$(echo "${{ needs.prepare.outputs.base_version }}" | sed 's/^v//')
+
+          VERSION=${{ needs.prepare.outputs.version }}
+          PCKG_PATH=usr/bin/pars
+
+          PACKAGE_OUTPUT_PATH_BASE=dist/$VERSION/${{matrix.os}}/pkg/rpm/${{matrix.arch}}/$APPNAME
+          PACKAGE_BINARY_OUTPUT_PATH=$PACKAGE_OUTPUT_PATH_BASE/$PCKG_PATH
+
+          NEW_BASE_NAME=$APPNAME-$BASE_VERSION.tar.gz
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          (cd $BINARY_OUTPUT_PATH_BASE && tar -czf "$NEW_BASE_NAME" . --warning=no-file-changed || true )
+          if ! tar -tzf "$BINARY_OUTPUT_PATH_BASE/$NEW_BASE_NAME" > /dev/null; then
+            echo "Error with archive: Unable to list contents for validation."
+          fi
+
+
+          mkdir -p $PACKAGE_OUTPUT_PATH_BASE/SOURCES
+
+          # Copy the file to its new location with the new name
+          cp "$BINARY_OUTPUT_PATH_BASE/$NEW_BASE_NAME" "$PACKAGE_OUTPUT_PATH_BASE/SOURCES"
+
+
+          make build.rpm.package.${{matrix.arch}}.configuration VERSION=$VERSION
+          # # make build.rpm.package.${{matrix.arch}}.payload VERSION=$VERSION
+          make build.rpm.package.${{matrix.arch}}.package VERSION=$VERSION
+
+
+          RPM_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            RPM_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            RPM_ARCH="x86_64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            RPM_ARCH="armv7hl"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            RPM_ARCH="aarch64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          # Calculate RPM package checksum
+          RPM_OUTPUT_PATH_BASE=$PACKAGE_OUTPUT_PATH_BASE/RPMS/$RPM_ARCH
+          RPM_CHECKSUM_PATH=$RPM_OUTPUT_PATH_BASE/checksum.txt
+
+          for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.$RPM_ARCH.rpm; do
+            RPM_OUTPUT_PATH="$file"
+
+            # Calculate the checksum and store it in a variable
+            RPM_CHECKSUM=$(sha256sum "$RPM_OUTPUT_PATH" | awk '{print $1}')
+            echo "Checksum for $RPM_OUTPUT_PATH: $RPM_CHECKSUM"
+
+            # Append the checksum and filepath to checksums.txt
+            echo "$RPM_CHECKSUM" > "$RPM_CHECKSUM_PATH"
+
+            # Store paths and checksum in GitHub environment variables
+            echo "RPM_OUTPUT_PATH=$RPM_OUTPUT_PATH" >> $GITHUB_ENV
+          done
+
+          echo "RPM_OUTPUT_PATH_BASE=$RPM_OUTPUT_PATH_BASE" >> $GITHUB_ENV
+          echo "RPM_CHECKSUM_PATH=$RPM_CHECKSUM_PATH" >> $GITHUB_ENV
+
+      - name: Create Artifact RPM
+        if: ${{ matrix.os == 'linux' && matrix.rpm }}
+        run: |
+
+          RPM_ARCH=""
+          if [ "${{ matrix.arch }}" = "x86" ]; then
+            RPM_ARCH="i386"
+          elif [ "${{ matrix.arch }}" = "x86_64" ]; then
+            RPM_ARCH="x86_64"
+          elif [ "${{ matrix.arch }}" = "arm" ]; then
+            RPM_ARCH="armv7hl"
+          elif [ "${{ matrix.arch }}" = "arm64" ]; then
+            RPM_ARCH="aarch64"
+          else
+            echo "Unsupported architecture: ${{ matrix.arch }}"
+            exit 1
+          fi
+
+          NEW_BASE_NAME=$APPNAME-${{matrix.os}}-${{matrix.arch}}.rpm
+          ORIGINAL_FILE_NAME="$APPNAME$EXT"
+
+          # Copy the file to its new location with the new name
+
+          for file in $RPM_OUTPUT_PATH_BASE/$APPNAME*.$RPM_ARCH.rpm; do
+            RPM_OUTPUT_PATH="$file"
+
+            cp "$RPM_OUTPUT_PATH" "$ARTIFACT_PATH/$NEW_BASE_NAME"
+          done
+
+          CHECKSUM=$(cat "$RPM_OUTPUT_PATH_BASE/checksum.txt")
+          OS=${{matrix.os}}
+          ARCH=${{ matrix.arch }}
+          TYPE="RPM"
+          FILENAME=$NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          echo "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |" >> "$ARTIFACT_PATH/Checksums.md"
+
+      - name: Save files for later jobs
+        run: |
+          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          rm -rf "$WORKFLOW_DIR"
+          mkdir -p "$WORKFLOW_DIR"
+          cp -r ./ "$WORKFLOW_DIR"
+
+  build-matrix-windows:
+    runs-on: windows-latest
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        include:
+          # # - os: linux
+          # #   arch: x86
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
+          # - os: linux
+          #   arch: x86_64
+          #   targets: ["binary"]
+          #   binary: true
+          #   archive: tar.gz
+          #   deb: true
+          #   rpm: false
+          # # - os: linux
+          # #   arch: arm
+          # #   targets: ["binary"]
+          # #   binary: true
+          # #   archive: tar.gz
+          # #   deb: false
+          # #   rpm: true
+          # - os: linux
+          #   arch: arm64
+          #   targets: ["binary"]
+          #   binary: true
+          #   archive: tar.gz
+          #   deb: true
+          #   rpm: false
+          # # - os: windows
+          # #   arch: x86
+          # #   binary: true
+          # #   archive: zip
+          - os: windows
+            arch: x86_64
+            binary: true
+            archive: zip
+            msi: true
+          # # - os: windows
+          # #   arch: arm
+          # #   binary: true
+          # #   archive: zip
+          # - os: windows
+          #   arch: arm64
+          #   binary: true
+          #   archive: zip
+          #   msi: true
+
+    steps:
+      - name: hello windows runner
+        uses: actions/checkout@v3
+
+      - name: Build Binary
+        if: matrix.binary
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+
+          make build.cmake.$VERSION
+          make build.binary.${{matrix.os}}.${{matrix.arch}} VERSION=$VERSION
+
+          $BINARY_OUTPUT_PATH_BASE = "dist/$VERSION/${{ matrix.os }}/bin/${{ matrix.arch }}"
+          $BINARY_OUTPUT_PATH = "$BINARY_OUTPUT_PATH_BASE/$APPNAME$EXT"
+          $BINARY_CHECKSUM_PATH = "$BINARY_OUTPUT_PATH_BASE/checksum.txt"
+
+          # Checksum hesapla
+          $BINARY_CHECKSUM = (Get-FileHash -Algorithm SHA256 $BINARY_OUTPUT_PATH).Hash
+          Write-Output "Checksum for ${BINARY_OUTPUT_PATH}: ${BINARY_CHECKSUM}"
+
+          # checksum.txt dosyasına yaz
+          Set-Content -Path $BINARY_CHECKSUM_PATH -Value $BINARY_CHECKSUM
+
+          # Ortam değişkenlerini ayarla
+          "BINARY_OUTPUT_PATH_BASE=$BINARY_OUTPUT_PATH_BASE" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          "BINARY_OUTPUT_PATH=$BINARY_OUTPUT_PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          "BINARY_CHECKSUM_PATH=$BINARY_CHECKSUM_PATH" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - name: Create Artifact Binary
+        if: matrix.binary
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+          $ARTIFACT_PATH = "dist/artifacts/$VERSION"
+
+          $BINARY_OUTPUT_PATH_BASE = $env:BINARY_OUTPUT_PATH_BASE
+
+          $NEW_BASE_NAME = "$APPNAME-${{ matrix.os }}-${{ matrix.arch }}$EXT"
+          $ORIGINAL_FILE_NAME = "$APPNAME$EXT"
+
+          # Ensure the target directory exists
+          New-Item -ItemType Directory -Path $ARTIFACT_PATH -Force | Out-Null
+
+          # Copy the binary
+          Copy-Item "$BINARY_OUTPUT_PATH_BASE\$ORIGINAL_FILE_NAME" "$ARTIFACT_PATH\$NEW_BASE_NAME"
+
+          # Read checksum
+          $CHECKSUM = Get-Content "$BINARY_OUTPUT_PATH_BASE\checksum.txt"
+
+          # Metadata
+          $OS = "${{ matrix.os }}"
+          $ARCH = "${{ matrix.arch }}"
+          $TYPE = "Binary"
+          $FILENAME = $NEW_BASE_NAME
+
+          # Add entry to Checksums.md
+          Add-Content -Path "$ARTIFACT_PATH\Checksums.md" -Value "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |"
+
+      - name: Create Artifact Archive
+        if: ${{ matrix.binary && matrix.archive }}
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+          $ARTIFACT_PATH = "dist/artifacts/$VERSION"
+
+          $OS = "${{ matrix.os }}"
+          $ARCH = "${{ matrix.arch }}"
+          $ARCHIVE = "${{ matrix.archive }}"
+
+          $NEW_BASE_NAME = "$APPNAME-$OS-$ARCH.bin.$ARCHIVE"
+          $BINARY_TEMP_PATH = "dist/temp/$VERSION/$APPNAME-$OS-$ARCH-$ARCHIVE"
+
+          # Ortam değişkenlerinden yol al
+          $BINARY_OUTPUT_PATH = $env:BINARY_OUTPUT_PATH
+          $BINARY_OUTPUT_PATH_BASE = $env:BINARY_OUTPUT_PATH_BASE
+          # $HTML_OUTPUT_DIR = $env:HTML_OUTPUT_DIR
+
+          if ((Test-Path $BINARY_OUTPUT_PATH) -and (Test-Path $env:BINARY_CHECKSUM_PATH)) {
+            Write-Host "Bin and Checksum files are present at specified paths."
+          } else {
+            Write-Host "Required files do not exist. Skipping archive step."
+            exit 0
+          }
+
+          # Dizini hazırla ve dosyaları kopyala
+          New-Item -ItemType Directory -Force -Path "$BINARY_TEMP_PATH/bin" | Out-Null
+          Copy-Item $BINARY_OUTPUT_PATH -Destination "$BINARY_TEMP_PATH/bin/" -Force
+
+          New-Item -ItemType Directory -Force -Path "$BINARY_TEMP_PATH/meta" | Out-Null
+          Copy-Item "$BINARY_OUTPUT_PATH_BASE/checksum.txt" "$BINARY_TEMP_PATH/meta/checksum.txt" -Force
+
+          New-Item -ItemType Directory -Force -Path "$BINARY_TEMP_PATH/docs" | Out-Null
+          # Copy-Item "$HTML_OUTPUT_DIR\*" "$BINARY_TEMP_PATH/docs/" -Recurse -Force
+
+          # Arşiv oluştur
+          Push-Location $BINARY_TEMP_PATH
+          if ($ARCHIVE -eq "zip") {
+            Compress-Archive -Path * -DestinationPath "$NEW_BASE_NAME"
+          }
+          elseif ($ARCHIVE -eq "tar.gz") {
+            tar -czf "$NEW_BASE_NAME" * --force-local
+          }
+          elseif ($ARCHIVE -eq "7z") {
+            & 7z a "$NEW_BASE_NAME" * | Out-Null
+          }
+          elseif ($ARCHIVE -eq "rar") {
+            & rar a "$NEW_BASE_NAME" * | Out-Null
+          }
+          Pop-Location
+
+          Copy-Item "$BINARY_TEMP_PATH\$NEW_BASE_NAME" "$ARTIFACT_PATH\$NEW_BASE_NAME" -Force
+
+          # SHA256 checksum hesapla
+          $BINARY_PACKAGE_CHECKSUM = (Get-FileHash "$BINARY_TEMP_PATH\$NEW_BASE_NAME" -Algorithm SHA256).Hash
+          Set-Content -Path "$BINARY_TEMP_PATH/checksum.txt" -Value $BINARY_PACKAGE_CHECKSUM
+
+          # Checksums.md dosyasına ekle
+          $line = "| $OS | $ARCH | Archive | $NEW_BASE_NAME | $BINARY_PACKAGE_CHECKSUM |"
+          Add-Content -Path "$ARTIFACT_PATH/Checksums.md" -Value $line
+
+      - name: Build .msi Installer
+        if: ${{ matrix.os == 'windows' && matrix.msi }}
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+          $ARTIFACT_PATH = "dist/artifacts/$VERSION"
+
+          make build.msi.package.${{matrix.arch}}.configuration VERSION=$VERSION
+          make build.msi.package.${{matrix.arch}}.payload VERSION=$VERSION
+          make build.msi.package.${{matrix.arch}}.package VERSION=$VERSION
+
+
+
+          # MSI mimari belirleme
+          $Matrix_Arch = "${{matrix.arch}}"
+          $MSI_ARCH = ""
+          switch ($Matrix_Arch) {
+              "x86"     { $MSI_ARCH = "i386" }
+              "x86_64"  { $MSI_ARCH = "x86_64" }
+              "arm"     { $MSI_ARCH = "arm" }
+              "arm64"   { $MSI_ARCH = "aarch64" }
+              default {
+                  Write-Error "Unsupported architecture: $Matrix_Arch"
+                  exit 1
+              }
+          }
+
+          # Dosya yolları
+          $PACKAGE_OUTPUT_PATH_BASE = "dist/$VERSION/${{matrix.os}}/ins/msi/${{matrix.arch}}"
+          $MSI_OUTPUT_PATH_BASE = Join-Path $PACKAGE_OUTPUT_PATH_BASE "output"
+          $MSI_CHECKSUM_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "checksum.txt"
+
+          # Versiyonun başındaki 'v' karakterini kaldır
+          $PLAIN_VERSION = $VERSION -replace "^v", ""
+
+          # MSI dosya yolu
+          $MSI_OUTPUT_PATH = Join-Path $MSI_OUTPUT_PATH_BASE "$APPNAME.msi"
+
+          # SHA256 checksum hesapla
+          $MSI_CHECKSUM = Get-FileHash -Path $MSI_OUTPUT_PATH -Algorithm SHA256 | Select-Object -ExpandProperty Hash
+          Write-Host "Checksum for $MSI_OUTPUT_PATH\: $MSI_CHECKSUM"
+
+          # Checksum'u dosyaya yaz
+          $MSI_CHECKSUM | Out-File -Encoding ascii -FilePath $MSI_CHECKSUM_PATH
+
+          # GitHub ortam değişkenlerine yaz
+          @(
+              "MSI_OUTPUT_PATH=$MSI_OUTPUT_PATH"
+              "MSI_OUTPUT_PATH_BASE=$MSI_OUTPUT_PATH_BASE"
+              "MSI_CHECKSUM_PATH=$MSI_CHECKSUM_PATH"
+          ) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: Create Artifact MSI
+        if: ${{ matrix.os == 'windows' && matrix.msi }}
+        run: |
+          $VERSION = "v1.0.0-dev.40"
+          $EXT = ".exe"
+          $APPNAME = "pars"
+          $ARTIFACT_PATH = "dist/artifacts/$VERSION"
+
+          # MSI mimari belirleme
+          $Matrix_Arch = "${{matrix.arch}}"
+          $MSI_ARCH = ""
+          switch ($Matrix_Arch) {
+              "x86"     { $MSI_ARCH = "i386" }
+              "x86_64"  { $MSI_ARCH = "x86_64" }
+              "arm"     { $MSI_ARCH = "arm" }
+              "arm64"   { $MSI_ARCH = "aarch64" }
+              default {
+                  Write-Error "Unsupported architecture: $Matrix_Arch"
+                  exit 1
+              }
+          }
+
+
+          # Yeni dosya adı (örnek: pars-windows-x86_64.msi)
+          $NEW_BASE_NAME = "$APPNAME-${{matrix.os}}-${{matrix.arch}}.msi"
+
+          New-Item -ItemType Directory -Path $ARTIFACT_PATH -Force | Out-Null
+
+          # Hedef dizine kopyala
+          Copy-Item -Path $env:MSI_OUTPUT_PATH -Destination (Join-Path $ARTIFACT_PATH $NEW_BASE_NAME)
+
+          # Checksum oku
+          $CHECKSUM = Get-Content -Path (Join-Path $env:MSI_OUTPUT_PATH_BASE "checksum.txt") -Raw
+
+          # Girdi bilgileri
+          $OS = "${{matrix.os}}"
+          $ARCH = "${{matrix.arch}}"
+          $TYPE = "MSI"
+          $FILENAME = $NEW_BASE_NAME
+
+          # Checksums.md dosyasına ekle
+          $entry = "| $OS | $ARCH | $TYPE | $FILENAME | $CHECKSUM |"
+          $entry | Out-File -Append -FilePath (Join-Path $ARTIFACT_PATH "Checksums.md") -Encoding utf8
+
+      - name: Save files for later jobs
+        run: |
+          $WORKFLOW_DIR = "C:\Users\Administrator\Desktop\AS\prj\pars\temp\workflow"
+
+          # Remove the directory if it exists
+          if (Test-Path $WORKFLOW_DIR) {
+            Remove-Item -Recurse -Force $WORKFLOW_DIR
+          }
+
+          # Recreate the directory
+          New-Item -ItemType Directory -Path $WORKFLOW_DIR -Force | Out-Null
+
+          # Copy all files and folders from current directory to workflow directory
+          Copy-Item -Path .\* -Destination $WORKFLOW_DIR -Recurse -Force
+
+      # - name: Commit changes on flow
+      #   run: |
+
+      #     git add $CHANGELOG_PATH
+      #     git commit -m "update changelog for the release $VERSION"
+
+      #     git add Checksums.md
+      #     git commit -m "update Checksums for the release $VERSION"
+
+      # git push
+
+      # - name: Upload checksums artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: checksums
+      #     path: Checksums.md
+
+      # - name: Create Release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.prepare.outputs.TAG_NAME }}
+      #     release_name: Release for ${{ steps.prepare.outputs.BUILD_VERSION }}
+      #     body_path: $CHANGELOG_PATH
+      #     draft: false
+      #     prerelease: true
+
+      # Upload artifacts
+      # publish_release:
+      #   needs:
+      #     - upload-linux-amd64-artifacts
+      #   runs-on: ubuntu-latest
+
+      #   steps:
+      #     - name: Get Release ID
+      #       id: get_release
+      #       run: |
+      #         release_id=$(curl \
+      #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #           -H "Accept: application/vnd.github.v3+json" \
+      #           https://api.github.com/repos/${{ github.repository }}/releases/tags/v1.0.174 | jq -r '.id')
+      #         echo "release_id=$release_id" >> $GITHUB_ENV
+
+      #     - name: Publish Release (Remove Draft Status)
+      #       run: |
+      #         curl \
+      #           -X PATCH \
+      #           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      #           -H "Accept: application/vnd.github.v3+json" \
+      #           https://api.github.com/repos/${{ github.repository }}/releases/${{ env.release_id }} \
+      #           -d '{"draft": false}'

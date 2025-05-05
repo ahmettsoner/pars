@@ -1,0 +1,1259 @@
+
+# Shared
+Type: Template
+Kind: Shared
+Name: ResourceImportsTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceImportsTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- range $i := .Resource.Imports }}
+      {{ if gt (len $i.Aliases) 0 -}}
+        {{- range $a := $i.Aliases -}}
+          {{- if ne $a "" -}}
+      using {{ $a }} = {{$i.Package}};
+          {{- else -}}
+      using {{$i.Package}};
+          {{- end -}}
+        {{- end -}}
+      {{- else -}}
+      using {{$i.Package}};
+      {{- end -}}
+      {{- end -}}
+---
+Type: Template
+Kind: Shared
+Name: ResourceAttributesTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceAttributesTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- range $a := .Resource.Attributes}}
+        {{- if $a.Common }}
+        {{$a.Visibility}} {{$a.Type}} {{string.Pluralize $a.Name}} { get; }
+        {{- end -}}
+      {{ end }}
+---
+Type: Template
+Kind: Shared
+Name: ResourceAttributeSignsTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceAttributeSignsTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- range $a := .Resource.Attributes}}
+        {{- if $a.Common }}
+        {{$a.Type}} {{string.Pluralize $a.Name}} { get; }
+        {{- end -}}
+      {{ end }}
+---
+Type: Template
+Kind: Shared
+Name: ResourceNameTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceNameTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- $prefix := (array.Find .Section.Original.Options "Key" "prefix").Value -}}
+      {{- $suffix := (array.Find .Section.Original.Options "Key" "suffix").Value -}}
+      {{- $type := (array.Find .Section.Original.Options "Key" "type").Value -}}
+      {{- $operation := (array.Find .Section.Original.Options "Key" "operation").Value  -}}
+
+      {{- data.Default $prefix "" -}}
+      {{- if eq $operation "List" -}}
+      {{- string.Pluralize .Resource.Original.Specifications.Name -}}
+      {{- else -}}
+      {{- .Resource.Original.Specifications.Name -}}
+      {{- end -}}
+      {{- data.Default $suffix "" -}}
+      {{- data.Default $type "" -}}
+---
+Type: Template
+Kind: Shared
+Name: ResourceEndpointSectionDataTypeImportTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceEndpointSectionDataTypeImportTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- $root := .root -}}
+      {{- $datatype := .datatype -}} 
+      {{- $responseObjectName := "" -}}
+      
+      {{- $imports := array.Slice -}}
+
+      {{- if not (map.HasKey $datatype "Value") -}}
+        {{- if map.HasKey $datatype "Resource" -}}
+            {{- $responseArrSchemaSelectors := array.Slice -}}
+            {{- range $rSelectorKey, $rSelectorValue := $datatype.Resource.Selectors -}}
+                {{ $responseArrSchemaSelectors = array.Append (printf "%s::%s" $rSelectorKey $rSelectorValue) $responseArrSchemaSelectors -}}
+            {{- end -}}
+            {{- $responseObjectContext := context.GetContextByBaseForArray $root (string.ArrayToStringSlice $responseArrSchemaSelectors) }}
+            {{- $responseObjectName = $responseObjectContext.Resource.Package -}}
+        {{- else if map.HasKey $datatype "Reference" -}}
+            {{- $responseObjectName = $datatype.Reference.Package -}}
+        {{- end -}}
+
+        {{- if map.HasKey $datatype "Alias" -}}
+            {{- $responseObjectName = printf "%s = %s" $datatype.Alias $responseObjectName -}}
+        {{- end -}}
+        {{- $imports = array.Append $responseObjectName $imports -}}
+
+        {{- if map.HasKey $datatype "Generics" -}}
+            {{- range $g := $datatype.Generics -}}
+                {{- $genericImports := engine.RenderTemplate "ResourceEndpointSectionDataTypeImportTemplate" (map.Dictionary "root" $root "datatype" $g.DataType) -}}
+                {{- range $gi := string.Split $genericImports "|" -}}
+                  {{- $imports = array.Append $gi $imports -}}
+                {{- end -}}
+            {{- end -}}
+        {{- end -}}
+      {{- end -}}
+    
+      {{ string.JoinFields $imports "|" "" }}
+---
+Type: Template
+Kind: Shared
+Name: ResourceEndpointSectionImportTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceEndpointSectionImportTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- $sectionData := .section -}}
+      {{- $root := .root -}}
+      {{- $arrImports := array.Slice -}}
+
+      {{ range $s := (array.Filter $sectionData.Options "Key" "Endpoint") -}}
+        {{- $primaryResponseObjectPackage := engine.RenderTemplate "ResourceEndpointSectionDataTypeImportTemplate" (map.Dictionary "root" $root "datatype" $s.Value.Response.Content.Schema.DataType) -}}
+        {{- range $gi := string.Split $primaryResponseObjectPackage "|" -}}
+          {{- $arrImports = array.Append $gi $arrImports -}}
+        {{- end -}}
+
+        {{- range $r := $s.Value.Responses }}
+            {{- $responseObjectPackage := engine.RenderTemplate "ResourceEndpointSectionDataTypeImportTemplate" (map.Dictionary "root" $root "datatype" $r.Content.Schema.DataType) -}}
+            {{- range $gi := string.Split $responseObjectPackage "|" -}}
+              {{- $arrImports = array.Append $gi $arrImports -}}
+            {{- end -}}
+        {{- end -}}
+
+        {{- range $p := $s.Value.Parameters -}}
+            {{- $parameterPackage := engine.RenderTemplate "ResourceEndpointSectionDataTypeImportTemplate" (map.Dictionary "root" $root "datatype" $p.DataType) -}}
+            {{- range $gi := string.Split $parameterPackage "|" -}}
+              {{- $arrImports = array.Append $gi $arrImports -}}
+            {{- end -}}
+        {{- end -}}
+      {{- end -}}
+
+
+      {{- range $i := array.Uniq $arrImports }}
+      using {{ $i }};
+      {{- end -}}
+---
+Type: Template
+Kind: Shared
+Name: ResourceEndpointSectionDataTypeNameTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: ResourceEndpointSectionDataTypeNameTemplate
+  Workspace: None
+  Template:
+    Content: |
+      {{- $root := .root -}}
+      {{- $datatype := .datatype -}}
+      {{- $responseObjectName := "" -}}
+      {{- if map.HasKey $datatype "Resource" -}}
+          {{- $responseArrSchemaSelectors := array.Slice -}}
+          {{- range $rSelectorKey, $rSelectorValue := $datatype.Resource.Selectors -}}
+              {{ $responseArrSchemaSelectors = array.Append (printf "%s::%s" $rSelectorKey $rSelectorValue) $responseArrSchemaSelectors -}}
+          {{- end -}}
+          {{- $responseObjectContext := context.GetContextByBaseForArray $root (string.ArrayToStringSlice $responseArrSchemaSelectors) }}
+          {{- $responseObjectName = engine.RenderTemplate "ResourceNameTemplate" $responseObjectContext -}}
+      {{- else if map.HasKey $datatype "Reference" -}}
+          {{- $responseObjectName = $datatype.Reference.Name -}}
+      {{- else if map.HasKey $datatype "Value" -}}
+          {{- $responseObjectName = $datatype.Value -}}
+      {{- end -}}
+
+
+      {{- if map.HasKey $datatype "Generics" -}}
+          {{- $parameters := "" -}}
+          {{- range $g := $datatype.Generics -}}
+              {{- $genericObjectName := engine.RenderTemplate "ResourceEndpointSectionDataTypeNameTemplate" (map.Dictionary "root" $root "datatype" $g.DataType) -}}
+          {{- $parameters = printf "%s%s, " $parameters $genericObjectName -}}
+          {{- end -}}
+          {{- $responseObjectName = printf "%s<%s>" $responseObjectName (string.TrimSuffix $parameters ", ") -}}
+      {{- end -}}
+
+      {{- if map.HasKey $datatype "Alias" -}}
+          {{- $responseObjectName = printf "%s.%s" $datatype.Alias $responseObjectName -}}
+      {{- end -}}
+      {{- $responseObjectName -}}
+---
+Type: Template
+Kind: Shared
+Name: RepositoryContractNameTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: RepositoryContractNameTemplate
+  Template:
+    Content: I{{template "ResourceNameTemplate" .}}
+---
+Type: Template
+Kind: Shared
+Name: DbContextContractNameTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: DbContextContractNameTemplate
+  Template:
+    Content: I{{- .Resource.Original.Specifications.Name -}}Context
+---
+Type: Template
+Kind: Shared
+Name: DbContextConcreteNameTemplate
+Metadata:
+  Tags:
+Specifications:
+  Name: DbContextConcreteNameTemplate
+  Template:
+    Content: "{{- .Resource.Original.Specifications.Name -}}Context"
+
+
+
+
+
+# Library
+---
+Type: Template
+Kind: Code
+Name: LibraryDataBaseController
+Metadata:
+  Tags:
+Specifications:
+  Name: LibraryDataBaseController
+  Output: "{{.Section.Name}}.cs"
+  Set: EShopping
+  Layers:
+    - Name: Library:Data:Controller
+      Sections:
+        - Classes:
+          - BaseController
+  Template:
+    Code: |
+      using Microsoft.AspNetCore.Mvc;
+
+      namespace {{.Section.Package}}; 
+
+      [ApiVersion("1")]
+      [Route("api/v{version:apiVersion}/[controller]")]
+      public class {{.Section.Name}} : ControllerBase
+      {
+      }
+
+---
+Type: Template
+Kind: Code
+Name: LibraryDataBaseEntity
+Metadata:
+  Tags:
+Specifications:
+  Name: LibraryDataBaseEntity
+  Output: "{{.Section.Name}}.cs"
+  Set: EShopping
+  Layers:
+    - Name: Library:Data:BaseEntity
+      Sections:
+        - Classes:
+          - BaseEntity
+  Template:
+    Code: |
+      using MongoDB.Bson;
+      using MongoDB.Bson.Serialization.Attributes;
+
+      namespace {{.Section.Package}}; 
+
+      public class {{.Section.Name}}
+      {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+      }
+---
+Type: Template
+Kind: Code
+Name: LibraryDataBaseRepositoryInterface
+Metadata:
+  Tags:
+Specifications:
+  Name: LibraryDataBaseRepositoryInterface
+  Output: "I{{.Section.Name}}.cs"
+  Set: EShopping
+  Layers:
+    - Name: Library:Data:BaseRepository:Contract
+      Sections:
+        - Classes:
+          - BaseRepository
+  Template:
+    Code: |
+      namespace {{.Resource.Package}};
+
+      public interface I{{.Section.Name}}
+      {
+      }
+
+
+# Seed
+---
+Type: Template
+Kind: File
+Name: ContextSeedFileProductBrand
+Metadata:
+  Tags:
+Specifications:
+  Name: ContextSeedFileProductBrand
+  Output: "{{string.ToSnakeCase (string.ToNormalCase (string.Pluralize .Resource.Name))}}.json"
+  Set: EShopping
+  Layers:
+    - Name: File:Data:Raw:Seed:Object
+  Template:
+    Content: |
+      {{ json.PrettifyJson (json.ToJson .Resource.Data) }}
+---
+Type: Template
+Kind: File
+Name: ApplicationProperties
+Metadata:
+  Tags:
+Specifications:
+  Name: ApplicationProperties
+  Output: "{{.Resource.Name}}.json"
+  Set: EShopping
+  Layers:
+    - Name: Properties:Configuration
+  Template:
+    Content: |
+      {{ json.PrettifyJson (json.ToJson .Resource.Data) }}
+
+# DB Context
+---
+Type: Template
+Kind: Code
+Name: ApplicationDbContextContract
+Metadata:
+  Tags:
+Specifications:
+  Name: ApplicationDbContextContract
+  Output: '{{template "DbContextContractNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Context:Contract
+  Template:
+    Code: |
+      {{- $entityContext := context.GetContextByBase . "Resource::Product" "Layer::Core:Data:Entity" "Section::Entity" -}} 
+
+      using {{ $entityContext.Section.Package }}; 
+      {{- template "ResourceImportsTemplate" . }}
+
+      namespace {{.Resource.Package}};
+
+      public interface {{template "DbContextContractNameTemplate" .}}
+      {
+        {{ template "ResourceAttributeSignsTemplate" . }}
+      }
+---
+Type: Template
+Kind: Code
+Name: ApplicationDbContextConcrete
+Metadata:
+  Tags:
+Specifications:
+  Name: ApplicationDbContextConcrete
+  Output: '{{template "DbContextConcreteNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Context:Concrete
+  Template:
+    Code: |
+      {{- $dbContextInterfaceContext := context.GetContextByBase . "Layer::Persistence:Data:Context:Contract" -}} 
+      {{- $entityContext := context.GetContextByBase . "Resource::Product" "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      // test
+      using Microsoft.Extensions.Configuration;
+      using {{ $entityContext.Section.Package }}; 
+      {{- template "ResourceImportsTemplate" . }}
+
+      namespace {{.Resource.Package}};
+
+      public class {{template "DbContextConcreteNameTemplate" .}} : {{template "DbContextContractNameTemplate" $dbContextInterfaceContext}}
+      {
+        {{ template "ResourceAttributesTemplate" . }}
+
+        public {{template "DbContextConcreteNameTemplate" .}}(IConfiguration configuration)
+        {
+          var client = new MongoClient(configuration.GetValue<string>("DatabaseSettings:ConnectionString"));
+          var database = client.GetDatabase(configuration.GetValue<string>("DatabaseSettings:DatabaseName"));
+
+        {{- range $a := .Resource.Attributes}}
+          this.{{string.Pluralize $a.Name}} = database.GetCollection<{{$a.Name}}>("{{string.Pluralize $a.Name}}Collection");
+          {{$a.Name}}ContextSeed.SeedData(this.{{string.Pluralize $a.Name}});
+        {{ end }}
+
+        }
+      }
+
+
+# Entity
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceEntity
+Metadata:
+  Tags:
+Specifications:
+  Name: Entity
+  Output: "{{.Resource.Original.Specifications.Name}}.cs"
+  Set: EShopping
+  Layers:
+    - Name: Core:Data:Entity
+      Sections:
+        - Classes:
+          - EntityObject
+  Template:
+    Code: |
+      {{- $baseEntityContext := context.GetContextByBase . "Resource::LibraryData" "Layer::Library:Data:BaseEntity" "Section::BaseEntity" -}}
+
+      using MongoDB.Bson;
+      using MongoDB.Bson.Serialization.Attributes;
+      {{- range $a := .Section.Imports }}
+      using {{$a.Package}};
+      {{- end }}
+
+      namespace {{.Section.Package}};
+
+      public class {{.Resource.Original.Specifications.Name}} : {{$baseEntityContext.Section.Name}}
+      {
+      {{- range $a := .Section.Attributes}}
+        {{- if $a.Common -}}
+          {{- if not (array.Contains $a.Labels "Key" "Identity") }}
+        [BsonElement("{{$a.Name}}")]
+            {{- if eq $a.Type "decimal" }}
+        [BsonRepresentation(BsonType.Decimal128)]
+            {{- end }}
+        {{$a.Visibility}} {{$a.Type}} {{$a.Name}} { set; get; } 
+          {{ end -}}
+        {{- end -}}
+      {{ end -}}
+      }
+---
+Type: Template
+Kind: Code
+Name: ContextSeed
+Metadata:
+  Tags:
+Specifications:
+  Name: ContextSeed
+  Output: "{{.Resource.Original.Specifications.Name}}ContextSeed.cs"
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Seed
+  Template:
+    Code: | 
+      {{- $entityContext := context.GetContextByBase . "Layer::Core:Data:Entity" "Section::Entity" -}} 
+
+      using MongoDB.Driver;
+      using System.Text.Json;
+      using Entities = {{ $entityContext.Resource.Package }};
+
+      namespace {{.Resource.Package}};
+
+      public class {{.Resource.Name}}ContextSeed
+      {
+        public static void SeedData(IMongoCollection<Entities.{{template "ResourceNameTemplate" $entityContext}}> array)
+        {
+          bool checkData = array.Find(i=>true).Any();
+          string path = Path.Combine("Data", "SeedData", "{{string.ToSnakeCase (string.ToNormalCase (string.Pluralize .Resource.Name))}}.json");
+          if(!checkData)
+          {
+            var itemData = File.ReadAllText(path);
+            var items = JsonSerializer.Deserialize<List<Entities.{{template "ResourceNameTemplate" $entityContext}}>>(itemData);
+            if (items != null)
+            {
+              foreach(var i in items)
+              {
+                array.InsertOneAsync(i);
+              }
+            }
+          }
+        }
+      }
+
+# Repository
+---
+Type: Template
+Kind: Code
+Name: RepositoryInterface
+Metadata:
+  Tags:
+Specifications:
+  Name: RepositoryInterface
+  Output: '{{template "RepositoryContractNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Repository:Contract
+      Sections:
+        - Classes:
+          - EntityRepository
+  Template:
+    Code: |
+      {{- $baseRepositoryContext := context.GetContextByBase . "Resource::LibraryData" "Layer::Library:Data:BaseRepository:Contract" "Section::BaseRepository" -}}
+      {{- $entityContext := context.GetContextByBase . "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      using {{ $entityContext.Resource.Package }};
+      {{- range $a := .Section.Imports }}
+      using {{$a.Package}};
+      {{- end }} 
+
+      namespace {{.Section.Package}};
+
+      public interface {{template "RepositoryContractNameTemplate" .}} : I{{$baseRepositoryContext.Section.Name}}
+      {
+        Task<IEnumerable<{{template "ResourceNameTemplate" $entityContext}}>> GetAllAsync();
+        Task<{{template "ResourceNameTemplate" $entityContext}}> GetByIdAsync(string id);
+        Task<{{template "ResourceNameTemplate" $entityContext}}> AddAsync({{template "ResourceNameTemplate" $entityContext}} entity);
+        Task<bool> UpdateAsync({{template "ResourceNameTemplate" $entityContext}} entity);
+        Task<bool> DeleteAsync(string id);
+        
+        {{- range $m := .Section.Methods}}
+        {{ if array.HasElements  $m.ReturnTypes -}}
+        {{- array.First $m.ReturnTypes -}}
+          {{- else -}}
+        void
+          {{- end }} {{ $m.Name -}}
+          {{- if (array.Contains $m.Options "Key" "async") -}}
+          Async
+          {{- end -}}
+          ({{range $i, $p := .Parameters}}{{ $p.Type }} {{ $p.Name }}{{if ne $i (convert.ToInt (math.Sub (len $m.Parameters) 1)) }}, {{end}}{{end}});
+        {{- end }}
+
+      }
+---
+Type: Template
+Kind: Code
+Name: RepositoryClass
+Metadata:
+  Tags:
+Specifications:
+  Name: RepositoryClass
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: Persistence:Data:Repository:Concrete
+      Sections:
+        - Classes:
+          - EntityRepository
+  Template:
+    Code: |
+      {{- $rootContext := . -}}
+      {{- $entityContext := context.GetContextByBase $rootContext "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      {{- $repositoryInterfaceContext := context.GetContextByBase $rootContext "Layer::Persistence:Data:Repository:Contract" "Section::Repository" -}} 
+      {{- $dbContextInterfaceContext := context.GetContextByBase $rootContext "Resource::ApplicationCatalogContext" "Layer::Persistence:Data:Context:Contract" -}} 
+      using {{ $entityContext.Resource.Package }}; 
+      using {{ $repositoryInterfaceContext.Section.Package }};
+      using {{ $dbContextInterfaceContext.Resource.Package }};
+      using MongoDB.Driver;
+      {{- range $a := .Section.Imports }}
+      using {{$a.Package}};
+      {{- end }}
+
+      namespace {{.Section.Package}}; 
+
+      public class {{template "ResourceNameTemplate" .}} : {{template "RepositoryContractNameTemplate" $repositoryInterfaceContext}}
+      {
+        private readonly {{template "DbContextContractNameTemplate" $dbContextInterfaceContext}} _context;
+        
+        public {{template "ResourceNameTemplate" .}}({{template "DbContextContractNameTemplate" $dbContextInterfaceContext}} context){
+          _context = context;
+        }
+
+        public async Task<IEnumerable<{{template "ResourceNameTemplate" $entityContext}}>> GetAllAsync(){
+          return await _context
+            .{{string.Pluralize .Resource.Name}}
+            .Find(p => true)
+            .ToListAsync();
+        }
+
+        public async Task<{{template "ResourceNameTemplate" $entityContext}}> GetByIdAsync(string id){
+          return await _context
+            .{{string.Pluralize .Resource.Name}}
+            .Find(p => p.Id == id)
+            .FirstOrDefaultAsync();
+        }
+
+        public async Task<{{template "ResourceNameTemplate" $entityContext}}> AddAsync({{template "ResourceNameTemplate" $entityContext}} entity){
+          await _context.{{string.Pluralize .Resource.Name}}.InsertOneAsync(entity);
+          return entity;
+        }
+
+        public async Task<bool> UpdateAsync({{template "ResourceNameTemplate" $entityContext}} entity){
+          var updateResult = await _context.{{string.Pluralize .Resource.Name}}.ReplaceOneAsync(g=>g.Id == entity.Id, entity);
+          return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
+        }
+        public async Task<bool> DeleteAsync(string id){
+          var deleteResult = await _context.{{string.Pluralize .Resource.Name}}.DeleteOneAsync(d=> d.Id == id);
+
+          return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;
+        }
+        
+        {{- range $m := .Section.Methods}}
+        {{ $data := map.Dictionary "Root" $rootContext "Method" $m }}
+
+          {{- if eq (array.Find $m.Labels "Key" "For").Value "Persistence:Data:Repository" }}
+          {{ $m.Visibility -}}
+
+            {{- if (array.Contains $m.Options "Key" "async") -}}
+              {{ " " -}}async
+            {{- end -}}
+          
+            {{- if array.HasElements  $m.ReturnTypes -}}
+            {{ " " -}} {{- array.First $m.ReturnTypes -}}
+            {{- else -}}
+            {{- if (array.Contains $m.Options "Key" "async") -}}
+            {{ " " -}}void
+            {{- else -}}
+            {{ " " -}}Task
+            {{- end -}}
+
+          {{- end -}}
+
+            {{ " " -}}{{ $m.Name -}}
+          
+            {{- if (array.Contains $m.Options "Key" "async") -}}
+            Async
+            {{- end -}}
+          
+            ({{range $i, $p := $m.Parameters}}{{ $p.Type }} {{ $p.Name }}{{if ne $i (convert.ToInt (math.Sub (len $m.Parameters) 1)) }}, {{end}}{{end}}){
+              {{ if eq (string.Normalize $m.Code) ""}}
+              throw new NotImplementedException();
+              {{ else }}
+            {{ string.IndentAuto (engine.RenderContent $m.Code $data) }}
+              {{- end }}
+          }
+          
+          {{- end -}}
+        {{- end }}
+      }
+
+# DTO
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceResponseDto
+Metadata:
+  Tags:
+Specifications:
+  Name: ResponseDto
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Dto:Response
+      Sections:
+        - Classes:
+          - BasicResponseObject
+  Template:
+    Code: |
+      {{- $rootContext := . -}}
+
+      namespace {{.Section.Package}};
+
+      public class {{template "ResourceNameTemplate" .}}
+      {
+        {{ range $a := .Section.Attributes -}}
+        {{- $a.Visibility}} {{- " " -}}
+        {{- if eq $a.TypeCategory "resource" -}}
+        {{- $responseObjectContext := context.GetContextByBase $rootContext "Layer::CQRS:Dto:Response" "Section::ResponseDto" (string.Concat "" "Resource::" $a.Type) -}} 
+        {{template "ResourceNameTemplate" $responseObjectContext}}
+        {{- else -}}
+        {{$a.Type}} 
+        {{- end -}}
+        {{- " " -}}{{$a.Name}} { get; set; }
+        {{ end }}
+      }
+
+
+# Queries
+---
+
+Type: Template
+Kind: Code
+Name: CatalogServiceBasicListQuery
+Metadata:
+  Tags:
+Specifications:
+  Name: BasicListQuery
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Path: "{{.Resource.Original.Specifications.Name}}"
+  Package: "{{.Resource.Original.Specifications.Name}}"
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Query:Concrete
+      Sections:
+        - Classes:
+          - BasicListQuery
+  Template:
+    Code: |
+      {{- $operation := (array.Find .Section.Original.Options "Key" "operation").Value  -}} 
+      {{- $response_section := (array.Find .Section.Original.Options "Key" "response_section").Value  -}}
+
+      {{- $responseObjectContext := context.GetContextByBase . "Layer::CQRS:Dto:Response" (string.Concat "" "Section::" (data.Default $response_section "")) -}}
+      
+      using MediatR; 
+      using {{ $responseObjectContext.Section.Package }}; 
+
+      namespace {{.Resource.Package}};
+
+      public class {{template "ResourceNameTemplate" .}} : {{- " " -}}
+      {{- if eq $operation "List" -}}
+        IRequest<IEnumerable<{{template "ResourceNameTemplate" $responseObjectContext}}>>
+      {{- else if eq $operation "Get"  -}}
+        IRequest<{{template "ResourceNameTemplate" $responseObjectContext}}>
+      {{- end }}
+      {
+        {{- $parameters := "" -}}
+        {{ range $a := .Section.Attributes }}
+        {{ $a.Visibility}} {{$a.Type}} {{$a.Name}} { get; set; }
+        {{- $parameters = printf "%s%s %s, " $parameters $a.Type (string.ToLowerCase $a.Name) -}}
+        {{ end }}
+        public {{template "ResourceNameTemplate" .}}({{ string.TrimSuffix $parameters ", " }})
+        {
+        {{- range $a := .Section.Attributes }}
+          this.{{$a.Name}} = {{string.ToLowerCase $a.Name}};
+        {{- end }}
+        }
+      }
+---
+Type: Template
+Kind: Code
+Name: BasicListQueryHandler
+Metadata:
+  Tags:
+Specifications:
+  Name: BasicListQueryHandler
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Path: "{{.Resource.Original.Specifications.Name}}"
+  Package: "{{.Resource.Original.Specifications.Name}}"
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Query:Handler:Concrete
+      Sections:
+        - Classes:
+          - BasicListQueryHandler
+  Template:
+    Code: |
+      {{- $operation := (array.Find .Section.Original.Options "Key" "operation").Value  -}} 
+      {{- $response_section := (array.Find .Section.Original.Options "Key" "response_section").Value  -}}
+      {{- $query_section := (array.Find .Section.Original.Options "Key" "query_section").Value  -}}
+      {{- $repository_operation_method := (array.Find .Section.Original.Options "Key" "repository_operation_method").Value  -}}
+
+      {{- $queryContext := context.GetContextByBase . "Layer::CQRS:Query:Concrete" (string.Concat "" "Section::" (data.Default $query_section "")) -}} 
+      {{- $entityContext := context.GetContextByBase . "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      {{- $repositoryInterfaceContext := context.GetContextByBase . "Layer::Persistence:Data:Repository:Contract" "Section::Repository" -}} 
+      {{- $dbContextInterfaceContext := context.GetContextByBase . "Layer::Persistence:Data:Context:Contract" -}} 
+      {{- $responseObjectContext := context.GetContextByBase . "Layer::CQRS:Dto:Response" (string.Concat "" "Section::" (data.Default $response_section "")) -}} 
+
+
+      using MediatR; 
+      using AutoMapper;
+      using Entities = {{ $entityContext.Section.Package }};
+      using {{ $repositoryInterfaceContext.Section.Package }};
+      using {{ $queryContext.Section.Package }};
+      using {{ $responseObjectContext.Section.Package }};
+
+      namespace {{.Resource.Package}};
+
+      public class {{template "ResourceNameTemplate" .}} : {{- " " -}}
+      {{- if eq $operation "List" -}}
+        IRequestHandler<{{template "ResourceNameTemplate" $queryContext}}, IEnumerable<{{template "ResourceNameTemplate" $responseObjectContext}}>>
+      {{- else if eq $operation "Get"  -}}
+        IRequestHandler<{{template "ResourceNameTemplate" $queryContext}}, {{template "ResourceNameTemplate" $responseObjectContext}}>
+      {{- end }}
+      {
+        {{template "RepositoryContractNameTemplate" $repositoryInterfaceContext}} _repository;
+        IMapper _mapper;
+
+        public {{template "ResourceNameTemplate" .}}({{template "RepositoryContractNameTemplate" $repositoryInterfaceContext}} repository, IMapper mapper)
+        {
+          _repository = repository;
+          _mapper = mapper;
+        } 
+
+        public async {{- " " -}}
+        {{- if eq $operation "List" -}}
+          Task<IEnumerable<{{template "ResourceNameTemplate" $responseObjectContext}}>> 
+        {{- else if eq $operation "Get"  -}}
+          Task<{{template "ResourceNameTemplate" $responseObjectContext}}>
+        {{- end }}
+        {{- " " -}} Handle({{template "ResourceNameTemplate" $queryContext}} request, CancellationToken token)
+        {
+          {{- $parameters := "" -}}
+          {{- range $a := $queryContext.Section.Attributes -}}
+              {{- $parameters = printf "%srequest.%s, " $parameters ($a.Name) -}}
+          {{- end }}
+          {{ if eq $operation "List" -}}
+          var data = await _repository.{{(data.Default $repository_operation_method "GetAllAsync")}}({{ string.TrimSuffix $parameters ", " }});
+          var  response = _mapper.Map<IEnumerable<Entities.{{template "ResourceNameTemplate" $entityContext}}>, IEnumerable<{{template "ResourceNameTemplate" $responseObjectContext}}>>(data);
+          {{- else if eq $operation "Get"  -}}
+          var data = await _repository.{{(data.Default $repository_operation_method "GetByIdAsync")}}({{ string.TrimSuffix $parameters ", " }});
+          var  response = _mapper.Map<Entities.{{template "ResourceNameTemplate" $entityContext}}, {{template "ResourceNameTemplate" $responseObjectContext}}>(data);
+          {{- end }}
+          return response;
+        }
+      }
+
+# Commands
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceBasicCreateCommand
+Metadata:
+  Tags:
+Specifications:
+  Name: BasicCreateCommand
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Path: "{{.Resource.Original.Specifications.Name}}"
+  Package: "{{.Resource.Original.Specifications.Name}}"
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Command:Concrete
+      Sections:
+        - Classes:
+          - BasicCreateCommand
+  Template:
+    Code: |
+      {{- $operation := (array.Find .Section.Original.Options "Key" "operation").Value  -}}
+      {{- $response_section := (array.Find .Section.Original.Options "Key" "response_section").Value  -}}
+
+
+      {{- $responseObjectContext := context.GetContextByBase . "Layer::CQRS:Dto:Response" (string.Concat "" "Section::" (data.Default $response_section "")) -}} 
+
+      using MediatR;
+      using {{ $responseObjectContext.Section.Package }};
+
+      namespace {{.Resource.Package}}; 
+
+      public class {{template "ResourceNameTemplate" .}} : {{- " " -}}
+      {{- if eq $operation "Create" -}}
+        IRequest<{{template "ResourceNameTemplate" $responseObjectContext}}>
+      {{- else if eq $operation "Update"  -}}
+        IRequest<bool>
+      {{- else if eq $operation "Delete"  -}}
+        IRequest<bool>
+      {{- end }}
+      {
+        {{- $parameters := "" -}}
+        {{ range $a := .Section.Attributes }}
+        {{ $a.Visibility}} {{$a.Type}} {{$a.Name}} { get; set; }
+        {{- $parameters = printf "%s%s %s, " $parameters $a.Type (string.ToCamelCase $a.Name) -}}
+        {{ end }}
+
+        public {{template "ResourceNameTemplate" .}}({{ string.TrimSuffix $parameters ", " }})
+        {
+        {{- range $a := .Section.Attributes }} 
+          this.{{$a.Name}} = {{string.ToCamelCase $a.Name}}; 
+        {{- end }}
+        }
+      }
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceBasicCreateCommandHandler
+Metadata:
+  Tags:
+Specifications:
+  Name: BasicCreateCommandHandler
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Path: "{{.Resource.Original.Specifications.Name}}"
+  Package: "{{.Resource.Original.Specifications.Name}}"
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Command:Handler:Concrete
+      Sections:
+        - Classes:
+          - BasicCreateCommandHandler
+  Template:
+    Code: |
+      {{- $command_section := (array.Find .Section.Original.Options "Key" "command_section").Value -}}
+      {{- $response_section := (array.Find .Section.Original.Options "Key" "response_section").Value -}}
+      {{- $operation := (array.Find .Section.Original.Options "Key" "operation").Value  -}}
+
+      {{- $commandContext := context.GetContextByBase . "Layer::CQRS:Command:Concrete" (string.Concat "" "Section::" (data.Default $command_section "")) -}} 
+      {{- $entityContext := context.GetContextByBase . "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      {{- $repositoryInterfaceContext := context.GetContextByBase . "Layer::Persistence:Data:Repository:Contract" "Section::Repository" -}}  
+      {{- $responseObjectContext := context.GetContextByBase . "Layer::CQRS:Dto:Response" (string.Concat "" "Section::" (data.Default $response_section "")) -}} 
+
+      using MediatR; 
+      using AutoMapper;
+      {{ if or (eq $operation "Create") (eq $operation "Update") -}}
+      using Entities = {{ $entityContext.Section.Package }};
+      {{ end -}}
+      using {{ $repositoryInterfaceContext.Section.Package }};
+      using {{ $commandContext.Section.Package }}; 
+      {{if not (data.IsDefault $response_section) -}} 
+      using {{ $responseObjectContext.Section.Package }};
+      {{- end }}
+
+      namespace {{.Resource.Package}};
+
+      public class {{template "ResourceNameTemplate" .}} : {{- " " -}}
+      {{- if eq $operation "Create" -}}
+        IRequestHandler<{{template "ResourceNameTemplate" $commandContext}}, {{template "ResourceNameTemplate" $responseObjectContext}}>
+      {{- else if eq $operation "Update"  -}}
+        IRequestHandler<{{template "ResourceNameTemplate" $commandContext}}, bool>
+      {{- else if eq $operation "Delete"  -}}
+        IRequestHandler<{{template "ResourceNameTemplate" $commandContext}}, bool>
+      {{- end }}
+      {
+        {{template "RepositoryContractNameTemplate" $repositoryInterfaceContext}} _repository;
+        IMapper _mapper;
+
+        public {{template "ResourceNameTemplate" .}}({{template "RepositoryContractNameTemplate" $repositoryInterfaceContext}} repository, IMapper mapper)
+        {
+          _repository = repository;
+          _mapper = mapper;
+        }
+
+        public async {{- " " -}}
+        {{- if eq $operation "Create" -}}
+          Task<{{template "ResourceNameTemplate" $responseObjectContext}}> 
+        {{- else if eq $operation "Update"  -}}
+          Task<bool> 
+        {{- else if eq $operation "Delete"  -}}
+          Task<bool> 
+        {{- end }}
+        {{- " " -}} Handle({{template "ResourceNameTemplate" $commandContext}} request, CancellationToken token)
+        {
+          {{- $parameters := "" -}}
+          {{- range $a := $commandContext.Section.Attributes -}}
+              {{- $parameters = printf "%srequest.%s, " $parameters ($a.Name) -}}
+          {{- end }}
+          {{ if eq $operation "Create" -}}
+          var entity = _mapper.Map<{{template "ResourceNameTemplate" $commandContext}}, Entities.{{template "ResourceNameTemplate" $entityContext}}>(request);
+          var data = await _repository.{{(array.Find .Section.Options "Key" "repository_operation_method").Value }}(entity);
+          var  response = _mapper.Map<Entities.{{template "ResourceNameTemplate" $entityContext}}, {{template "ResourceNameTemplate" $responseObjectContext}}>(data);
+          {{- else if eq $operation "Update"  -}}
+          var entity = _mapper.Map<{{template "ResourceNameTemplate" $commandContext}}, Entities.{{template "ResourceNameTemplate" $entityContext}}>(request);
+          var response = await _repository.{{(array.Find .Section.Options "Key" "repository_operation_method").Value }}(entity);
+          {{- else if eq $operation "Delete"  -}}
+          var response = await _repository.{{(data.Default (array.Find .Section.Options "Key" "repository_operation_method").Value "GetByIdAsync")}}({{ string.TrimSuffix $parameters ", " }});
+          {{- end }}
+          return response;
+        }
+      }
+
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceResponseDtoMapper
+Metadata:
+  Tags:
+Specifications:
+  Name: ResponseDtoMapper
+  Output: "{{.Resource.Original.Specifications.Name}}Mapper.cs"
+  Set: EShopping
+  Layers:
+    - Name: CQRS:Mapper:Dto:Response
+  Template:
+    Code: |
+      {{- $rootContext := . -}}
+      
+      {{- $response_section := (array.Find .Section.Original.Options "Key" "response_section").Value  -}}
+      {{- $query_section := (array.Find .Section.Original.Options "Key" "query_section").Value  -}}
+      {{- $command_section := (array.Find .Section.Original.Options "Key" "query_section").Value  -}}
+
+      {{- $commandContext := context.GetContextByBase . "Layer::CQRS:Command:Concrete" (string.Concat "" "Section::" (data.Default $command_section "")) -}} 
+      {{- $queryContext := context.GetContextByBase . "Layer::CQRS:Query:Concrete" (string.Concat "" "Section::" (data.Default $query_section "")) -}} 
+      {{- $entityContext := context.GetContextByBase . "Layer::Core:Data:Entity" "Section::Entity" -}} 
+      {{- $responseObjectContext := context.GetContextByBase . "Layer::CQRS:Dto:Response" (string.Concat "" "Section::" (data.Default $response_section "")) -}} 
+
+      using AutoMapper;
+      using {{ $responseObjectContext.Section.Package }};      
+      {{ if ne $queryContext.Section.Package "" -}}
+      using {{ $queryContext.Section.Package }};
+      {{ end -}}
+      using {{ $commandContext.Section.Package }};
+      using {{ $entityContext.Section.Package }};
+
+      namespace {{.Resource.Package}}; 
+
+      public class {{.Resource.Name}}Mapper : Profile
+      {
+        public {{.Resource.Name}}Mapper()
+        {
+          {{ range $l := .Resource.Layers -}}
+            {{- range $s := $l.Sections -}}
+              {{- $mappings := (array.Find $s.Options "Key" "mappings") -}}
+                {{ range $m := $mappings.Value }}
+                {{- $sourceContext := context.GetContextByBase $rootContext (string.Concat "" "Layer::" $l.Name) (string.Concat "" "Section::" $s.Name) -}}
+                {{- $destinationContext := context.GetContextByBase $rootContext (string.Concat "" "Layer::" $m.Layer) (string.Concat "" "Section::" $m.Section) -}}
+          CreateMap<{{template "ResourceNameTemplate" $sourceContext}}, {{template "ResourceNameTemplate" $destinationContext}}>().ReverseMap();
+          {{ "" -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end }}
+        }
+      }
+
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceController
+Metadata:
+  Tags:
+Specifications:
+  Name: Controller
+  Output: "{{.Resource.Original.Specifications.Name}}Controller.cs"
+  Set: EShopping
+  Layers:
+    - Name: Presentation:MVC:Controller
+  Section:
+    Classes:
+      - QueryController
+  Template:
+    Code: |
+      {{- $rootContext := . -}}  
+      {{- $sectionData := .Section -}}
+      {{- $baseControllerContext := context.GetContextByBase $rootContext "Resource::LibraryData" "Layer::Library:Data:Controller" -}}
+      using MediatR; 
+      using Microsoft.AspNetCore.Mvc;
+      using {{ $baseControllerContext.Resource.Package }};      
+      {{ template "ResourceEndpointSectionImportTemplate" (map.Dictionary "root" $rootContext "section" $sectionData)}}
+
+      namespace {{.Resource.Package}}; 
+
+      public class {{.Resource.Name}}Controller : BaseController
+      {
+        private readonly IMediator _mediator;
+
+        public {{.Resource.Name}}Controller(IMediator mediator){
+          _mediator = mediator;
+        }
+
+        {{ range $s := (array.Filter $sectionData.Options "Key" "endpoint") -}}
+
+        {{- if and (map.HasKey $s.Value "Method") (ne $s.Value.method "") }}
+        [Http{{ $s.Value.method }}]
+        {{- else }}
+        [HttpGet]
+        {{- end -}}
+
+
+        {{- $parameters := "" -}}
+        {{- $routeParameters := "" -}}
+        {{- range $r := $s.Value.Routes -}}
+          {{- $routeParameters = printf "%s%s/" $routeParameters $r -}} 
+        {{- end -}}
+
+        {{- $implode := "" -}}
+        {{- range $p := $s.Value.parameters -}}
+          {{- $parameterName := engine.RenderTemplate "ResourceEndpointSectionDataTypeNameTemplate" (map.Dictionary "root" $rootContext "datatype" $p.DataType) -}}
+
+          {{- $binder := "[FromQuery]" -}}
+
+          {{- if eq $p.Bind "path" -}}
+            {{- $binder = "[FromRoute]" -}}
+          {{- else if eq $p.Bind "query" -}}
+            {{- $binder = "[FromQuery]" -}}
+          {{- else if eq $p.Bind "body" -}}
+            {{- $binder = "[FromBody]" -}}
+          {{- else if eq $p.Bind "form" -}}
+            {{- $binder = "[FromForm]" -}}
+          {{- end -}}
+          
+          {{- if map.HasKey $p.DataType "Resource" -}}
+            {{- if $p.Explode -}}
+              {{- $parameterSelectors := array.Slice -}}
+              {{- range $rSelectorKey, $rSelectorValue := $p.DataType.Resource.Selectors -}}
+                  {{ $parameterSelectors = array.Append (printf "%s::%s" $rSelectorKey $rSelectorValue) $parameterSelectors -}}
+              {{- end -}}
+              {{- $parameterContext := context.GetContextByBaseForArray $rootContext (string.ArrayToStringSlice $parameterSelectors) }}
+              {{- $explodeParameters := "" -}}
+              {{- range $a := $parameterContext.Section.Attributes -}}
+                {{- $parameters = printf "%s%s %s, " $parameters $a.Type (string.ToLowerCase $a.Name) -}}
+                {{- $explodeParameters = printf "%s%s, " $explodeParameters (string.ToLowerCase $a.Name) -}}
+
+                {{- if eq $p.Bind "path" -}}
+                  {{- $routeParameters = printf "%s{%s}/" $routeParameters (string.ToLowerCase $a.Name) -}}
+                {{- end -}}
+              {{- end -}}
+
+              {{- $implode = string.Concat "" "var " (string.ToLowerCase $p.Name) " = new " $parameterName "(" (string.TrimSuffix $explodeParameters ", ") ");" -}}
+            {{- else -}}
+
+                {{- $parameters = printf "%s%s %s %s, " $parameters $binder $parameterName (string.ToLowerCase $p.Name) -}}
+            {{- end -}}
+
+          {{- else if map.HasKey $p.DataType "Reference" -}}
+            {{- $parameters = printf "%s%s %s %s, " $parameters $binder $parameterName (string.ToLowerCase $p.Name) -}}
+            
+            {{- if eq $p.Bind "path" -}}
+              {{- $routeParameters = printf "%s{%s}/" $routeParameters (string.ToLowerCase $p.Name) -}}
+            {{- end -}}
+          {{- else -}}
+            {{- $parameters = printf "%s%s %s %s, " $parameters $binder $parameterName (string.ToLowerCase $p.Name) -}}
+            {{- if eq $p.Bind "path" -}}
+              {{- $routeParameters = printf "%s{%s}/" $routeParameters (string.ToLowerCase $p.Name) -}}
+            {{- end -}}
+          {{- end -}}
+
+        {{- end -}}
+
+        {{- if and (map.HasKey $s.Value "Path") (ne $s.Value.Path "") }}
+        [Route("{{ $s.Value.Path }}", Name = "{{ $s.Value.Name }}")]
+        {{- else -}}
+        {{- if ne $routeParameters "" }}
+        [Route("{{ string.TrimSuffix $routeParameters "/" }}", Name = "{{ $s.Value.Name }}")]
+        {{- else }}
+        [Route("/", Name = "{{ $s.Value.Name }}")]
+        {{- end -}}
+        
+        {{- end -}}
+
+
+
+            {{- $primaryResponseObjectName := engine.RenderTemplate "ResourceEndpointSectionDataTypeNameTemplate" (map.Dictionary "root" $rootContext "datatype" $s.Value.Response.Content.Schema.DataType) -}}
+
+        {{- "" }}
+        [ProducesResponseType(typeof({{$primaryResponseObjectName}}), {{$s.Value.response.code}})]
+
+            {{- range $r := $s.Value.Responses }}
+                {{- $responseObjectName := engine.RenderTemplate "ResourceEndpointSectionDataTypeNameTemplate" (map.Dictionary "root" $rootContext "datatype" $r.Content.Schema.DataType) -}}
+
+        {{- "" }}
+        [ProducesResponseType(typeof({{$responseObjectName}}), {{$r.code}})]
+              {{- end -}}
+
+
+        {{- "" }}
+        public async Task<ActionResult<{{$primaryResponseObjectName}}>> {{ $s.Value.Name }}({{ string.TrimSuffix $parameters ", " }})
+        {
+            {{ if ne $implode "" -}}
+            {{ $implode }}
+
+            {{ end -}}
+            
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        } 
+
+        {{- end }}
+
+      }
+
+#Dotnet Client
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceClientModelDotnet
+Metadata:
+  Tags:
+Specifications:
+  Name: ClientModel
+  Output: '{{template "ResourceNameTemplate" .}}.cs'
+  Set: EShopping
+  Layers:
+    - Name: Client:API:Model
+      Sections:
+        - Classes:
+          - BasicResponseObject
+  Template:
+    Code: |
+      {{- $rootContext := . -}}  
+      {{- $sectionData := .Section -}}
+
+      namespace {{$sectionData.Package}};
+
+      public class {{template "ResourceNameTemplate" .}}
+      {
+        {{ range $a := $sectionData.Attributes -}}
+        {{- $a.Visibility}} {{- " " -}}
+        {{- if eq $a.TypeCategory "Resource" -}}
+        {{- $responseObjectContext := context.GetContextByBase $rootContext "Layer::CQRS:Dto:Response" "Section::ResponseDto" (string.Concat "" "Resource::" $a.Type) -}} 
+        {{template "ResourceNameTemplate" $responseObjectContext}}
+        {{- else -}}
+        {{$a.Type}} 
+        {{- end -}}
+        {{- " " -}}{{$a.Name}} { get; set; }
+        {{ end }}
+      }
+Configurations:
+  Selectors:
+    Resource:
+      Labels:
+      - clientproject=dotnet
+    Project:
+      Labels:
+      - clientproject=dotnet
+
+# NodeJS Client
+---
+Type: Template
+Kind: Code
+Name: CatalogServiceClientModelNodeJS
+Metadata:
+  Tags:
+Specifications:
+  Name: ClientModel
+  Output: '{{template "ResourceNameTemplate" .}}.ts'
+  Set: EShopping
+  Layers:
+    - Name: Client:API:Model
+      Sections:
+        - Classes:
+          - BasicResponseObject
+  Template:
+    Code: |
+      {{- $rootContext := . -}}  
+      {{- $sectionData := .Section -}}
+
+      {{ range $a := $sectionData.Attributes -}}
+      {{- if eq $a.TypeCategory "Resource" -}} 
+      {{- $responseObjectContext := context.GetContextByBase $rootContext (string.Concat "" "Resource::" $a.Type) (string.Concat "" "Section::" $sectionData.Name) -}} 
+      {{- $responseObjectName := engine.RenderTemplate "ResourceNameTemplate" $responseObjectContext -}}
+      import { {{ $responseObjectName }} } from "./{{ $responseObjectName }}";
+      {{ end -}} 
+      {{ end }}
+
+      export interface {{template "ResourceNameTemplate" .}} {
+        {{ range $a := $sectionData.Attributes -}}
+        {{$a.Name}}:{{- " " -}}
+        {{- if eq $a.TypeCategory "Resource" -}}
+        {{- $responseObjectContext := context.GetContextByBase $rootContext (string.Concat "" "Resource::" $a.Type) (string.Concat "" "Section::" $sectionData.Name) -}} 
+        {{template "ResourceNameTemplate" $responseObjectContext}}
+        {{- else -}}
+        {{$a.Type}} 
+        {{- end -}};        
+        {{ end }}
+      }
+Configurations:
+  Selectors:
+    Resource:
+      Labels:
+      - clientproject=nodejs
+    Project:
+      Labels:
+      - clientproject=nodejs

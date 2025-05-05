@@ -1,0 +1,1 @@
+include_all_components_from_directory()

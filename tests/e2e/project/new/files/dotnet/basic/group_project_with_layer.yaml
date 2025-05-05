@@ -1,0 +1,24 @@
+Type: Group
+Name:  {{ .Group }}
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Group }}
+
+---
+
+Type: Project
+Kind: Application
+Name:  {{ .Name }}
+Metadata:
+  Tags:
+Specifications:
+  Name: {{ .Name }}
+  Platform: {{ .Platform }}
+  ProjectType: {{ .Type }}
+  Group: {{ .Group }}
+
+  Configuration:
+    Layers:
+    {{range .Layers}}- {{.}}
+    {{end}}
