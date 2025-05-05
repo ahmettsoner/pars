@@ -58,7 +58,7 @@ jobs:
 
       - name: Save files for later jobs
         run: |
-          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          WORKFLOW_DIR="/home/ahmetsoner/AS/prs/pars/temp/workflow"
           rm -rf "$WORKFLOW_DIR"
           mkdir -p "$WORKFLOW_DIR"
           cp -r ./ "$WORKFLOW_DIR"
@@ -91,8 +91,8 @@ jobs:
             targets: ["binary"]
             binary: true
             archive: tar.gz
-            deb: false
-            rpm: true
+            deb: true
+            rpm: false
           # # - os: linux
           # #   arch: arm
           # #   targets: ["binary"]
@@ -105,8 +105,8 @@ jobs:
             targets: ["binary"]
             binary: true
             archive: tar.gz
-            deb: false
-            rpm: true
+            deb: true
+            rpm: false
           # # - os: windows
           # #   arch: x86
           # #   binary: true
@@ -132,7 +132,7 @@ jobs:
 
       - name: Retrieve files from prepare job
         run: |
-          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          WORKFLOW_DIR="/home/ahmetsoner/AS/prs/pars/temp/workflow"
           cp -r "$WORKFLOW_DIR"/. .
 
           rm -rf build
@@ -470,7 +470,7 @@ jobs:
 
       - name: Save files for later jobs
         run: |
-          WORKFLOW_DIR="/home/ahmettsoner/AS/prj/pars/temp/workflow"
+          WORKFLOW_DIR="/home/ahmetsoner/AS/prs/pars/temp/workflow"
           rm -rf "$WORKFLOW_DIR"
           mkdir -p "$WORKFLOW_DIR"
           cp -r ./ "$WORKFLOW_DIR"
