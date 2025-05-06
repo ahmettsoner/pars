@@ -63,3 +63,11 @@ sudo chown -R jenkins:jenkins /home/ahmetsoner/AS/prs
 sudo chmod -R 755 /home/ahmetsoner/AS/prs
 
 ```
+
+Windows
+
+choco install -y openjdk
+
+curl.exe -sO http://192.168.122.1:8080/jnlpJars/agent.jar
+
+java -jar agent.jar -url http://192.168.122.1:8080/ -secret 7d417c2e9f05e250bb734bdd8e13050ff2185bad27d9fb12395db5f9e8e98e22 -name windows -webSocket -workDir "C:\Users\Administrator\jenkins"
