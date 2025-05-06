@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  jenkins:
+    image: jenkins/jenkins:latest
+    container_name: jenkins-master
+    restart: unless-stopped
+    ports:
+      - "8080:8080" # Jenkins Web UI
+      - "50000:50000" # JNLP (agent bağlantısı için)
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true
+
+volumes:
+  jenkins_home:

@@ -1,0 +1,14 @@
+[0;1;31m×[0m jenkins-agent.service - Jenkins Agent
+     Loaded: loaded (]8;;file://ahmetsoner-pc.mke.local/etc/systemd/system/jenkins-agent.service/etc/systemd/system/jenkins-agent.service]8;;; [0;1;32menabled[0m; preset: [0;1;38:5:185mdisabled[0m)
+    Drop-In: /usr/lib/systemd/system/service.d
+             └─]8;;file://ahmetsoner-pc.mke.local/usr/lib/systemd/system/service.d/10-timeout-abort.conf10-timeout-abort.conf]8;;
+     Active: [0;1;31mfailed[0m (Result: exit-code) since Tue 2025-05-06 12:04:05 +03; 3s ago
+   Duration: 16ms
+ Invocation: b4238ae7dbcb4cf08b01d7eb4f951798
+    Process: 160744 ExecStart=/usr/bin/java -jar agent.jar -url http://localhost:8080/ -secret 922f5a63a260a9cfcf329121dc22ed208d38900b7c969fee9ea310791e816e71 -name fedora-local -webSocket -workDir /home/jenkins/agent [0;1;31m(code=exited, status=1/FAILURE)[0m
+   Main PID: 160744 (code=exited, status=1/FAILURE)
+
+May 06 12:04:05 ahmetsoner-pc.mke.local systemd[1]: jenkins-agent.service: Scheduled restart job, restart counter is at 5.
+May 06 12:04:05 ahmetsoner-pc.mke.local systemd[1]: [0;1;38:5:185m[0;1;39m[0;1;38:5:185mjenkins-agent.service: Start request repeated too quickly.[0m
+May 06 12:04:05 ahmetsoner-pc.mke.local systemd[1]: [0;1;38:5:185m[0;1;39m[0;1;38:5:185mjenkins-agent.service: Failed with result 'exit-code'.[0m
+May 06 12:04:05 ahmetsoner-pc.mke.local systemd[1]: [0;1;31m[0;1;39m[0;1;31mFailed to start jenkins-agent.service - Jenkins Agent.[0m
