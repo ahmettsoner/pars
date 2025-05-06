@@ -3,7 +3,7 @@ pipeline {
 
     stages {
         stage('Hello') {
-            agent { label 'debian' } 
+            agent { label 'windows' } 
             steps {
                 bat 'echo Hello, World from Jenkins Pipeline on Windows!'
             }
