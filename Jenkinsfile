@@ -116,7 +116,7 @@ pipeline {
 
                     // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
                     sh """
-                        make build.binary.\${os}.\${arch} VERSION=\$buildVersion
+                        make build.binary.${os}.${arch} VERSION=$buildVersion
                     """
 
                     // Binary dosyasının çıkış yolunu belirliyoruz
