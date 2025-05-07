@@ -10,6 +10,11 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git url: 'http://localhost:3030/admin/pars.git'
+            }
+        }
         stage('Setup Agent') {
             agent { label 'rhel' }
             steps {
@@ -115,7 +120,7 @@ pipeline {
                     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
                     def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
-                    
+
                     def os = "linux"
                     def arch = "x86_64"
 
