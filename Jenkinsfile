@@ -107,48 +107,62 @@ pipeline {
 
 
         stage('Build Linux Binary') {
-            agent { label 'rhel' }  // Eğer başka bir ajan kullanıyorsanız, burayı değiştirebilirsiniz
-            steps {
-                script {
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'linux', 'windows'
+                    }
+                    axis {
+                        name 'JAVA'
+                        values '8', '11'
+                    }
+                }
+                agent { label 'rhel' } 
+                stages {
+                    steps {
+                        script {
 
-                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-                    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-                    def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
+                            def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+                            def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+                            def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+                            def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
 
-                    def os = "linux"
-                    def arch = "x86_64"
+                            def os = "linux"
+                            def arch = "x86_64"
 
-                    // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
-                    sh """
-                        make build.binary.${os}.${arch} VERSION=$buildVersion
-                    """
+                            // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
+                            sh """
+                                make build.binary.${os}.${arch} VERSION=$buildVersion
+                            """
 
-                    // Binary dosyasının çıkış yolunu belirliyoruz
-                    def binaryOutputPathBase = "dist/${buildVersion}/${os}/bin/${arch}"
-                    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
-                    def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
+                            // Binary dosyasının çıkış yolunu belirliyoruz
+                            def binaryOutputPathBase = "dist/${buildVersion}/${os}/bin/${arch}"
+                            def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+                            def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
-                    // Binary dosyasının checksum'unu hesaplıyoruz
-                    def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
+                            // Binary dosyasının checksum'unu hesaplıyoruz
+                            def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
 
-                    // Checksum değerini ekrana yazdırıyoruz
-                    echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
+                            // Checksum değerini ekrana yazdırıyoruz
+                            echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
 
-                    // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
-                    sh """
-                        echo "${binaryChecksum}" > ${binaryChecksumPath}
-                    """
+                            // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
+                            sh """
+                                echo "${binaryChecksum}" > ${binaryChecksumPath}
+                            """
 
-                    // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
-                    // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
-                    // env.BINARY_OUTPUT_PATH = binaryOutputPath
-                    // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
+                            // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
+                            // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
+                            // env.BINARY_OUTPUT_PATH = binaryOutputPath
+                            // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
 
-                    // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
-                    // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
-                    // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
-                    // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
+                            // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
+                            // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
+                            // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
+                            // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
+                        }
+                    }
                 }
             }
         }
