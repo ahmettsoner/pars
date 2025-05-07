@@ -107,7 +107,7 @@ pipeline {
 
 
         stage('Build Linux Binary') {
-            agent { label 'rhel' }  // Eğer başka bir ajan kullanıyorsanız, burayı değiştirebilirsiniz
+            agent { label 'rhel' }
             steps {
                 script {
 
@@ -153,6 +153,28 @@ pipeline {
             }
         }
 
+        stage('Test') {
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'linux', 'windows'
+                    }
+                    axis {
+                        name 'JAVA'
+                        values '8', '11'
+                    }
+                }
+                agent { label 'rhel' } 
+                stages {
+                    stage('Run tests') {
+                        steps {
+                            echo "Running tests on ${OS} with Java ${JAVA}"
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
