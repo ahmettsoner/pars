@@ -120,7 +120,7 @@ pipeline {
                 }
                 agent { label 'rhel' } 
                 stages {
-                    stage("Build Binary ${OS}") {
+                    stage("Build Binary \${OS}") {
                         steps {
                             script {
 
