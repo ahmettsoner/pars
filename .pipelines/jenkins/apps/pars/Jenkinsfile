@@ -127,6 +127,7 @@ pipeline {
                     // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
                     sh """
                         echo "Creating directory: ${ARTIFACT_PATH}"  # Debugging: Dizin oluşturuluyor mesajı
+                        mkdir -p "${ARTIFACT_PATH}"
                         echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > ${ARTIFACT_PATH}/Checksums.md
                         echo "|----------|--------------|-----------|-----------|------------------|" >> ${ARTIFACT_PATH}/Checksums.md
                     """
