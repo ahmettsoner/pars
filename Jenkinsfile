@@ -113,8 +113,9 @@ pipeline {
 
                     def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-                    def ext = versionOutput.split('\n').find { it.startsWith('EXT=') }?.split('=')[1]?.trim()
-
+                    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+                    def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
+                    
                     def os = "linux"
                     def arch = "x86_64"
 
