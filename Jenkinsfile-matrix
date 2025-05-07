@@ -1,50 +1,34 @@
 pipeline {
     agent none
     stages {
-        stage("parallel"){
+        stage('Linux Tests') {
             parallel {
-                stage('Test') {
-                    matrix {
-                        axes {
-                            axis {
-                                name 'OS'
-                                values 'linux', 'windows'
-                            }
-                            axis {
-                                name 'JAVA'
-                                values '8', '11'
-                            }
-                        }
-                        agent { label 'rhel' } 
-                        stages {
-                            stage('Run tests') {
-                                steps {
-                                    echo "Running tests on ${OS} with Java ${JAVA}"
-                                }
-                            }
-                        }
+                stage('Linux - Java 8') {
+                    agent { label 'rhel' } 
+                    steps {
+                        echo 'Running on Linux with Java 8'
                     }
                 }
-                stage('dev') {
-                    matrix {
-                        axes {
-                            axis {
-                                name 'OS'
-                                values 'linux', 'windows'
-                            }
-                            axis {
-                                name 'JAVA'
-                                values '8', '11'
-                            }
-                        }
-                        agent { label 'rhel' } 
-                        stages {
-                            stage('Run tests') {
-                                steps {
-                                    echo "Running tests on ${OS} with Java ${JAVA}"
-                                }
-                            }
-                        }
+                stage('Linux - Java 11') {
+                    agent { label 'rhel' } 
+                    steps {
+                        echo 'Running on Linux with Java 11'
+                    }
+                }
+            }
+        }
+        stage('Windows Tests') {
+            parallel {
+                stage('Windows - Java 8') {
+                    agent { label 'rhel' } 
+                    steps {
+                        echo 'Running on Windows with Java 8'
+                    }
+                }
+                stage('Windows - Java 11') {
+                    agent { label 'rhel' } 
+                    steps {
+                        echo 'Running on Windows with Java 11'
                     }
                 }
             }
