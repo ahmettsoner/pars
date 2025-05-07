@@ -149,6 +149,8 @@ pipeline {
                                 sh """
                                     echo "${binaryChecksum}" > ${binaryChecksumPath}
                                 """
+                                
+                                archiveArtifacts artifacts: 'dist/**/*', fingerprint: true
 
                                 // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
                                 // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
