@@ -10,12 +10,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            agent { label 'rhel' }
-            steps {
-                git credentialsId: 'gitea-creds', url: 'http://192.168.118.47:3030/admin/pars.git', branch: 'dev'
-            }
-        }
         stage('Setup Agent') {
             agent { label 'rhel' }
             steps {
