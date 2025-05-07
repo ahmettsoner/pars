@@ -1,0 +1,11 @@
+- name: Configure Ubuntu x86_64 servers
+  hosts: ubuntu_vms # Burada 'ubuntu_vms' grubundaki makineler hedef alınır
+  become: true
+
+  roles:
+    - role: ubuntu
+      when: ansible_distribution == "Ubuntu"
+    - role: x86_64
+      when:
+        - ansible_architecture == "x86_64"
+        - ansible_distribution == "Ubuntu"

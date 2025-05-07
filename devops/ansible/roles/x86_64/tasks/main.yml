@@ -1,0 +1,8 @@
+---
+- name: Install packages on x86_64 Ubuntu
+  apt:
+    name:
+      - git
+      - nano
+    state: present
+  when: ansible_distribution == "Ubuntu"

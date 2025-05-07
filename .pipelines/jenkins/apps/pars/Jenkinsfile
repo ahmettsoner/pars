@@ -1,0 +1,171 @@
+pipeline {
+    agent none
+
+    parameters {
+        string(name: 'LOCAL_CODEBASE', defaultValue: '/home/jenkins/dev/pars/', description: 'Local code base path')
+        string(name: 'CHANNEL', defaultValue: 'dev', description: 'Release channel (e.g., dev, prod)')
+        string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
+        string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@example.com', description: 'Git user email')
+        string(name: 'GIT_USER_NAME', defaultValue: 'CI Bot', description: 'Git user name')
+    }
+
+    stages {
+        stage('Setup Agent') {
+            agent { label 'rhel' }
+            steps {
+                script {
+                    echo "Prepare workspace"
+                    sh 'git config --global --add safe.directory ${LOCAL_CODEBASE}'
+                }
+            }
+        }
+        stage('Prepare Workspace') {
+            agent { label 'rhel' }
+            steps {
+                script {
+                    // Git ayarları
+                    sh """
+                    git config --global user.email "\$GIT_USER_EMAIL"
+                    git config --global user.name "\$GIT_USER_NAME"
+
+                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
+                    TAG_NAME=\$(git describe --tags --abbrev=0)
+                    BUILD_VERSION=\$TAG_NAME
+
+                    git checkout "\$BRANCH"
+
+                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
+                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
+
+                    mkdir -p CHANGELOG
+                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
+
+                    echo "APPNAME=pars" >> version_output.txt
+
+
+
+
+                    make build.cmake.\$BUILD_VERSION
+
+                    # if [ "\${{ matrix.os }}" = "windows" ]; then
+                    #     EXT=".exe"
+                    # else
+                    #     EXT=""
+                    # fi
+
+                    EXT=""
+                    echo "EXT=\$EXT" >> version_output.txt
+                    """
+                }
+            }
+        }
+        
+        stage('Generate HTML Docs') {
+            agent { label 'rhel' }
+            steps {
+                script {
+                    // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
+                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+
+                    // Debugging: buildVersion'ın doğru alındığını kontrol et
+                    echo "Build Version: ${buildVersion}"
+
+                    // Eğer buildVersion boşsa hata ver
+                    if (!buildVersion) {
+                        error "BUILD_VERSION is empty or null"
+                    }
+
+                    // HTML docs dizinini oluştur
+                    def HTML_OUTPUT_DIR = "temp/${buildVersion}/html_docs"
+
+                    // Debugging: HTML_OUTPUT_DIR'in doğru ayarlandığını kontrol et
+                    echo "HTML Output Directory: ${HTML_OUTPUT_DIR}"
+
+                    // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
+                    sh """
+                        echo "Creating directory: ${HTML_OUTPUT_DIR}"  # Debugging: Dizin oluşturuluyor mesajı
+                        mkdir -p "${HTML_OUTPUT_DIR}"   # Doğru şekilde interpolasyon yapılmış komut
+                        cp -r docs/assets/ "${HTML_OUTPUT_DIR}"
+
+                        find ./docs -name '*.md' | while read -r FILE; do
+                            RELATIVE_PATH="\${FILE#./docs/}"
+                            HTML_FILE="\${RELATIVE_PATH%.md}.html"
+                            
+                            # dirname komutunu doğru şekilde kullanarak alt dizin oluşturulacak
+                            DIR_PATH="\$(dirname \${RELATIVE_PATH})"
+                            mkdir -p "${HTML_OUTPUT_DIR}/\${DIR_PATH}"
+
+                            pandoc --standalone --css="../assets/style/style.css" -o "${HTML_OUTPUT_DIR}/\${HTML_FILE}" --lua-filter=scripts/change_links.lua \${FILE}
+                        done
+
+                        echo "HTML docs generated at: ${HTML_OUTPUT_DIR}"
+                    """
+                }
+            }
+        }
+
+
+        stage('Build Linux') {
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'linux'
+                    }
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                agent { label 'rhel' } 
+                stages {
+                    stage("Build Binary Matrix") {
+                        steps {
+                            script {
+
+                                def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+                                def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+                                def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
+
+                                // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
+                                sh """
+                                    make build.binary.${OS}.${ARCH} VERSION=$buildVersion
+                                """
+
+                                // Binary dosyasının çıkış yolunu belirliyoruz
+                                def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+                                def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+                                def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
+
+                                // Binary dosyasının checksum'unu hesaplıyoruz
+                                def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
+
+                                // Checksum değerini ekrana yazdırıyoruz
+                                echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
+
+                                // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
+                                sh """
+                                    echo "${binaryChecksum}" > ${binaryChecksumPath}
+                                """
+
+                                // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
+                                // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
+                                // env.BINARY_OUTPUT_PATH = binaryOutputPath
+                                // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
+
+                                // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
+                                // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
+                                // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
+                                // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+}
