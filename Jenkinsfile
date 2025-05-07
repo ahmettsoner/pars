@@ -44,6 +44,9 @@ pipeline {
 
 
 
+
+                    make build.cmake.\$BUILD_VERSION
+
                     # if [ "\${{ matrix.os }}" = "windows" ]; then
                     #     EXT=".exe"
                     # else
@@ -125,14 +128,14 @@ pipeline {
                     def binaryChecksumPath = "\${binaryOutputPathBase}/checksum.txt"
 
                     // Binary dosyasının checksum'unu hesaplıyoruz
-                    def binaryChecksum = sh(script: "sha256sum \${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
+                    def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
 
                     // Checksum değerini ekrana yazdırıyoruz
-                    echo "Checksum for \${binaryOutputPath}: \${binaryChecksum}"
+                    echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
 
                     // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
                     sh """
-                        echo "\${binaryChecksum}" > \${binaryChecksumPath}
+                        echo "${binaryChecksum}" > ${binaryChecksumPath}
                     """
 
                     // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
