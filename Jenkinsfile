@@ -106,7 +106,7 @@ pipeline {
         }
 
 
-        stage('Build Linux Binary') {
+        stage('Build Binary') {
             matrix {
                 axes {
                     axis {
@@ -118,8 +118,8 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
+                agent { label 'rhel' } 
                 stages {
-                    agent { label 'rhel' } 
                     stage('Run tests') {
                         steps {
                             script {
