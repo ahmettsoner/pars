@@ -113,6 +113,7 @@ pipeline {
 
                     def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+                    def ext = versionOutput.split('\n').find { it.startsWith('EXT=') }?.split('=')[1]?.trim()
 
                     def os = "linux"
                     def arch = "x86_64"
@@ -123,9 +124,9 @@ pipeline {
                     """
 
                     // Binary dosyasının çıkış yolunu belirliyoruz
-                    def binaryOutputPathBase = "dist/\${buildVersion}/\${os}/bin/\${arch}"
-                    def binaryOutputPath = "\${binaryOutputPathBase}/pars\${EXT}"
-                    def binaryChecksumPath = "\${binaryOutputPathBase}/checksum.txt"
+                    def binaryOutputPathBase = "dist/${buildVersion}/${os}/bin/${arch}"
+                    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+                    def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
                     // Binary dosyasının checksum'unu hesaplıyoruz
                     def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
