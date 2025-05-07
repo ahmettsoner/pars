@@ -1,4 +1,4 @@
-🌐 [Main](./README.md)
+🌐 [🇺🇸 English](../en/README.md) [🇹🇷 Türkçe](../tr/README.md) [🇷🇺 Русский](../ru/README.md) [🇸🇦 العربية](../sa/README.md) [🇫🇷 Français](../fr/README.md) [🇨🇳 中文](../cn/README.md) [🇪🇸 Español](../es/README.md) [🇮🇳 हिन्दी](../in/README.md)
 
 ---
 

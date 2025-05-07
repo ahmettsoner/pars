@@ -106,7 +106,7 @@ pipeline {
         }
 
 
-        stage('Build Binary') {
+        stage('Build Linux') {
             matrix {
                 axes {
                     axis {
