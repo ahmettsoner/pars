@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'http://localhost:3030/admin/pars.git'
+                git url: 'http://192.168.118.47:3030/admin/pars.git'
             }
         }
         stage('Setup Agent') {
