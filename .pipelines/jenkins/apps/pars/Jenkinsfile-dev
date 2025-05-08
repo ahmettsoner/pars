@@ -151,7 +151,7 @@ pipeline {
                     stage("Build Binary") {
                         agent { label 'linux' } 
                         steps {
-                            @Library('.pipelines/jenkins/shared-lib/vars/buildBinary.groovy') _
+                            @Library('shared-lib') _
                             build()
                         }
                     }
