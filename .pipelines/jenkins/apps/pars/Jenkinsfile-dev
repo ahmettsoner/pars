@@ -174,21 +174,33 @@ pipeline {
                         steps {
                             script {
                                 def versionFilePath = "${WORKSPACE}/version_output.txt"
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-                                helper.packageArtifact(OS, ARCH, versionFilePath, "tar.gz")
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+                                helper.buildRPMPackage(OS, ARCH, versionFilePath, "tar.gz")
                             }
                         }
                     }
 
-                    // stage("Build RPM Package") {
-                    //     agent { label 'rhel' } 
-                    //     steps {
-                    //         script {
+                    stage("Build RPM Package") {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+                                helper.buildRPMPackage(OS, ARCH, versionFilePath)
+                            }
+                        }
+                    }
 
-                    //             echo ">>> rpm package generated <<<"
-                    //         }
-                    //     }
-                    // }
+                    stage("Build DEB Package") {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
+                                helper.buildDEBPackage(OS, ARCH, versionFilePath)
+                            }
+                        }
+                    }
 
                 }
             }
@@ -239,15 +251,17 @@ pipeline {
                         }
                     }
 
-                    // stage("Build RPM Package") {
-                    //     agent { label 'rhel' } 
-                    //     steps {
-                    //         script {
 
-                    //             echo ">>> rpm package generated <<<"
-                    //         }
-                    //     }
-                    // }
+                    stage("Build MSI Installer") {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildMSIInstaller.groovy'
+                                helper.buildMSIInstaller(OS, ARCH, versionFilePath)
+                            }
+                        }
+                    }
 
                 }
             }
