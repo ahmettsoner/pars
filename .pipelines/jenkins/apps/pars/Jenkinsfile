@@ -140,6 +140,10 @@ pipeline {
             matrix {
                 axes {
                     axis {
+                        name 'OS'
+                        values 'linux'
+                    }
+                    axis {
                         name 'ARCH'
                         values 'x86_64', 'arm64'
                     }
