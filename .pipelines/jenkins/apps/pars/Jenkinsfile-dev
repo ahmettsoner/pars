@@ -10,11 +10,6 @@ pipeline {
     }
 
     stages {
-        stage('Cleanup artifacts folder') {
-            steps {
-                cleanWs()
-            }
-        }
         stage('Setup Agent') {
             agent { label 'linux' }
             steps {
@@ -333,6 +328,11 @@ pipeline {
                 unstash 'linux-rhel-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
