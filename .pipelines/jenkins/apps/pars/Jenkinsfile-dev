@@ -206,6 +206,7 @@ pipeline {
                                 def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
 
                                 def originalFileName = "${appName}${ext}"
+                                def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
 
                                 def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
                                 def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
@@ -234,18 +235,6 @@ pipeline {
                     }
                     stage('Archive and Generate Metadata') {
                         agent { label 'linux' } // İstediğiniz agent etiketini kullanın
-                        environment {
-                            APPNAME = 'myapp'
-                            BINARY_OUTPUT_PATH = "${WORKSPACE}/build/output/myapp"
-                            BINARY_CHECKSUM_PATH = "${WORKSPACE}/build/output/checksum.txt"
-                            BINARY_OUTPUT_PATH_BASE = "${WORKSPACE}/build/output"
-                            HTML_OUTPUT_DIR = "${WORKSPACE}/docs"
-                            ARTIFACT_PATH = "${WORKSPACE}/artifacts"
-                            MATRIX_OS = 'linux'         // Paralel build'ten alabilirsiniz
-                            MATRIX_ARCH = 'amd64'       // Paralel build'ten alabilirsiniz
-                            MATRIX_ARCHIVE = 'tar.gz'   // zip, tar.gz, 7z, rar destekleniyor
-                            VERSION = '1.2.3'           // prepare stage'den alınabilir
-                        }
                         steps {
                             script {
                                 def MATRIX_ARCHIVE = 'tar.gz'   // zip, tar.gz, 7z, rar destekleniyor
@@ -257,8 +246,6 @@ pipeline {
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
                                 def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
 
-                                def originalFileName = "${appName}${ext}"
-                                def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
 
                                 def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
                                 def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
