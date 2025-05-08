@@ -10,6 +10,11 @@ pipeline {
     }
 
     stages {
+        stage('Cleanup artifacts folder') {
+            steps {
+                cleanWs()
+            }
+        }
         stage('Setup Agent') {
             agent { label 'linux' }
             steps {
