@@ -147,9 +147,9 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
-                agent { label 'rhel' } 
                 stages {
                     stage("Build Binary") {
+                        agent { label 'linux' } 
                         steps {
                             script {
 
@@ -194,6 +194,7 @@ pipeline {
                         }
                     }
                     stage('Prepare Artifact and Checksum') {
+                        agent { label 'linux' } 
                         steps {
                             script {
                                 def OS = "linux"
@@ -228,6 +229,15 @@ pipeline {
 
 
                                 stash includes: 'dist/artifacts/**/*', name: 'linux-rhel-artifacts'
+                            }
+                        }
+                    }
+                    stage("Build RPM Package") {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
+
+                                echo ">>> rpm package generated <<<"
                             }
                         }
                     }
