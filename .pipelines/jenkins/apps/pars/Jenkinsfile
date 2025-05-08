@@ -32,10 +32,11 @@ pipeline {
                     git config --global user.name "\$GIT_USER_NAME"
 
                     CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(git describe --tags --abbrev=0)
+                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
                     BUILD_VERSION=\$TAG_NAME
 
                     git checkout "\$BRANCH"
+                    make build.cmake.\$BUILD_VERSION
 
                     echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
                     echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
@@ -48,7 +49,6 @@ pipeline {
 
 
 
-                    make build.cmake.\$BUILD_VERSION
 
                     # if [ "\${{ matrix.os }}" = "windows" ]; then
                     #     EXT=".exe"
@@ -143,10 +143,6 @@ pipeline {
             matrix {
                 axes {
                     axis {
-                        name 'OS'
-                        values 'linux'
-                    }
-                    axis {
                         name 'ARCH'
                         values 'x86_64', 'arm64'
                     }
@@ -200,6 +196,7 @@ pipeline {
                     stage('Prepare Artifact and Checksum') {
                         steps {
                             script {
+                                def OS = "linux"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()

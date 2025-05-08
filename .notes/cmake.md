@@ -1,3 +1,13 @@
+make build.cmake.{VERSION}
+make documents.generate.html
+make artifacts.prepare
+make windows.arm64.binary.build
+make windows.arm64.binary.checksum
+make windows.arm64.binary.archive
+make windows.arm64.binary.artifact
+
+---
+
 make package modulunde deb var bin için kullnaılıyor sdeb source pack için rpm bin, srpm source rpm için olacak şekilde `s` ler hazırlanmalı
 
 lp pass: qtgMNLTxwaM7

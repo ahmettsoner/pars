@@ -11,6 +11,11 @@ if(NOT GIT_EXEC)
     message(FATAL_ERROR "Git executable not found!")
 endif()
 
+find_program(GRM_EXEC grm)
+if(NOT GRM_EXEC)
+    message(FATAL_ERROR "grm executable not found!")
+endif()
+
 include("${CMAKE_SOURCE_DIR}/cmake/core/version.cmake")
 if(NOT DEFINED VERSION OR VERSION STREQUAL "")
     set(VERSION "NONE")
