@@ -145,7 +145,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values 'x86_64'
                     }
                 }
                 stages {
@@ -221,10 +221,11 @@ pipeline {
                                 sh "cp ${binaryOutputPathBase}/${originalFileName} ${artifactPath}/${newBaseName}"
 
                                 // Checksum oku
-                                def checksum = readFile("${binaryChecksumPath}").trim()
+                                def binaryChecksum = readFile("${binaryChecksumPath}").trim()
 
                                 // Checksums.md'ye yaz
-                                def line = "| ${OS} | ${ARCH} | Binary | ${newBaseName} | ${checksum} |"
+                                def type = "Binary"
+                                def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${binaryChecksum} |"
                                 sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
 
@@ -291,12 +292,14 @@ pipeline {
 
                                 sh "cp '${binaryTempPath}/${newBaseName}' '${artifactPath}/${newBaseName}'"
 
-                                def binaryChecksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
-                                writeFile file: "${binaryTempPath}/checksum.txt", text: binaryChecksum
+                                def archiveChecksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
+
+                                echo "Checksum for ${binaryTempPath}/${newBaseName}: ${archiveChecksum}"
 
                                 def type = "Archive"
-                                def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${binaryChecksum} |"
+                                def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${archiveChecksum} |"
                                 sh "echo '${line}' >> ${artifactPath}/Checksums.md"
+
                             }
                         }
                     }
