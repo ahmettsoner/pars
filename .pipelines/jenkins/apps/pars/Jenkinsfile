@@ -11,19 +11,19 @@ pipeline {
 
     stages {
         stage('Setup Agent') {
-            agent { label 'master' }
+            agent { label 'linux' }
             steps {
                 script {
                     echo "Prepare workspace"
                     sh 'git config --global --add safe.directory ${LOCAL_CODEBASE}'
-                    sh 'apt update'
-                    sh 'apt install -y nodejs npm'
-                    sh 'npm install -g git-release-manager'
+                    // sh 'sudo apt update'
+                    // sh 'sudo apt install -y nodejs npm'
+                    // sh 'npm install -g git-release-manager'
                 }
             }
         }
         stage('Prepare Workspace') {
-            agent { label 'master' }
+            agent { label 'linux' }
             steps {
                 script {
                     // Git ayarları
@@ -64,7 +64,7 @@ pipeline {
         }
         
         stage('Generate HTML Docs') {
-            agent { label 'rhel' }
+            agent { label 'linux' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
@@ -109,7 +109,7 @@ pipeline {
         }
         
         stage('Create markdown file for checksums') {
-            agent { label 'rhel' }
+            agent { label 'linux' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
@@ -240,7 +240,7 @@ pipeline {
         }
 
         stage('Collect Artifacts') {
-            agent { label 'master' }
+            agent { label 'linux' }
             steps {
                 unstash 'linux-rhel-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
