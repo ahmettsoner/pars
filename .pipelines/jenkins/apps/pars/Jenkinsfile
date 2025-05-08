@@ -136,13 +136,9 @@ pipeline {
         }
 
 
-        stage('Build Linux') {
+        stage('Build Linux Matrix (Rhel)') {
             matrix {
                 axes {
-                    axis {
-                        name 'OS'
-                        values 'linux'
-                    }
                     axis {
                         name 'ARCH'
                         values 'x86_64', 'arm64'
@@ -150,10 +146,11 @@ pipeline {
                 }
                 agent { label 'rhel' } 
                 stages {
-                    stage("Build Binary Matrix") {
+                    stage("Build Binary") {
                         steps {
                             script {
 
+                                def OS = "linux"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -180,7 +177,6 @@ pipeline {
                                     echo "${binaryChecksum}" > ${binaryChecksumPath}
                                 """
                                 
-                                archiveArtifacts artifacts: 'dist/**/*', fingerprint: true
 
                                 // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
                                 // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
@@ -194,8 +190,47 @@ pipeline {
                             }
                         }
                     }
+                    stage('Prepare Artifact and Checksum') {
+                        steps {
+                            script {
+                                def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+                                def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
+                                def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+                                def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
+
+                                def originalFileName = "${appName}${ext}"
+                                def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
+
+                                def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
+                                def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+                                def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
+                                
+                                def artifactPath = "dist/artifacts/${buildVersion}"
+
+                                // Hedef klasör oluşturulmadıysa oluştur
+                                sh "mkdir -p ${artifactPath}"
+
+                                // Dosyayı kopyala
+                                sh "cp ${binaryOutputPathBase}/${originalFileName} ${artifactPath}/${newBaseName}"
+
+                                // Checksum oku
+                                def checksum = readFile("${binaryChecksumPath}").trim()
+
+                                // Checksums.md'ye yaz
+                                def line = "| ${OS} | ${ARCH} | Binary | ${newBaseName} | ${checksum} |"
+                                writeFile file: "${artifactPath}/Checksums.md", text: "${line}\n", encoding: 'UTF-8', append: true
+
+
+
+                                archiveArtifacts artifacts: 'dist/artifacts/*', fingerprint: true
+                            }
+                        }
+                    }
+
                 }
             }
         }
+
     }
 }
