@@ -313,11 +313,12 @@ pipeline {
                         }
                     }
 
-                }
-                post {
-                    always {
-                        sh 'rm -rf dist/*'
+                    post {
+                        always {
+                            sh 'rm -rf dist/*'
+                        }
                     }
+
                 }
             }
         }
