@@ -20,7 +20,7 @@ pipeline {
             }
         }
         stage('Prepare Workspace') {
-            agent { label 'master' }
+            agent { label 'rhel' }
             steps {
                 script {
                     // Git ayarları
@@ -61,7 +61,7 @@ pipeline {
         }
         
         stage('Generate HTML Docs') {
-            agent { label 'master' }
+            agent { label 'rhel' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
@@ -106,7 +106,7 @@ pipeline {
         }
         
         stage('Create markdown file for checksums') {
-            agent { label 'master' }
+            agent { label 'rhel' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
