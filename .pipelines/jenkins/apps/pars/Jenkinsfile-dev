@@ -141,7 +141,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
@@ -317,7 +317,7 @@ pipeline {
             }
         }
 
-        stage('Build Linux Matrix (Debian)') {
+        stage('Build Windows Matrix') {
             matrix {
                 axes {
                     axis {
@@ -331,7 +331,7 @@ pipeline {
                         steps {
                             script {
 
-                                def OS = "linux"
+                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -375,7 +375,7 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def OS = "linux"
+                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
@@ -415,8 +415,8 @@ pipeline {
                         agent { label 'linux' } // İstediğiniz agent etiketini kullanın
                         steps {
                             script {
-                                def MATRIX_ARCHIVE = 'tar.gz'   // zip, tar.gz, 7z, rar destekleniyor
-                                def OS = "linux"
+                                def MATRIX_ARCHIVE = 'zip'   // zip, tar.gz, 7z, rar destekleniyor
+                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
