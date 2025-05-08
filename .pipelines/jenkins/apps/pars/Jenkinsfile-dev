@@ -278,16 +278,16 @@ pipeline {
                             }
                         }
                     }
-                    // stage('Prepare Artifact and Checksum') {
-                    //     agent { label 'linux' } 
-                    //     steps {
-                    //         script {
-                    //             def versionFilePath = "${WORKSPACE}/version_output.txt"
-                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-                    //             helper.call(OS, ARCH, versionFilePath)
-                    //         }
-                    //     }
-                    // }
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
+                                helper.call(OS, ARCH, versionFilePath)
+                            }
+                        }
+                    }
                     // stage('Archive and Generate Metadata') {
                     //     agent { label 'linux' } // İstediğiniz agent etiketini kullanın
                     //     steps {
