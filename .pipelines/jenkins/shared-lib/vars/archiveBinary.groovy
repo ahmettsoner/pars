@@ -12,7 +12,7 @@ def call(String OS, String ARCH, String versionFilePath) {
     } else if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
-    
+
     def originalFileName = "${appName}${ext}"
     def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
 
@@ -39,3 +39,5 @@ def call(String OS, String ARCH, String versionFilePath) {
     // Stash dosyalar
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-artifacts"
 }
+
+return this
