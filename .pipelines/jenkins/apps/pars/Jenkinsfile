@@ -227,7 +227,7 @@ pipeline {
 
 
 
-                                archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                                stash includes: 'dist/artifacts/**/*', name: 'linux-rhel-build'
                             }
                         }
                     }
@@ -236,5 +236,12 @@ pipeline {
             }
         }
 
+        stage('Collect Artifacts') {
+            agent { label 'master' }
+            steps {
+                unstash 'linux-rhel-artifacts'
+                archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+            }
+        }
     }
 }
