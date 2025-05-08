@@ -152,9 +152,10 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                // shared-lib'i doğru şekilde çağırmak için @Library
                                 @Library('shared-lib@dev') _
-                                build() // build fonksiyonunu çalıştırıyoruz
+                                
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                build(OS, ARCH, versionFilePath)
                             }
                         }
                     }

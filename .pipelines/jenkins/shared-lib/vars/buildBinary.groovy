@@ -1,5 +1,5 @@
-def build() {
-    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+def build(String OS, String ARCH, String versionFilePath) {
+    def versionOutput = readFile(versionFilePath)
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
@@ -25,15 +25,9 @@ def build() {
         echo "${binaryChecksum}" > ${binaryChecksumPath}
     """
     
-
-    // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
+    // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
     // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
     // env.BINARY_OUTPUT_PATH = binaryOutputPath
     // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
-
-    // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
-    // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
-    // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
-    // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
 }
 return this
