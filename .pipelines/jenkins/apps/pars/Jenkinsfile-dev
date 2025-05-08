@@ -265,10 +265,10 @@ pipeline {
 
                                 sh """
                                     mkdir -p ${binaryTempPath}/bin
-                                    cp ${binaryOutputPathBase} ${binaryTempPath}/bin/
+                                    cp -r ${binaryOutputPathBase} ${binaryTempPath}/bin/
 
                                     mkdir -p ${binaryTempPath}/meta
-                                    cp ${binaryChecksumPath} ${binaryTempPath}/meta/
+                                    cp -r ${binaryChecksumPath} ${binaryTempPath}/meta/
 
                                     mkdir -p ${binaryTempPath}/docs
                                     cp -r ${html_output_dir}/ ${binaryTempPath}/docs/
