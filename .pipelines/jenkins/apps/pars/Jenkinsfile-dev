@@ -206,7 +206,6 @@ pipeline {
                                 def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
 
                                 def originalFileName = "${appName}${ext}"
-                                def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
 
                                 def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
                                 def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
