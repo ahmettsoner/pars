@@ -137,6 +137,9 @@ pipeline {
             }
         }
         stage('Build Linux Matrix (Rhel)') {
+            environment {
+                OS      = "linux"
+            }
             matrix {
                 axes {
                     axis {
@@ -149,8 +152,6 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-
-                                def OS = "linux"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -194,7 +195,6 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def OS = "linux"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
@@ -235,7 +235,6 @@ pipeline {
                         steps {
                             script {
                                 def MATRIX_ARCHIVE = 'tar.gz'   // zip, tar.gz, 7z, rar destekleniyor
-                                def OS = "linux"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
@@ -319,10 +318,13 @@ pipeline {
 
         stage('Build Windows Matrix') {
             matrix {
+                environment {
+                    OS      = "windows"
+                }
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
@@ -330,8 +332,6 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-
-                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -375,7 +375,6 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
@@ -416,7 +415,6 @@ pipeline {
                         steps {
                             script {
                                 def MATRIX_ARCHIVE = 'zip'   // zip, tar.gz, 7z, rar destekleniyor
-                                def OS = "windows"
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
