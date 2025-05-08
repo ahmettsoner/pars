@@ -313,12 +313,6 @@ pipeline {
                         }
                     }
 
-                    post {
-                        always {
-                            sh 'rm -rf dist/*'
-                        }
-                    }
-
                 }
             }
         }
@@ -329,6 +323,8 @@ pipeline {
                 unstash 'linux-rhel-artifacts'
                 unstash 'linux-rhel-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+
+                sh 'rm -rf dist/*'
             }
         }
     }
