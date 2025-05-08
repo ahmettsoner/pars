@@ -174,8 +174,8 @@ pipeline {
                         steps {
                             script {
                                 def versionFilePath = "${WORKSPACE}/version_output.txt"
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                                helper.buildRPMPackage(OS, ARCH, versionFilePath, "tar.gz")
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
+                                helper.packageArtifact(OS, ARCH, versionFilePath, "tar.gz")
                             }
                         }
                     }
