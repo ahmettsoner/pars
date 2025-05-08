@@ -5,8 +5,14 @@ def call(String OS, String ARCH, String versionFilePath) {
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-    def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : (OS.toLowerCase() == 'windows' ? '.exe' : '')
-
+    def ext = ""
+    
+    if (extLine?.contains('=') && extLine.split('=').length > 1) {
+        ext = extLine.split('=')[1].trim()
+    } else if (OS.toLowerCase() == 'windows') {
+        ext = ".exe"
+    }
+    
     def originalFileName = "${appName}${ext}"
     def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
 
