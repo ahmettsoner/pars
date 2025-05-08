@@ -1,4 +1,5 @@
-def build(String OS, String ARCH, String versionFilePath) {
+def build(String OS, String ARCH) {
+    def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }

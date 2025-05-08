@@ -1,4 +1,5 @@
-def call(String OS, String ARCH, String versionFilePath) {
+def call(String OS, String ARCH) {
+    def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
     
     def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()

@@ -1,4 +1,5 @@
-def packageArtifact(String OS, String ARCH, String versionFilePath, String archiveFormat) {
+def packageArtifact(String OS, String ARCH, String archiveFormat) {
+    def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
     def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()

@@ -1,3 +1,4 @@
-def buildDEBPackage(String OS, String ARCH, String versionFilePath) {
+def buildDEBPackage(String OS, String ARCH) {
+    def versionFilePath = "version_output.txt"
 }
 return this

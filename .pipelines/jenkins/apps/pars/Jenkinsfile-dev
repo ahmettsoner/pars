@@ -153,9 +153,8 @@ pipeline {
                         steps {
                             script {
                                 
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-                                helper.build(OS, ARCH, versionFilePath)
+                                helper.build(OS, ARCH)
                             }
                         }
                     }
@@ -163,9 +162,8 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-                                helper.call(OS, ARCH, versionFilePath)
+                                helper.call(OS, ARCH)
                             }
                         }
                     }
@@ -173,9 +171,8 @@ pipeline {
                         agent { label 'linux' }
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-                                helper.packageArtifact(OS, ARCH, versionFilePath, "tar.gz")
+                                helper.packageArtifact(OS, ARCH, "tar.gz")
                             }
                         }
                     }
@@ -184,9 +181,8 @@ pipeline {
                         agent { label 'rhel' } 
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                                helper.buildRPMPackage(OS, ARCH, versionFilePath)
+                                helper.buildRPMPackage(OS, ARCH)
                             }
                         }
                     }
@@ -195,9 +191,8 @@ pipeline {
                         agent { label 'rhel' } 
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
-                                helper.buildDEBPackage(OS, ARCH, versionFilePath)
+                                helper.buildDEBPackage(OS, ARCH)
                             }
                         }
                     }
@@ -222,10 +217,8 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-                                helper.build(OS, ARCH, versionFilePath)
+                                helper.build(OS, ARCH)
                             }
                         }
                     }
@@ -233,9 +226,8 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-                                helper.call(OS, ARCH, versionFilePath)
+                                helper.call(OS, ARCH)
                             }
                         }
                     }
@@ -243,9 +235,8 @@ pipeline {
                         agent { label 'linux' } // İstediğiniz agent etiketini kullanın
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-                                helper.packageArtifact(OS, ARCH, versionFilePath, "zip")
+                                helper.packageArtifact(OS, ARCH, "zip")
 
                             }
                         }
@@ -256,9 +247,8 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def versionFilePath = "${WORKSPACE}/version_output.txt"
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildMSIInstaller.groovy'
-                                helper.buildMSIInstaller(OS, ARCH, versionFilePath)
+                                helper.buildMSIInstaller(OS, ARCH)
                             }
                         }
                     }
