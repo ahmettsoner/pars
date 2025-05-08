@@ -16,11 +16,12 @@ pipeline {
                 script {
                     echo "Prepare workspace"
                     sh 'git config --global --add safe.directory ${LOCAL_CODEBASE}'
+                    sh 'npm install -g git-release-manager'
                 }
             }
         }
         stage('Prepare Workspace') {
-            agent { label 'rhel' }
+            agent { label 'master' }
             steps {
                 script {
                     // Git ayarları
