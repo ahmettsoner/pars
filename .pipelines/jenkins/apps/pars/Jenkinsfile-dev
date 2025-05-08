@@ -152,42 +152,50 @@ pipeline {
                         agent { label 'linux' } 
                         steps {
                             script {
-                                def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                                def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-                                def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
+                                
+                                def versionFilePath = "${WORKSPACE}/version_output.txt"
+                                // @Library('shared-lib@dev') _
+                                // build(OS, ARCH, versionFilePath)
 
-                                // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
-                                sh """
-                                    make build.binary.${OS}.${ARCH} VERSION=$buildVersion
-                                """
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
+                                helper.build(OS, ARCH, versionFilePath)
 
-                                // Binary dosyasının çıkış yolunu belirliyoruz
-                                def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
-                                def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
-                                def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
+                                // def versionOutput = readFile("${WORKSPACE}/version_output.txt")
+                                // def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+                                // def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+                                // def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ""
 
-                                // Binary dosyasının checksum'unu hesaplıyoruz
-                                def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
+                                // // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
+                                // sh """
+                                //     make build.binary.${OS}.${ARCH} VERSION=$buildVersion
+                                // """
 
-                                // Checksum değerini ekrana yazdırıyoruz
-                                echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
+                                // // Binary dosyasının çıkış yolunu belirliyoruz
+                                // def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+                                // def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+                                // def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
-                                // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
-                                sh """
-                                    echo "${binaryChecksum}" > ${binaryChecksumPath}
-                                """
+                                // // Binary dosyasının checksum'unu hesaplıyoruz
+                                // def binaryChecksum = sh(script: "sha256sum ${binaryOutputPath} | awk '{print \$1}'", returnStdout: true).trim()
+
+                                // // Checksum değerini ekrana yazdırıyoruz
+                                // echo "Checksum for ${binaryOutputPath}: ${binaryChecksum}"
+
+                                // // Checksum ve dosya yolunu checksums.txt dosyasına yazıyoruz
+                                // sh """
+                                //     echo "${binaryChecksum}" > ${binaryChecksumPath}
+                                // """
                                 
 
-                                // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
-                                // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
-                                // env.BINARY_OUTPUT_PATH = binaryOutputPath
-                                // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
+                                // // // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
+                                // // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
+                                // // env.BINARY_OUTPUT_PATH = binaryOutputPath
+                                // // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
 
-                                // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
-                                // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
-                                // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
-                                // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
+                                // // // Environment değişkenlerini GitHub Actions ortamına aktarıyoruz (isteğe bağlı)
+                                // // echo "BINARY_OUTPUT_PATH_BASE=\${binaryOutputPathBase}" >> $GITHUB_ENV
+                                // // echo "BINARY_OUTPUT_PATH=\${binaryOutputPath}" >> $GITHUB_ENV
+                                // // echo "BINARY_CHECKSUM_PATH=\${binaryChecksumPath}" >> $GITHUB_ENV
                             }
                         }
                     }
