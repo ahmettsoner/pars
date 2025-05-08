@@ -62,7 +62,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Generate HTML Docs') {
             agent { label 'linux' }
             steps {
@@ -108,7 +107,6 @@ pipeline {
                 }
             }
         }
-        
         stage('Create markdown file for checksums') {
             agent { label 'linux' }
             steps {
@@ -138,8 +136,6 @@ pipeline {
                 }
             }
         }
-
-
         stage('Build Linux Matrix (Rhel)') {
             matrix {
                 axes {
@@ -318,6 +314,11 @@ pipeline {
                     }
 
                 }
+                post {
+                    always {
+                        sh 'rm -rf dist/*'
+                    }
+                }
             }
         }
 
@@ -328,11 +329,6 @@ pipeline {
                 unstash 'linux-rhel-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
             }
-        }
-    }
-    post {
-        always {
-            sh 'rm -rf dist/*'
         }
     }
 }
