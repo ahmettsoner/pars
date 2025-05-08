@@ -300,6 +300,9 @@ pipeline {
                                 def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${archiveChecksum} |"
                                 sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
+
+                                stash includes: 'dist/artifacts/**/*', name: 'linux-rhel-archive-artifacts'
+
                             }
                         }
                     }
@@ -322,6 +325,7 @@ pipeline {
             agent { label 'linux' }
             steps {
                 unstash 'linux-rhel-artifacts'
+                unstash 'linux-rhel-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
             }
         }
