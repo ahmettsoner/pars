@@ -103,7 +103,7 @@ pipeline {
                         done
 
                         echo "HTML docs generated at: ${HTML_OUTPUT_DIR}"
-                        echo "HTML_OUTPUT_DIR=\$HTML_OUTPUT_DIR.md" >> version_output.txt
+                        echo "HTML_OUTPUT_DIR=${HTML_OUTPUT_DIR}" >> version_output.txt
                     """
                 }
             }
