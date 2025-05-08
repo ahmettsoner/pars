@@ -227,7 +227,7 @@ pipeline {
 
 
 
-                                archiveArtifacts artifacts: 'dist/artifacts/*', fingerprint: true
+                                archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                             }
                         }
                     }
