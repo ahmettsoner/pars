@@ -151,7 +151,7 @@ pipeline {
                     stage("Build Binary") {
                         agent { label 'linux' } 
                         steps {
-                            @Library('my-shared-library') _
+                            @Library('shared-lib') _
                             build()
                         }
                     }
