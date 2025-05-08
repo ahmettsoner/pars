@@ -227,7 +227,7 @@ pipeline {
 
 
 
-                                stash includes: 'dist/artifacts/**/*', name: 'linux-rhel-build'
+                                stash includes: 'dist/artifacts/**/*', name: 'linux-rhel-artifacts'
                             }
                         }
                     }
