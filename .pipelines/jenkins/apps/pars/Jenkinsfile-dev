@@ -273,11 +273,11 @@ pipeline {
         stage('Collect Artifacts') {
             agent { label 'linux' }
             steps {
-                // unstash 'linux-rhel-artifacts'
-                // unstash 'linux-rhel-archive-artifacts'
-                // unstash 'linux-debian-artifacts'
-                // unstash 'linux-debian-archive-artifacts'
-                // archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                unstash 'linux-linux-artifacts'
+                unstash 'linux-linux-archive-artifacts'
+                unstash 'linux-windows-artifacts'
+                unstash 'linux-windows-archive-artifacts'
+                archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
             }

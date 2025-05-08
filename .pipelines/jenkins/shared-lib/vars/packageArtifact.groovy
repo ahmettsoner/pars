@@ -65,7 +65,7 @@ def packageArtifact(String OS, String ARCH, String versionFilePath, String archi
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${archiveChecksum} |"
     sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
-    stash includes: 'dist/artifacts/**/*', name: "${OS.toLowerCase()}-${ARCH.toLowerCase()}-archive-artifacts"
+    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-archive-artifacts"
 }
 
 return this
