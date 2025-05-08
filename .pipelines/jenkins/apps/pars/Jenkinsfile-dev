@@ -335,7 +335,7 @@ pipeline {
                                 def versionOutput = readFile("${WORKSPACE}/version_output.txt")
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".ext"
+                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".exe"
 
                                 // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
                                 sh """
@@ -379,7 +379,7 @@ pipeline {
                                 def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".ext"
+                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".exe"
 
                                 def originalFileName = "${appName}${ext}"
                                 def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
@@ -420,7 +420,7 @@ pipeline {
                                 def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
                                 def html_output_dir = versionOutput.split('\n').find { it.startsWith('HTML_OUTPUT_DIR=') }?.split('=')[1]?.trim()
                                 def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
-                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".ext"
+                                def ext = (extLine?.contains('=') && extLine.split('=').length > 1) ? extLine.split('=')[1].trim() : ".exe"
 
 
                                 def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
