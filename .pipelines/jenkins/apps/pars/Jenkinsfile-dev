@@ -151,8 +151,11 @@ pipeline {
                     stage("Build Binary") {
                         agent { label 'linux' } 
                         steps {
-                            @Library('shared-lib@dev') _
-                            build()
+                            script {
+                                // shared-lib'i doğru şekilde çağırmak için @Library
+                                @Library('shared-lib@dev') _
+                                build() // build fonksiyonunu çalıştırıyoruz
+                            }
                         }
                     }
                     stage('Prepare Artifact and Checksum') {
