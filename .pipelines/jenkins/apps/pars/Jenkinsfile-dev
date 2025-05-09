@@ -257,8 +257,7 @@ pipeline {
             }
         }
 
-
-        stage('Build Linux Matrix') {
+        stage('Build FreeBSD Matrix') {
             environment {
                 OS      = "freebsd"
             }
