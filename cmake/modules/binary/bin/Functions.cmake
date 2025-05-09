@@ -43,6 +43,7 @@ function(build GOOS GOARCH OUTPUT_PATH)
     if(${GOOS} STREQUAL ${OS_LINUX})
         if(${GOARCH} STREQUAL ${GO_ARCH_X86} OR ${GOARCH} STREQUAL ${GO_ARCH_ARM})
             set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}" "CGO_ENABLED=1")
+            set(build_mode "-buildmode=pie")
         else()
             set(env_vars "GOOS=${GOOS}" "GOARCH=${GOARCH}")
         endif()
@@ -52,9 +53,6 @@ function(build GOOS GOARCH OUTPUT_PATH)
 
 
 
-    if(IS_LINUX)
-        set(build_mode "-buildmode=pie")
-    endif()
     if (EXISTS "${CMAKE_SOURCE_DIR}/src/vendor")
         set(mod "-mod=vendor")
     endif()
