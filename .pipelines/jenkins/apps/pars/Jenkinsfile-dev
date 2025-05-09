@@ -177,25 +177,25 @@ pipeline {
                         }
                     }
 
-                    stage("Build RPM Package") {
-                        agent { label 'rhel' } 
-                        steps {
-                            script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                                helper.buildRPMPackage(OS, ARCH)
-                            }
-                        }
-                    }
+                    // stage("Build RPM Package") {
+                    //     agent { label 'rhel' } 
+                    //     steps {
+                    //         script {
+                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+                    //             helper.buildRPMPackage(OS, ARCH)
+                    //         }
+                    //     }
+                    // }
 
-                    stage("Build DEB Package") {
-                        agent { label 'debian' } 
-                        steps {
-                            script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
-                                helper.buildDEBPackage(OS, ARCH)
-                            }
-                        }
-                    }
+                    // stage("Build DEB Package") {
+                    //     agent { label 'debian' } 
+                    //     steps {
+                    //         script {
+                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
+                    //             helper.buildDEBPackage(OS, ARCH)
+                    //         }
+                    //     }
+                    // }
 
                 }
             }
@@ -243,15 +243,15 @@ pipeline {
                     }
 
 
-                    stage("Build MSI Installer") {
-                        agent { label 'linux' } 
-                        steps {
-                            script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildMSIInstaller.groovy'
-                                helper.buildMSIInstaller(OS, ARCH)
-                            }
-                        }
-                    }
+                    // stage("Build MSI Installer") {
+                    //     agent { label 'linux' } 
+                    //     steps {
+                    //         script {
+                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildMSIInstaller.groovy'
+                    //             helper.buildMSIInstaller(OS, ARCH)
+                    //         }
+                    //     }
+                    // }
 
                 }
             }
