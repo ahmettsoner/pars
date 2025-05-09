@@ -14,6 +14,7 @@ def call(String OS, String ARCH) {
         ext = ".exe"
     }
 
+    unstash 'linux-x86_64-artifacts'
     def binaryOutputBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
     def originalFileName = "${appName}${ext}"
     def newBaseName = "${appName}-${baseVersion}.tar.gz"
