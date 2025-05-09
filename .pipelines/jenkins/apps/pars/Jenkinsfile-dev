@@ -302,6 +302,96 @@ pipeline {
             }
         }
 
+        stage('Build OpenBSD Matrix') {
+            environment {
+                OS      = "openbsd"
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
+                                helper.build(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
+                                helper.call(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Archive and Generate Metadata') {
+                        agent { label 'linux' }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
+                                helper.packageArtifact(OS, ARCH, "tar.gz")
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        stage('Build NetBSD Matrix') {
+            environment {
+                OS      = "netbsd"
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
+                                helper.build(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label 'linux' } 
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
+                                helper.call(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Archive and Generate Metadata') {
+                        agent { label 'linux' }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
+                                helper.packageArtifact(OS, ARCH, "tar.gz")
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
 
         stage('Collect Artifacts') {
             agent { label 'linux' }
@@ -312,6 +402,10 @@ pipeline {
                 // unstash 'windows-arm64-archive-artifacts'
                 unstash 'freebsd-x86_64-artifacts'
                 unstash 'freebsd-arm64-archive-artifacts'
+                unstash 'openbsd-x86_64-artifacts'
+                unstash 'openbsd-arm64-archive-artifacts'
+                unstash 'netbsd-x86_64-artifacts'
+                unstash 'netbsd-arm64-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
