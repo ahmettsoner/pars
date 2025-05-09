@@ -397,15 +397,23 @@ pipeline {
             agent { label 'linux' }
             steps {
                 unstash 'linux-x86_64-artifacts'
+                unstash 'linux-x86_64-archive-artifacts'
+                unstash 'linux-x86arm64_64-artifacts'
                 unstash 'linux-arm64-archive-artifacts'
                 unstash 'windows-x86_64-artifacts'
+                unstash 'windows-x86_64-archive-artifacts'
+                unstash 'windows-arm64-artifacts'
                 unstash 'windows-arm64-archive-artifacts'
                 unstash 'freebsd-x86_64-artifacts'
+                unstash 'freebsd-x86_64-archive-artifacts'
+                unstash 'freebsd-arm64-artifacts'
                 unstash 'freebsd-arm64-archive-artifacts'
                 unstash 'openbsd-x86_64-artifacts'
+                unstash 'openbsd-x86_64-archive-artifacts'
+                unstash 'openbsd-arm64-artifacts'
                 unstash 'openbsd-arm64-archive-artifacts'
                 unstash 'netbsd-x86_64-artifacts'
-                unstash 'netbsd-arm64-archive-artifacts'
+                unstash 'netbsd-x86_64-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
