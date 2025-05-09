@@ -183,6 +183,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
                                 helper.call(OS, ARCH)
+                                helper.copyRpmAndUpdateChecksums(OS, ARCH)
                             }
                         }
                     }
@@ -398,8 +399,9 @@ pipeline {
             steps {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
-                unstash 'linux-arm64-artifacts'
-                unstash 'linux-arm64-archive-artifacts'
+                unstash 'linux-x86_64-deb-package-artifacts'
+                // unstash 'linux-arm64-artifacts'
+                // unstash 'linux-arm64-archive-artifacts'
                 // unstash 'windows-x86_64-artifacts'
                 // unstash 'windows-x86_64-archive-artifacts'
                 // unstash 'windows-arm64-artifacts'
