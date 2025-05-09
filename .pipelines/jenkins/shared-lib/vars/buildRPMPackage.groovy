@@ -74,8 +74,24 @@ def call(String OS, String ARCH) {
 }
 
 def copyRpmAndUpdateChecksums(String OS, String ARCH) {
-    def rpmArch = ""
+    def versionFilePath = "version_output.txt"
+    def versionOutput = readFile(versionFilePath)
+
+    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
+    def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
+    def appName = "pars"
     def artifactPath = "dist/artifacts/${buildVersion}"
+
+    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+    def ext = ""
+    if (extLine?.contains('=') && extLine.split('=').length > 1) {
+        ext = extLine.split('=')[1].trim()
+    } else if (OS.toLowerCase() == 'windows') {
+        ext = ".exe"
+    }
+
+    def rpmArch = ""
 
     switch (ARCH) {
         case "x86":
@@ -94,7 +110,6 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
             error "Unsupported architecture: ${ARCH}"
     }
 
-    def appName = "pars"
     def newBaseName = "${appName}-${OS}-${ARCH}.rpm"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${appName}"
     def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
