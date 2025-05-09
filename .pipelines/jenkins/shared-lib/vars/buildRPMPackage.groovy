@@ -19,18 +19,18 @@ def call(String OS, String ARCH) {
     def originalFileName = "${appName}${ext}"
     def newBaseName = "${appName}-${baseVersion}.tar.gz"
 
+    def tarFileName = "${appName}-${OS}-${ARCH}.tar.gz"
+    def tarPath = "${binaryOutputBase}/${tarFileName}"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${appName}"
     def packageSourceDir = "${packageOutputBase}/SOURCES"
-    def tarPath = "${binaryOutputBase}/${newBaseName}"
 
-    // Create tar.gz
     sh """
         mkdir -p '${packageSourceDir}'
-        cd '${binaryOutputBase}' && tar -czf '${newBaseName}' . --warning=no-file-changed || true
-        if ! tar -tzf '${tarPath}' > /dev/null; then
-          echo "Error with archive: Unable to list contents for validation."
+        cd '${binaryOutputBase}' && tar -czf '${tarFileName}' . --warning=no-file-changed || true
+        if ! tar -tzf '${tarFileName}' > /dev/null; then
+        echo "Error with archive: Unable to list contents for validation."
         fi
-        cp '${tarPath}' '${packageSourceDir}/'
+        cp '${tarFileName}' '${packageSourceDir}/'
     """
 
     // Build RPM package
