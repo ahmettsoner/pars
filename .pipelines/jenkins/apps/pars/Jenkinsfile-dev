@@ -2,7 +2,6 @@ pipeline {
     agent none
 
     parameters {
-        string(name: 'LOCAL_CODEBASE', defaultValue: '/home/jenkins/dev/pars/', description: 'Local code base path')
         string(name: 'CHANNEL', defaultValue: 'dev', description: 'Release channel (e.g., dev, prod)')
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@example.com', description: 'Git user email')
@@ -15,7 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory pwd'
+                    sh 'git config --global --add safe.directory $(WORKSPACE)'
                     // sh 'sudo apt update'
                     // sh 'sudo apt install -y nodejs npm'
                     // sh 'npm install -g git-release-manager'
