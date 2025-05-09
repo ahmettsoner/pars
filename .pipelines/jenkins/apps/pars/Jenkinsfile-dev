@@ -306,10 +306,10 @@ pipeline {
         stage('Collect Artifacts') {
             agent { label 'linux' }
             steps {
-                unstash 'linux-x86_64-artifacts'
-                unstash 'linux-arm64-archive-artifacts'
-                unstash 'windows-x86_64-artifacts'
-                unstash 'windows-arm64-archive-artifacts'
+                // unstash 'linux-x86_64-artifacts'
+                // unstash 'linux-arm64-archive-artifacts'
+                // unstash 'windows-x86_64-artifacts'
+                // unstash 'windows-arm64-archive-artifacts'
                 unstash 'freebsd-x86_64-artifacts'
                 unstash 'freebsd-arm64-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
