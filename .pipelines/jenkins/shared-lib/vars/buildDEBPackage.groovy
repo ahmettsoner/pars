@@ -1,4 +1,60 @@
-def buildDEBPackage(String OS, String ARCH) {
+def call(String OS, String ARCH) {
+
     def versionFilePath = "version_output.txt"
+    def versionOutput = readFile(versionFilePath)
+    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
+
+    def appName = "pars"
+    def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+
+    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
+    def ext = ""
+    
+    if (extLine?.contains('=') && extLine.split('=').length > 1) {
+        ext = extLine.split('=')[1].trim()
+    } else if (OS.toLowerCase() == 'windows') {
+        ext = ".exe"
+    }
+
+    def pckgPath = "usr/bin/pars"
+    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
+    def packageBinaryPath = "${packageOutputBase}/${appName}/${pckgPath}"
+    def newBaseName = "${appName}-${baseVersion}.tar.gz"
+    def originalFileName = "${appName}${ext}"
+
+    sh """
+        mkdir -p '${packageBinaryPath}'
+        cp '${binaryOutputPath}' '${packageBinaryPath}/'
+        export GO111MODULE=on
+        make build.deb.package.${ARCH}.configuration VERSION=${buildVersion}
+        make build.deb.package.${ARCH}.package VERSION=${buildVersion}
+    """
+
+    def debArch = ""
+    if (ARCH == "x86") {
+        debArch = "i386"
+    } else if (ARCH == "x86_64") {
+        debArch = "amd64"
+    } else if (ARCH == "arm") {
+        debArch = "armhf"
+    } else if (ARCH == "arm64") {
+        debArch = "arm64"
+    } else {
+        error "Unsupported architecture: ${ARCH}"
+    }
+
+    def plainVersion = version.replaceFirst(/^v/, "")
+    def debOutputBase = "${packageOutputBase}/output"
+    def debOutputPath = "${debOutputBase}/pars_${plainVersion}_${debArch}.deb"
+    def debChecksumPath = "${debOutputBase}/checksum.txt"
+
+    def debChecksum = sh(script: "sha256sum '${debOutputPath}' | awk '{print \$1}'", returnStdout: true).trim()
+    echo "Checksum for ${debOutputPath}: ${debChecksum}"
+
+    writeFile file: debChecksumPath, text: debChecksum
+
 }
+
 return this
