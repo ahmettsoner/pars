@@ -4,6 +4,7 @@ def call(String OS, String ARCH) {
 
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
+    def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
     def appName = "pars"
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -17,7 +18,7 @@ def call(String OS, String ARCH) {
     // unstash 'linux-x86_64-artifacts'
     def binaryOutputBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
     def originalFileName = "${appName}${ext}"
-    def newBaseName = "${appName}-${baseVersion}.tar.gz"
+    def newBaseName = "${appName}-${rawBaseVersion}.tar.gz"
 
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${appName}"
     def packageSourceDir = "${packageOutputBase}/SOURCES"
