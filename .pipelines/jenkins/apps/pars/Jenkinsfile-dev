@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(WORKSPACE)'
+                    sh 'git config --global --add safe.directory $(pwd)'
                     // sh 'sudo apt update'
                     // sh 'sudo apt install -y nodejs npm'
                     // sh 'npm install -g git-release-manager'
