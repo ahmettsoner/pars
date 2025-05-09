@@ -355,7 +355,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values 'x86_64'
                     }
                 }
                 stages {
@@ -405,7 +405,6 @@ pipeline {
                 unstash 'openbsd-x86_64-artifacts'
                 unstash 'openbsd-arm64-archive-artifacts'
                 unstash 'netbsd-x86_64-artifacts'
-                unstash 'netbsd-arm64-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
