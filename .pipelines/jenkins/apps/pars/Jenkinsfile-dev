@@ -183,7 +183,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
                                 helper.call(OS, ARCH)
-                                helper.copyRpmAndUpdateChecksums(OS, ARCH)
+                                // helper.copyRpmAndUpdateChecksums(OS, ARCH)
                             }
                         }
                     }

@@ -70,7 +70,7 @@ def call(String OS, String ARCH) {
 
 }
 
-def copyRpmAndUpdateChecksums(String OS, String ARCH, String RPM_OUTPUT_PATH_BASE) {
+def copyRpmAndUpdateChecksums(String OS, String ARCH) {
     def rpmArch = ""
     def artifactPath = "dist/artifacts/${buildVersion}"
 
