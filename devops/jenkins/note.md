@@ -74,6 +74,7 @@ sudo systemctl start jenkins-agent.service
 ```
 
 debian vm
+Centos
 
 ```
 ssh ahmettsoner@192.168.122.146
@@ -82,8 +83,6 @@ ssh ahmettsoner@192.168.122.146
 ```
 curl -sO http://192.168.122.1:8080/jnlpJars/agent.jar
 ```
-
-Centos
 
 ```
 sudo nano /etc/systemd/system/jenkins-agent.service
@@ -98,8 +97,31 @@ After=network.target
 [Service]
 User=ahmettsoner
 WorkingDirectory=/home/ahmettsoner
-ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 -name centos -webSocket -workDir /home/ahmettsoner
+ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar \
+  -url http://192.168.122.1:8080/ \
+  -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 \
+  -name centos \
+  -webSocket \
+  -workDir /home/ahmettsoner
 Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+[Unit]
+Description=Jenkins Agent
+After=network.target
+
+[Service]
+User=ahmettsoner
+WorkingDirectory=/home/ahmettsoner
+ExecStart=/home/ahmettsoner/start-agent.sh
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
