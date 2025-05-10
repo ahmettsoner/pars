@@ -31,7 +31,11 @@ pipeline {
                     TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
                     BUILD_VERSION=\$TAG_NAME
 
-                    git checkout "\$BRANCH"
+                    git fetch origin
+                    git checkout ${BRANCH}
+                    git reset --hard origin/${BRANCH}
+                    git log -n 1
+                    
                     make build.cmake.\$BUILD_VERSION
 
                     echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
@@ -198,197 +202,6 @@ pipeline {
             }
         }
 
-        // stage('Build Windows Matrix') {
-        //     matrix {
-        //         environment {
-        //             OS      = "windows"
-        //         }
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64', 'arm64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-        //                         helper.build(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-        //                         helper.call(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'linux' } // İstediğiniz agent etiketini kullanın
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-        //                         helper.packageArtifact(OS, ARCH, "zip")
-
-        //                     }
-        //                 }
-        //             }
-
-
-        //             // stage("Build MSI Installer") {
-        //             //     agent { label 'linux' } 
-        //             //     steps {
-        //             //         script {
-        //             //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildMSIInstaller.groovy'
-        //             //             helper.buildMSIInstaller(OS, ARCH)
-        //             //         }
-        //             //     }
-        //             // }
-
-        //         }
-        //     }
-        // }
-
-        // stage('Build FreeBSD Matrix') {
-        //     environment {
-        //         OS      = "freebsd"
-        //     }
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64', 'arm64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-                                
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-        //                         helper.build(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-        //                         helper.call(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'linux' }
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-        //                         helper.packageArtifact(OS, ARCH, "tar.gz")
-        //                     }
-        //                 }
-        //             }
-
-        //         }
-        //     }
-        // }
-
-        // stage('Build OpenBSD Matrix') {
-        //     environment {
-        //         OS      = "openbsd"
-        //     }
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64', 'arm64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-                                
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-        //                         helper.build(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-        //                         helper.call(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'linux' }
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-        //                         helper.packageArtifact(OS, ARCH, "tar.gz")
-        //                     }
-        //                 }
-        //             }
-
-        //         }
-        //     }
-        // }
-
-        // stage('Build NetBSD Matrix') {
-        //     environment {
-        //         OS      = "netbsd"
-        //     }
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-                                
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-        //                         helper.build(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'linux' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-        //                         helper.call(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'linux' }
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-        //                         helper.packageArtifact(OS, ARCH, "tar.gz")
-        //                     }
-        //                 }
-        //             }
-
-        //         }
-        //     }
-        // }
-
 
         stage('Collect Artifacts') {
             agent { label 'linux' }
@@ -396,22 +209,6 @@ pipeline {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
                 unstash 'linux-x86_64-deb-package-artifacts'
-                // unstash 'linux-arm64-artifacts'
-                // unstash 'linux-arm64-archive-artifacts'
-                // unstash 'windows-x86_64-artifacts'
-                // unstash 'windows-x86_64-archive-artifacts'
-                // unstash 'windows-arm64-artifacts'
-                // unstash 'windows-arm64-archive-artifacts'
-                // unstash 'freebsd-x86_64-artifacts'
-                // unstash 'freebsd-x86_64-archive-artifacts'
-                // unstash 'freebsd-arm64-artifacts'
-                // unstash 'freebsd-arm64-archive-artifacts'
-                // unstash 'openbsd-x86_64-artifacts'
-                // unstash 'openbsd-x86_64-archive-artifacts'
-                // unstash 'openbsd-arm64-artifacts'
-                // unstash 'openbsd-arm64-archive-artifacts'
-                // unstash 'netbsd-x86_64-artifacts'
-                // unstash 'netbsd-x86_64-archive-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
