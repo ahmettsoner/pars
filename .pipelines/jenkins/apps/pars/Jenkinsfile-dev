@@ -31,9 +31,7 @@ pipeline {
                     TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
                     BUILD_VERSION=\$TAG_NAME
 
-                    git fetch origin
                     git checkout ${BRANCH}
-                    git reset --hard origin/${BRANCH}
                     git log -n 1
                     
                     make build.cmake.\$BUILD_VERSION
