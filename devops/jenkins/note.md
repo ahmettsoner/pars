@@ -41,6 +41,81 @@ Start-ScheduledTask -TaskName "StartJenkinsAgent"
 
 Ubuntu Jenkins Agent
 
+ubuntu vm
+
+```
+ssh ahmettsoner@192.168.122.112
+```
+
+```
+curl -sO http://192.168.122.1:8080/jnlpJars/agent.jar
+```
+
+```
+[Unit]
+Description=Jenkins Agent
+After=network.target
+
+[Service]
+User=ahmettsoner
+WorkingDirectory=/home/ahmettsoner
+ExecStart=/usr/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret 29a236ebcb6f755cfc9c96540f7a1cc8894b232890d709d6555b050533304bcc -name ubuntu -webSocket -workDir /home/ahmettsoner
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable jenkins-agent.service
+sudo systemctl start jenkins-agent.service
+```
+
+debian vm
+
+```
+ssh ahmettsoner@192.168.122.146
+```
+
+```
+curl -sO http://192.168.122.1:8080/jnlpJars/agent.jar
+```
+
+Centos
+
+```
+sudo nano /etc/systemd/system/jenkins-agent.service
+
+```
+
+```
+[Unit]
+Description=Jenkins Agent
+After=network.target
+
+[Service]
+User=ahmettsoner
+WorkingDirectory=/home/ahmettsoner
+ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 -name centos -webSocket -workDir /home/ahmettsoner
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable jenkins-agent.service
+sudo systemctl start jenkins-agent.service
+```
+
+Ubuntu Jenkins Agent
+
+ubuntu vm
+
 ```
 ssh ahmettsoner@192.168.122.112
 ```
@@ -60,13 +135,17 @@ Description=Jenkins Agent
 After=network.target
 
 [Service]
+RestartSec=10s
+StartLimitIntervalSec=500
+StartLimitBurst=5
 User=ahmettsoner
 WorkingDirectory=/home/ahmettsoner
-ExecStart=/usr/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret 29a236ebcb6f755cfc9c96540f7a1cc8894b232890d709d6555b050533304bcc -name ubuntu -webSocket -workDir /home/ahmettsoner
+ExecStart=/usr/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret 1429971fc2bf6dbffd8db8f43d6da7b0e1063425c357070cdb54f520da1d05fc -name host -webSocket -workDir /home/ahmettsoner
 Restart=always
 
 [Install]
 WantedBy=multi-user.target
+
 ```
 
 ```

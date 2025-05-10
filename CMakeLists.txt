@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(Pars)
 
-find_program(GO_EXEC go)
+find_program(GO_EXEC go PATHS /usr/local/bin /usr/bin)
 if(NOT GO_EXEC)
     message(FATAL_ERROR "Go executable not found!")
 endif()

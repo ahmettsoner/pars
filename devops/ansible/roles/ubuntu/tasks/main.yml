@@ -6,3 +6,13 @@
 # sudo apt update
 # sudo apt install nano -y
 # sudo apt install openjdk-21-jdk -y
+# curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# sudo apt install nodejs -y
+# npm install -g git-release-manager
+# sudo apt install cmake make -y
+# wget https://go.dev/dl/go1.22.3.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
+
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+source ~/.bashrc
+
