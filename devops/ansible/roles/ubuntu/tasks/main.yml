@@ -3,16 +3,42 @@
   apt:
     update_cache: yes
     cache_valid_time: 3600
-# sudo apt update
-# sudo apt install nano -y
-# sudo apt install openjdk-21-jdk -y
-# curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-# sudo apt install nodejs -y
-# npm install -g git-release-manager
-# sudo apt install cmake make -y
-# wget https://go.dev/dl/go1.22.3.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
 
+# Sistemi güncelleyin
+sudo apt update -y
+sudo apt upgrade -y
+
+# Git'i yükleyin
+sudo apt install git -y
+
+# Nano editörünü kurun
+sudo apt install nano -y
+
+# OpenJDK 21'i yükleyin
+sudo apt install openjdk-21-jdk -y
+
+# Node.js 20 kurulum scriptini indirip çalıştırın
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+
+# Node.js'i yükleyin
+sudo apt install nodejs -y
+
+# git-release-manager global kurulumu
+sudo npm install -g git-release-manager
+
+# CMake ve Make kurulumları
+sudo apt install cmake make -y
+
+# GCC ve GCC C++ yükleyin
+sudo apt install gcc g++ -y
+
+# Go 1.19.8'i indirin ve kurun
+wget https://go.dev/dl/go1.19.8.linux-amd64.tar.gz
+sudo tar -C /usr/local -xzf go1.19.8.linux-amd64.tar.gz
+
+# Go PATH ayarı (kalıcı hale getirmek için .bashrc'ye ekleniyor)
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
 source ~/.bashrc
 
+# Pandoc'u yükleyin
+sudo apt install pandoc -y

@@ -9,7 +9,7 @@ file(APPEND ${CONFIG_FILE_PATH} "Source0: %{name}-%{version}.tar.gz\n")
 #     file(APPEND ${CONFIG_FILE_PATH} "BuildArch: ${RPMARCH}\n")
 # endif()
 # file(APPEND ${CONFIG_FILE_PATH} "BuildArch: noarch\n")
-file(APPEND ${CONFIG_FILE_PATH} "BuildRequires: git, make, cmake, golang\n")
+file(APPEND ${CONFIG_FILE_PATH} "BuildRequires: git, make, cmake\n")
 file(APPEND ${CONFIG_FILE_PATH} "Requires: glibc\n")
 
 file(APPEND ${CONFIG_FILE_PATH} "\n%description\n")

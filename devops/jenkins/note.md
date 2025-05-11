@@ -95,36 +95,25 @@ Description=Jenkins Agent
 After=network.target
 
 [Service]
-User=ahmettsoner
-WorkingDirectory=/home/ahmettsoner
-ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar \
-  -url http://192.168.122.1:8080/ \
-  -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 \
-  -name centos \
-  -webSocket \
-  -workDir /home/ahmettsoner
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```
-[Unit]
-Description=Jenkins Agent
-After=network.target
-
 [Service]
 User=ahmettsoner
 WorkingDirectory=/home/ahmettsoner
-ExecStart=/home/ahmettsoner/start-agent.sh
+ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 -name centos -webSocket -workDir /home/ahmettsoner
 Restart=always
-RestartSec=5
-StandardOutput=journal
-StandardError=journal
+StandardOutput=file:/var/log/jenkins-agent.log
+StandardError=file:/var/log/jenkins-agent-error.log
 
 [Install]
 WantedBy=multi-user.target
+```
+
+```
+sudo chcon -t bin_t /opt/jdk-21.0.7/bin/java
+sudo chcon -t bin_t /home/ahmettsoner/agent.jar
+
+sudo restorecon -v /opt/jdk-21.0.7/bin/java
+sudo restorecon -v /home/ahmettsoner/agent.jar
+
 ```
 
 ```
