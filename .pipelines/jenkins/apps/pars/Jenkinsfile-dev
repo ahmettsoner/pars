@@ -10,67 +10,37 @@ pipeline {
 
     stages {
         stage('Setup Linux Agent') {
-            agent { label 'linux' }
-            steps {
-                script {
-                    echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(pwd)'
-                    checkout scm 
+        // stage('Setup RHEL Agent') {
+        //     agent { label 'rhel' }
+        //     steps {
+        //         script {
+        //             echo "Prepare workspace"
+        //             sh 'git config --global --add safe.directory $(pwd)'
+        //             checkout scm 
                     
-                    sh """
-                    git config --global user.email "\$GIT_USER_EMAIL"
-                    git config --global user.name "\$GIT_USER_NAME"
+        //             sh """
+        //             git config --global user.email "\$GIT_USER_EMAIL"
+        //             git config --global user.name "\$GIT_USER_NAME"
 
-                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-                    BUILD_VERSION=\$TAG_NAME
-
-                    
-                    make build.cmake.\$BUILD_VERSION
-
-                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
-
-                    mkdir -p CHANGELOG
-                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
-
-                    echo "APPNAME=pars" >> version_output.txt
-
-                    """
-                }
-            }
-        }
-        stage('Setup RHEL Agent') {
-            agent { label 'rhel' }
-            steps {
-                script {
-                    echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(pwd)'
-                    checkout scm 
-                    
-                    sh """
-                    git config --global user.email "\$GIT_USER_EMAIL"
-                    git config --global user.name "\$GIT_USER_NAME"
-
-                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-                    BUILD_VERSION=\$TAG_NAME
+        //             CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
+        //             TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
+        //             BUILD_VERSION=\$TAG_NAME
 
                     
-                    make build.cmake.\$BUILD_VERSION
+        //             make build.cmake.\$BUILD_VERSION
 
-                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
+        //             echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
+        //             echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
 
-                    mkdir -p CHANGELOG
-                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
+        //             mkdir -p CHANGELOG
+        //             echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
 
-                    echo "APPNAME=pars" >> version_output.txt
+        //             echo "APPNAME=pars" >> version_output.txt
 
-                    """
-                }
-            }
-        }
+        //             """
+        //         }
+        //     }
+        // }
         stage('Setup DEBIAN Agent') {
             agent { label 'debian' }
             steps {
@@ -103,7 +73,7 @@ pipeline {
             }
         }
         stage('Generate HTML Docs') {
-            agent { label 'linux' }
+            agent { label 'debian' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
@@ -148,7 +118,7 @@ pipeline {
             }
         }
         stage('Create markdown file for checksums') {
-            agent { label 'linux' }
+            agent { label 'debian' }
             steps {
                 script {
                     // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
@@ -291,7 +261,7 @@ pipeline {
 
 
         stage('Collect Artifacts') {
-            agent { label 'linux' }
+            agent { label 'debian' }
             steps {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
