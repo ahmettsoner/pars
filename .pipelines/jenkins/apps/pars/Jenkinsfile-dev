@@ -248,7 +248,8 @@ pipeline {
             steps {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
-                unstash 'linux-x86_64-rpm-package-artifacts'
+                // unstash 'linux-x86_64-rpm-package-artifacts'
+                unstash 'linux-x86_64-deb-package-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
