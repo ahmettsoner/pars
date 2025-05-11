@@ -7,7 +7,6 @@ def call(String OS, String ARCH) {
 
     def appName = "pars"
     def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
-    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
@@ -16,6 +15,7 @@ def call(String OS, String ARCH) {
     } else if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
+    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
 
     def pckgPath = "usr/bin/pars"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
