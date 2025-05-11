@@ -24,11 +24,11 @@ def call(String OS, String ARCH) {
     def originalFileName = "${appName}${ext}"
 
     sh """
-        mkdir -p '${packageBinaryPath}'
-        cp '${binaryOutputPath}' '${packageBinaryPath}/'
         export GO111MODULE=on
         make build.deb.package.${ARCH}.configuration VERSION=${buildVersion}
         make build.deb.package.${ARCH}.package VERSION=${buildVersion}
+        mkdir -p '${packageBinaryPath}'
+        cp '${binaryOutputPath}' '${packageBinaryPath}/'
     """
 
     def debArch = ""
@@ -97,18 +97,18 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
         error "No DEB file found at ${debOutputPath}"
     }
 
-    // // Artifact dizinine kopyala
-    // sh "mkdir -p '${artifactPath}'"
-    // sh "cp '${debOutputPath}' '${artifactPath}/${newBaseName}'"
+    // Artifact dizinine kopyala
+    sh "mkdir -p '${artifactPath}'"
+    sh "cp '${debOutputPath}' '${artifactPath}/${newBaseName}'"
 
-    // // Checksum oku
-    // def checksum = readFile(checksumFilePath).trim()
+    // Checksum oku
+    def checksum = readFile(checksumFilePath).trim()
 
-    // // Checksums.md'ye satır ekle
-    // def checksumLine = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
-    // writeFile file: checksumsMdPath, text: "${checksumLine}\n", encoding: "UTF-8", append: true
+    // Checksums.md'ye satır ekle
+    def checksumLine = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
+    writeFile file: checksumsMdPath, text: "${checksumLine}\n", encoding: "UTF-8", append: true
 
-    // echo "Added checksum line to Checksums.md: ${checksumLine}"
+    echo "Added checksum line to Checksums.md: ${checksumLine}"
 
     // Stash işlemi
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"

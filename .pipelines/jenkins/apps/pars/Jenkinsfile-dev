@@ -176,7 +176,8 @@ pipeline {
                 }
             }
         }
-        stage('Build Linux Matrix') {
+
+        stage('Build Linux Debian Matrix') {
             environment {
                 OS      = "linux"
             }
@@ -189,7 +190,7 @@ pipeline {
                 }
                 stages {
                     stage("Build Binary") {
-                        agent { label 'linux' } 
+                        agent { label 'debian' } 
                         steps {
                             script {
                                 
@@ -199,7 +200,7 @@ pipeline {
                         }
                     }
                     stage('Prepare Artifact and Checksum') {
-                        agent { label 'linux' } 
+                        agent { label 'debian' } 
                         steps {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
@@ -208,7 +209,7 @@ pipeline {
                         }
                     }
                     stage('Archive and Generate Metadata') {
-                        agent { label 'linux' }
+                        agent { label 'debian' }
                         steps {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
@@ -217,16 +218,6 @@ pipeline {
                         }
                     }
 
-                    // stage("Build RPM Package") {
-                    //     agent { label 'rhel' } 
-                    //     steps {
-                    //         script {
-                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                    //             helper.call(OS, ARCH)
-                    //             helper.copyRpmAndUpdateChecksums(OS, ARCH)
-                    //         }
-                    //     }
-                    // }
                     stage("Build DEB Package") {
                         agent { label 'debian' } 
                         steps {
@@ -241,6 +232,62 @@ pipeline {
                 }
             }
         }
+
+        // stage('Build Linux RHEL Matrix') {
+        //     environment {
+        //         OS      = "linux"
+        //     }
+        //     matrix {
+        //         axes {
+        //             axis {
+        //                 name 'ARCH'
+        //                 values 'x86_64'//, 'arm64'
+        //             }
+        //         }
+        //         stages {
+        //             stage("Build Binary") {
+        //                 agent { label 'rhel' } 
+        //                 steps {
+        //                     script {
+                                
+        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
+        //                         helper.build(OS, ARCH)
+        //                     }
+        //                 }
+        //             }
+        //             stage('Prepare Artifact and Checksum') {
+        //                 agent { label 'rhel' } 
+        //                 steps {
+        //                     script {
+        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
+        //                         helper.call(OS, ARCH)
+        //                     }
+        //                 }
+        //             }
+        //             stage('Archive and Generate Metadata') {
+        //                 agent { label 'rhel' }
+        //                 steps {
+        //                     script {
+        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
+        //                         helper.packageArtifact(OS, ARCH, "tar.gz")
+        //                     }
+        //                 }
+        //             }
+
+        //             // stage("Build RPM Package") {
+        //             //     agent { label 'rhel' } 
+        //             //     steps {
+        //             //         script {
+        //             //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+        //             //             helper.call(OS, ARCH)
+        //             //             helper.copyRpmAndUpdateChecksums(OS, ARCH)
+        //             //         }
+        //             //     }
+        //             // }
+
+        //         }
+        //     }
+        // }
 
 
         stage('Collect Artifacts') {
