@@ -1,7 +1,7 @@
 def call(String OS, String ARCH) {
-
     def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
+
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
 
@@ -11,7 +11,6 @@ def call(String OS, String ARCH) {
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    
     if (extLine?.contains('=') && extLine.split('=').length > 1) {
         ext = extLine.split('=')[1].trim()
     } else if (OS.toLowerCase() == 'windows') {
