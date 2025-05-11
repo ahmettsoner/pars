@@ -32,6 +32,10 @@ sudo apt install cmake make -y
 # GCC ve GCC C++ yükleyin
 sudo apt install gcc g++ -y
 
+
+sudo apt-get install debhelper -y
+
+
 # Go 1.19.8'i indirin ve kurun
 wget https://go.dev/dl/go1.22.3.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzf go1.22.3.linux-amd64.tar.gz
