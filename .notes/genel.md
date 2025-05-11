@@ -802,7 +802,7 @@ go build -o ../dist/
 
 Project Types
 _ Mail template yönetimi uygulanabilir, invoce project oluşturup, resource olarak contact bilgileri ve template olarak mail body template
-_ Application Packing (.msi, .rpm, .deb vs)
+_ Application Packing (.msi, .rpm, .deb, AppImage vs)
 _ Infrastructure, provisioning yapılandırma
 _ Workflow (iş akışı yönetimi uygulanabilir, ms app flow gibi)
 _ Cloud?
