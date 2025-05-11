@@ -71,6 +71,37 @@ pipeline {
                 }
             }
         }
+        stage('Setup DEBIAN Agent') {
+            agent { label 'debian' }
+            steps {
+                script {
+                    echo "Prepare workspace"
+                    sh 'git config --global --add safe.directory $(pwd)'
+                    checkout scm 
+                    
+                    sh """
+                    git config --global user.email "\$GIT_USER_EMAIL"
+                    git config --global user.name "\$GIT_USER_NAME"
+
+                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
+                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
+                    BUILD_VERSION=\$TAG_NAME
+
+                    
+                    make build.cmake.\$BUILD_VERSION
+
+                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
+                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
+
+                    mkdir -p CHANGELOG
+                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
+
+                    echo "APPNAME=pars" >> version_output.txt
+
+                    """
+                }
+            }
+        }
         stage('Generate HTML Docs') {
             agent { label 'linux' }
             steps {
@@ -224,16 +255,15 @@ pipeline {
                             }
                         }
                     }
-
-                    // stage("Build DEB Package") {
-                    //     agent { label 'debian' } 
-                    //     steps {
-                    //         script {
-                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
-                    //             helper.buildDEBPackage(OS, ARCH)
-                    //         }
-                    //     }
-                    // }
+                    stage("Build DEB Package") {
+                        agent { label 'debian' } 
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
+                                helper.call(OS, ARCH)
+                            }
+                        }
+                    }
 
                 }
             }
@@ -245,7 +275,7 @@ pipeline {
             steps {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
-                unstash 'linux-x86_64-deb-package-artifacts'
+                unstash 'linux-x86_64-rpm-package-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'

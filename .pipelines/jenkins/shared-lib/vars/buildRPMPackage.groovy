@@ -138,7 +138,7 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
     echo "Added checksum line to Checksums.md: ${checksumLine}"
 
 
-    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
+    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
 }
 
 return this

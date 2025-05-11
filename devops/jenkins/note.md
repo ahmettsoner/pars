@@ -95,9 +95,9 @@ Description=Jenkins Agent
 After=network.target
 
 [Service]
-[Service]
 User=ahmettsoner
 WorkingDirectory=/home/ahmettsoner
+Environment=PATH=/usr/local/go/bin:/usr/bin:/bin
 ExecStart=/opt/jdk-21.0.7/bin/java -jar /home/ahmettsoner/agent.jar -url http://192.168.122.1:8080/ -secret f78eacb6e3de545b947ee9c9b86d75e68d126312acf8ece7b32f84e0c76ad475 -name centos -webSocket -workDir /home/ahmettsoner
 Restart=always
 StandardOutput=file:/var/log/jenkins-agent.log
@@ -164,4 +164,9 @@ sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable jenkins-agent.service
 sudo systemctl start jenkins-agent.service
+```
+
+```
+sudo dnf install rpm-build rpmdevtools rpmlint -y
+
 ```
