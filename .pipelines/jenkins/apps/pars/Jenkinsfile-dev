@@ -40,39 +40,39 @@ pipeline {
                 }
             }
         }
-        // stage('Setup RHEL Agent') {
-        //     agent { label 'rhel' }
-        //     steps {
-        //         script {
-        //             echo "Prepare workspace"
-        //             sh 'git config --global --add safe.directory $(pwd)'
-        //             checkout scm 
+        stage('Setup RHEL Agent') {
+            agent { label 'rhel' }
+            steps {
+                script {
+                    echo "Prepare workspace"
+                    sh 'git config --global --add safe.directory $(pwd)'
+                    checkout scm 
                     
-        //             sh """
-        //             git config --global user.email "\$GIT_USER_EMAIL"
-        //             git config --global user.name "\$GIT_USER_NAME"
+                    sh """
+                    git config --global user.email "\$GIT_USER_EMAIL"
+                    git config --global user.name "\$GIT_USER_NAME"
 
-                    // git checkout -b dev
+                    git checkout -b dev
 
-        //             CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-        //             TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-        //             BUILD_VERSION=\$TAG_NAME
+                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
+                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
+                    BUILD_VERSION=\$TAG_NAME
 
                     
-        //             make build.cmake.\$BUILD_VERSION
+                    make build.cmake.\$BUILD_VERSION
 
-        //             echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-        //             echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
+                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
+                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
 
-        //             mkdir -p CHANGELOG
-        //             echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
+                    mkdir -p CHANGELOG
+                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
 
-        //             echo "APPNAME=pars" >> version_output.txt
+                    echo "APPNAME=pars" >> version_output.txt
 
-        //             """
-        //         }
-        //     }
-        // }
+                    """
+                }
+            }
+        }
         stage('Setup DEBIAN Agent') {
             agent { label 'debian' }
             steps {
@@ -235,61 +235,61 @@ pipeline {
             }
         }
 
-        // stage('Build Linux RHEL Matrix') {
-        //     environment {
-        //         OS      = "linux"
-        //     }
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64'//, 'arm64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'rhel' } 
-        //                 steps {
-        //                     script {
+        stage('Build Linux RHEL Matrix') {
+            environment {
+                OS      = "linux"
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64'//, 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
                                 
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-        //                         helper.build(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'rhel' } 
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-        //                         helper.call(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'rhel' }
-        //                 steps {
-        //                     script {
-        //                         def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-        //                         helper.packageArtifact(OS, ARCH, "tar.gz")
-        //                     }
-        //                 }
-        //             }
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
+                                helper.build(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
+                                helper.call(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Archive and Generate Metadata') {
+                        agent { label 'rhel' }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
+                                helper.packageArtifact(OS, ARCH, "tar.gz")
+                            }
+                        }
+                    }
 
-        //             // stage("Build RPM Package") {
-        //             //     agent { label 'rhel' } 
-        //             //     steps {
-        //             //         script {
-        //             //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-        //             //             helper.call(OS, ARCH)
-        //             //             helper.copyRpmAndUpdateChecksums(OS, ARCH)
-        //             //         }
-        //             //     }
-        //             // }
+                    // stage("Build RPM Package") {
+                    //     agent { label 'rhel' } 
+                    //     steps {
+                    //         script {
+                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+                    //             helper.call(OS, ARCH)
+                    //             helper.copyRpmAndUpdateChecksums(OS, ARCH)
+                    //         }
+                    //     }
+                    // }
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
 
 
         stage('Collect Artifacts') {
