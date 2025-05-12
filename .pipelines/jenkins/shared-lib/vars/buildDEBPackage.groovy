@@ -26,7 +26,7 @@ def call(String OS, String ARCH) {
     sh """
         echo "---------"
         mkdir -p '${packageBinaryPath}'
-        cp '${binaryOutputPath}' '${packageBinaryPath}/'
+        cp '${binaryOutputPath}' '${packageBinaryPath}'
         export GO111MODULE=on
         make build.deb.package.${ARCH}.configuration VERSION=${buildVersion}
         make build.deb.package.${ARCH}.package VERSION=${buildVersion}
