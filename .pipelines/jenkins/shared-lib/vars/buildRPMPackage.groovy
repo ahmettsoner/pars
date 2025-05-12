@@ -132,10 +132,10 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
     def checksum = readFile(checksumFilePath).trim()
 
     // Append to Checksums.md
-    def checksumLine = "| ${OS} | ${ARCH} | RPM | ${newBaseName} | ${checksum} |"
-    writeFile file: checksumsMdPath, text: "${checksumLine}\n", encoding: "UTF-8", append: true
+    def line = "| ${OS} | ${ARCH} | RPM | ${newBaseName} | ${checksum} |"
+    writeFile file: checksumsMdPath, text: "${line}\n", encoding: "UTF-8", append: true
 
-    echo "Added checksum line to Checksums.md: ${checksumLine}"
+    echo "Added checksum line to Checksums.md: ${line}"
 
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"

@@ -106,10 +106,10 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
 
     // Checksums.md'ye satır ekle
     def line = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
-    // writeFile file: checksumsMdPath, text: "${checksumLine}\n", encoding: "UTF-8", append: true
+    // writeFile file: checksumsMdPath, text: "${line}\n", encoding: "UTF-8", append: true
     sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
-    echo "Added checksum line to Checksums.md: ${checksumLine}"
+    echo "Added checksum line to Checksums.md: ${line}"
 
     // Stash işlemi
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
