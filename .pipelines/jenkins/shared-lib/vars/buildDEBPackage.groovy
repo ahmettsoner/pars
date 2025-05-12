@@ -84,7 +84,7 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
             error "Unsupported architecture: ${ARCH}"
     }
 
-    def plainVersion = rawBaseVersion
+    def plainVersion = buildVersion.replaceFirst(/^v/, "")
     def newBaseName = "${appName}-${OS}-${ARCH}.deb"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
     def debOutputBase = "${packageOutputBase}/output"
