@@ -17,7 +17,7 @@ def call(String OS, String ARCH) {
     }
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
 
-    def pckgPath = "usr/bin/pars"
+    def pckgPath = "usr/bin"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
     def packageBinaryPath = "${packageOutputBase}/${appName}/${pckgPath}"
     // def newBaseName = "${appName}-${baseVersion}.tar.gz"
