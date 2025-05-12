@@ -24,7 +24,6 @@ def call(String OS, String ARCH) {
     // def originalFileName = "${appName}${ext}"
 
     sh """
-        echo "---------"
         mkdir -p '${packageBinaryPath}'
         cp '${binaryOutputPath}' '${packageBinaryPath}'
         export GO111MODULE=on
