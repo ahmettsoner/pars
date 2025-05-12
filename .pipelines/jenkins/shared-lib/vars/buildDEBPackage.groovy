@@ -105,7 +105,7 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
     def checksum = readFile(checksumFilePath).trim()
 
     // Checksums.md'ye satır ekle
-    def checksumLine = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
+    def line = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
     // writeFile file: checksumsMdPath, text: "${checksumLine}\n", encoding: "UTF-8", append: true
     sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
