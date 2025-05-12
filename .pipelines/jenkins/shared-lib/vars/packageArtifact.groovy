@@ -1,8 +1,11 @@
 def packageArtifact(String OS, String ARCH, String archiveFormat) {
+    echo "1111"
     def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
+    echo "2222"
     def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+    echo "3333"
     def html_output_dir = versionOutput.split('\n').find { it.startsWith('HTML_OUTPUT_DIR=') }?.split('=')[1]?.trim()
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
@@ -12,12 +15,15 @@ def packageArtifact(String OS, String ARCH, String archiveFormat) {
     } else if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
+    echo "4444"
     
     def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+    echo "5555"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
     def artifactPath = "dist/artifacts/${buildVersion}"
     
+    echo "6666"
     if (!fileExists(binaryOutputPathBase) || !fileExists(binaryChecksumPath)) {
         echo "Required files do not exist. Skipping archive step."
         return
