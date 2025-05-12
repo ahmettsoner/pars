@@ -133,7 +133,7 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
 
     // Append to Checksums.md
     def line = "| ${OS} | ${ARCH} | RPM | ${newBaseName} | ${checksum} |"
-    writeFile file: checksumsMdPath, text: "${line}\n", encoding: "UTF-8", append: true
+    sh "echo '${line}' >> ${artifactPath}/Checksums.md"
 
     echo "Added checksum line to Checksums.md: ${line}"
 
