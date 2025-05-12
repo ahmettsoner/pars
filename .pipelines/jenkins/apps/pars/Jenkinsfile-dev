@@ -52,8 +52,6 @@ pipeline {
                     git config --global user.email "\$GIT_USER_EMAIL"
                     git config --global user.name "\$GIT_USER_NAME"
 
-                    git checkout -b dev
-
                     CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
                     TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
                     BUILD_VERSION=\$TAG_NAME
@@ -276,16 +274,16 @@ pipeline {
                         }
                     }
 
-                    // stage("Build RPM Package") {
-                    //     agent { label 'rhel' } 
-                    //     steps {
-                    //         script {
-                    //             def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                    //             helper.call(OS, ARCH)
-                    //             helper.copyRpmAndUpdateChecksums(OS, ARCH)
-                    //         }
-                    //     }
-                    // }
+                    stage("Build RPM Package") {
+                        agent { label 'rhel' } 
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
+                                helper.call(OS, ARCH)
+                                helper.copyRpmAndUpdateChecksums(OS, ARCH)
+                            }
+                        }
+                    }
 
                 }
             }
@@ -297,7 +295,7 @@ pipeline {
             steps {
                 unstash 'linux-x86_64-artifacts'
                 unstash 'linux-x86_64-archive-artifacts'
-                // unstash 'linux-x86_64-rpm-package-artifacts'
+                unstash 'linux-x86_64-rpm-package-artifacts'
                 unstash 'linux-x86_64-deb-package-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
