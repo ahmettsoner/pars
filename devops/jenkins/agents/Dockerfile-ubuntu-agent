@@ -1,0 +1,32 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# Gerekli sistem araçları
+RUN apt-get update && apt-get install -y \
+    curl wget git make cmake build-essential zip unzip \
+    p7zip-full rar ca-certificates gnupg lsb-release \
+    software-properties-common pandoc devscripts dh-make \
+    dh-golang debhelper lintian fakeroot golang-any rpm \
+    openjdk-17-jdk \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Node.js 22 kurulumu
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm && \
+    npm install -g git-release-manager@0.0.12
+
+# Go kurulumu
+RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go1.22.0.linux-amd64.tar.gz && \
+    rm go1.22.0.linux-amd64.tar.gz
+
+# agent.jar dosyasını kopyala
+COPY agent.jar /workspace/agent.jar
+
+WORKDIR /workspace
+
+# Varsayılan komut (argümanla override edilebilir)
+CMD ["java", "-jar", "/workspace/agent.jar"]
