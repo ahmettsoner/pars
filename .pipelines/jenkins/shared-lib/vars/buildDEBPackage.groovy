@@ -20,15 +20,16 @@ def call(String OS, String ARCH) {
     def pckgPath = "usr/bin/pars"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
     def packageBinaryPath = "${packageOutputBase}/${appName}/${pckgPath}"
-    def newBaseName = "${appName}-${baseVersion}.tar.gz"
-    def originalFileName = "${appName}${ext}"
+    // def newBaseName = "${appName}-${baseVersion}.tar.gz"
+    // def originalFileName = "${appName}${ext}"
 
     sh """
+        echo "---------"
+        mkdir -p '${packageBinaryPath}'
+        cp '${binaryOutputPath}' '${packageBinaryPath}/'
         export GO111MODULE=on
         make build.deb.package.${ARCH}.configuration VERSION=${buildVersion}
         make build.deb.package.${ARCH}.package VERSION=${buildVersion}
-        mkdir -p '${packageBinaryPath}'
-        cp '${binaryOutputPath}' '${packageBinaryPath}/'
     """
 
     def debArch = ""
