@@ -26,6 +26,14 @@ RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
 # agent.jar dosyasını kopyala
 COPY agent.jar /workspace/agent.jar
 
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+RUN apt-get update && \
+    apt-get install -y locales && \
+    locale-gen en_US.UTF-8
+    
 WORKDIR /workspace
 
 # Varsayılan komut (argümanla override edilebilir)
