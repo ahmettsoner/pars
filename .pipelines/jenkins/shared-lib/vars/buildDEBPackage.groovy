@@ -44,7 +44,7 @@ def call(String OS, String ARCH) {
         error "Unsupported architecture: ${ARCH}"
     }
 
-    def plainVersion = version.replaceFirst(/^v/, "")
+    def plainVersion = buildVersion.replaceFirst(/^v/, "")
     def debOutputBase = "${packageOutputBase}/output"
     def debOutputPath = "${debOutputBase}/pars_${plainVersion}_${debArch}.deb"
     def debChecksumPath = "${debOutputBase}/checksum.txt"
