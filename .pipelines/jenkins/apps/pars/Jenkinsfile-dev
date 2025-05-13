@@ -19,7 +19,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'rhel', 'debian'
+                        values 'linux', 'rhel'//, 'debian'
                     }
                 }
                 stages {
@@ -185,7 +185,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'rhel', 'debian'
+                        values 'linux', 'rhel'//, 'debian'
                     }
                 }
                 stages {
