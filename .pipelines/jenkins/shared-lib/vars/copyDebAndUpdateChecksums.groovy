@@ -35,8 +35,8 @@ def call(String OS, String ARCH) {
     def checksum = readFile(checksumFilePath).trim()
 
     // Checksums.md'ye satır ekle
-    def line = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
-    // writeFile file: checksumsMdPath, text: "${line}\n", encoding: "UTF-8", append: true
+    def type = "DEB"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
     sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     echo "Added checksum line to Checksums.md: ${line}"

@@ -46,7 +46,8 @@ def call(String OS, String ARCH) {
     def checksum = readFile(checksumFilePath).trim()
 
     // Append to Checksums.md
-    def line = "| ${OS} | ${ARCH} | RPM | ${newBaseName} | ${checksum} |"
+    def type = "RPM"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
     sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     echo "Added checksum line to Checksums.md: ${line}"

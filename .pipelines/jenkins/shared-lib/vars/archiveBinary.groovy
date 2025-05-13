@@ -18,11 +18,11 @@ def call(String OS, String ARCH) {
     sh "cp ${binaryOutputPathBase}/${originalFileName} ${env.ARTIFACT_PATH}/${newBaseName}"
 
     // Checksum oku
-    def binaryChecksum = readFile("${binaryChecksumPath}").trim()
+    def checksum = readFile("${binaryChecksumPath}").trim()
 
     // Checksums.md'ye yaz
     def type = "Binary"
-    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${binaryChecksum} |"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
     sh "echo '${line}' >> ${env.ARTIFACT_PATH}/Checksums.md"
 
     // Stash dosyalar
