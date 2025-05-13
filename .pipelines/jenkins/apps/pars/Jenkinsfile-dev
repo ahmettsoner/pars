@@ -167,8 +167,8 @@ pipeline {
                     }
                 }
                 stages {
-                    agent { label 'linux' }
                     stage("Build Binary") {
+                        agent { label 'linux' }
                         steps {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
