@@ -52,6 +52,7 @@ pipeline {
         }
 
 
+
         stage('Builds') {
             matrix {
                 axes {
@@ -70,6 +71,7 @@ pipeline {
                         steps {
                             script {
                                 buildBinary("linux", ARCH)
+                                archiveBinary(OS, ARCH)
                             }
                         }
                     }
@@ -92,7 +94,7 @@ pipeline {
                 }
             }
         }
-
+    
 
         stage('Collect Artifacts') {
             matrix {
