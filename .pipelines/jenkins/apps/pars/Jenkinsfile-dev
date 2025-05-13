@@ -23,7 +23,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Setup") {
+                    stage("Setup - ${PLATFORM}") {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
@@ -31,7 +31,7 @@ pipeline {
                             }
                         }
                     }
-                    stage("Docs") {
+                    stage("Docs - ${PLATFORM}") {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
@@ -39,7 +39,7 @@ pipeline {
                             }
                         }
                     }
-                    stage("Checksum") {
+                    stage("Checksum - ${PLATFORM}") {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
@@ -63,7 +63,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Build Binary") {
+                    stage("Build Binary - ${OS} ${ARCH}") {
                         agent { label 'debian' } 
                         steps {
                             script {
@@ -71,7 +71,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Prepare Artifact and Checksum') {
+                    stage("Prepare Artifact and Checksum - ${OS} ${ARCH}") {
                         agent { label 'debian' } 
                         steps {
                             script {
@@ -79,7 +79,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Archive and Generate Metadata') {
+                    stage("Archive and Generate Metadata - ${OS} ${ARCH}") {
                         agent { label 'debian' }
                         steps {
                             script {
@@ -88,7 +88,7 @@ pipeline {
                         }
                     }
 
-                    stage("Build DEB Package") {
+                    stage("Build DEB Package - ${OS} ${ARCH}") {
                         agent { label 'debian' } 
                         steps {
                             script {
@@ -114,7 +114,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Build Binary") {
+                    stage("Build Binary - ${OS} ${ARCH}") {
                         agent { label 'rhel' } 
                         steps {
                             script {
@@ -122,7 +122,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Prepare Artifact and Checksum') {
+                    stage("Prepare Artifact and Checksum - ${OS} ${ARCH}") {
                         agent { label 'rhel' } 
                         steps {
                             script {
@@ -130,7 +130,7 @@ pipeline {
                             }
                         }
                     }
-                    stage('Archive and Generate Metadata') {
+                    stage("Archive and Generate Metadata - ${OS} ${ARCH}") {
                         agent { label 'rhel' }
                         steps {
                             script {
@@ -140,7 +140,7 @@ pipeline {
                         }
                     }
 
-                    stage("Build RPM Package") {
+                    stage("Build RPM Package - ${OS} ${ARCH}") {
                         agent { label 'rhel' } 
                         steps {
                             script {
@@ -167,7 +167,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Build Binary") {
+                    stage("Build Binary - ${OS} ${ARCH}") {
                         agent { label 'linux' }
                         steps {
                             unstash "${OS}-${ARCH}-artifacts"
@@ -190,7 +190,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Delete dist files") {
+                    stage("Delete dist files - ${ARCH}") {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
