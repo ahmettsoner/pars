@@ -53,7 +53,7 @@ def call(String OS, String ARCH, String archiveFormat) {
 
     def type = "Archive"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
+    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-archive-artifacts"
 }
