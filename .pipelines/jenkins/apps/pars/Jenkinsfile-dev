@@ -154,7 +154,6 @@ pipeline {
             }
         }
 
-
         stage('Collect Artifacts') {
             agent { label 'linux' }
             steps {
@@ -166,9 +165,7 @@ pipeline {
             }
         }
 
-
-
-        stage("Prepare workspace") {
+        stage("Clean workspace") {
             matrix {
                 axes {
                     axis {
@@ -177,7 +174,7 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Clean Workspace") {
+                    stage("Delete dist files") {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
