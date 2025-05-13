@@ -7,6 +7,9 @@ pipeline {
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@example.com', description: 'Git user email')
         string(name: 'GIT_USER_NAME', defaultValue: 'CI Bot', description: 'Git user name')
     }
+    environment {
+        APPNAME1      = "test app"
+    }
 
     stages {
         stage("Prepare workspace") {
@@ -24,7 +27,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
                                 helper.setupAgent()
-                                echo ">>>> ${env.BUILD_VERSION}"
+                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -34,7 +37,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
                                 helper.generateDocs()
-                                echo ">>>> ${env.BUILD_VERSION}"
                             }
                         }
                     }
@@ -44,7 +46,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
                                 helper.generateChecksum()
-                                echo ">>>> ${env.BUILD_VERSION}"
                             }
                         }
                     }
@@ -71,7 +72,7 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo ">>>> ${env.BUILD_VERSION}"
+                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -81,7 +82,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
-                                echo ">>>> ${env.BUILD_VERSION}"
+                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -91,7 +92,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
                                 helper.packageArtifact(OS, ARCH, "tar.gz")
-                                echo ">>>> ${env.BUILD_VERSION}"
                             }
                         }
                     }
@@ -130,7 +130,7 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo ">>>> ${env.BUILD_VERSION}"
+                                echo "------ : ${APPNAME1}"
 
                             }
                         }
@@ -141,7 +141,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
-                                echo ">>>> ${env.BUILD_VERSION}"
                             }
                         }
                     }
