@@ -53,114 +53,46 @@ pipeline {
 
 
         stage('Builds') {
-            parallel {
-                stage('Build Linux DEBIAN Matrix') {
-                    environment {
-                        OS      = "linux"
-                        PLATFORM = "debian"
+            matrix {
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'debian', 'rhel'
                     }
-                    matrix {
-                        axes {
-                            axis {
-                                name 'ARCH'
-                                values 'x86_64'//, 'arm64'
-                            }
-                        }
-                        stages {
-                            stage("Build Binary") {
-                                agent { label "${PLATFORM}" } 
-                                steps {
-                                    script {
-                                        buildBinary(OS, ARCH)
-                                    }
-                                }
-                            }
-                            
-                            // stage('Prepare Artifact and Checksum') {
-                            //     agent { label "${PLATFORM}" } 
-                            //     steps {
-                            //         script {
-                            //             archiveBinary(OS, ARCH)
-                            //         }
-                            //     }
-                            // }
-                            
-                            // stage('Archive and Generate Metadata') {
-                            //     agent { label "${PLATFORM}" } 
-                            //     steps {
-                            //         script {
-                            //             packageArtifact(OS, ARCH, "tar.gz")
-                            //         }
-                            //     }
-                            // }
-
-                            // stage("Build DEB Package") {
-                                // agent { label "${PLATFORM}" } 
-                            //     steps {
-                            //         script {
-                            //             buildDEBPackage(OS, ARCH)
-                            //             copyDebAndUpdateChecksums(OS, ARCH)
-                            //         }
-                            //     }
-                            // }
-
-                        }
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64'
                     }
                 }
-
-                stage('Build Linux RHEL Matrix') {
-                    environment {
-                        OS      = "linux"
-                        PLATFORM = "rhel"
-                    }
-                    matrix {
-                        axes {
-                            axis {
-                                name 'ARCH'
-                                values 'x86_64'//, 'arm64'
+                stages {
+                    stage('Build Binary') {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                buildBinary("linux", ARCH)
                             }
                         }
-                        stages {
-                            stage("Build Binary") {
-                                agent { label "${PLATFORM}" } 
-                                steps {
-                                    script {
-                                        buildBinary(OS, ARCH)
-                                    }
+                    }
+                    stage('Archive and Package') {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                if (PLATFORM == 'rhel') {
+                                    packageArtifact("linux", ARCH, "tar.gz")
+                                    buildRPMPackage("linux", ARCH)
+                                    copyRpmAndUpdateChecksums("linux", ARCH)
+                                } else if (PLATFORM == 'debian') {
+                                    packageArtifact("linux", ARCH, "tar.gz")
+                                    buildDEBPackage("linux", ARCH)
+                                    copyDebAndUpdateChecksums("linux", ARCH)
                                 }
                             }
-                            stage('Prepare Artifact and Checksum') {
-                                agent { label "${PLATFORM}" } 
-                                steps {
-                                    script {
-                                        archiveBinary(OS, ARCH)
-                                    }
-                                }
-                            }
-                            stage('Archive and Generate Metadata') {
-                                agent { label "${PLATFORM}" } 
-                                steps {
-                                    script {
-                                        packageArtifact(OS, ARCH, "tar.gz")
-                                    }
-                                }
-                            }
-
-                            stage("Build RPM Package") {
-                                agent { label "${PLATFORM}" } 
-                                steps {
-                                    script {
-                                        buildRPMPackage(OS, ARCH)
-                                        copyRpmAndUpdateChecksums(OS, ARCH)
-                                    }
-                                }
-                            }
-
                         }
                     }
                 }
             }
         }
+
 
         stage('Collect Artifacts') {
             matrix {
