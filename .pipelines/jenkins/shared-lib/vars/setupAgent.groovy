@@ -1,4 +1,4 @@
-def setupAgent() {
+def call() {
   checkout scm
   sh 'git config --global --add safe.directory $(pwd)'
 
