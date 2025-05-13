@@ -51,56 +51,56 @@ pipeline {
             }
         }
 
-        // stage('Build Linux DEBIAN Matrix') {
-        //     environment {
-        //         OS      = "linux"
-        //     }
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'ARCH'
-        //                 values 'x86_64', 'arm64'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Build Binary") {
-        //                 agent { label 'debian' } 
-        //                 steps {
-        //                     script {
-        //                         buildBinary(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Prepare Artifact and Checksum') {
-        //                 agent { label 'debian' } 
-        //                 steps {
-        //                     script {
-        //                         archiveBinary(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
-        //             stage('Archive and Generate Metadata') {
-        //                 agent { label 'debian' }
-        //                 steps {
-        //                     script {
-        //                         packageArtifact(OS, ARCH, "tar.gz")
-        //                     }
-        //                 }
-        //             }
+        stage('Build Linux DEBIAN Matrix') {
+            environment {
+                OS      = "linux"
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64'//, 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label 'debian' } 
+                        steps {
+                            script {
+                                buildBinary(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label 'debian' } 
+                        steps {
+                            script {
+                                archiveBinary(OS, ARCH)
+                            }
+                        }
+                    }
+                    stage('Archive and Generate Metadata') {
+                        agent { label 'debian' }
+                        steps {
+                            script {
+                                packageArtifact(OS, ARCH, "tar.gz")
+                            }
+                        }
+                    }
 
-        //             stage("Build DEB Package") {
-        //                 agent { label 'debian' } 
-        //                 steps {
-        //                     script {
-        //                         buildDEBPackage(OS, ARCH)
-        //                         copyDebAndUpdateChecksums(OS, ARCH)
-        //                     }
-        //                 }
-        //             }
+                    // stage("Build DEB Package") {
+                    //     agent { label 'debian' } 
+                    //     steps {
+                    //         script {
+                    //             buildDEBPackage(OS, ARCH)
+                    //             copyDebAndUpdateChecksums(OS, ARCH)
+                    //         }
+                    //     }
+                    // }
 
-        //         }
-        //     }
-        // }
+                }
+            }
+        }
 
         stage('Build Linux RHEL Matrix') {
             environment {
