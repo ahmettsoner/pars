@@ -51,60 +51,62 @@ pipeline {
             }
         }
 
-        stage('Build Linux DEBIAN Matrix') {
-            environment {
-                OS      = "linux"
-            }
-            matrix {
-                axes {
-                    axis {
-                        name 'ARCH'
-                        values 'x86_64'//, 'arm64'
-                    }
-                }
-                stages {
-                    stage("Build Binary") {
-                        agent { label 'debian' } 
-                        steps {
-                            script {
-                                buildBinary(OS, ARCH)
-                            }
-                        }
-                    }
-                    stage('Prepare Artifact and Checksum') {
-                        agent { label 'debian' } 
-                        steps {
-                            script {
-                                archiveBinary(OS, ARCH)
-                            }
-                        }
-                    }
-                    stage('Archive and Generate Metadata') {
-                        agent { label 'debian' }
-                        steps {
-                            script {
-                                packageArtifact(OS, ARCH, "tar.gz")
-                            }
-                        }
-                    }
+        // stage('Build Linux DEBIAN Matrix') {
+        //     environment {
+        //         OS      = "linux"
+        //         PLATFORM = "debian"
+        //     }
+        //     matrix {
+        //         axes {
+        //             axis {
+        //                 name 'ARCH'
+        //                 values 'x86_64'//, 'arm64'
+        //             }
+        //         }
+        //         stages {
+        //             stage("Build Binary") {
+        //                 agent { label "${PLATFORM}" } 
+        //                 steps {
+        //                     script {
+        //                         buildBinary(OS, ARCH)
+        //                     }
+        //                 }
+        //             }
+        //             stage('Prepare Artifact and Checksum') {
+        //                 agent { label "${PLATFORM}" } 
+        //                 steps {
+        //                     script {
+        //                         archiveBinary(OS, ARCH)
+        //                     }
+        //                 }
+        //             }
+        //             stage('Archive and Generate Metadata') {
+        //                 agent { label "${PLATFORM}" } 
+        //                 steps {
+        //                     script {
+        //                         packageArtifact(OS, ARCH, "tar.gz")
+        //                     }
+        //                 }
+        //             }
 
-                    // stage("Build DEB Package") {
-                    //     agent { label 'debian' } 
-                    //     steps {
-                    //         script {
-                    //             buildDEBPackage(OS, ARCH)
-                    //             copyDebAndUpdateChecksums(OS, ARCH)
-                    //         }
-                    //     }
-                    // }
+        //             // stage("Build DEB Package") {
+        //                 // agent { label "${PLATFORM}" } 
+        //             //     steps {
+        //             //         script {
+        //             //             buildDEBPackage(OS, ARCH)
+        //             //             copyDebAndUpdateChecksums(OS, ARCH)
+        //             //         }
+        //             //     }
+        //             // }
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
 
         stage('Build Linux RHEL Matrix') {
             environment {
                 OS      = "linux"
+                PLATFORM = "rhel"
             }
             matrix {
                 axes {
@@ -115,7 +117,7 @@ pipeline {
                 }
                 stages {
                     stage("Build Binary") {
-                        agent { label 'rhel' } 
+                        agent { label "${PLATFORM}" } 
                         steps {
                             script {
                                 buildBinary(OS, ARCH)
@@ -123,7 +125,7 @@ pipeline {
                         }
                     }
                     stage('Prepare Artifact and Checksum') {
-                        agent { label 'rhel' } 
+                        agent { label "${PLATFORM}" } 
                         steps {
                             script {
                                 archiveBinary(OS, ARCH)
@@ -131,7 +133,7 @@ pipeline {
                         }
                     }
                     stage('Archive and Generate Metadata') {
-                        agent { label 'rhel' }
+                        agent { label "${PLATFORM}" } 
                         steps {
                             script {
                                 packageArtifact(OS, ARCH, "tar.gz")
@@ -140,7 +142,7 @@ pipeline {
                     }
 
                     stage("Build RPM Package") {
-                        agent { label 'rhel' } 
+                        agent { label "${PLATFORM}" } 
                         steps {
                             script {
                                 buildRPMPackage(OS, ARCH)
