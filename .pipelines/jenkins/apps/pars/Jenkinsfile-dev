@@ -163,9 +163,29 @@ pipeline {
                 unstash 'linux-x86_64-rpm-package-artifacts'
                 unstash 'linux-x86_64-deb-package-artifacts'
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+            }
+        }
 
-                sh 'rm -rf dist/*'
-                echo ">>>> ${env.BUILD_VERSION}"
+
+
+        stage("Prepare workspace") {
+            matrix {
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'linux', 'rhel', 'debian'
+                    }
+                }
+                stages {
+                    stage("Clean Workspace") {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                sh "rm -rf ${env.DIST_PATH}/*"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
