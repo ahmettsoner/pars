@@ -23,7 +23,7 @@ def call(String OS, String ARCH) {
     // Checksums.md'ye yaz
     def type = "Binary"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/Checksums.md"
+    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
 
     // Stash dosyalar
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-artifacts"
