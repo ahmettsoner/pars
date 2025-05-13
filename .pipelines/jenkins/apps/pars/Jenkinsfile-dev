@@ -1,3 +1,5 @@
+def buildVersion = ""
+
 pipeline {
     agent none
 
@@ -23,7 +25,8 @@ pipeline {
                         steps {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
-                                helper.setupAgent("${PLATFORM}")
+                                helper.setupAgent()
+                                echo buildVersion
                             }
                         }
                     }
@@ -32,7 +35,8 @@ pipeline {
                         steps {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
-                                helper.generateDocs("${PLATFORM}")
+                                helper.generateDocs()
+                                echo buildVersion
                             }
                         }
                     }
@@ -41,7 +45,8 @@ pipeline {
                         steps {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
-                                helper.generateChecksum("${PLATFORM}")
+                                helper.generateChecksum()
+                                echo buildVersion
                             }
                         }
                     }
@@ -57,7 +62,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values 'x86_64'//, 'arm64'
                     }
                 }
                 stages {
@@ -68,6 +73,7 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
+                                echo buildVersion
                             }
                         }
                     }
@@ -77,6 +83,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
+                                echo buildVersion
                             }
                         }
                     }
@@ -86,6 +93,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
                                 helper.packageArtifact(OS, ARCH, "tar.gz")
+                                echo buildVersion
                             }
                         }
                     }
@@ -113,7 +121,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values 'x86_64'//, 'arm64'
                     }
                 }
                 stages {
@@ -124,6 +132,8 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
+                                echo buildVersion
+
                             }
                         }
                     }
@@ -133,6 +143,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
+                                echo buildVersion
                             }
                         }
                     }
@@ -172,6 +183,7 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
+                echo buildVersion
             }
         }
     }

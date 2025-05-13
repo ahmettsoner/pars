@@ -1,4 +1,4 @@
-def generateChecksum(String label) {
+def generateChecksum() {
     def versionOutput = readFile("${WORKSPACE}/version_output.txt")
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
 

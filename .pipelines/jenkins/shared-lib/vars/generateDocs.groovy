@@ -1,4 +1,4 @@
-def generateDocs(String label) {
+def generateDocs() {
   def versionOutput = readFile("version_output.txt")
   def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
 
