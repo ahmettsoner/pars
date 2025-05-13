@@ -72,15 +72,16 @@ pipeline {
                             }
                         }
                     }
+
+                    stage('Prepare Artifact and Checksum') {
+                        agent { label "${PLATFORM}" } 
+                        steps {
+                            script {
+                                archiveBinary(OS, ARCH)
+                            }
+                        }
+                    }
                     
-                    // stage('Prepare Artifact and Checksum') {
-                    //     agent { label "${PLATFORM}" } 
-                    //     steps {
-                    //         script {
-                    //             archiveBinary(OS, ARCH)
-                    //         }
-                    //     }
-                    // }
                     // stage('Archive and Generate Metadata') {
                     //     agent { label "${PLATFORM}" } 
                     //     steps {
