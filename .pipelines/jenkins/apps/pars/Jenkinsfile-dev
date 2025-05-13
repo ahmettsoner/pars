@@ -155,7 +155,6 @@ pipeline {
         }
 
         stage('Collect Artifacts') {
-            agent { label 'linux' }
             matrix {
                 axes {
                     axis {
@@ -167,12 +166,17 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
-                steps {
-                    unstash "${OS}-${ARCH}-artifacts"
-                    unstash "${OS}-${ARCH}-archive-artifacts"
-                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                    unstash "${OS}-${ARCH}-deb-package-artifacts"
-                    archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                stages {
+                    agent { label 'linux' }
+                    stage("Build Binary") {
+                        steps {
+                            unstash "${OS}-${ARCH}-artifacts"
+                            unstash "${OS}-${ARCH}-archive-artifacts"
+                            unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                            unstash "${OS}-${ARCH}-deb-package-artifacts"
+                            archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                        }
+                    }
                 }
             }
         }
