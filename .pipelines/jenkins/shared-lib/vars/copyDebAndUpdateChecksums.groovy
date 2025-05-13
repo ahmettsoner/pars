@@ -37,7 +37,7 @@ def call(String OS, String ARCH) {
     // Checksums.md'ye satır ekle
     def type = "DEB"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
+    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     echo "Added checksum line to Checksums.md: ${line}"
 
