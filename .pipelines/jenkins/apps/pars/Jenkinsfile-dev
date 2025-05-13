@@ -9,44 +9,45 @@ pipeline {
     }
 
     stages {
-        matrix {
-            axes {
-                axis {
-                    name 'PLATFORM'
-                    values 'linux', 'rhel', 'debian'
-                }
-            }
-            stages {
-                stage("Setup") {
-                    agent { label "${PLATFORM}" }
-                    steps {
-                        script {
-                            def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
-                            helper.setupAgent("${PLATFORM}")
-                        }
+        stage("Prepare workspace") {
+            matrix {
+                axes {
+                    axis {
+                        name 'PLATFORM'
+                        values 'linux', 'rhel', 'debian'
                     }
                 }
-                stage("Docs") {
-                    agent { label "${PLATFORM}" }
-                    steps {
-                        script {
-                            def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
-                            helper.generateDocs("${PLATFORM}")
+                stages {
+                    stage("Setup") {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
+                                helper.setupAgent("${PLATFORM}")
+                            }
                         }
                     }
-                }
-                stage("Checksum") {
-                    agent { label "${PLATFORM}" }
-                    steps {
-                        script {
-                            def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
-                            helper.generateChecksum("${PLATFORM}")
+                    stage("Docs") {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
+                                helper.generateDocs("${PLATFORM}")
+                            }
+                        }
+                    }
+                    stage("Checksum") {
+                        agent { label "${PLATFORM}" }
+                        steps {
+                            script {
+                                def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
+                                helper.generateChecksum("${PLATFORM}")
+                            }
                         }
                     }
                 }
             }
         }
-
 
         stage('Build Linux DEBIAN Matrix') {
             environment {
