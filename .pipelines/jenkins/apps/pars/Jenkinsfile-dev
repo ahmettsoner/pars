@@ -59,7 +59,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
@@ -110,7 +110,7 @@ pipeline {
                 axes {
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
