@@ -2,7 +2,7 @@ def setupAgent() {
   checkout scm
   sh 'git config --global --add safe.directory $(pwd)'
 
-  buildVersion1 = "test değeri"
+  env.BUILD_VERSION = "test değeri"
 
   sh """
   git config --global user.email "${GIT_USER_EMAIL}"
