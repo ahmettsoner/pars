@@ -47,65 +47,6 @@ pipeline {
             }
         }
 
-        stage('Create DEBIAN markdown file for checksums') {
-            agent { label 'debian' }
-            steps {
-                script {
-                    // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
-                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-
-                    // Debugging: buildVersion'ın doğru alındığını kontrol et
-                    echo "Build Version: ${buildVersion}"
-
-                    // Eğer buildVersion boşsa hata ver
-                    if (!buildVersion) {
-                        error "BUILD_VERSION is empty or null"
-                    }
-
-                    // HTML docs dizinini oluştur
-                    def ARTIFACT_PATH = "dist/artifacts/${buildVersion}"
-
-                    // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
-                    sh """
-                        echo "Creating directory: ${ARTIFACT_PATH}"  # Debugging: Dizin oluşturuluyor mesajı
-                        mkdir -p "${ARTIFACT_PATH}"
-                        echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > ${ARTIFACT_PATH}/Checksums.md
-                        echo "|----------|--------------|-----------|-----------|------------------|" >> ${ARTIFACT_PATH}/Checksums.md
-                    """
-                }
-            }
-        }
-
-        stage('Create RHEL markdown file for checksums') {
-            agent { label 'rhel' }
-            steps {
-                script {
-                    // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
-                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-
-                    // Debugging: buildVersion'ın doğru alındığını kontrol et
-                    echo "Build Version: ${buildVersion}"
-
-                    // Eğer buildVersion boşsa hata ver
-                    if (!buildVersion) {
-                        error "BUILD_VERSION is empty or null"
-                    }
-
-                    // HTML docs dizinini oluştur
-                    def ARTIFACT_PATH = "dist/artifacts/${buildVersion}"
-
-                    // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
-                    sh """
-                        echo "Creating directory: ${ARTIFACT_PATH}"  # Debugging: Dizin oluşturuluyor mesajı
-                        mkdir -p "${ARTIFACT_PATH}"
-                        echo "| Platform | Architecture | Type      | File Name | SHA-256 Checksum |" > ${ARTIFACT_PATH}/Checksums.md
-                        echo "|----------|--------------|-----------|-----------|------------------|" >> ${ARTIFACT_PATH}/Checksums.md
-                    """
-                }
-            }
-        }
 
         stage('Build Linux DEBIAN Matrix') {
             environment {
