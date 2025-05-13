@@ -5,8 +5,7 @@ def call(String OS, String ARCH) {
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
     def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
-    def appName = "pars"
-
+ 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
     if (extLine?.contains('=') && extLine.split('=').length > 1) {
@@ -17,10 +16,10 @@ def call(String OS, String ARCH) {
 
     // unstash 'linux-x86_64-artifacts'
     def binaryOutputBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
-    def originalFileName = "${appName}${ext}"
-    def newBaseName = "${appName}-${rawBaseVersion}.tar.gz"
+    def originalFileName = "${APPNAME}${ext}"
+    def newBaseName = "${APPNAME}-${rawBaseVersion}.tar.gz"
 
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${appName}"
+    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def packageSourceDir = "${packageOutputBase}/SOURCES"
     def tarPath = "${binaryOutputBase}/${newBaseName}"
 
@@ -65,7 +64,7 @@ def call(String OS, String ARCH) {
     def checksumPath = "${rpmOutputBase}/checksum.txt"
 
     // Find .rpm file and calculate checksum
-    def rpmFile = sh(script: "ls ${rpmOutputBase}/${appName}*.${rpmArch}.rpm | head -n1", returnStdout: true).trim()
+    def rpmFile = sh(script: "ls ${rpmOutputBase}/${APPNAME}*.${rpmArch}.rpm | head -n1", returnStdout: true).trim()
     def checksum = sh(script: "sha256sum '${rpmFile}' | awk '{print \$1}'", returnStdout: true).trim()
 
     echo "Checksum for ${rpmFile}: ${checksum}"
@@ -80,7 +79,6 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
     def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
-    def appName = "pars"
     def artifactPath = "dist/artifacts/${buildVersion}"
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -110,17 +108,17 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
             error "Unsupported architecture: ${ARCH}"
     }
 
-    def newBaseName = "${appName}-${OS}-${ARCH}.rpm"
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${appName}"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
+    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
     def checksumFilePath = "${rpmOutputBase}/checksum.txt"
     def checksumsMdPath = "${artifactPath}/Checksums.md"
 
     // Find RPM file
-    def rpmFiles = sh(script: "ls ${rpmOutputBase}/${appName}*.${rpmArch}.rpm", returnStdout: true).trim().split("\n")
+    def rpmFiles = sh(script: "ls ${rpmOutputBase}/${APPNAME}*.${rpmArch}.rpm", returnStdout: true).trim().split("\n")
 
     if (rpmFiles.size() == 0) {
-        error "No RPM file found for ${appName} with arch ${rpmArch} in ${rpmOutputBase}"
+        error "No RPM file found for ${APPNAME} with arch ${rpmArch} in ${rpmOutputBase}"
     }
 
     def rpmOutputPath = rpmFiles[0]

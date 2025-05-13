@@ -2,8 +2,6 @@ def setupAgent() {
   checkout scm
   sh 'git config --global --add safe.directory $(pwd)'
 
-  env.BUILD_VERSION = "test değeri"
-
   sh """
   git config --global user.email "${GIT_USER_EMAIL}"
   git config --global user.name "${GIT_USER_NAME}"
@@ -17,7 +15,6 @@ def setupAgent() {
   echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
   echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
   echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
-  echo "APPNAME=pars" >> version_output.txt
   """
 }
 

@@ -8,7 +8,7 @@ pipeline {
         string(name: 'GIT_USER_NAME', defaultValue: 'CI Bot', description: 'Git user name')
     }
     environment {
-        APPNAME1      = "test app"
+        APPNAME      = "pars"
     }
 
     stages {
@@ -27,7 +27,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
                                 helper.setupAgent()
-                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -72,7 +71,6 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -82,7 +80,6 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
-                                echo "------ : ${APPNAME1}"
                             }
                         }
                     }
@@ -130,7 +127,6 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo "------ : ${APPNAME1}"
 
                             }
                         }

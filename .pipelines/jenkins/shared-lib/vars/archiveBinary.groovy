@@ -2,7 +2,6 @@ def call(String OS, String ARCH) {
     def versionFilePath = "version_output.txt"
     def versionOutput = readFile(versionFilePath)
     
-    def appName = versionOutput.split('\n').find { it.startsWith('APPNAME=') }?.split('=')[1]?.trim()
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -14,8 +13,8 @@ def call(String OS, String ARCH) {
         ext = ".exe"
     }
 
-    def originalFileName = "${appName}${ext}"
-    def newBaseName = "${appName}-${OS}-${ARCH}${ext}"
+    def originalFileName = "${APPNAME}${ext}"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
 
     def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"

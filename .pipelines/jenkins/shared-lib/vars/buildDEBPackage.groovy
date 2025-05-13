@@ -5,7 +5,6 @@ def call(String OS, String ARCH) {
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
 
-    def appName = "pars"
     def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
 
     def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
@@ -19,9 +18,9 @@ def call(String OS, String ARCH) {
 
     def pckgPath = "usr/bin"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
-    def packageBinaryPath = "${packageOutputBase}/${appName}/${pckgPath}"
-    // def newBaseName = "${appName}-${baseVersion}.tar.gz"
-    // def originalFileName = "${appName}${ext}"
+    def packageBinaryPath = "${packageOutputBase}/${APPNAME}/${pckgPath}"
+    // def newBaseName = "${APPNAME}-${baseVersion}.tar.gz"
+    // def originalFileName = "${APPNAME}${ext}"
 
     sh """
         mkdir -p '${packageBinaryPath}'
@@ -63,7 +62,6 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
     def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
     def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
     def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
-    def appName = "pars"
     def artifactPath = "dist/artifacts/${buildVersion}"
 
     def debArch = ""
@@ -85,10 +83,10 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
     }
 
     def plainVersion = buildVersion.replaceFirst(/^v/, "")
-    def newBaseName = "${appName}-${OS}-${ARCH}.deb"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
     def debOutputBase = "${packageOutputBase}/output"
-    def debOutputPath = "${debOutputBase}/${appName}_${plainVersion}_${debArch}.deb"
+    def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${debArch}.deb"
     def checksumFilePath = "${debOutputBase}/checksum.txt"
     def checksumsMdPath = "${artifactPath}/Checksums.md"
 
