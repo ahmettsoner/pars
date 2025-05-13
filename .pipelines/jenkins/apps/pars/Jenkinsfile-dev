@@ -71,7 +71,7 @@ pipeline {
                         steps {
                             script {
                                 buildBinary("linux", ARCH)
-                                archiveBinary(OS, ARCH)
+                                archiveBinary("linux",, ARCH)
                             }
                         }
                     }
