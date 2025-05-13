@@ -27,3 +27,6 @@ def setupAgent() {
 
   sh "make build.cmake.${buildVersion}"
 }
+
+
+return this
