@@ -117,6 +117,29 @@ pipeline {
             //     }
             // }
         }
+
+        stage('Build Binary Windows') {
+            environment {
+                OS  = "windows"
+            }
+            matrix {
+                axes {
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label "${OS}" }
+                        steps {
+                            buildBinary(OS, ARCH)
+                            archiveBinary(OS, ARCH)
+                        }
+                    }
+                }
+            }
+        }
     
 
         stage('Collect Artifacts') {
