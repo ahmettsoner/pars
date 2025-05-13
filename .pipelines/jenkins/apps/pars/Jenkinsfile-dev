@@ -131,7 +131,7 @@ pipeline {
                 }
                 stages {
                     stage("Build Binary") {
-                        agent { label "${OS}" }
+                        agent { label "linux" }
                         steps {
                             buildBinary(OS, ARCH)
                             archiveBinary(OS, ARCH)
