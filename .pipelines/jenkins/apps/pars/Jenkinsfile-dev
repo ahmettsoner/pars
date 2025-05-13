@@ -93,30 +93,29 @@ pipeline {
                     }
                 }
             }
-            matrix {
-                axes {
-                    axis {
-                        name 'OS'
-                        values 'windows', 'openbsd'
-                    }
-                    axis {
-                        name 'ARCH'
-                        values 'x86_64', 'arm64'
-                    }
-                }
-                stages {
-                    stage('Build Binary') {
-                        agent { label "${OS}" }
-                        steps {
-                            script {
-                                buildBinary(OS, ARCH)
-                                archiveBinary(OS, ARCH)
-                            }
-                        }
-                    }
-                }
-            }
-
+            // matrix {
+            //     axes {
+            //         axis {
+            //             name 'OS'
+            //             values 'windows', 'openbsd'
+            //         }
+            //         axis {
+            //             name 'ARCH'
+            //             values 'x86_64', 'arm64'
+            //         }
+            //     }
+            //     stages {
+            //         stage('Build Binary') {
+            //             agent { label "${OS}" }
+            //             steps {
+            //                 script {
+            //                     buildBinary(OS, ARCH)
+            //                     archiveBinary(OS, ARCH)
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
         }
     
 
