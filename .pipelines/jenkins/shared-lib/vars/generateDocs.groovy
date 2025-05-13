@@ -1,4 +1,4 @@
-def generateDocs() {
+def call() {
   if (!env.BUILD_VERSION) {
       error "BUILD_VERSION is empty or null"
   }

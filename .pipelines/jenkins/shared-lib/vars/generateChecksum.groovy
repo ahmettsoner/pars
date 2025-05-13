@@ -1,4 +1,4 @@
-def generateChecksum() {
+def call() {
     echo "Build Version: ${env.BUILD_VERSION}"
 
     if (!env.BUILD_VERSION) {
