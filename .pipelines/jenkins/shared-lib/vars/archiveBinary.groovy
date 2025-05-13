@@ -1,26 +1,17 @@
 def call(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
-    
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
 
     def originalFileName = "${APPNAME}${ext}"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
 
-    def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
-    def artifactPath = "dist/artifacts/${buildVersion}"
+    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
 
     // Hedef klasörü oluştur
     sh "mkdir -p ${artifactPath}"

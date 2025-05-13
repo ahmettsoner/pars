@@ -3,19 +3,27 @@ def setupAgent() {
   sh 'git config --global --add safe.directory $(pwd)'
 
   sh """
-  git config --global user.email "${GIT_USER_EMAIL}"
-  git config --global user.name "${GIT_USER_NAME}"
-
-  CURRENT_BASE_VERSION=\$(grm flow phase "${CHANNEL}" --next --print=base)
-  TAG_NAME=\$(grm flow phase "${CHANNEL}" --current)
-  BUILD_VERSION=\$TAG_NAME
-
-  make build.cmake.\$BUILD_VERSION
-
-  echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-  echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
-  echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
+    git config --global user.email "${GIT_USER_EMAIL}"
+    git config --global user.name "${GIT_USER_NAME}"
   """
-}
 
-return this
+  def currentBaseVersion = sh(
+    script: 'grm flow phase "${CHANNEL}" --next --print=base',
+    returnStdout: true
+  ).trim()
+
+  def tagName = sh(
+    script: 'grm flow phase "${CHANNEL}" --current',
+    returnStdout: true
+  ).trim()
+
+  def buildVersion = tagName
+
+  env.BUILD_VERSION = tagName
+  env.CURRENT_BASE_VERSION = currentBaseVersion
+  env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
+  env.CHANGELOG_PATH = "CHANGELOG/${buildVersion}.md"
+  env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
+
+  sh "make build.cmake.${buildVersion}"
+}

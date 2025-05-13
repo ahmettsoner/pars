@@ -1,33 +1,24 @@
 def call(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
+    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
 
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
-
-    def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
-
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
 
     def pckgPath = "usr/bin"
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
+    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb/${ARCH}"
     def packageBinaryPath = "${packageOutputBase}/${APPNAME}/${pckgPath}"
-    // def newBaseName = "${APPNAME}-${baseVersion}.tar.gz"
+    // def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION}.tar.gz"
     // def originalFileName = "${APPNAME}${ext}"
 
     sh """
         mkdir -p '${packageBinaryPath}'
         cp '${binaryOutputPath}' '${packageBinaryPath}'
         export GO111MODULE=on
-        make build.deb.package.${ARCH}.configuration VERSION=${buildVersion}
-        make build.deb.package.${ARCH}.package VERSION=${buildVersion}
+        make build.deb.package.${ARCH}.configuration VERSION=${env.BUILD_VERSION}
+        make build.deb.package.${ARCH}.package VERSION=${env.BUILD_VERSION}
     """
 
     def debArch = ""
@@ -43,7 +34,7 @@ def call(String OS, String ARCH) {
         error "Unsupported architecture: ${ARCH}"
     }
 
-    def plainVersion = buildVersion.replaceFirst(/^v/, "")
+    def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
     def debOutputBase = "${packageOutputBase}/output"
     def debOutputPath = "${debOutputBase}/pars_${plainVersion}_${debArch}.deb"
     def debChecksumPath = "${debOutputBase}/checksum.txt"
@@ -56,13 +47,7 @@ def call(String OS, String ARCH) {
 }
 
 def copyDebAndUpdateChecksums(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
-
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
-    def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
-    def artifactPath = "dist/artifacts/${buildVersion}"
+    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
 
     def debArch = ""
     switch (ARCH) {
@@ -82,9 +67,9 @@ def copyDebAndUpdateChecksums(String OS, String ARCH) {
             error "Unsupported architecture: ${ARCH}"
     }
 
-    def plainVersion = buildVersion.replaceFirst(/^v/, "")
+    def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/deb/${ARCH}"
+    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb/${ARCH}"
     def debOutputBase = "${packageOutputBase}/output"
     def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${debArch}.deb"
     def checksumFilePath = "${debOutputBase}/checksum.txt"

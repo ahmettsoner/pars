@@ -1,25 +1,15 @@
 def call(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
-
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
-    def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
- 
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
 
     // unstash 'linux-x86_64-artifacts'
-    def binaryOutputBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+    def binaryOutputBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def originalFileName = "${APPNAME}${ext}"
-    def newBaseName = "${APPNAME}-${rawBaseVersion}.tar.gz"
+    def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.tar.gz"
 
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
+    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def packageSourceDir = "${packageOutputBase}/SOURCES"
     def tarPath = "${binaryOutputBase}/${newBaseName}"
 
@@ -37,8 +27,8 @@ def call(String OS, String ARCH) {
     // Build RPM package
     sh """
         export GO111MODULE=on
-        make build.rpm.package.${ARCH}.configuration VERSION=${buildVersion}
-        make build.rpm.package.${ARCH}.package VERSION=${buildVersion}
+        make build.rpm.package.${ARCH}.configuration VERSION=${env.BUILD_VERSION}
+        make build.rpm.package.${ARCH}.package VERSION=${env.BUILD_VERSION}
     """
 
     // Map ARCH to RPM arch
@@ -73,19 +63,10 @@ def call(String OS, String ARCH) {
 }
 
 def copyRpmAndUpdateChecksums(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
+    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
 
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def baseVersion = versionOutput.split('\n').find { it.startsWith('CURRENT_BASE_VERSION=') }?.split('=')[1]?.trim()
-    def rawBaseVersion = baseVersion?.startsWith('v') ? baseVersion.substring(1) : baseVersion
-    def artifactPath = "dist/artifacts/${buildVersion}"
-
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
 
@@ -109,7 +90,7 @@ def copyRpmAndUpdateChecksums(String OS, String ARCH) {
     }
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-    def packageOutputBase = "dist/${buildVersion}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
+    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
     def checksumFilePath = "${rpmOutputBase}/checksum.txt"
     def checksumsMdPath = "${artifactPath}/Checksums.md"

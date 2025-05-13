@@ -1,14 +1,11 @@
 def generateChecksum() {
-    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
+    echo "Build Version: ${env.BUILD_VERSION}"
 
-    echo "Build Version: ${buildVersion}"
-
-    if (!buildVersion) {
+    if (!env.BUILD_VERSION) {
         error "BUILD_VERSION is empty or null"
     }
 
-    def ARTIFACT_PATH = "dist/artifacts/${buildVersion}"
+    def ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
 
     sh """
         echo "Creating directory: ${ARTIFACT_PATH}"

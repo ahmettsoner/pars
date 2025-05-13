@@ -1,23 +1,16 @@
 def build(String OS, String ARCH) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
 
     // Make komutunu çalıştırarak binary dosyasını oluşturuyoruz
     sh """
-        make build.binary.${OS}.${ARCH} VERSION=$buildVersion
+        make build.binary.${OS}.${ARCH} VERSION=$env.BUILD_VERSION
     """
 
     // Binary dosyasının çıkış yolunu belirliyoruz
-    def binaryOutputPathBase = "dist/${buildVersion}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 

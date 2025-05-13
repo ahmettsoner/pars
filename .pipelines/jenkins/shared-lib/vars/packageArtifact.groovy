@@ -1,21 +1,13 @@
 def packageArtifact(String OS, String ARCH, String archiveFormat) {
-    def versionFilePath = "version_output.txt"
-    def versionOutput = readFile(versionFilePath)
-    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-    def html_output_dir = versionOutput.split('\n').find { it.startsWith('HTML_OUTPUT_DIR=') }?.split('=')[1]?.trim()
-    def extLine = versionOutput.split('\n').find { it.startsWith('EXT=') }
     def ext = ""
-    
-    if (extLine?.contains('=') && extLine.split('=').length > 1) {
-        ext = extLine.split('=')[1].trim()
-    } else if (OS.toLowerCase() == 'windows') {
+    if (OS.toLowerCase() == 'windows') {
         ext = ".exe"
     }
     
-    def binaryOutputPathBase = "${WORKSPACE}/dist/${buildVersion}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "${WORKSPACE}/dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
-    def artifactPath = "dist/artifacts/${buildVersion}"
+    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
     
     if (!fileExists(binaryOutputPathBase) || !fileExists(binaryChecksumPath)) {
         echo "Required files do not exist. Skipping archive step."
@@ -25,7 +17,7 @@ def packageArtifact(String OS, String ARCH, String archiveFormat) {
     echo "Binary and Checksum files are present."
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-    def binaryTempPath = "${WORKSPACE}/dist/temp/${buildVersion}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
+    def binaryTempPath = "${WORKSPACE}/dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
 
     sh """
         mkdir -p ${binaryTempPath}/bin
@@ -35,7 +27,7 @@ def packageArtifact(String OS, String ARCH, String archiveFormat) {
         cp -r ${binaryChecksumPath} ${binaryTempPath}/meta/
 
         mkdir -p ${binaryTempPath}/docs
-        cp -r ${html_output_dir}/ ${binaryTempPath}/docs/
+        cp -r ${env.HTML_OUTPUT_DIR}/ ${binaryTempPath}/docs/
     """
 
     if (archiveFormat == "zip") {
