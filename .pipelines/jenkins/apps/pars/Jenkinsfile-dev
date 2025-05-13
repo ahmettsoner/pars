@@ -58,11 +58,11 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'debian', 'rhel'
+                        values 'debian', 'rhel', "windows", "openbsd"
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
@@ -105,7 +105,7 @@ pipeline {
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 stages {
