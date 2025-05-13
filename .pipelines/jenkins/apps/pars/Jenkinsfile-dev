@@ -9,144 +9,44 @@ pipeline {
     }
 
     stages {
-        stage('Setup Linux Agent') {
-            agent { label 'linux' }
-            steps {
-                script {
-                    echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(pwd)'
-                    checkout scm 
-                    
-                    sh """
-                    git config --global user.email "\$GIT_USER_EMAIL"
-                    git config --global user.name "\$GIT_USER_NAME"
-
-                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-                    BUILD_VERSION=\$TAG_NAME
-
-                    
-                    make build.cmake.\$BUILD_VERSION
-
-                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
-
-                    mkdir -p CHANGELOG
-                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
-
-                    echo "APPNAME=pars" >> version_output.txt
-
-                    """
+        matrix {
+            axes {
+                axis {
+                    name 'PLATFORM'
+                    values 'linux', 'rhel', 'debian'
                 }
             }
-        }
-        stage('Setup RHEL Agent') {
-            agent { label 'rhel' }
-            steps {
-                script {
-                    echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(pwd)'
-                    checkout scm 
-                    
-                    sh """
-                    git config --global user.email "\$GIT_USER_EMAIL"
-                    git config --global user.name "\$GIT_USER_NAME"
-
-                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-                    BUILD_VERSION=\$TAG_NAME
-
-                    
-                    make build.cmake.\$BUILD_VERSION
-
-                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
-
-                    mkdir -p CHANGELOG
-                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
-
-                    echo "APPNAME=pars" >> version_output.txt
-
-                    """
-                }
-            }
-        }
-        stage('Setup DEBIAN Agent') {
-            agent { label 'debian' }
-            steps {
-                script {
-                    echo "Prepare workspace"
-                    sh 'git config --global --add safe.directory $(pwd)'
-                    checkout scm 
-                    
-                    sh """
-                    git config --global user.email "\$GIT_USER_EMAIL"
-                    git config --global user.name "\$GIT_USER_NAME"
-
-                    CURRENT_BASE_VERSION=\$(grm flow phase "\$CHANNEL" --next --print=base)
-                    TAG_NAME=\$(grm flow phase "\$CHANNEL" --current)
-                    BUILD_VERSION=\$TAG_NAME
-
-                    
-                    make build.cmake.\$BUILD_VERSION
-
-                    echo "BUILD_VERSION=\$BUILD_VERSION" > version_output.txt
-                    echo "CURRENT_BASE_VERSION=\$CURRENT_BASE_VERSION" >> version_output.txt
-
-                    mkdir -p CHANGELOG
-                    echo "CHANGELOG_PATH=CHANGELOG/\$BUILD_VERSION.md" >> version_output.txt
-
-                    echo "APPNAME=pars" >> version_output.txt
-
-                    """
-                }
-            }
-        }
-        stage('Generate DEBIAN HTML Docs') {
-            agent { label 'debian' }
-            steps {
-                script {
-                    // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
-                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-
-                    // Debugging: buildVersion'ın doğru alındığını kontrol et
-                    echo "Build Version: ${buildVersion}"
-
-                    // Eğer buildVersion boşsa hata ver
-                    if (!buildVersion) {
-                        error "BUILD_VERSION is empty or null"
+            stages {
+                stage("Setup") {
+                    agent { label "${PLATFORM}" }
+                    steps {
+                        script {
+                            def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
+                            helper.setupAgent("${PLATFORM}")
+                        }
                     }
-
-                    // HTML docs dizinini oluştur
-                    def HTML_OUTPUT_DIR = "temp/${buildVersion}/html_docs"
-
-                    // Debugging: HTML_OUTPUT_DIR'in doğru ayarlandığını kontrol et
-                    echo "HTML Output Directory: ${HTML_OUTPUT_DIR}"
-
-                    // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
-                    sh """
-                        echo "Creating directory: ${HTML_OUTPUT_DIR}"  # Debugging: Dizin oluşturuluyor mesajı
-                        mkdir -p "${HTML_OUTPUT_DIR}"   # Doğru şekilde interpolasyon yapılmış komut
-                        cp -r docs/assets/ "${HTML_OUTPUT_DIR}"
-
-                        find ./docs -name '*.md' | while read -r FILE; do
-                            RELATIVE_PATH="\${FILE#./docs/}"
-                            HTML_FILE="\${RELATIVE_PATH%.md}.html"
-                            
-                            # dirname komutunu doğru şekilde kullanarak alt dizin oluşturulacak
-                            DIR_PATH="\$(dirname \${RELATIVE_PATH})"
-                            mkdir -p "${HTML_OUTPUT_DIR}/\${DIR_PATH}"
-
-                            pandoc --standalone --css="../assets/style/style.css" -o "${HTML_OUTPUT_DIR}/\${HTML_FILE}" --lua-filter=scripts/change_links.lua \${FILE}
-                        done
-
-                        echo "HTML docs generated at: ${HTML_OUTPUT_DIR}"
-                        echo "HTML_OUTPUT_DIR=${HTML_OUTPUT_DIR}" >> version_output.txt
-                    """
+                }
+                stage("Docs") {
+                    agent { label "${PLATFORM}" }
+                    steps {
+                        script {
+                            def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
+                            helper.generateDocs("${PLATFORM}")
+                        }
+                    }
+                }
+                stage("Checksum") {
+                    agent { label "${PLATFORM}" }
+                    steps {
+                        script {
+                            def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
+                            helper.generateChecksum("${PLATFORM}")
+                        }
+                    }
                 }
             }
         }
+
         stage('Create DEBIAN markdown file for checksums') {
             agent { label 'debian' }
             steps {
@@ -177,51 +77,6 @@ pipeline {
             }
         }
 
-        stage('Generate RHEL HTML Docs') {
-            agent { label 'rhel' }
-            steps {
-                script {
-                    // version_output.txt dosyasını oku ve BUILD_VERSION'ı al
-                    def versionOutput = readFile("${WORKSPACE}/version_output.txt")
-                    def buildVersion = versionOutput.split('\n').find { it.startsWith('BUILD_VERSION=') }?.split('=')[1]?.trim()
-
-                    // Debugging: buildVersion'ın doğru alındığını kontrol et
-                    echo "Build Version: ${buildVersion}"
-
-                    // Eğer buildVersion boşsa hata ver
-                    if (!buildVersion) {
-                        error "BUILD_VERSION is empty or null"
-                    }
-
-                    // HTML docs dizinini oluştur
-                    def HTML_OUTPUT_DIR = "temp/${buildVersion}/html_docs"
-
-                    // Debugging: HTML_OUTPUT_DIR'in doğru ayarlandığını kontrol et
-                    echo "HTML Output Directory: ${HTML_OUTPUT_DIR}"
-
-                    // Shell komutlarını doğru şekilde değişken ile çalıştırmak için groovy interpolation kullanımı
-                    sh """
-                        echo "Creating directory: ${HTML_OUTPUT_DIR}"  # Debugging: Dizin oluşturuluyor mesajı
-                        mkdir -p "${HTML_OUTPUT_DIR}"   # Doğru şekilde interpolasyon yapılmış komut
-                        cp -r docs/assets/ "${HTML_OUTPUT_DIR}"
-
-                        find ./docs -name '*.md' | while read -r FILE; do
-                            RELATIVE_PATH="\${FILE#./docs/}"
-                            HTML_FILE="\${RELATIVE_PATH%.md}.html"
-                            
-                            # dirname komutunu doğru şekilde kullanarak alt dizin oluşturulacak
-                            DIR_PATH="\$(dirname \${RELATIVE_PATH})"
-                            mkdir -p "${HTML_OUTPUT_DIR}/\${DIR_PATH}"
-
-                            pandoc --standalone --css="../assets/style/style.css" -o "${HTML_OUTPUT_DIR}/\${HTML_FILE}" --lua-filter=scripts/change_links.lua \${FILE}
-                        done
-
-                        echo "HTML docs generated at: ${HTML_OUTPUT_DIR}"
-                        echo "HTML_OUTPUT_DIR=${HTML_OUTPUT_DIR}" >> version_output.txt
-                    """
-                }
-            }
-        }
         stage('Create RHEL markdown file for checksums') {
             agent { label 'rhel' }
             steps {
