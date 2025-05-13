@@ -1,4 +1,4 @@
-def buildVersion = ""
+def buildVersion1 = ""
 
 pipeline {
     agent none
@@ -26,7 +26,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
                                 helper.setupAgent()
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -36,7 +36,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
                                 helper.generateDocs()
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -46,7 +46,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
                                 helper.generateChecksum()
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -73,7 +73,7 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -83,7 +83,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -93,7 +93,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
                                 helper.packageArtifact(OS, ARCH, "tar.gz")
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -132,7 +132,7 @@ pipeline {
                                 
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
                                 helper.build(OS, ARCH)
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
 
                             }
                         }
@@ -143,7 +143,7 @@ pipeline {
                             script {
                                 def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
                                 helper.call(OS, ARCH)
-                                echo buildVersion
+                                echo ">>>> ${buildVersion1}"
                             }
                         }
                     }
@@ -183,7 +183,7 @@ pipeline {
                 archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 
                 sh 'rm -rf dist/*'
-                echo buildVersion
+                echo ">>>> ${buildVersion1}"
             }
         }
     }
