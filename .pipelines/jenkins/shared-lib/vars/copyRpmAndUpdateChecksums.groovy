@@ -29,7 +29,6 @@ def call(String OS, String ARCH) {
     def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
     def checksumFilePath = "${rpmOutputBase}/checksum.txt"
-    def checksumsMdPath = "${artifactPath}/Checksums.md"
 
     // Find RPM file
     def rpmFiles = sh(script: "ls ${rpmOutputBase}/${APPNAME}*.${rpmArch}.rpm", returnStdout: true).trim().split("\n")
@@ -41,14 +40,14 @@ def call(String OS, String ARCH) {
     def rpmOutputPath = rpmFiles[0]
 
     // Copy RPM file to artifact path with new name
-    sh "cp '${rpmOutputPath}' '${artifactPath}/${newBaseName}'"
+    sh "cp '${rpmOutputPath}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
     // Read checksum
     def checksum = readFile(checksumFilePath).trim()
 
     // Append to Checksums.md
     def line = "| ${OS} | ${ARCH} | RPM | ${newBaseName} | ${checksum} |"
-    sh "echo '${line}' >> ${artifactPath}/Checksums.md"
+    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     echo "Added checksum line to Checksums.md: ${line}"
 

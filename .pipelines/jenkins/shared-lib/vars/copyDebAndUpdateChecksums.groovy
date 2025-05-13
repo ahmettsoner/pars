@@ -1,6 +1,4 @@
 def call(String OS, String ARCH) {
-    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
-
     def debArch = ""
     switch (ARCH) {
         case "x86":
@@ -25,16 +23,13 @@ def call(String OS, String ARCH) {
     def debOutputBase = "${packageOutputBase}/output"
     def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${debArch}.deb"
     def checksumFilePath = "${debOutputBase}/checksum.txt"
-    def checksumsMdPath = "${artifactPath}/Checksums.md"
-
     // Dosya var mı kontrolü
     if (!fileExists(debOutputPath)) {
         error "No DEB file found at ${debOutputPath}"
     }
 
     // Artifact dizinine kopyala
-    sh "mkdir -p '${artifactPath}'"
-    sh "cp '${debOutputPath}' '${artifactPath}/${newBaseName}'"
+    sh "cp '${debOutputPath}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
     // Checksum oku
     def checksum = readFile(checksumFilePath).trim()
@@ -42,7 +37,7 @@ def call(String OS, String ARCH) {
     // Checksums.md'ye satır ekle
     def line = "| ${OS} | ${ARCH} | DEB | ${newBaseName} | ${checksum} |"
     // writeFile file: checksumsMdPath, text: "${line}\n", encoding: "UTF-8", append: true
-    sh "echo '${line}' >> ${artifactPath}/Checksums.md"
+    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     echo "Added checksum line to Checksums.md: ${line}"
 

@@ -24,6 +24,11 @@ def call() {
   env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
   env.CHANGELOG_PATH = "CHANGELOG/${buildVersion}.md"
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
+  env.ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
+  env.ARTIFACT_CHECKSUM_MD5_PATH = "${env.ARTIFACT_PATH}/Checksums.md"
+
+  echo "Creating directory: ${env.ARTIFACT_PATH}"
+  sh "mkdir -p '${env.ARTIFACT_PATH}'"
 
   sh "make build.cmake.${buildVersion}"
 }

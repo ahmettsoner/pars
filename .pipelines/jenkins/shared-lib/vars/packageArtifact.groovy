@@ -7,7 +7,6 @@ def call(String OS, String ARCH, String archiveFormat) {
     def binaryOutputPathBase = "${WORKSPACE}/dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
-    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
     
     if (!fileExists(binaryOutputPathBase) || !fileExists(binaryChecksumPath)) {
         echo "Required files do not exist. Skipping archive step."
@@ -47,15 +46,14 @@ def call(String OS, String ARCH, String archiveFormat) {
         error "Unsupported archive format: ${archiveFormat}"
     }
 
-    sh "mkdir -p ${artifactPath}"
-    sh "cp '${binaryTempPath}/${newBaseName}' '${artifactPath}/${newBaseName}'"
+    sh "cp '${binaryTempPath}/${newBaseName}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
     def archiveChecksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
     echo "Checksum for ${binaryTempPath}/${newBaseName}: ${archiveChecksum}"
 
     def type = "Archive"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${archiveChecksum} |"
-    sh "echo '${line}' >> ${artifactPath}/Checksums.md"
+    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-archive-artifacts"
 }

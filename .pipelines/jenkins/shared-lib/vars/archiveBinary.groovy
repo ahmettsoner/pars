@@ -11,13 +11,11 @@ def call(String OS, String ARCH) {
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
-    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
-
     // Hedef klasörü oluştur
-    sh "mkdir -p ${artifactPath}"
+    sh "mkdir -p ${env.ARTIFACT_PATH}"
 
     // Dosyayı kopyala
-    sh "cp ${binaryOutputPathBase}/${originalFileName} ${artifactPath}/${newBaseName}"
+    sh "cp ${binaryOutputPathBase}/${originalFileName} ${env.ARTIFACT_PATH}/${newBaseName}"
 
     // Checksum oku
     def binaryChecksum = readFile("${binaryChecksumPath}").trim()
@@ -25,7 +23,7 @@ def call(String OS, String ARCH) {
     // Checksums.md'ye yaz
     def type = "Binary"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${binaryChecksum} |"
-    sh "echo '${line}' >> ${artifactPath}/Checksums.md"
+    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/Checksums.md"
 
     // Stash dosyalar
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-artifacts"
