@@ -1,4 +1,4 @@
-def build(String OS, String ARCH) {
+def buildBinary(String OS, String ARCH) {
     def ext = ""
     if (OS.toLowerCase() == 'windows') {
         ext = ".exe"

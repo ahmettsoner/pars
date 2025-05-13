@@ -1,4 +1,4 @@
-def call(String OS, String ARCH) {
+def buildRPMPackage(String OS, String ARCH) {
     def ext = ""
     if (OS.toLowerCase() == 'windows') {
         ext = ".exe"

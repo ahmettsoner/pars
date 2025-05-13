@@ -1,4 +1,4 @@
-def call(String OS, String ARCH) {
+def buildDEBPackage(String OS, String ARCH) {
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
 
     def ext = ""

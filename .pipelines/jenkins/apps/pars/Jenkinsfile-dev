@@ -1,3 +1,5 @@
+@Library('shared-lib') _
+
 pipeline {
     agent none
 
@@ -25,8 +27,7 @@ pipeline {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/setupAgent.groovy'
-                                helper.setupAgent()
+                                setupAgent()
                             }
                         }
                     }
@@ -34,8 +35,7 @@ pipeline {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/generateDocs.groovy'
-                                helper.generateDocs()
+                                generateDocs()
                             }
                         }
                     }
@@ -43,8 +43,7 @@ pipeline {
                         agent { label "${PLATFORM}" }
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/generateChecksum.groovy'
-                                helper.generateChecksum()
+                                generateChecksum()
                             }
                         }
                     }
@@ -68,9 +67,7 @@ pipeline {
                         agent { label 'debian' } 
                         steps {
                             script {
-                                
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-                                helper.build(OS, ARCH)
+                                buildBinary(OS, ARCH)
                             }
                         }
                     }
@@ -78,8 +75,7 @@ pipeline {
                         agent { label 'debian' } 
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-                                helper.call(OS, ARCH)
+                                archiveBinary(OS, ARCH)
                             }
                         }
                     }
@@ -87,8 +83,7 @@ pipeline {
                         agent { label 'debian' }
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/packageArtifact.groovy'
-                                helper.packageArtifact(OS, ARCH, "tar.gz")
+                                packageArtifact(OS, ARCH, "tar.gz")
                             }
                         }
                     }
@@ -97,9 +92,8 @@ pipeline {
                         agent { label 'debian' } 
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildDEBPackage.groovy'
-                                helper.call(OS, ARCH)
-                                helper.copyDebAndUpdateChecksums(OS, ARCH)
+                                buildDEBPackage(OS, ARCH)
+                                copyDebAndUpdateChecksums(OS, ARCH)
                             }
                         }
                     }
@@ -124,10 +118,7 @@ pipeline {
                         agent { label 'rhel' } 
                         steps {
                             script {
-                                
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildBinary.groovy'
-                                helper.build(OS, ARCH)
-
+                                buildBinary(OS, ARCH)
                             }
                         }
                     }
@@ -135,8 +126,7 @@ pipeline {
                         agent { label 'rhel' } 
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/archiveBinary.groovy'
-                                helper.call(OS, ARCH)
+                                archiveBinary(OS, ARCH)
                             }
                         }
                     }
@@ -154,9 +144,8 @@ pipeline {
                         agent { label 'rhel' } 
                         steps {
                             script {
-                                def helper = load '.pipelines/jenkins/shared-lib/vars/buildRPMPackage.groovy'
-                                helper.call(OS, ARCH)
-                                helper.copyRpmAndUpdateChecksums(OS, ARCH)
+                                buildRPMPackage(OS, ARCH)
+                                copyRpmAndUpdateChecksums(OS, ARCH)
                             }
                         }
                     }
