@@ -119,11 +119,12 @@ pipeline {
         }
 
         stage('Build Binary Windows') {
-            environment {
-                OS  = "windows"
-            }
             matrix {
                 axes {
+                    axis {
+                        name 'OS'
+                        values 'windows', 'openbsd'
+                    }
                     axis {
                         name 'ARCH'
                         values 'x86_64', 'arm64'
