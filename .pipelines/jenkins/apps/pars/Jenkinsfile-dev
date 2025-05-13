@@ -71,7 +71,7 @@ pipeline {
                         steps {
                             script {
                                 buildBinary("linux", ARCH)
-                                archiveBinary("linux",, ARCH)
+                                archiveBinary("linux", ARCH)
                             }
                         }
                     }
@@ -115,7 +115,7 @@ pipeline {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
                             unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                            // unstash "${OS}-${ARCH}-deb-package-artifacts"
+                            unstash "${OS}-${ARCH}-deb-package-artifacts"
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
                     }
