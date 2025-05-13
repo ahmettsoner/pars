@@ -58,7 +58,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'debian', 'rhel', "windows", "openbsd"
+                        values 'debian', 'rhel'
                     }
                     axis {
                         name 'ARCH'
@@ -93,6 +93,30 @@ pipeline {
                     }
                 }
             }
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'windows', 'openbsd'
+                    }
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                stages {
+                    stage('Build Binary') {
+                        agent { label "${OS}" }
+                        steps {
+                            script {
+                                buildBinary(OS, ARCH)
+                                archiveBinary(OS, ARCH)
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     
 
@@ -101,7 +125,7 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux'
+                        values 'linux', 'windows', 'openbsd'
                     }
                     axis {
                         name 'ARCH'
