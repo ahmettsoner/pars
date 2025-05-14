@@ -143,6 +143,18 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
+                excludes {
+                    exclude {
+                        axis {
+                            name 'OS'
+                            values 'netbsd'
+                        }
+                        axis {
+                            name 'ARCH'
+                            values 'arm64'
+                        }
+                    }
+                }
                 stages {
                     stage("Upload artifacts") {
                         agent { label 'linux' }
