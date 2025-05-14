@@ -19,7 +19,7 @@ def call() {
         echo "HTML docs generated at: ${env.HTML_OUTPUT_DIR}"
     """
 
-    stash includes: "${env.HTML_OUTPUT_DIR}/**/*", name: "${OS}-${ARCH}-html-outputdir"
+    stash includes: "${env.HTML_OUTPUT_DIR}/**/*", name: "html-outputdir"
 }
 
 return this
