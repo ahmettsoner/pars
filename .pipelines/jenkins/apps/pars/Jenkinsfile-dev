@@ -66,12 +66,13 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
+
                 excludes {
                     exclude {
-                        name 'OS'
-                        value 'netbsd'
-                        name 'ARCH'
-                        value 'arm64'
+                        combination {
+                            OS 'netbsd'
+                            ARCH 'arm64'
+                        }
                     }
                 }
                 stages {
@@ -139,12 +140,13 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
+
                 excludes {
                     exclude {
-                        name 'OS'
-                        value 'netbsd'
-                        name 'ARCH'
-                        value 'arm64'
+                        combination {
+                            OS 'netbsd'
+                            ARCH 'arm64'
+                        }
                     }
                 }
                 stages {
