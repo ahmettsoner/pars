@@ -70,18 +70,18 @@ pipeline {
                     stage("Build Binary") {
                         agent { label "linux" }
                         steps {
-                            buildBinary(OS, ARCH)
-                            archiveBinary(OS, ARCH)
-                            
-                            def archExt = ""
                             script {
+                                buildBinary(OS, ARCH)
+                                archiveBinary(OS, ARCH)
+                                
+                                def archExt = ""
                                 if (OS == 'windows') {
                                     archExt = "zip"
                                 } else {
                                     archExt = "tar.gz"
                                 }
+                                packageArtifact(OS, ARCH, archExt)
                             }
-                            packageArtifact(OS, ARCH, archExt)
                         }
                     }
                 }
