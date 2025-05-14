@@ -19,7 +19,7 @@ def call(String OS, String ARCH, String archiveFormat) {
     def binaryTempPath = "${WORKSPACE}/dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
 
 
-    unstash "html-outputdir"
+    // unstash "html-outputdir"
     sh """
         mkdir -p ${binaryTempPath}/bin
         cp -r ${binaryOutputPathBase} ${binaryTempPath}/bin/
