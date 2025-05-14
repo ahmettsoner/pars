@@ -11,6 +11,8 @@ pipeline {
     }
     environment {
         APPNAME      = "pars"
+        OSLIST       = 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+        ARCHLIST     = 'x86_64', 'arm64'
     }
 
     stages {
@@ -59,11 +61,11 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values OSLIST
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values ARCHLIST
                     }
                 }
                 excludes {
@@ -136,11 +138,11 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values OSLIST
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values ARCHLIST
                     }
                 }
                 excludes {
