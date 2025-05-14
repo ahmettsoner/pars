@@ -31,14 +31,6 @@ pipeline {
                             }
                         }
                     }
-                    stage("Docs") {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                generateDocs()
-                            }
-                        }
-                    }
                     stage("Checksum") {
                         agent { label PLATFORM }
                         steps {
@@ -47,6 +39,14 @@ pipeline {
                             }
                         }
                     }
+                }
+            }
+        }
+        stage("Docs") {
+            agent { label 'linux' }
+            steps {
+                script {
+                    generateDocs()
                 }
             }
         }
