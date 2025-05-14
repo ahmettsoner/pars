@@ -72,6 +72,7 @@ pipeline {
                             script {
                                 buildBinary("linux", ARCH)
                                 archiveBinary("linux", ARCH)
+                                packageArtifact("linux", ARCH, "tar.gz")
                             }
                         }
                     }
@@ -80,11 +81,9 @@ pipeline {
                         steps {
                             script {
                                 if (PLATFORM == 'rhel') {
-                                    packageArtifact("linux", ARCH, "tar.gz")
                                     buildRPMPackage("linux", ARCH)
                                     copyRpmAndUpdateChecksums("linux", ARCH)
                                 } else if (PLATFORM == 'debian') {
-                                    packageArtifact("linux", ARCH, "tar.gz")
                                     buildDEBPackage("linux", ARCH)
                                     copyDebAndUpdateChecksums("linux", ARCH)
                                 }
@@ -93,29 +92,6 @@ pipeline {
                     }
                 }
             }
-            // matrix {
-            //     axes {
-            //         axis {
-            //             name 'OS'
-            //             values 'windows', 'openbsd'
-            //         }
-            //         axis {
-            //             name 'ARCH'
-            //             values 'x86_64', 'arm64'
-            //         }
-            //     }
-            //     stages {
-            //         stage('Build Binary') {
-            //             agent { label "${OS}" }
-            //             steps {
-            //                 script {
-            //                     buildBinary(OS, ARCH)
-            //                     archiveBinary(OS, ARCH)
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
         }
 
         stage('Build Binary Windows') {
@@ -136,8 +112,8 @@ pipeline {
                         steps {
                             buildBinary(OS, ARCH)
                             archiveBinary(OS, ARCH)
-                        }
-                    }
+                            packageArtifact(OS, ARCH, "zip")
+                        }zip                    }
                 }
             }
         }
@@ -161,8 +137,12 @@ pipeline {
                         steps {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
+
+                            if (PLATFORM == 'linux') {
                             unstash "${OS}-${ARCH}-rpm-package-artifacts"
                             unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                copyRpmAndUpdateChecksums("linux", ARCH)
+                            }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
                     }
