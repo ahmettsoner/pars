@@ -65,7 +65,19 @@ pipeline {
                         name 'ARCH'
                         values 'x86_64', 'arm64'
                     }
-                }4
+                }
+                excludes {
+                    exclude {
+                        axis {
+                            name 'OS'
+                            values 'netbsd'
+                        }
+                        axis {
+                            name 'ARCH'
+                            values 'arm64'
+                        }
+                    }
+                }
                 stages {
                     stage("Build Binary") {
                         agent { label "linux" }
@@ -131,19 +143,6 @@ pipeline {
                         values 'x86_64', 'arm64'
                     }
                 }
-
-                // excludes {
-                //     exclude {
-                //         axis {
-                //             name 'OS'
-                //             values 'netbsd'
-                //         }
-                //         axis {
-                //             name 'ARCH'
-                //             values 'arm64'
-                //         }
-                //     }
-                // }
                 stages {
                     stage("Upload artifacts") {
                         agent { label 'linux' }
