@@ -24,7 +24,7 @@ pipeline {
                 }
                 stages {
                     stage("Setup") {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 setupAgent()
@@ -32,7 +32,7 @@ pipeline {
                         }
                     }
                     stage("Docs") {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 generateDocs()
@@ -40,7 +40,7 @@ pipeline {
                         }
                     }
                     stage("Checksum") {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 generateChecksum()
@@ -67,7 +67,7 @@ pipeline {
                 }
                 stages {
                     stage('Build Binary') {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 buildBinary("linux", ARCH)
@@ -77,7 +77,7 @@ pipeline {
                         }
                     }
                     stage('Archive and Package') {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 if (PLATFORM == 'rhel') {
@@ -162,7 +162,7 @@ pipeline {
                 }
                 stages {
                     stage("Delete dist files") {
-                        agent { label "${PLATFORM}" }
+                        agent { label PLATFORM }
                         steps {
                             script {
                                 sh "rm -rf ${env.DIST_PATH}/*"
