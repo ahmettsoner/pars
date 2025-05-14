@@ -88,32 +88,27 @@ pipeline {
                             }
                         }
                     }
-                }
-            }
-        }
-        stage('Build Packages') {
-            matrix {
-                axes {
-                    axis {
-                        name 'PLATFORM'
-                        values 'debian', 'rhel'
-                    }
-                    axis {
-                        name 'ARCH'
-                        values 'x86_64', 'arm64'
-                    }
-                }
-                stages {
-                    stage('Archive and Package') {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                if (PLATFORM == 'rhel') {
-                                    buildRPMPackage("linux", ARCH)
-                                    copyRpmAndUpdateChecksums("linux", ARCH)
-                                } else if (PLATFORM == 'debian') {
-                                    buildDEBPackage("linux", ARCH)
-                                    copyDebAndUpdateChecksums("linux", ARCH)
+                    stage("Package for Linux") {
+                        when {
+                            expression { return OS == 'linux' }
+                        }
+                        parallel {
+                            stage('RPM Package') {
+                                agent { label 'rhel' }
+                                steps {
+                                    script {
+                                        buildRPMPackage(OS, ARCH)
+                                        copyRpmAndUpdateChecksums(OS, ARCH)
+                                    }
+                                }
+                            }
+                            stage('DEB Package') {
+                                agent { label 'debian' }
+                                steps {
+                                    script {
+                                        buildDEBPackage(OS, ARCH)
+                                        copyDebAndUpdateChecksums(OS, ARCH)
+                                    }
                                 }
                             }
                         }
