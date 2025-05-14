@@ -19,7 +19,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'rhel', 'debian'
+                        values "linux", 'rhel', 'debian'
                     }
                 }
                 stages {
@@ -59,7 +59,7 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows', 'openbsd'
+                        values 'linux', 'windows', 'macos', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
@@ -124,7 +124,7 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows', 'openbsd'
+                        values 'linux', 'windows', 'macos', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
@@ -156,7 +156,7 @@ pipeline {
                 axes {
                     axis {
                         name 'PLATFORM'
-                        values 'linux', 'rhel'//, 'debian'
+                        values 'linux', 'rhel', 'debian'
                     }
                 }
                 stages {
