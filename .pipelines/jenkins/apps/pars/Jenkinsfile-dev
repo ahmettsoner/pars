@@ -42,6 +42,14 @@ pipeline {
                 }
             }
         }
+        stage("Checksum") {
+            agent { label 'linux' }
+            steps {
+                script {
+                    generateChecksum()
+                }
+            }
+        }
 
 
 
@@ -111,44 +119,6 @@ pipeline {
                             }
                         }
                     }
-                }
-            }
-        }
-    
-
-        stage("Checksum") {
-            agent { label 'linux' }
-            steps {
-                script {
-                    generateChecksum()
-                }
-            }
-        }
-        stage('Collect Artifacts') {
-            matrix {
-                axes {
-                    axis {
-                        name 'OS'
-                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
-                    }
-                    axis {
-                        name 'ARCH'
-                        values 'x86_64', 'arm64'
-                    }
-                }
-                excludes {
-                    exclude {
-                        axis {
-                            name 'OS'
-                            values 'netbsd'
-                        }
-                        axis {
-                            name 'ARCH'
-                            values 'arm64'
-                        }
-                    }
-                }
-                stages {
                     stage("Upload artifacts") {
                         agent { label 'linux' }
                         steps {
