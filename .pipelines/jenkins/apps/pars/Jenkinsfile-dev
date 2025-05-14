@@ -68,8 +68,10 @@ pipeline {
                 }
                 excludes {
                     exclude {
-                        axis { name 'OS'; value 'netbsd' }
-                        axis { name 'ARCH'; value 'arm64' }
+                        name 'OS'
+                        value 'netbsd'
+                        name 'ARCH'
+                        value 'arm64'
                     }
                 }
                 stages {
@@ -139,8 +141,10 @@ pipeline {
                 }
                 excludes {
                     exclude {
-                        axis { name 'OS'; value 'netbsd' }
-                        axis { name 'ARCH'; value 'arm64' }
+                        name 'OS'
+                        value 'netbsd'
+                        name 'ARCH'
+                        value 'arm64'
                     }
                 }
                 stages {
