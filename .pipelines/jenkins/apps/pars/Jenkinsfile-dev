@@ -27,7 +27,7 @@ pipeline {
                         agent { label PLATFORM }
                         steps {
                             script {
-                                setupAgent()
+                                setupAgent(params.BRANCH)
                             }
                         }
                     }

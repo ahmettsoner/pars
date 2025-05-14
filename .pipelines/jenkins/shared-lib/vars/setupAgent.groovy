@@ -1,4 +1,4 @@
-def call() {
+def call(String BRANCH) {
   checkout scm
   sh 'git config --global --add safe.directory $(pwd)'
 
@@ -10,12 +10,11 @@ def call() {
     // Remote branch ve tag'leri fetch et
     sh 'git fetch --all --tags'
 
-    // dev branch'e geç (varsa), yoksa oluştur
-    def devExists = sh(script: "git ls-remote --heads origin dev", returnStatus: true) == 0
-    if (devExists) {
-        sh 'git checkout dev'
+    def branchExists = sh(script: "git ls-remote --heads origin ${BRANCH}", returnStatus: true) == 0
+    if (branchExists) {
+        sh "git checkout ${BRANCH}"
     } else {
-        sh 'git checkout -b dev'
+        sh "git checkout -b dev"
     }
 
     // Git tag'lerini listele (opsiyonel log)
