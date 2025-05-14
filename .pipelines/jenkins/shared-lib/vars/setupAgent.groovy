@@ -39,7 +39,6 @@ def call(String BRANCH) {
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
   env.DIST_PATH = "dist"
   env.ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
-  env.ARTIFACT_CHECKSUM_MD5_PATH = "${env.ARTIFACT_PATH}/Checksums.md"
 
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"

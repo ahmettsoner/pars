@@ -31,14 +31,6 @@ pipeline {
                             }
                         }
                     }
-                    stage("Checksum") {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                generateChecksum()
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -131,6 +123,14 @@ pipeline {
         }
     
 
+        stage("Checksum") {
+            agent { label 'linux' }
+            steps {
+                script {
+                    generateChecksum()
+                }
+            }
+        }
         stage('Collect Artifacts') {
             matrix {
                 axes {
