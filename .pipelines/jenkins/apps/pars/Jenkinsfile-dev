@@ -87,7 +87,7 @@ pipeline {
                 }
             }
         }
-        stage('Builds') {
+        stage('Build Packages') {
             matrix {
                 axes {
                     axis {
