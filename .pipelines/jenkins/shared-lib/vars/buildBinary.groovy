@@ -24,10 +24,5 @@ def call(String OS, String ARCH) {
     sh """
         echo "${binaryChecksum}" > ${binaryChecksumPath}
     """
-    
-    // Binary dosyasının yolunu environment değişkeni olarak ekliyoruz
-    // env.BINARY_OUTPUT_PATH_BASE = binaryOutputPathBase
-    // env.BINARY_OUTPUT_PATH = binaryOutputPath
-    // env.BINARY_CHECKSUM_PATH = binaryChecksumPath
 }
 return this
