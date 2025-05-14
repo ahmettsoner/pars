@@ -68,12 +68,7 @@ pipeline {
                 }
 
                 excludes {
-                    exclude {
-                        combination {
-                            OS 'netbsd'
-                            ARCH 'arm64'
-                        }
-                    }
+                    combinationFilter 'OS == "netbsd" && ARCH == "arm64"'
                 }
                 stages {
                     stage("Build Binary") {
@@ -142,12 +137,7 @@ pipeline {
                 }
 
                 excludes {
-                    exclude {
-                        combination {
-                            OS 'netbsd'
-                            ARCH 'arm64'
-                        }
-                    }
+                    combinationFilter 'OS == "netbsd" && ARCH == "arm64"'
                 }
                 stages {
                     stage("Upload artifacts") {
