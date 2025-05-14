@@ -4,7 +4,7 @@ def call(String OS, String ARCH) {
         ext = ".exe"
     }
 
-    // unstash 'linux-x86_64-artifacts'
+    unstash "${OS}-${ARCH}-artifacts"
     def binaryOutputBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def originalFileName = "${APPNAME}${ext}"
     def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.tar.gz"
