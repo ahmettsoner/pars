@@ -53,6 +53,40 @@ pipeline {
 
 
 
+
+        stage('Build Binaries') {
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'linux' 'windows', 'openbsd'
+                    }
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64', 'arm64'
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label "linux" }
+                        steps {
+                            buildBinary(OS, ARCH)
+                            archiveBinary(OS, ARCH)
+                            
+                            def archExt = ""
+                            script {
+                                if (OS == 'windows') {
+                                    archExt = "zip"
+                                } else {
+                                    archExt = "tar.gz"
+                                }
+                            }
+                            packageArtifact(OS, ARCH, archExt)
+                        }
+                    }
+                }
+            }
+        }
         stage('Builds') {
             matrix {
                 axes {
@@ -66,16 +100,6 @@ pipeline {
                     }
                 }
                 stages {
-                    stage('Build Binary') {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                buildBinary("linux", ARCH)
-                                archiveBinary("linux", ARCH)
-                                packageArtifact("linux", ARCH, "tar.gz")
-                            }
-                        }
-                    }
                     stage('Archive and Package') {
                         agent { label PLATFORM }
                         steps {
@@ -88,31 +112,6 @@ pipeline {
                                     copyDebAndUpdateChecksums("linux", ARCH)
                                 }
                             }
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Build Binary Windows') {
-            matrix {
-                axes {
-                    axis {
-                        name 'OS'
-                        values 'windows', 'openbsd'
-                    }
-                    axis {
-                        name 'ARCH'
-                        values 'x86_64', 'arm64'
-                    }
-                }
-                stages {
-                    stage("Build Binary") {
-                        agent { label "linux" }
-                        steps {
-                            buildBinary(OS, ARCH)
-                            archiveBinary(OS, ARCH)
-                            packageArtifact(OS, ARCH, "zip")
                         }
                     }
                 }
