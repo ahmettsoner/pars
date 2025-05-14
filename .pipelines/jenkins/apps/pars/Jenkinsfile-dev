@@ -113,7 +113,8 @@ pipeline {
                             buildBinary(OS, ARCH)
                             archiveBinary(OS, ARCH)
                             packageArtifact(OS, ARCH, "zip")
-                        }zip                    }
+                        }
+                    }
                 }
             }
         }
@@ -132,16 +133,17 @@ pipeline {
                     }
                 }
                 stages {
-                    stage("Build Binary") {
+                    stage("Upload artifacts") {
                         agent { label 'linux' }
                         steps {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
 
-                            if (OS == 'linux') {
-                            unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                            unstash "${OS}-${ARCH}-deb-package-artifacts"
-                                copyRpmAndUpdateChecksums("linux", ARCH)
+                            script {
+                                if (OS == 'linux') {
+                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                }
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
