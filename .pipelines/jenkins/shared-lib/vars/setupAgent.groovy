@@ -7,6 +7,19 @@ def call() {
     git config --global user.name "${GIT_USER_NAME}"
     git fetch --tags
   """
+    // Remote branch ve tag'leri fetch et
+    sh 'git fetch --all --tags'
+
+    // dev branch'e geç (varsa), yoksa oluştur
+    def devExists = sh(script: "git ls-remote --heads origin dev", returnStatus: true) == 0
+    if (devExists) {
+        sh 'git checkout dev'
+    } else {
+        sh 'git checkout -b dev'
+    }
+
+    // Git tag'lerini listele (opsiyonel log)
+    sh 'git tag -l'
 
   def currentBaseVersion = sh(
     script: 'grm flow phase "${CHANNEL}" --next --print=base',
