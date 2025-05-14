@@ -92,24 +92,22 @@ pipeline {
                         when {
                             expression { return OS == 'linux' }
                         }
-                        parallel {
-                            stage('RPM Package') {
-                                agent { label 'rhel' }
-                                steps {
-                                    script {
-                                        buildRPMPackage(OS, ARCH)
-                                        copyRpmAndUpdateChecksums(OS, ARCH)
+                        steps {
+                            script {
+                                parallel(
+                                    "RPM Package": {
+                                        node('rhel') {
+                                            buildRPMPackage(OS, ARCH)
+                                            copyRpmAndUpdateChecksums(OS, ARCH)
+                                        }
+                                    },
+                                    "DEB Package": {
+                                        node('debian') {
+                                            buildDEBPackage(OS, ARCH)
+                                            copyDebAndUpdateChecksums(OS, ARCH)
+                                        }
                                     }
-                                }
-                            }
-                            stage('DEB Package') {
-                                agent { label 'debian' }
-                                steps {
-                                    script {
-                                        buildDEBPackage(OS, ARCH)
-                                        copyDebAndUpdateChecksums(OS, ARCH)
-                                    }
-                                }
+                                )
                             }
                         }
                     }
