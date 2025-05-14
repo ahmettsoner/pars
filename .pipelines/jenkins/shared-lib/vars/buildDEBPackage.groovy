@@ -1,4 +1,6 @@
 def call(String OS, String ARCH) {
+
+    unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
 
     def ext = ""

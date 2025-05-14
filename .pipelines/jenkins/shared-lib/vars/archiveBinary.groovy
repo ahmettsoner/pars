@@ -27,6 +27,7 @@ def call(String OS, String ARCH) {
 
     // Stash dosyalar
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-artifacts"
+    stash includes: "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}/**/*", name: "${OS}-${ARCH}-dist-bin"
 }
 
 return this
