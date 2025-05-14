@@ -138,7 +138,7 @@ pipeline {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
 
-                            if (PLATFORM == 'linux') {
+                            if (OS == 'linux') {
                             unstash "${OS}-${ARCH}-rpm-package-artifacts"
                             unstash "${OS}-${ARCH}-deb-package-artifacts"
                                 copyRpmAndUpdateChecksums("linux", ARCH)
