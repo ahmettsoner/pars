@@ -59,7 +59,7 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux' 'windows', 'openbsd'
+                        values 'linux', 'windows', 'openbsd'
                     }
                     axis {
                         name 'ARCH'
