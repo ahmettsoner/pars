@@ -132,8 +132,8 @@ pipeline {
                                     unstash "${OS}-${ARCH}-rpm-package-artifacts"
                                     unstash "${OS}-${ARCH}-deb-package-artifacts"
                                 }
+                                generateChecksum.WriteChecksumeForBinary(OS, ARCH)
                             }
-                            generateChecksum.WriteChecksumeForBinary(OS, ARCH)
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
                         post {
