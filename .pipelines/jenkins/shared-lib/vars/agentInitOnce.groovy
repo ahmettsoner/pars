@@ -8,7 +8,7 @@ def initOnce(String BRANCH) {
   } else {
     echo "Init already done, skipping"
   }
-  sh setupAgent.call(BRANCH)
+  setupAgent.call(BRANCH)
 }
 
 def cleanupOnce() {
