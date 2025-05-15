@@ -14,9 +14,9 @@ pipeline {
     }
 
     stages {
-        stage("Common Operations") {
+        stage("Prepare Workspace") {
             parallel {
-                stage("Docs") {
+                stage("Common Operations") {
                     agent { label 'linux' }
                     steps {
                         script {
