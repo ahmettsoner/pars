@@ -44,25 +44,25 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows'//, 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
-                // excludes {
-                //     exclude {
-                //         axis {
-                //             name 'OS'
-                //             values 'netbsd'
-                //         }
-                //         axis {
-                //             name 'ARCH'
-                //             values 'arm64'
-                //         }
-                //     }
-                // }
+                excludes {
+                    exclude {
+                        axis {
+                            name 'OS'
+                            values 'netbsd'
+                        }
+                        axis {
+                            name 'ARCH'
+                            values 'arm64'
+                        }
+                    }
+                }
                 stages {
                     stage("Build Binary") {
                         agent { label "linux" }
@@ -151,8 +151,8 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    def osList = ['linux', 'windows']
-                    def archList = ['x86_64']
+                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64', 'arm64']
 
                     generateChecksumFile()
                                     
