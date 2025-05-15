@@ -157,5 +157,29 @@ pipeline {
                 }
             }
         }
+
+        stage('Aggregate Checksums') {
+            agent { label 'linux' }
+            steps {
+                script {
+                    def osList = ['linux', 'windows']
+                    def archList = ['x86_64']
+                    def allStashes = []
+
+                    osList.each { os ->
+                        archList.each { arch ->
+                            allStashes << "checksum-${os}-${arch}"
+                        }
+                    }
+
+                    allStashes.each { stashName ->
+                        unstash stashName
+                    }
+
+                    sh 'cat checksum-*.txt > ${ARTIFACT_CHECKSUM_MD5_PATH}'
+                    archiveArtifacts artifacts: "${ARTIFACT_CHECKSUM_MD5_PATH}", onlyIfSuccessful: true
+                }
+            }
+        }
     }
 }
