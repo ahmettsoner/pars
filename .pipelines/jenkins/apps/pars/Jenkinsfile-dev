@@ -159,8 +159,7 @@ pipeline {
                     osList.each { OS ->
                         archList.each { ARCH ->
                             generateChecksum.WriteChecksumForBinary(OS, ARCH)
-
-                            generateChecksum.WriteChecksumForArchive(OS, ARCH, archiveFormat)
+                            generateChecksum.WriteChecksumForArchive(OS, ARCH)
                         }
                     }
                     
