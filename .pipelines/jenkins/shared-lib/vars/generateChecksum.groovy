@@ -10,8 +10,6 @@ def call(String OS, String ARCH) {
     def type = "Binary"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
     sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
-
-    archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
 }
 
 return this
