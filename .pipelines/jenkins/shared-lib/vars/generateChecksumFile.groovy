@@ -1,4 +1,4 @@
-def call(String OS, String ARCH) {
+def call() {
     echo "Build Version: ${env.BUILD_VERSION}"
 
     env.ARTIFACT_CHECKSUM_MD5_PATH = "${env.ARTIFACT_PATH}/Checksums.md"
