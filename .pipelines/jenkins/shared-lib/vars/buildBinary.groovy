@@ -8,6 +8,7 @@ def call(String OS, String ARCH) {
     sh """
         make build.binary.${OS}.${ARCH} VERSION=$env.BUILD_VERSION
     """
+    stash includes: "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}/**/*", name: "${OS}-${ARCH}-dist-bin"
 
     // // Binary dosyasının çıkış yolunu belirliyoruz
     // def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
