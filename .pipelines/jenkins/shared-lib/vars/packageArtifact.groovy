@@ -44,13 +44,6 @@ def call(String OS, String ARCH, String archiveFormat) {
 
     sh "cp '${binaryTempPath}/${newBaseName}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
-    // def checksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
-    // echo "Checksum for ${binaryTempPath}/${newBaseName}: ${checksum}"
-
-    // def type = "Archive"
-    // def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    // sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
-
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-archive-artifacts"
 }
 

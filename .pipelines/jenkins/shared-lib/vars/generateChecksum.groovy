@@ -1,4 +1,4 @@
-def WriteChecksumForBinary = { OS, ARCH ->
+def WriteChecksumForBinary(OS, ARCH) {
     unstash "${OS}-${ARCH}-artifacts"
 
     def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
@@ -7,10 +7,10 @@ def WriteChecksumForBinary = { OS, ARCH ->
     def type = "Binary"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
-    // Append line to checksum file
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
-def WriteChecksumForArchive = { OS, ARCH ->
+
+def WriteChecksumForArchive(OS, ARCH) {
     unstash "${OS}-${ARCH}-artifacts"
 
     def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
@@ -19,6 +19,7 @@ def WriteChecksumForArchive = { OS, ARCH ->
     def type = "Archive"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
-    // Append line to checksum file
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
+
+return this
