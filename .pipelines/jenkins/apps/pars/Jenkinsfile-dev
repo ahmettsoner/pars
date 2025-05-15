@@ -34,23 +34,28 @@ pipeline {
                 }
             }
         }
-        stage("Docs") {
-            agent { label 'linux' }
-            steps {
-                script {
-                    generateDocs()
-                }
-            }
-        }
-        stage("Checksum") {
-            agent { label 'linux' }
-            steps {
-                script {
-                    generateChecksum()
-                }
-            }
-        }
+        parallel {
+            stages{
 
+                stage("Docs") {
+                    agent { label 'linux' }
+                    steps {
+                        script {
+                            generateDocs()
+                        }
+                    }
+                }
+                stage("Checksum") {
+                    agent { label 'linux' }
+                    steps {
+                        script {
+                            generateChecksum()
+                        }
+                    }
+                }
+
+            }
+        }
 
 
 
