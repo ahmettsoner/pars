@@ -13,14 +13,6 @@ def call(String OS, String ARCH) {
     // Dosyayı kopyala
     sh "cp ${binaryOutputPathBase}/${originalFileName} ${env.ARTIFACT_PATH}/${newBaseName}"
 
-    // // Checksum oku
-    // def checksum = readFile("${binaryChecksumPath}").trim()
-
-    // // Checksums.md'ye yaz
-    // def type = "Binary"
-    // def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    // sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
-
     // Stash dosyalar
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-artifacts"
 }

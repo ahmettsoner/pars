@@ -158,16 +158,7 @@ pipeline {
                                     
                     osList.each { OS ->
                         archList.each { ARCH ->
-
-                            unstash "${OS}-${ARCH}-artifacts"
-                            def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
-                            def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
-                            def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
-                            def type = "Binary"
-                            def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-
-                            // Append et (Linux ortamı varsayılıyor)
-                            sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
+                            generateChecksum.WriteChecksumForBinary(OS, ARCH)
                         }
                     }
                     
