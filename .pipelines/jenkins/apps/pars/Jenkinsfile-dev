@@ -36,25 +36,21 @@ pipeline {
         }
         stage("Common Operations") {
             parallel {
-                stages{
-
-                    stage("Docs") {
-                        agent { label 'linux' }
-                        steps {
-                            script {
-                                generateDocs()
-                            }
+                stage("Docs") {
+                    agent { label 'linux' }
+                    steps {
+                        script {
+                            generateDocs()
                         }
                     }
-                    stage("Checksum") {
-                        agent { label 'linux' }
-                        steps {
-                            script {
-                                generateChecksum()
-                            }
+                }
+                stage("Checksum") {
+                    agent { label 'linux' }
+                    steps {
+                        script {
+                            generateChecksum()
                         }
                     }
-
                 }
             }
         }
