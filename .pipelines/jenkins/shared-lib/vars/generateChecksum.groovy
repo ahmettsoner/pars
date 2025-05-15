@@ -11,9 +11,8 @@ def WriteChecksumForBinary(OS, ARCH) {
 }
 
 def WriteChecksumForArchive(OS, ARCH) {
-    unstash "${OS}-${ARCH}-artifacts"
+    unstash "${OS}-${ARCH}-archive-artifacts"
 
-    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
     def archiveFormat = ""
     switch (OS) {
         case "windows":
