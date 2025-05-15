@@ -18,8 +18,6 @@ def call(String OS, String ARCH, String archiveFormat) {
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
     def binaryTempPath = "${WORKSPACE}/dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
 
-
-    unstash "html-outputdir"
     sh """
         mkdir -p ${binaryTempPath}/bin
         cp -r ${binaryOutputPathBase} ${binaryTempPath}/bin/
@@ -50,12 +48,12 @@ def call(String OS, String ARCH, String archiveFormat) {
 
     sh "cp '${binaryTempPath}/${newBaseName}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
-    // def checksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
-    // echo "Checksum for ${binaryTempPath}/${newBaseName}: ${checksum}"
+    def checksum = sh(script: "sha256sum '${binaryTempPath}/${newBaseName}' | awk '{print \$1}'", returnStdout: true).trim()
+    echo "Checksum for ${binaryTempPath}/${newBaseName}: ${checksum}"
 
-    // def type = "Archive"
-    // def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    // sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
+    def type = "Archive"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+    sh "echo '${line}' >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-archive-artifacts"
 }
