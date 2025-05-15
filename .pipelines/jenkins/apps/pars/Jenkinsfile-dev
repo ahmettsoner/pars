@@ -40,11 +40,9 @@ pipeline {
                     agent { label 'linux' }
                     steps {
                         script {
-                        agentInitOnce.initOnce('linux')
+                            agentInitOnce.initOnce('linux')
                         }
                         echo "Do some work on Linux agent"
-                    }
-                    steps {
                         script {
                             generateDocs()
                         }
@@ -61,11 +59,9 @@ pipeline {
                     agent { label 'linux' }
                     steps {
                         script {
-                        agentInitOnce.initOnce('linux')
+                            agentInitOnce.initOnce('linux')
                         }
                         echo "Do some work on Linux agent"
-                    }
-                    steps {
                         script {
                             generateChecksum()
                         }
