@@ -12,7 +12,7 @@ def initOnce(String BRANCH) {
 }
 
 def cleanupOnce() {
-  def marker = "${env.WORKSPACE}/.cleanupdone-${name}"
+  def marker = "${env.WORKSPACE}/.cleanupdone"
   if (!fileExists(marker)) {
     echo "Performing cleanup"
     // Cleanup işlemleri
