@@ -24,7 +24,6 @@ pipeline {
                         }
                         script {
                             generateDocs()
-                            generateChecksumFile()
                         }
                     }
                     post {
@@ -157,6 +156,7 @@ pipeline {
                     def archList = ['x86_64']
                     def allStashes = []
 
+                    generateChecksumFile()
                     osList.each { os ->
                         archList.each { arch ->
                             allStashes << "checksum-${os}-${arch}"
