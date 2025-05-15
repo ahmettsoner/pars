@@ -153,11 +153,13 @@ pipeline {
                     agentInitOnce.initOnce(params.BRANCH)
                     def osList = ['linux', 'windows']
                     def archList = ['x86_64']
-                    
+
                     generateChecksumFile()
                                     
                     osList.each { OS ->
                         archList.each { ARCH ->
+
+                            unstash "${OS}-${ARCH}-artifacts"
                             def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
                             def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
                             def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
