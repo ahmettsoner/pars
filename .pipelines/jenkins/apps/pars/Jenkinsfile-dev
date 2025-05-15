@@ -40,7 +40,20 @@ pipeline {
                     agent { label 'linux' }
                     steps {
                         script {
+                        agentInitOnce.initOnce('linux')
+                        }
+                        echo "Do some work on Linux agent"
+                    }
+                    steps {
+                        script {
                             generateDocs()
+                        }
+                    }
+                    post {
+                        always {
+                        script {
+                            agentInitOnce.cleanupOnce('linux')
+                        }
                         }
                     }
                 }
@@ -48,7 +61,20 @@ pipeline {
                     agent { label 'linux' }
                     steps {
                         script {
+                        agentInitOnce.initOnce('linux')
+                        }
+                        echo "Do some work on Linux agent"
+                    }
+                    steps {
+                        script {
                             generateChecksum()
+                        }
+                    }
+                    post {
+                        always {
+                        script {
+                            agentInitOnce.cleanupOnce('linux')
+                        }
                         }
                     }
                 }
