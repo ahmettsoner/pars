@@ -4,6 +4,7 @@ def call(String OS, String ARCH, String archiveFormat) {
         ext = ".exe"
     }
     
+    unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "${WORKSPACE}/dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
