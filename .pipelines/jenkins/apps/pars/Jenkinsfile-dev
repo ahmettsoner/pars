@@ -14,26 +14,6 @@ pipeline {
     }
 
     stages {
-        // stage("Prepare workspace") {
-        //     matrix {
-        //         axes {
-        //             axis {
-        //                 name 'PLATFORM'
-        //                 values "linux", 'rhel', 'debian'
-        //             }
-        //         }
-        //         stages {
-        //             stage("Setup") {
-        //                 agent { label PLATFORM }
-        //                 steps {
-        //                     script {
-        //                         setupAgent(params.BRANCH)
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
         stage("Common Operations") {
             parallel {
                 stage("Docs") {
@@ -44,22 +24,6 @@ pipeline {
                         }
                         script {
                             generateDocs()
-                        }
-                    }
-                    post {
-                        always {
-                            script {
-                                agentInitOnce.cleanupOnce()
-                            }
-                        }
-                    }
-                }
-                stage("Checksum") {
-                    agent { label 'linux' }
-                    steps {
-                        script {
-                            agentInitOnce.initOnce(params.BRANCH)
-                            generateChecksum()
                         }
                     }
                     post {
@@ -168,6 +132,20 @@ pipeline {
                                     unstash "${OS}-${ARCH}-deb-package-artifacts"
                                 }
                             }
+                            generateChecksum()
+
+                            def ext = ""
+                            if (OS.toLowerCase() == 'windows') {
+                                ext = ".exe"
+                            }
+
+                            def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
+                            def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
+
+                            def type = "Binary"
+                            def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+                            sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
+
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
                         post {
