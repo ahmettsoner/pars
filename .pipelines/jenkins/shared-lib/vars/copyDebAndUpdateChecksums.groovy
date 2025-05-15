@@ -31,15 +31,15 @@ def call(String OS, String ARCH) {
     // Artifact dizinine kopyala
     sh "cp '${debOutputPath}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
-    // Checksum oku
-    def checksum = readFile(checksumFilePath).trim()
+    // // Checksum oku
+    // def checksum = readFile(checksumFilePath).trim()
 
-    // Checksums.md'ye satır ekle
-    def type = "DEB"
-    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
+    // // Checksums.md'ye satır ekle
+    // def type = "DEB"
+    // def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+    // sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
 
-    echo "Added checksum line to Checksums.md: ${line}"
+    // echo "Added checksum line to Checksums.md: ${line}"
 
     // Stash işlemi
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"

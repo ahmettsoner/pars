@@ -31,34 +31,34 @@ def call(String OS, String ARCH) {
         make build.rpm.package.${ARCH}.package VERSION=${env.BUILD_VERSION}
     """
 
-    // Map ARCH to RPM arch
-    def rpmArch = ""
-    switch (ARCH) {
-        case "x86":
-            rpmArch = "i386"
-            break
-        case "x86_64":
-            rpmArch = "x86_64"
-            break
-        case "arm":
-            rpmArch = "armv7hl"
-            break
-        case "arm64":
-            rpmArch = "aarch64"
-            break
-        default:
-            error "Unsupported architecture: ${ARCH}"
-    }
+    // // Map ARCH to RPM arch
+    // def rpmArch = ""
+    // switch (ARCH) {
+    //     case "x86":
+    //         rpmArch = "i386"
+    //         break
+    //     case "x86_64":
+    //         rpmArch = "x86_64"
+    //         break
+    //     case "arm":
+    //         rpmArch = "armv7hl"
+    //         break
+    //     case "arm64":
+    //         rpmArch = "aarch64"
+    //         break
+    //     default:
+    //         error "Unsupported architecture: ${ARCH}"
+    // }
 
-    def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
-    def checksumPath = "${rpmOutputBase}/checksum.txt"
+    // def rpmOutputBase = "${packageOutputBase}/RPMS/${rpmArch}"
+    // def checksumPath = "${rpmOutputBase}/checksum.txt"
 
-    // Find .rpm file and calculate checksum
-    def rpmFile = sh(script: "ls ${rpmOutputBase}/${APPNAME}*.${rpmArch}.rpm | head -n1", returnStdout: true).trim()
-    def checksum = sh(script: "sha256sum '${rpmFile}' | awk '{print \$1}'", returnStdout: true).trim()
+    // // Find .rpm file and calculate checksum
+    // def rpmFile = sh(script: "ls ${rpmOutputBase}/${APPNAME}*.${rpmArch}.rpm | head -n1", returnStdout: true).trim()
+    // def checksum = sh(script: "sha256sum '${rpmFile}' | awk '{print \$1}'", returnStdout: true).trim()
 
-    echo "Checksum for ${rpmFile}: ${checksum}"
-    writeFile file: checksumPath, text: checksum
+    // echo "Checksum for ${rpmFile}: ${checksum}"
+    // writeFile file: checksumPath, text: checksum
 
 }
 

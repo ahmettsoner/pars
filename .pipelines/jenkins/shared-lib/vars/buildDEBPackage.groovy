@@ -23,28 +23,28 @@ def call(String OS, String ARCH) {
         make build.deb.package.${ARCH}.package VERSION=${env.BUILD_VERSION}
     """
 
-    def debArch = ""
-    if (ARCH == "x86") {
-        debArch = "i386"
-    } else if (ARCH == "x86_64") {
-        debArch = "amd64"
-    } else if (ARCH == "arm") {
-        debArch = "armhf"
-    } else if (ARCH == "arm64") {
-        debArch = "arm64"
-    } else {
-        error "Unsupported architecture: ${ARCH}"
-    }
+    // def debArch = ""
+    // if (ARCH == "x86") {
+    //     debArch = "i386"
+    // } else if (ARCH == "x86_64") {
+    //     debArch = "amd64"
+    // } else if (ARCH == "arm") {
+    //     debArch = "armhf"
+    // } else if (ARCH == "arm64") {
+    //     debArch = "arm64"
+    // } else {
+    //     error "Unsupported architecture: ${ARCH}"
+    // }
 
-    def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
-    def debOutputBase = "${packageOutputBase}/output"
-    def debOutputPath = "${debOutputBase}/pars_${plainVersion}_${debArch}.deb"
-    def debChecksumPath = "${debOutputBase}/checksum.txt"
+    // def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
+    // def debOutputBase = "${packageOutputBase}/output"
+    // def debOutputPath = "${debOutputBase}/pars_${plainVersion}_${debArch}.deb"
+    // def debChecksumPath = "${debOutputBase}/checksum.txt"
 
-    def debChecksum = sh(script: "sha256sum '${debOutputPath}' | awk '{print \$1}'", returnStdout: true).trim()
-    echo "Checksum for ${debOutputPath}: ${debChecksum}"
+    // def debChecksum = sh(script: "sha256sum '${debOutputPath}' | awk '{print \$1}'", returnStdout: true).trim()
+    // echo "Checksum for ${debOutputPath}: ${debChecksum}"
 
-    writeFile file: debChecksumPath, text: debChecksum
+    // writeFile file: debChecksumPath, text: debChecksum
 
 }
 
