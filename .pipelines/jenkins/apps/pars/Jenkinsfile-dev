@@ -177,26 +177,5 @@ pipeline {
                 }
             }
         }
-
-        stage("Clean workspace") {
-            matrix {
-                axes {
-                    axis {
-                        name 'PLATFORM'
-                        values 'linux', 'rhel', 'debian'
-                    }
-                }
-                stages {
-                    stage("Delete dist files") {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                sh "rm -rf ${env.DIST_PATH}/*"
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 }
