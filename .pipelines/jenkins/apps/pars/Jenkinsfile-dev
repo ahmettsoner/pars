@@ -14,69 +14,69 @@ pipeline {
     }
 
     stages {
-        stage("Prepare workspace") {
-            matrix {
-                axes {
-                    axis {
-                        name 'PLATFORM'
-                        values "linux", 'rhel', 'debian'
-                    }
-                }
-                stages {
-                    stage("Setup") {
-                        agent { label PLATFORM }
-                        steps {
-                            script {
-                                setupAgent(params.BRANCH)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        // stage("Prepare workspace") {
+        //     matrix {
+        //         axes {
+        //             axis {
+        //                 name 'PLATFORM'
+        //                 values "linux", 'rhel', 'debian'
+        //             }
+        //         }
+        //         stages {
+        //             stage("Setup") {
+        //                 agent { label PLATFORM }
+        //                 steps {
+        //                     script {
+        //                         setupAgent(params.BRANCH)
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         stage("Common Operations") {
             parallel {
                 stage("Docs") {
                     agent { label 'linux' }
-                    // steps {
-                    //     script {
-                    //     agentInitOnce.initOnce('linux')
-                    //     }
-                    //     echo "Do some work on Linux agent"
-                    // }
+                    steps {
+                        script {
+                            agentInitOnce.initOnce(params.BRANCH)
+                        }
+                        echo "Do some work on Linux agent"
+                    }
                     steps {
                         script {
                             generateDocs()
                         }
                     }
-                    // post {
-                    //     always {
-                    //     script {
-                    //         agentInitOnce.cleanupOnce('linux')
-                    //     }
-                    //     }
-                    // }
+                    post {
+                        always {
+                            script {
+                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                    }
                 }
                 stage("Checksum") {
                     agent { label 'linux' }
-                    // steps {
-                    //     script {
-                    //     agentInitOnce.initOnce('linux')
-                    //     }
-                    //     echo "Do some work on Linux agent"
-                    // }
+                    steps {
+                        script {
+                            agentInitOnce.initOnce(params.BRANCH)
+                        }
+                        echo "Do some work on Linux agent"
+                    }
                     steps {
                         script {
                             generateChecksum()
                         }
                     }
-                    // post {
-                    //     always {
-                    //     script {
-                    //         agentInitOnce.cleanupOnce('linux')
-                    //     }
-                    //     }
-                    // }
+                    post {
+                        always {
+                            script {
+                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -125,29 +125,29 @@ pipeline {
                             }
                         }
                     }
-                    stage("Package for Linux") {
-                        when {
-                            expression { return OS == 'linux' }
-                        }
-                        steps {
-                            script {
-                                parallel(
-                                    "RPM Package": {
-                                        node('rhel') {
-                                            buildRPMPackage(OS, ARCH)
-                                            copyRpmAndUpdateChecksums(OS, ARCH)
-                                        }
-                                    },
-                                    "DEB Package": {
-                                        node('debian') {
-                                            buildDEBPackage(OS, ARCH)
-                                            copyDebAndUpdateChecksums(OS, ARCH)
-                                        }
-                                    }
-                                )
-                            }
-                        }
-                    }
+                    // stage("Package for Linux") {
+                    //     when {
+                    //         expression { return OS == 'linux' }
+                    //     }
+                    //     steps {
+                    //         script {
+                    //             parallel(
+                    //                 "RPM Package": {
+                    //                     node('rhel') {
+                    //                         buildRPMPackage(OS, ARCH)
+                    //                         copyRpmAndUpdateChecksums(OS, ARCH)
+                    //                     }
+                    //                 },
+                    //                 "DEB Package": {
+                    //                     node('debian') {
+                    //                         buildDEBPackage(OS, ARCH)
+                    //                         copyDebAndUpdateChecksums(OS, ARCH)
+                    //                     }
+                    //                 }
+                    //             )
+                    //         }
+                    //     }
+                    // }
                     stage("Upload artifacts") {
                         agent { label 'linux' }
                         steps {
