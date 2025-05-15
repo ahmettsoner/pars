@@ -66,3 +66,20 @@ services:
       -name ubuntu4
       -webSocket
       -workDir /workspace
+
+  jenkins-agent-ubuntu5:
+    build:
+      context: .
+      dockerfile: Dockerfile-ubuntu-agent
+    container_name: jenkins-agent-ubuntu5
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    working_dir: /workspace
+    command: >
+      java -jar /workspace/agent.jar
+      -url http://host.docker.internal:8080/
+      -secret 345978cba70a1b92693aeb658a761ca54a34c1443004c23e771872028422515b
+      -name ubuntu5
+      -webSocket
+      -workDir /workspace
