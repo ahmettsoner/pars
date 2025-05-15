@@ -131,7 +131,6 @@ pipeline {
                                     unstash "${OS}-${ARCH}-rpm-package-artifacts"
                                     unstash "${OS}-${ARCH}-deb-package-artifacts"
                                 }
-                                generateChecksum.WriteChecksumeForBinary(OS, ARCH)
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
@@ -159,6 +158,7 @@ pipeline {
                     generateChecksumFile()
                     osList.each { os ->
                         archList.each { arch ->
+                            generateChecksum.WriteChecksumeForBinary(os, arch)
                             allStashes << "checksum-${os}-${arch}"
                         }
                     }
