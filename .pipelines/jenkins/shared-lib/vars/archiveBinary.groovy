@@ -9,8 +9,6 @@ def call(String OS, String ARCH) {
 
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
-    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
-    def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
 
     // Hedef klasörü oluştur
     sh "mkdir -p ${env.ARTIFACT_PATH}"

@@ -5,11 +5,10 @@ def call(String OS, String ARCH, String archiveFormat) {
     }
     
     unstash "${OS}-${ARCH}-dist-bin"
-    def binaryOutputPathBase = "${WORKSPACE}/dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
-    def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
     
-    if (!fileExists(binaryOutputPathBase) || !fileExists(binaryChecksumPath)) {
+    if (!fileExists(binaryOutputPathBase)) {
         echo "Required files do not exist. Skipping archive step."
         return
     }
@@ -17,16 +16,13 @@ def call(String OS, String ARCH, String archiveFormat) {
     echo "Binary and Checksum files are present."
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-    def binaryTempPath = "${WORKSPACE}/dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
+    def binaryTempPath = "dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
 
 
     unstash "html-outputdir"
     sh """
         mkdir -p ${binaryTempPath}/bin
         cp -r ${binaryOutputPathBase} ${binaryTempPath}/bin/
-
-        mkdir -p ${binaryTempPath}/meta
-        cp -r ${binaryChecksumPath} ${binaryTempPath}/meta/
 
         mkdir -p ${binaryTempPath}/docs
         cp -r ${env.HTML_OUTPUT_DIR}/ ${binaryTempPath}/docs/
