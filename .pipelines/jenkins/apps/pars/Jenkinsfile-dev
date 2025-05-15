@@ -125,29 +125,33 @@ pipeline {
                             }
                         }
                     }
-                    // stage("Package for Linux") {
-                    //     when {
-                    //         expression { return OS == 'linux' }
-                    //     }
-                    //     steps {
-                    //         script {
-                    //             parallel(
-                    //                 "RPM Package": {
-                    //                     node('rhel') {
-                    //                         buildRPMPackage(OS, ARCH)
-                    //                         copyRpmAndUpdateChecksums(OS, ARCH)
-                    //                     }
-                    //                 },
-                    //                 "DEB Package": {
-                    //                     node('debian') {
-                    //                         buildDEBPackage(OS, ARCH)
-                    //                         copyDebAndUpdateChecksums(OS, ARCH)
-                    //                     }
-                    //                 }
-                    //             )
-                    //         }
-                    //     }
-                    // }
+                    stage("Package for Linux") {
+                        when {
+                            expression { return OS == 'linux' }
+                        }
+                        steps {
+                            script {
+                                parallel(
+                                    "RPM Package": {
+                                        node('rhel') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildRPMPackage(OS, ARCH)
+                                            copyRpmAndUpdateChecksums(OS, ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    },
+                                    "DEB Package": {
+                                        node('debian') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildDEBPackage(OS, ARCH)
+                                            copyDebAndUpdateChecksums(OS, ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
                     stage("Upload artifacts") {
                         agent { label 'linux' }
                         steps {
@@ -158,12 +162,12 @@ pipeline {
                             unstash "${OS}-${ARCH}-artifacts"
                             unstash "${OS}-${ARCH}-archive-artifacts"
 
-                            // script {
-                            //     if (OS == 'linux') {
-                            //         unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                            //         unstash "${OS}-${ARCH}-deb-package-artifacts"
-                            //     }
-                            // }
+                            script {
+                                if (OS == 'linux') {
+                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                }
+                            }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
                         post {
