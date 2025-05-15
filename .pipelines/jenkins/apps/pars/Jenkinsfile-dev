@@ -133,7 +133,7 @@ pipeline {
                                     unstash "${OS}-${ARCH}-deb-package-artifacts"
                                 }
                             }
-                            generateChecksum(OS, ARCH)
+                            // generateChecksum(OS, ARCH)
 
                         }
                         post {
