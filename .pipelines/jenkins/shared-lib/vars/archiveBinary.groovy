@@ -7,6 +7,7 @@ def call(String OS, String ARCH) {
     def originalFileName = "${APPNAME}${ext}"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
 
+    unstash "${OS}-${ARCH}-artifacts"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
     def binaryChecksumPath = "${binaryOutputPathBase}/checksum.txt"
