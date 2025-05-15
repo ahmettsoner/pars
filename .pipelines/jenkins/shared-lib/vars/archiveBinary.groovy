@@ -1,8 +1,5 @@
 def call(String OS, String ARCH) {
-    def ext = ""
-    if (OS.toLowerCase() == 'windows') {
-        ext = ".exe"
-    }
+    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
 
     def originalFileName = "${APPNAME}${ext}"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"

@@ -1,10 +1,7 @@
 def call(String OS, String ARCH) {
     def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
 
-    def ext = ""
-    if (OS.toLowerCase() == 'windows') {
-        ext = ".exe"
-    }
+    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
 
     def rpmArch = ""
 

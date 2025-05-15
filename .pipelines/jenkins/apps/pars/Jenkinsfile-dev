@@ -146,28 +146,29 @@ pipeline {
             }
         }
 
-        stage('Aggregate Checksums') {
+        stage('Generate Checksums File') {
             agent { label 'linux' }
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
                     def osList = ['linux', 'windows']
                     def archList = ['x86_64']
-                    def allStashes = []
-
+                    
                     generateChecksumFile()
-                    osList.each { os ->
-                        archList.each { arch ->
-                            generateChecksum.WriteChecksumeForBinary(os, arch)
-                            allStashes << "checksum-${os}-${arch}"
+                                    
+                    osList.each { OS ->
+                        archList.each { ARCH ->
+                            def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
+                            def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
+                            def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
+                            def type = "Binary"
+                            def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+
+                            // Append et (Linux ortamı varsayılıyor)
+                            sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
                         }
                     }
-
-                    allStashes.each { stashName ->
-                        unstash stashName
-                    }
-
-                    sh 'cat checksum-*.txt > ${ARTIFACT_CHECKSUM_MD5_PATH}'
+                    
                     archiveArtifacts artifacts: "${ARTIFACT_CHECKSUM_MD5_PATH}", onlyIfSuccessful: true
                 }
             }

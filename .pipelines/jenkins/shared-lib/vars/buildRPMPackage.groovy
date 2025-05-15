@@ -1,8 +1,5 @@
 def call(String OS, String ARCH) {
-    def ext = ""
-    if (OS.toLowerCase() == 'windows') {
-        ext = ".exe"
-    }
+    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
 
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"

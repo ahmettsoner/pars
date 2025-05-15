@@ -3,10 +3,7 @@ def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
 
-    def ext = ""
-    if (OS.toLowerCase() == 'windows') {
-        ext = ".exe"
-    }
+    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
 
     def pckgPath = "usr/bin"
