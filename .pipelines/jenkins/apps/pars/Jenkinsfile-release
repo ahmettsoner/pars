@@ -33,18 +33,22 @@ pipeline {
           def changelog =  readFile(env.CHANGELOG_PATH).trim()
 
           withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
+            def releaseJson = """{
+              "tag_name": "${env.BUILD_VERSION}",
+              "target": "dev",
+              "name": "${env.BUILD_VERSION} Release",
+              "body": ${groovy.json.JsonOutput.toJson(changelog)},
+              "draft": false,
+              "prerelease": false
+            }"""
+
+            writeFile file: 'release.json', text: releaseJson
+
             sh """
               curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
-                -H "Content-Type: application/json" \\
-                -H "Authorization: token $GITEA_TOKEN" \\
-                -d '{
-                  "tag_name": "$env.BUILD_VERSION",
-                  "target": "$params.BRANCH",
-                  "name": "$env.BUILD_VERSION Release",
-                  "body": "${changelog}",
-                  "draft": false,
-                  "prerelease": false
-                }'
+                  -H "Content-Type: application/json" \\
+                  -H "Authorization: token $GITEA_TOKEN" \\
+                  -d @release.json
             """
           }
         }
