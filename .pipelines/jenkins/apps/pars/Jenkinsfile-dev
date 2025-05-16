@@ -249,10 +249,8 @@ pipeline {
                             returnStdout: true
                         ).trim()
 
-                        // ⚠️ JsonSlurperClassic yerine JsonSlurper kullanılıyor
                         def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
 
-                        // artifacts klasöründeki tüm dosyaları bul ve yükle
                         def fileList = sh(
                             script: "find ${env.ARTIFACT_PATH} -type f",
                             returnStdout: true
