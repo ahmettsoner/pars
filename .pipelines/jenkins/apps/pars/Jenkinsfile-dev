@@ -190,6 +190,7 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
+                    unstash "${OS}-${ARCH}-artifacts"
                 }
 
                 script {
