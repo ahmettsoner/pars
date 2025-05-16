@@ -253,20 +253,20 @@ pipeline {
                         def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
 
                         // artifacts klasöründeki tüm dosyaları bul ve yükle
-                        def files = sh(
+                        def fileList = sh(
                             script: "find ${env.ARTIFACT_PATH} -type f",
                             returnStdout: true
                         ).trim().split('\n')
-                        files.each { file ->
-                            echo "Uploading artifact: ${file.name}"
+                        fileList.each { filePath ->
+                            def fileName = filePath.tokenize('/').last()
+                            echo "Uploading artifact: ${fileName}"
                             sh """
-                                curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases/$releaseId/assets?name=${file.name}" \\
+                                curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases/$releaseId/assets?name=${fileName}" \\
                                     -H "Authorization: token $GITEA_TOKEN" \\
                                     -H "Content-Type: application/octet-stream" \\
-                                    --data-binary @${file.path}
+                                    --data-binary @${filePath}
                             """
-                        }
-                    }
+                        }                    }
                 }
 
             }
