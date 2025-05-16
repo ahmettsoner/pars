@@ -1,6 +1,12 @@
-def call(String OS, String ARCH, String archiveFormat) {
+def call(String OS, String ARCH) {
     def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
     
+    def archiveFormat = ""
+    if (OS == 'windows') {
+        archiveFormat = "zip"
+    } else {
+        archiveFormat = "tar.gz"
+    }
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
