@@ -47,11 +47,11 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values 'linux'//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64', 'arm64'
+                        values 'x86_64'//, 'arm64'
                     }
                 }
                 excludes {
@@ -154,8 +154,8 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64', 'arm64']
+                    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64']//, 'arm64']
 
                     generateChecksumFile()
                                     
@@ -193,8 +193,8 @@ pipeline {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
 
-                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64', 'arm64']
+                    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64']//, 'arm64']
 
                     osList.each { OS ->
                         archList.each { ARCH ->
@@ -214,7 +214,7 @@ pipeline {
 
                 script {
                     sh(
-                        script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --output ${env.CHANGELOG_PATH}",
+                        script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --merge-all --output ${env.CHANGELOG_PATH}",
                         returnStdout: true
                     ).trim()
 
