@@ -20,9 +20,9 @@ pipeline {
     stage('Create Gitea Release') {
       agent { label 'linux' }
       steps {
-        script {
-            agentInitOnce.initOnce(params.BRANCH)
-        }
+        // script {
+        //     agentInitOnce.initOnce(params.BRANCH)
+        // }
 
         // def releaseChangelogContent = sh(
         //   script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
@@ -45,13 +45,13 @@ pipeline {
           """
         }
       }
-      post {
-          always {
-              script {
-                  agentInitOnce.cleanupOnce()
-              }
-          }
-      }
+      // post {
+      //     always {
+      //         script {
+      //             agentInitOnce.cleanupOnce()
+      //         }
+      //     }
+      // }
     }
   }
 }
