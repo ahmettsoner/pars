@@ -35,21 +35,23 @@ def call(String BRANCH) {
   env.BUILD_VERSION = tagName
   env.CURRENT_BASE_VERSION = currentBaseVersion
   env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
-  env.CHANGELOG_PATH = "CHANGELOG/${buildVersion}.md"
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
   env.DIST_PATH = "dist"
   env.ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
   env.CHANGES_PATH = ".changes"
+  env.CHANGELOG_PATH = "${env.CHANGES_PATH}/${env.BUILD_VERSION}.md"
 
-  echo env.CHANGES_PATH
-  echo env.ARTIFACT_PATH
-  echo env.buildVersion
+  echo " >>>> 1 : $env.CHANGES_PATH"
+  echo " >>>> 2 : $env.ARTIFACT_PATH"
+  echo " >>>> 3 : $buildVersion"
+  echo " >>>> 4 : $env.CHANGELOG_PATH"
+  echo " >>>> 5 : $env.CHANGELOG_PATH"
 
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.CHANGES_PATH}"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"
 
-  sh "make build.cmake.${buildVersion}"
+  sh "make build.cmake.${env.BUILD_VERSION}"
 }
 
 

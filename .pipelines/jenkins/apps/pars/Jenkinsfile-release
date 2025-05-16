@@ -26,7 +26,7 @@ pipeline {
 
         script {
           def changelog = sh(
-            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
+            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGELOG_PATH}",
             returnStdout: true
           ).trim()
             
