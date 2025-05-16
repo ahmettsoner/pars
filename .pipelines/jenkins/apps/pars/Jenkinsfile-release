@@ -30,27 +30,30 @@ pipeline {
         //   returnStdout: true
         // ).trim()
           
-        def changelog = '''## Değişiklikler
+        script {
+          def changelog = '''## Değişiklikler
 
-      - Yeni özellik: X modülü eklendi
-      - Hata düzeltme: Y hatası giderildi
-      - Performans iyileştirmeleri'''.replaceAll('"', '\\"').replaceAll('\n', '\\n')
+        - Yeni özellik: X modülü eklendi
+        - Hata düzeltme: Y hatası giderildi
+        - Performans iyileştirmeleri'''.replaceAll('"', '\\"').replaceAll('\n', '\\n')
 
-        withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
-          sh """
-            curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
-              -H "Content-Type: application/json" \\
-              -H "Authorization: token $GITEA_TOKEN" \\
-              -d '{
-                "tag_name": "$BUILD_VERSION",
-                "target": "main",
-                "title": "$BUILD_VERSION Release",
-                "note": "${changelog}",
-                "draft": false,
-                "prerelease": false
-              }'
-          """
+          withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
+            sh """
+              curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
+                -H "Content-Type: application/json" \\
+                -H "Authorization: token $GITEA_TOKEN" \\
+                -d '{
+                  "tag_name": "$BUILD_VERSION",
+                  "target": "main",
+                  "title": "$BUILD_VERSION Release",
+                  "note": "${changelog}",
+                  "draft": false,
+                  "prerelease": false
+                }'
+            """
+          }
         }
+
       }
       // post {
       //     always {
