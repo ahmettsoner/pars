@@ -253,7 +253,10 @@ pipeline {
                         def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
 
                         // artifacts klasöründeki tüm dosyaları bul ve yükle
-                        def files = findFiles(glob: "${env.ARTIFACT_PATH}/*")
+                        def files = sh(
+                            script: "find ${env.ARTIFACT_PATH} -type f",
+                            returnStdout: true
+                        ).trim().split('\n')
                         files.each { file ->
                             echo "Uploading artifact: ${file.name}"
                             sh """
