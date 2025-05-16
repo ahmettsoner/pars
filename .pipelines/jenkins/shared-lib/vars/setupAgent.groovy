@@ -30,7 +30,6 @@ def call(String BRANCH) {
     returnStdout: true
   ).trim()
 
-  def buildVersion = tagName
 
   env.BUILD_VERSION = tagName
   env.CURRENT_BASE_VERSION = currentBaseVersion
@@ -41,17 +40,16 @@ def call(String BRANCH) {
   env.CHANGES_PATH = ".changes"
   env.CHANGELOG_PATH = "${env.CHANGES_PATH}/${env.BUILD_VERSION}.md"
 
-  echo " >>>> 1 : $env.CHANGES_PATH"
-  echo " >>>> 2 : $env.ARTIFACT_PATH"
-  echo " >>>> 3 : $buildVersion"
-  echo " >>>> 4 : $env.CHANGELOG_PATH"
-  echo " >>>> 5 : $env.CHANGELOG_PATH"
 
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.CHANGES_PATH}"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"
+  echo " >>>> 1"
 
   sh "make build.cmake.${env.BUILD_VERSION}"
+
+
+  echo " >>>> 2"
 }
 
 
