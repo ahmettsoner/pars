@@ -39,8 +39,10 @@ def call(String BRANCH) {
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
   env.DIST_PATH = "dist"
   env.ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
+  env.CHANGES_PATH = ".changes"
 
   echo "Creating directory: ${env.ARTIFACT_PATH}"
+  sh "mkdir -p '${env.CHANGES_PATH}"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"
 
   sh "make build.cmake.${buildVersion}"

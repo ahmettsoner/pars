@@ -1,5 +1,7 @@
+@Library('shared-lib') _
+
 pipeline {
-  agent any
+  agent none
 
   environment {
     GITEA_URL = 'http://192.168.118.47:3030'
@@ -10,7 +12,17 @@ pipeline {
 
   stages {
     stage('Create Gitea Release') {
+      agent { label 'linux' }
       steps {
+        script {
+            agentInitOnce.initOnce(params.BRANCH)
+        }
+
+        def currentBaseVersion = sh(
+          script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
+          returnStdout: true
+        ).trim()
+          
         withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
           sh """
             curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \
@@ -26,6 +38,13 @@ pipeline {
               }'
           """
         }
+      }
+      post {
+          always {
+              script {
+                  agentInitOnce.cleanupOnce()
+              }
+          }
       }
     }
   }
