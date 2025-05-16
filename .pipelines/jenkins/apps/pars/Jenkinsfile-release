@@ -45,8 +45,8 @@ pipeline {
                 -d '{
                   "tag_name": "$BUILD_VERSION",
                   "target": "main",
-                  "title": "$BUILD_VERSION Release",
-                  "note": "${changelog}",
+                  "name": "$BUILD_VERSION Release",
+                  "body": "${changelog}",
                   "draft": false,
                   "prerelease": false
                 }'
