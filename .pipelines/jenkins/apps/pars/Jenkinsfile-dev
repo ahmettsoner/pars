@@ -162,7 +162,10 @@ pipeline {
                                 generateChecksum.WriteChecksumForBinary(OS, ARCH)
                                 generateChecksum.WriteChecksumForArchive(OS, ARCH)
 
-                                if (OS == 'linux')
+                                if (OS == 'linux'){
+                                    generateChecksum.WriteChecksumForDEBPackage(ARCH)
+                                    generateChecksum.WriteChecksumForRPMPackage(ARCH)
+                                }
                             }
                         }
                     }
