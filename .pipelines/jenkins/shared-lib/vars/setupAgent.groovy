@@ -1,6 +1,7 @@
 def call(String BRANCH) {
   checkout scm
-  sh 'git config --global --add safe.directory $(pwd)'
+  sh "git config --global --add safe.directory '${env.WORKSPACE}'"
+
 
   sh """
     git config --global user.email "${GIT_USER_EMAIL}"
