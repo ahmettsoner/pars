@@ -224,22 +224,23 @@ pipeline {
                     def changelog = "${changelogText}\n\n---\n\n${checksumTest}"
 
                     withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
+
                         def releaseJson = """{
-                        "tag_name": "${env.BUILD_VERSION}",
-                        "target": "dev",
-                        "name": "${env.BUILD_VERSION} Release",
-                        "body": ${groovy.json.JsonOutput.toJson(changelog)},
-                        "draft": false,
-                        "prerelease": false
+                            "tag_name": "${env.BUILD_VERSION}",
+                            "target": "dev",
+                            "name": "${env.BUILD_VERSION} Release",
+                            "body": ${groovy.json.JsonOutput.toJson(changelog)},
+                            "draft": false,
+                            "prerelease": false
                         }"""
 
                         writeFile file: 'release.json', text: releaseJson
 
                         sh """
-                        curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
-                        -H "Content-Type: application/json" \\
-                        -H "Authorization: token $GITEA_TOKEN" \\
-                        -d @release.json
+                            curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
+                                -H "Content-Type: application/json" \\
+                                -H "Authorization: token $GITEA_TOKEN" \\
+                                -d @release.json
                         """
 
                         def releaseInfo = sh(
@@ -248,7 +249,8 @@ pipeline {
                             returnStdout: true
                         ).trim()
 
-                        def releaseId = new groovy.json.JsonSlurperClassic().parseText(releaseInfo).id
+                        // ⚠️ JsonSlurperClassic yerine JsonSlurper kullanılıyor
+                        def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
 
                         // artifacts klasöründeki tüm dosyaları bul ve yükle
                         def files = findFiles(glob: "${env.ARTIFACT_PATH}/*")
