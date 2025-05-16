@@ -154,8 +154,8 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64', 'arm64']
+                    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64']//, 'arm64']
 
                     generateChecksumFile()
                                     
@@ -190,7 +190,6 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    unstash "${OS}-${ARCH}-artifacts"
                 }
 
                 script {
