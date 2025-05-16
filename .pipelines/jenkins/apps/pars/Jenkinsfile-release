@@ -25,10 +25,19 @@ pipeline {
         }
 
         script {
-          def changelog = sh(
-            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --output ${env.CHANGELOG_PATH}",
-            returnStdout: true
-          ).trim()
+          def changelog = ''
+          try {
+            changelog = sh(
+              script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --output ${env.CHANGELOG_PATH}",
+              returnStdout: true
+            ).trim()
+            echo "Changelog oluşturuldu:"
+            echo changelog
+          } catch (err) {
+            echo "❌ Changelog oluşturulamadı: ${err.getMessage()}"
+            currentBuild.result = 'FAILURE'
+            error("Build durduruldu: changelog oluşturulamadı.")
+          }
 
           withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
             sh """
