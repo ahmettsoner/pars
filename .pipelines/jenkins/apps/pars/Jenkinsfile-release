@@ -14,6 +14,7 @@ pipeline {
     GITEA_URL = 'http://192.168.118.47:3030'
     GITEA_OWNER = 'admin'
     GITEA_REPO = 'pars'
+    BUILD_VERSION = "v1.0.0-dev.1"
   }
 
   stages {
@@ -29,16 +30,22 @@ pipeline {
         //   returnStdout: true
         // ).trim()
           
+        def changelog = '''## Değişiklikler
+
+      - Yeni özellik: X modülü eklendi
+      - Hata düzeltme: Y hatası giderildi
+      - Performans iyileştirmeleri'''.replaceAll('"', '\\"').replaceAll('\n', '\\n')
+
         withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
           sh """
-            curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \
-              -H "Content-Type: application/json" \
-              -H "Authorization: token $GITEA_TOKEN" \
+            curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
+              -H "Content-Type: application/json" \\
+              -H "Authorization: token $GITEA_TOKEN" \\
               -d '{
-                "tag_name": "$env.BUILD_VERSION",
+                "tag_name": "$BUILD_VERSION",
                 "target": "main",
-                "title": "$env.BUILD_VERSION Release",
-                "note": "## Değişiklikler\n\n- Yeni özellik: X modülü eklendi\n- Hata düzeltme: Y hatası giderildi\n- Performans iyileştirmeleri",
+                "title": "$BUILD_VERSION Release",
+                "note": "${changelog}",
                 "draft": false,
                 "prerelease": false
               }'
