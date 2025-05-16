@@ -1,0 +1,32 @@
+pipeline {
+  agent any
+
+  environment {
+    GITEA_URL = 'http://192.168.118.47:3030'
+    GITEA_OWNER = 'admin'
+    GITEA_REPO = 'pars'
+    GITEA_TAG = 'v1.0.0'
+  }
+
+  stages {
+    stage('Create Gitea Release') {
+      steps {
+        withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
+          sh """
+            curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: token $GITEA_TOKEN" \
+              -d '{
+                "tag_name": "$GITEA_TAG",
+                "target": "main",
+                "title": "$GITEA_TAG Release",
+                "note": "Jenkins üzerinden otomatik release",
+                "draft": false,
+                "prerelease": false
+              }'
+          """
+        }
+      }
+    }
+  }
+}
