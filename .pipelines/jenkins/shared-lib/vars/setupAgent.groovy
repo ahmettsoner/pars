@@ -41,6 +41,10 @@ def call(String BRANCH) {
   env.ARTIFACT_PATH = "dist/artifacts/${env.BUILD_VERSION}"
   env.CHANGES_PATH = ".changes"
 
+  echo env.CHANGES_PATH
+  echo env.ARTIFACT_PATH
+  echo env.buildVersion
+
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.CHANGES_PATH}"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"
