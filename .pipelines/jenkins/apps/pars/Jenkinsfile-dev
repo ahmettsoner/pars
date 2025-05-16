@@ -158,7 +158,7 @@ pipeline {
                                     
                     osList.each { OS ->
                         archList.each { ARCH ->
-                            if (OS != 'netbsd' && ARCH != 'arm64'){
+                            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
                                 generateChecksum.WriteChecksumForBinary(OS, ARCH)
                                 generateChecksum.WriteChecksumForArchive(OS, ARCH)
 

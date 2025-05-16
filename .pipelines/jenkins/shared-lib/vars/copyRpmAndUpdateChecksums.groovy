@@ -39,17 +39,6 @@ def call(String OS, String ARCH) {
     // Copy RPM file to artifact path with new name
     sh "cp '${rpmOutputPath}' '${env.ARTIFACT_PATH}/${newBaseName}'"
 
-    // // Read checksum
-    // def checksum = readFile(checksumFilePath).trim()
-
-    // // Append to Checksums.md
-    // def type = "RPM"
-    // def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
-    // sh "echo '${line}' >> ${env.ARTIFACT_PATH}/${newBaseName}-checksum.txt"
-
-    // echo "Added checksum line to Checksums.md: ${line}"
-
-
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
 }
 
