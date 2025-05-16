@@ -31,5 +31,27 @@ def WriteChecksumForArchive(OS, ARCH) {
 
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
+def WriteChecksumForDEBPackage(ARCH) {
+    def OS = 'linux'
+    unstash "${OS}-${ARCH}-archive-artifacts"
+
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
+    def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
+    def type = "Binary"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+
+    sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
+}
+def WriteChecksumForRPMPackage(ARCH) {
+    def OS = 'linux'
+    unstash "${OS}-${ARCH}-archive-artifacts"
+
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
+    def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
+    def type = "Binary"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
+
+    sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
+}
 
 return this

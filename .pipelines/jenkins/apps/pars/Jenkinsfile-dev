@@ -161,6 +161,8 @@ pipeline {
                             if (OS != 'netbsd' && ARCH != 'arm64'){
                                 generateChecksum.WriteChecksumForBinary(OS, ARCH)
                                 generateChecksum.WriteChecksumForArchive(OS, ARCH)
+
+                                if (OS == 'linux')
                             }
                         }
                     }
