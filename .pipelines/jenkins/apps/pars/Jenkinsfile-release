@@ -14,16 +14,15 @@ pipeline {
     GITEA_URL = 'http://192.168.118.47:3030'
     GITEA_OWNER = 'admin'
     GITEA_REPO = 'pars'
-    BUILD_VERSION = "v1.0.0-dev.1"
   }
 
   stages {
     stage('Create Gitea Release') {
       agent { label 'linux' }
       steps {
-        // script {
-        //     agentInitOnce.initOnce(params.BRANCH)
-        // }
+        script {
+            agentInitOnce.initOnce(params.BRANCH)
+        }
 
         script {
           def changelog = sh(
@@ -38,9 +37,9 @@ pipeline {
                 -H "Content-Type: application/json" \\
                 -H "Authorization: token $GITEA_TOKEN" \\
                 -d '{
-                  "tag_name": "$BUILD_VERSION",
+                  "tag_name": "$env.BUILD_VERSION",
                   "target": "$params.BRANCH",
-                  "name": "$BUILD_VERSION Release",
+                  "name": "$env.BUILD_VERSION Release",
                   "body": "${changelog}",
                   "draft": false,
                   "prerelease": false
@@ -49,13 +48,13 @@ pipeline {
           }
         }
       }
-      // post {
-      //     always {
-      //         script {
-      //             agentInitOnce.cleanupOnce()
-      //         }
-      //     }
-      // }
+      post {
+          always {
+              script {
+                  agentInitOnce.cleanupOnce()
+              }
+          }
+      }
     }
   }
 }
