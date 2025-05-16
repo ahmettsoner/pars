@@ -33,22 +33,22 @@ def WriteChecksumForArchive(OS, ARCH) {
 }
 def WriteChecksumForDEBPackage(ARCH) {
     def OS = 'linux'
-    unstash "${OS}-${ARCH}-archive-artifacts"
+    unstash "${OS}-${ARCH}-deb-package-artifacts"
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
-    def type = "Binary"
+    def type = "DEB"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
 def WriteChecksumForRPMPackage(ARCH) {
     def OS = 'linux'
-    unstash "${OS}-${ARCH}-archive-artifacts"
+    unstash "${OS}-${ARCH}-rpm-package-artifacts"
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
     def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
-    def type = "Binary"
+    def type = "RPM"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
