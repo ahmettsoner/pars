@@ -30,6 +30,7 @@ pipeline {
             returnStdout: true
           ).trim()
             
+          echo changelog
 
           withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
             sh """
