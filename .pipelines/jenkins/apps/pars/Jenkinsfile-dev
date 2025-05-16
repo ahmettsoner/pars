@@ -11,6 +11,9 @@ pipeline {
     }
     environment {
         APPNAME      = "pars"
+        GITEA_URL = 'http://192.168.118.47:3030'
+        GITEA_OWNER = 'admin'
+        GITEA_REPO = 'pars'
     }
 
     stages {
@@ -171,6 +174,54 @@ pipeline {
                     }
                     
                     archiveArtifacts artifacts: "${ARTIFACT_CHECKSUM_MD5_PATH}", onlyIfSuccessful: true
+                }
+            }
+            post {
+                always {
+                    script {
+                        agentInitOnce.cleanupOnce()
+                    }
+                }
+            }
+        }
+
+        stage('Create Gitea Release') {
+            agent { label 'linux' }
+            steps {
+                script {
+                    agentInitOnce.initOnce(params.BRANCH)
+                }
+
+                script {
+                    sh(
+                        script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --output ${env.CHANGELOG_PATH}",
+                        returnStdout: true
+                    ).trim()
+
+                    def changelogText = readFile(env.CHANGELOG_PATH).trim()
+                    def checksumTest = readFile(env.ARTIFACT_CHECKSUM_MD5_PATH).trim()
+
+                    def changelog = "${changelogText}\n\n---\n\n${checksumTest}"
+
+                    withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
+                        def releaseJson = """{
+                        "tag_name": "${env.BUILD_VERSION}",
+                        "target": "dev",
+                        "name": "${env.BUILD_VERSION} Release",
+                        "body": ${groovy.json.JsonOutput.toJson(changelog)},
+                        "draft": false,
+                        "prerelease": false
+                        }"""
+
+                        writeFile file: 'release.json', text: releaseJson
+
+                        sh """
+                        curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
+                        -H "Content-Type: application/json" \\
+                        -H "Authorization: token $GITEA_TOKEN" \\
+                        -d @release.json
+                    """
+                }
                 }
             }
             post {
