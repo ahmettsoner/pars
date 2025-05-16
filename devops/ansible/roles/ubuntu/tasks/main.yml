@@ -24,7 +24,7 @@ curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt install nodejs -y
 
 # git-release-manager global kurulumu
-sudo npm install -g git-release-manager
+sudo npm install -g git-release-manager@0.0.13
 
 # CMake ve Make kurulumları
 sudo apt install cmake make -y

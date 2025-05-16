@@ -44,7 +44,6 @@ def call(String BRANCH) {
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.CHANGES_PATH}'"
   sh "mkdir -p '${env.ARTIFACT_PATH}'"
-  echo " >>>> 1"
 
   sh "make build.cmake.${env.BUILD_VERSION}"
 }

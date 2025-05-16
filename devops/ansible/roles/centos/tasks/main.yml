@@ -22,7 +22,7 @@ curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
 sudo dnf install nodejs -y
 
 # git-release-manager global kurulumu
-sudo npm install -g git-release-manager
+sudo npm install -g git-release-manager@0.0.13
 
 # CMake ve Make kurulumları
 sudo dnf install cmake make -y

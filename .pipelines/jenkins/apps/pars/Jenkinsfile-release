@@ -26,11 +26,9 @@ pipeline {
 
         script {
           def changelog = sh(
-            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGELOG_PATH}",
+            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --output ${env.CHANGELOG_PATH}",
             returnStdout: true
           ).trim()
-            
-          echo changelog
 
           withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
             sh """
@@ -49,13 +47,13 @@ pipeline {
           }
         }
       }
-      post {
-          always {
-              script {
-                  agentInitOnce.cleanupOnce()
-              }
-          }
-      }
+      // post {
+      //     always {
+      //         script {
+      //             agentInitOnce.cleanupOnce()
+      //         }
+      //     }
+      // }
     }
   }
 }

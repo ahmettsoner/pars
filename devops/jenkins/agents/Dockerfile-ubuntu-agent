@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     npm install -g npm && \
-    npm install -g git-release-manager@0.0.12
+    npm install -g git-release-manager@0.0.13
 
 # Go kurulumu
 RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \

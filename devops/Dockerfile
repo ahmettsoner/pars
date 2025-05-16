@@ -41,7 +41,7 @@ RUN apt-get install -y golang-any
 RUN apt-get install -y rpm
 
 # Node modülleri kurulumu ve build
-RUN npm install -g git-release-manager@0.0.12
+RUN npm install -g git-release-manager@0.0.13
 
 RUN useradd -m builder
 USER builder
