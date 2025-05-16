@@ -173,7 +173,7 @@ pipeline {
                         }
                     }
                     
-                    archiveArtifacts artifacts: "${ARTIFACT_CHECKSUM_MD5_PATH}", onlyIfSuccessful: true
+                    archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                 }
             }
             post {
@@ -188,18 +188,27 @@ pipeline {
         stage('Create Gitea Release') {
             agent { label 'linux' }
             steps {
-                // 1. Artifacts kopyalanıyor
-                step([
-                    $class: 'CopyArtifact',
-                    projectName: env.JOB_NAME,
-                    filter: "${ARTIFACT_PATH}/**",   // ARTIFACT_PATH altındaki tüm dosyalar
-                    selector: [$class: 'SpecificBuildSelector', buildNumber: "${BUILD_NUMBER}"]
-                ])
 
-                // 2. Ortam başlangıç script'i (eğer gerekliyse)
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
+
+                    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64']//, 'arm64']
+
+                    osList.each { OS ->
+                        archList.each { ARCH ->
+                            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
+                                unstash "${OS}-${ARCH}-artifacts"
+                                unstash "${OS}-${ARCH}-archive-artifacts"
+                                if (OS == 'linux') {
+                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                }
+                            }
+                        }
+                    }
                 }
+
 
                 script {
                     sh(
