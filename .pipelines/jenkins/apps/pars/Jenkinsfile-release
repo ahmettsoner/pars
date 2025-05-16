@@ -17,10 +17,10 @@ pipeline {
             agentInitOnce.initOnce(params.BRANCH)
         }
 
-        def currentBaseVersion = sh(
-          script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
-          returnStdout: true
-        ).trim()
+        // def releaseChangelogContent = sh(
+        //   script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
+        //   returnStdout: true
+        // ).trim()
           
         withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
           sh """
@@ -31,7 +31,7 @@ pipeline {
                 "tag_name": "$env.BUILD_VERSION",
                 "target": "main",
                 "title": "$env.BUILD_VERSION Release",
-                "note": "Jenkins üzerinden otomatik release",
+                "note": "## Değişiklikler\n\n- Yeni özellik: X modülü eklendi\n- Hata düzeltme: Y hatası giderildi\n- Performans iyileştirmeleri",
                 "draft": false,
                 "prerelease": false
               }'
