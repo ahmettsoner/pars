@@ -25,17 +25,12 @@ pipeline {
         //     agentInitOnce.initOnce(params.BRANCH)
         // }
 
-        // def releaseChangelogContent = sh(
-        //   script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
-        //   returnStdout: true
-        // ).trim()
-          
         script {
-          def changelog = '''## Değişiklikler
-
-        - Yeni özellik: X modülü eklendi
-        - Hata düzeltme: Y hatası giderildi
-        - Performans iyileştirmeleri'''.replaceAll('"', '\\"').replaceAll('\n', '\\n')
+          def changelog = sh(
+            script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment dev --output ${env.CHANGES_PATH}/${env.BUILD_VERSION}.md",
+            returnStdout: true
+          ).trim()
+            
 
           withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
             sh """
@@ -44,7 +39,7 @@ pipeline {
                 -H "Authorization: token $GITEA_TOKEN" \\
                 -d '{
                   "tag_name": "$BUILD_VERSION",
-                  "target": "main",
+                  "target": "$params.BRANCH",
                   "name": "$BUILD_VERSION Release",
                   "body": "${changelog}",
                   "draft": false,
@@ -53,7 +48,6 @@ pipeline {
             """
           }
         }
-
       }
       // post {
       //     always {
