@@ -40,6 +40,8 @@ def call(String BRANCH) {
   env.CHANGES_PATH = ".changes"
   env.CHANGELOG_PATH = "${env.CHANGES_PATH}/${env.BUILD_VERSION}.md"
 
+  echo "BUILD_VERSION: ${env.BUILD_VERSION}"
+
 
   echo "Creating directory: ${env.ARTIFACT_PATH}"
   sh "mkdir -p '${env.CHANGES_PATH}'"
