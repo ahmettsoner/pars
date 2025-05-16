@@ -5,20 +5,20 @@ def call(String BRANCH) {
   sh """
     git config --global user.email "${GIT_USER_EMAIL}"
     git config --global user.name "${GIT_USER_NAME}"
-    git fetch --tags
+    git fetch --all --tags
   """
-    // Remote branch ve tag'leri fetch et
-    sh 'git fetch --all --tags'
 
-    def branchExists = sh(script: "git ls-remote --heads origin ${BRANCH}", returnStatus: true) == 0
-    if (branchExists) {
-        sh "git checkout ${BRANCH}"
-    } else {
-        sh "git checkout -b dev"
-    }
+  def branchExists = sh(script: "git ls-remote --heads origin ${BRANCH}", returnStatus: true) == 0
+  if (branchExists) {
+      // BRANCH'i doğrudan remote'dan sabitle
+      sh "git checkout -B ${BRANCH} origin/${BRANCH}"
+  } else {
+      sh "git checkout -b dev"
+  }
 
-    // Git tag'lerini listele (opsiyonel log)
-    sh 'git tag -l'
+  // Artık BRANCH güncel, merged tag'leri görmek mümkün
+  sh "git tag --merged ${BRANCH}"
+
 
   def currentBaseVersion = sh(
     script: 'grm flow phase "${CHANNEL}" --next --print=base',
