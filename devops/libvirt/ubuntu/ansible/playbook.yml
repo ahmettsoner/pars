@@ -1,0 +1,10 @@
+---
+- hosts: haproxy_servers
+  gather_facts: false
+  roles:
+    - haproxy
+
+- hosts: fedora_servers
+  gather_facts: false
+  roles:
+    - fedora
