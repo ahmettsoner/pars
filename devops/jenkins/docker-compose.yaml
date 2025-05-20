@@ -30,8 +30,8 @@ services:
       - USER_GID=1000
       - APP_NAME=Local Git
       - GITEA__server__PROTOCOL=http
-      - GITEA__server__DOMAIN=repo.local.git
-      - GITEA__server__ROOT_URL=http://repo.local.git
+      - GITEA__server__DOMAIN=git.pusula.int
+      - GITEA__server__ROOT_URL=http://git.pusula.int
       - GITEA__database__DB_TYPE=postgres
       - GITEA__database__HOST=postgres_gitea:5432
       - GITEA__database__NAME=gitea

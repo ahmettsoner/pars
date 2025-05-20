@@ -1,6 +1,6 @@
 variable "ssh_public_key_path" {
   type    = string
-  default = "/home/ahmetsoner/.ssh/id_rsa.pub"
+  default = "~/.ssh/id_rsa"
 }
 
 variable "vm_user" {

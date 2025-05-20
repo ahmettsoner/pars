@@ -10,7 +10,7 @@ data "template_file" "cloudinit" {
   template = file("${path.module}/cloudinit.tpl")
 
   vars = {
-    ssh_authorized_key = var.ssh_authorized_key
+    ssh_authorized_key = pathexpand(var.ssh_authorized_key)
     hostname           = "fedora41-vm"
     username           = var.username
   }

@@ -8,6 +8,13 @@ resource "libvirt_volume" "base_volume" {
   pool   = "default"
   source = "../../../images/Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2"
   format = "qcow2"
+
+
+  provisioner "local-exec" {
+    command = "sudo chown -R root:root /var/lib/libvirt/images/ && sudo chmod -R 644 /var/lib/libvirt/images/"
+    # Bu komut, Terraform'u çalıştıran kullanıcının sudo yetkisine sahip olmasını gerektirir.
+    # self.path, libvirt_volume'un dosya sistemindeki yolunu verir.
+  }
 }
 
 # Fedora VM modülünü çağırıyoruz
