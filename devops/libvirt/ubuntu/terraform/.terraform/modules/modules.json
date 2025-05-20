@@ -1,1 +1,0 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"fedora_vms","Source":"./modules/fedora_vm","Dir":"modules/fedora_vm"},{"Key":"haproxy_vm","Source":"./modules/haproxy","Dir":"modules/haproxy"}]}
