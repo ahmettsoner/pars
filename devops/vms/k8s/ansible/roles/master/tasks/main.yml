@@ -1,0 +1,58 @@
+---
+- name: Wait for SSH to become available
+  ansible.builtin.wait_for_connection:
+    timeout: 300
+    sleep: 5
+- name: Install dependencies
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: yes
+
+- name: Add Kubernetes APT key
+  shell: |
+    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/kubernetes-archive-keyring.gpg
+
+- name: Add Kubernetes APT repository
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    filename: kubernetes
+
+- name: Install kubeadm, kubelet, and kubectl
+  apt:
+    name:
+      - kubelet={{ kubernetes_version }}-00
+      - kubeadm={{ kubernetes_version }}-00
+      - kubectl={{ kubernetes_version }}-00
+    state: present
+    update_cache: yes
+
+- name: Hold kubelet/kubeadm/kubectl at current version
+  apt:
+    name:
+      - kubelet
+      - kubeadm
+      - kubectl
+    state: held
+
+- name: Generate kubeadm config
+  template:
+    src: kubeadm-config.yaml.j2
+    dest: /root/kubeadm-config.yaml
+
+- name: Initialize Kubernetes master
+  command: kubeadm init --config /root/kubeadm-config.yaml
+  args:
+    creates: /etc/kubernetes/manifests
+
+- name: Set up kubeconfig for root
+  command: mkdir -p $HOME/.kube && cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && chown $(id -u):$(id -g) $HOME/.kube/config
+  when: ansible_user == "root"

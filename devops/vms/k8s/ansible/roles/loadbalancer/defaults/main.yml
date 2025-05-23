@@ -1,0 +1,7 @@
+haproxy_backend_servers:
+  - { name: "master1", ip: "192.168.124.171", port: 6443 }
+  - { name: "master2", ip: "192.168.124.172", port: 6443 }
+  - { name: "master3", ip: "192.168.124.173", port: 6443 }
+
+haproxy_listen_port: 6443
+haproxy_bind_ip: "192.168.124.100"

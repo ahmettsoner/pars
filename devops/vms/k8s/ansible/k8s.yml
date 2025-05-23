@@ -1,0 +1,42 @@
+---
+- name: Configure HAProxy Load Balancer on VM
+  hosts: loadbalancer_servers
+  gather_facts: false
+  roles:
+    - { role: loadbalancer, tags: "loadbalancer" }
+
+- name: Configure K8S Master VM
+  hosts: master_servers
+  gather_facts: false
+  roles:
+    - { role: master, tags: "master" }
+
+- name: Configure K8S Worker VM
+  hosts: worker_servers
+  gather_facts: false
+  roles:
+    - { role: worker, tags: "worker" }
+
+- name: Configure K8S DB VM
+  hosts: etcd_servers
+  gather_facts: false
+  become: true
+  roles:
+    - { role: etcd, tags: "etcd" }
+# - name: Deploy Cilium CNI
+#   hosts: k8s_masters
+#   become: true
+#   roles:
+#     - { role: cillium, tags: "k8s" }
+
+# - name: Deploy Istio Service Mesh
+#   hosts: k8s_masters
+#   become: true
+#   roles:
+#     - { role: istio, tags: "k8s" }
+
+# - name: Deploy Istio Service Mesh
+#   hosts: k8s_masters
+#   become: true
+#   roles:
+#     - { role: longhorn, tags: "longhorn" }

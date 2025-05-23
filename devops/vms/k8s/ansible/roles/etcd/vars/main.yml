@@ -1,0 +1,14 @@
+etcd_version: "v3.5.13"
+etcd_download_url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+
+# Her host için IP ve isim (hosts inventory'de tanımlı olmalı)
+etcd_cluster_nodes:
+  - name: etcd1
+    ip: 192.168.124.172
+  - name: etcd2
+    ip: 192.168.124.173
+  - name: etcd3
+    ip: 192.168.124.174
+
+etcd_data_dir: /var/lib/etcd
+etcd_conf_dir: /etc/etcd

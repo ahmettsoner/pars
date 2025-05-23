@@ -1,0 +1,9 @@
+# Burada cilium-agent config override edebilirsin
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cilium-config
+  namespace: kube-system
+data:
+  enable-envoy-config: "false"  # Istio ile çakışmayı önlemek için L7 kapalı
+  # diğer config parametreleri

@@ -1,3 +1,0 @@
----
-- name: Print Hello World from fedora role
-  ansible.builtin.command: echo "Hello World from fedora"

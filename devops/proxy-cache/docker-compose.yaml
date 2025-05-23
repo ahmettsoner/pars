@@ -1,0 +1,32 @@
+services:
+  nexus:
+    image: sonatype/nexus3
+    container_name: nexus
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    volumes:
+      - nexus-data:/nexus-data
+    networks:
+      - proxy_net
+
+  squid:
+    image: sameersbn/squid:latest
+    container_name: squid
+    restart: unless-stopped
+    ports:
+      - "3128:3128"
+    volumes:
+      - ./Squid/cache:/var/spool/squid
+      - ./Squid/conf/squid.conf:/etc/squid/squid.conf
+    networks:
+      - proxy_net
+
+volumes:
+  nexus-data:
+  squid-cache:
+  squid-logs:
+
+networks:
+  proxy_net:
+    driver: bridge

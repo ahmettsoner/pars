@@ -1,0 +1,29 @@
+---
+- name: Download istioctl installer script
+  ansible.builtin.get_url:
+    url: https://istio.io/downloadIstio
+    dest: /tmp/downloadIstio.sh
+    mode: "0755"
+
+- name: Run istioctl installer script with version {{ istio_version }}
+  ansible.builtin.shell: |
+    ISTIO_VERSION={{ istio_version }} sh /tmp/downloadIstio.sh
+  args:
+    creates: /tmp/istio-{{ istio_version }}
+
+- name: Copy istioctl binary to /usr/local/bin
+  ansible.builtin.copy:
+    remote_src: yes
+    src: /tmp/istio-{{ istio_version }}/bin/istioctl
+    dest: /usr/local/bin/istioctl
+    mode: "0755"
+
+- name: Install Istio with profile {{ istio_install_profile }}
+  ansible.builtin.shell: |
+    istioctl install --set profile={{ istio_install_profile }} -y
+  register: istio_install
+  changed_when: "'installation complete' in istio_install.stdout"
+
+- name: Enable Istio sidecar injection on default namespace
+  ansible.builtin.shell: |
+    kubectl label namespace default istio-injection=enabled --overwrite

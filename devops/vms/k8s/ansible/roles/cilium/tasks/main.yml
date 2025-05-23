@@ -1,0 +1,14 @@
+---
+- name: Download and apply Cilium manifest
+  ansible.builtin.shell: |
+    kubectl apply -f {{ cilium_install_url }}
+  register: cilium_apply
+  changed_when: "'configured' in cilium_apply.stdout or cilium_apply.rc == 0"
+
+- name: Wait for Cilium DaemonSet rollout to finish
+  ansible.builtin.shell: |
+    kubectl -n kube-system rollout status ds/cilium
+  retries: 10
+  delay: 15
+  register: rollout_status
+  until: rollout_status.rc == 0

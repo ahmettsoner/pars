@@ -1,0 +1,5 @@
+---
+longhorn_namespace: longhorn-system
+longhorn_version: "1.5.4" # İstediğin versiyonu yazabilirsin
+longhorn_helm_chart: "https://charts.longhorn.io"
+longhorn_helm_repo_name: "longhorn"

@@ -1,0 +1,16 @@
+# Temel Longhorn Helm values. İstersen buradan ayar yapabilirsin.
+
+defaultSettings:
+  defaultDataPath: "/var/lib/longhorn/"
+
+persistence:
+  defaultStorageClass: "longhorn"
+
+# Örnek: UI ve API erişimi için nodePort ayarı
+service:
+  ui:
+    nodePort: 30999
+  api:
+    nodePort: 30998
+
+# İhtiyaç halinde diğer ayarlar burada olabilir.

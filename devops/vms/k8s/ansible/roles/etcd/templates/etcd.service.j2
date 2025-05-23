@@ -1,0 +1,16 @@
+[Unit]
+Description=etcd key-value store
+Documentation=https://github.com/etcd-io/etcd
+After=network.target
+
+[Service]
+EnvironmentFile={{ etcd_conf_dir }}/etcd.conf
+ExecStart=/usr/local/bin/etcd
+Restart=always
+RestartSec=5
+LimitNOFILE=40000
+User=etcd
+Group=etcd
+
+[Install]
+WantedBy=multi-user.target

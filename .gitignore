@@ -46,3 +46,7 @@ project.lock.json
 *.sln.docstates
 
 samples/**
+
+.terraform*
+terraform.tfstate*
+devops/images/

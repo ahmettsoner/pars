@@ -1,0 +1,28 @@
+---
+- name: Create Longhorn namespace
+  kubernetes.core.k8s:
+    api_version: v1
+    kind: Namespace
+    name: "{{ longhorn_namespace }}"
+    state: present
+
+- name: Add Longhorn Helm repo
+  community.kubernetes.helm_repository:
+    name: "{{ longhorn_helm_repo_name }}"
+    repo_url: "{{ longhorn_helm_chart }}"
+
+- name: Update Helm repo cache
+  community.kubernetes.helm_repository:
+    name: "{{ longhorn_helm_repo_name }}"
+    state: present
+    update_cache: yes
+
+- name: Install Longhorn via Helm
+  community.kubernetes.helm:
+    name: longhorn
+    chart_ref: "{{ longhorn_helm_repo_name }}/longhorn"
+    release_namespace: "{{ longhorn_namespace }}"
+    create_namespace: false
+    version: "{{ longhorn_version }}"
+    values: "{{ lookup('template', 'longhorn-values.yaml.j2') }}"
+    state: present

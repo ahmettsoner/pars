@@ -1,0 +1,3 @@
+---
+istio_version: "1.22.0"
+istio_install_profile: "demo"

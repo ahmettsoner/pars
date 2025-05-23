@@ -1,8 +1,0 @@
----
-- name: Update apt cache
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600
-# sudo apt update
-# sudo apt install nano -y
-# sudo apt install openjdk-21-jdk -y
