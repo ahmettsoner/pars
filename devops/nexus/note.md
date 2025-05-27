@@ -79,6 +79,13 @@ gpg --list-keys --keyid-format LONG
 
 ```
 
-```
-gpg --export-secret-key --armor
+```bash
+# Public key
+gpg --export --armor YOUR_KEY_ID > public.gpg
+
+# Private key
+gpg --export-secret-keys --armor YOUR_KEY_ID > private.gpg
+
+# Base64 Encode
+base64 private.gpg > private.gpg.b64
 ```
