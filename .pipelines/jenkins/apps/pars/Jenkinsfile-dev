@@ -14,6 +14,7 @@ pipeline {
         GITEA_URL = 'http://192.168.118.47:3030'
         GITEA_OWNER = 'admin'
         GITEA_REPO = 'pars'
+        GPG_SIGN_KEY = 'B5978DE2981A203F'
     }
 
     stages {
@@ -98,6 +99,7 @@ pipeline {
                                             agentInitOnce.initOnce(params.BRANCH)
                                             buildRPMPackage(OS, ARCH)
                                             copyRpmAndUpdateChecksums(OS, ARCH)
+                                            signRpmPackage(OS, ARCH)
                                             agentInitOnce.cleanupOnce()
                                         }
                                     },
