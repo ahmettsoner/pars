@@ -15,7 +15,7 @@ def call(String OS, String ARCH) {
     sh "echo \"allow-loopback-pinentry\" >> ~/.gnupg/gpg-agent.conf"
     sh "gpgconf --kill gpg-agent"
     sh "GPG_TTY=$(tty)"
-    sh "export GPG_TTY"
+    sh "export GPG_TTY" 
 
     // sh "curl -v -u \"$NEXUS_USER:$NEXUS_PASS\" --upload-file ~/rpmbuild/RPMS/x86_64/my-package.rpm \"$NEXUS_URL/my-package.rpm\""
 
