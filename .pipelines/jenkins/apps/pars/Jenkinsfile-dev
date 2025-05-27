@@ -223,6 +223,7 @@ LQo='''
                                             buildRPMPackage(OS, ARCH)
                                             copyRpmAndUpdateChecksums(OS, ARCH)
                                             signRpmPackage(OS, ARCH)
+                                            publishRpmPackage(OS, ARCH)
                                             agentInitOnce.cleanupOnce()
                                         }
                                     },

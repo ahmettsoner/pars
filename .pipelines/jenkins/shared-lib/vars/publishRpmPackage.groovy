@@ -4,7 +4,7 @@ def call(String OS, String ARCH) {
     def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
 
 
-    sh "curl -v -u \"$NEXUS_USER:$NEXUS_PASS\" --upload-file ~/rpmbuild/RPMS/x86_64/my-package.rpm \"$NEXUS_URL/my-package.rpm\""
+    sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${rpmOutputPath} \"${NEXUS_URL}/${APPNAME}.rpm\""
 
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
