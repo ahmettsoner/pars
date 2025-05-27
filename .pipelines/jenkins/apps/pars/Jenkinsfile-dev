@@ -14,9 +14,9 @@ pipeline {
         GITEA_URL = 'http://192.168.118.47:3030'
         GITEA_OWNER = 'admin'
         GITEA_REPO = 'pars'
-        // NEXUS_USER = credentials('nexus-username')
-        // NEXUS_PASS = credentials('nexus-password')
-        // NEXUS_URL = 'https://nexus.example.com/repository/my-rpm-repo'
+        NEXUS_USER = 'admin'
+        NEXUS_PASS = 'OMtbrxTU8C^W%MS!Jr'
+        NEXUS_URL = 'http://192.168.118.47:8081/repository/apt/'
         GPG_SIGN_KEY = 'B5978DE2981A203F'
         GPG_PRIVATE_KEY_B64 = '''LS0tLS1CRUdJTiBQR1AgUFJJVkFURSBLRVkgQkxPQ0stLS0tLQoKbFFkR0JHZzFzQ0lCRUFDOTFy
 bTFzNFhBTUVGVFNkcDh4TkZuK3NZbnlscXBENjF3T3l6UEJEV0dNWVdBUFp1OQpGM2p1L0RuZ2gy
