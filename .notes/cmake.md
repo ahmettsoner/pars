@@ -532,6 +532,7 @@ snapcraft login
 ---
 
 sudo dnf install -y make cmake gcc gcc-c++ golang
+sudo dnf install rpm-sign
 
 ---
 

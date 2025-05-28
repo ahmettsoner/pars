@@ -3,40 +3,42 @@ def call(String OS, String ARCH) {
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
     def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
 
-    // Secret file kullanımı (gpg-private-key ID'li secret file)
-    withCredentials([file(credentialsId: 'public-rpm.gpg', variable: 'GPG_KEY_FILE')]) {
-        // GPG key import
-        sh "gpg --batch --import ${GPG_KEY_FILE}"
+    // GPG Key yükleme ve imzalama
+    withCredentials([
+        file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE_KEY_FILE'),
+        file(credentialsId: 'public-rpm.gpg', variable: 'GPG_PUBLIC_KEY_FILE')
+    ]) {
+        // GPG anahtarlarını import et
+        sh '''
+        mkdir -p ~/.gnupg
+        chmod 700 ~/.gnupg
 
-        // Get key fingerprint
-        def keyFpr = sh(script: "gpg --list-keys --with-colons | grep fpr | head -n1 | cut -d':' -f10", returnStdout: true).trim()
+        gpg --batch --import "$GPG_PUBLIC_KEY_FILE"
+        gpg --batch --import "$GPG_PRIVATE_KEY_FILE"
+        '''
 
-        // Set trust level to ultimate (trust level 6)
+        // Fingerprint al
+        def keyFpr = sh(script: "gpg --list-secret-keys --with-colons | awk -F: '/^fpr/ { print \$10; exit }'", returnStdout: true).trim()
+
+        // Güven düzeyini ultimate (6) yap
         writeFile file: 'trust.txt', text: "${keyFpr}:6:\n"
         sh "gpg --import-ownertrust trust.txt"
 
-        // GPG agent ayarları
-        sh '''
-        echo "use-agent" >> ~/.gnupg/gpg.conf
-        echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-        gpgconf --kill gpg-agent
-
-        cat > ~/.rpmmacros <<EOF
-        %_signature gpg
-        %_gpg_name Your Name <your.email@example.com>
-        EOF
-
-        export GPG_TTY=$(tty || true)
-        rpm --addsign ${rpmOutputPath}
-        '''
-
+        // .rpmmacros dosyasını yaz
+        sh """
+        echo '%_signature gpg' > ~/.rpmmacros
+        echo '%_gpg_name ParsDevKit (Pars Repo Key) <support@parsdevkit.net>' >> ~/.rpmmacros
+        """
 
         // RPM paketini imzala
         sh "rpm --addsign ${rpmOutputPath}"
     }
 
+    // Temizlik
+    sh 'rm -rf ~/.gnupg ~/.rpmmacros trust.txt'
+
+    // Tekrar stash
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
-    sh 'rm -rf ~/.gnupg trust.txt'
 }
 
 return this
