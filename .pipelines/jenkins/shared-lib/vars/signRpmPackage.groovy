@@ -1,11 +1,10 @@
 def call(String OS, String ARCH) {
+    unstash "${OS}-${ARCH}-rpm-package-artifacts"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
+    def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
 
     // Secret file kullanımı (gpg-private-key ID'li secret file)
     withCredentials([file(credentialsId: 'public-rpm.gpg', variable: 'GPG_KEY_FILE')]) {
-        unstash "${OS}-${ARCH}-rpm-package-artifacts"
-        def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-        def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
-
         // GPG key import
         sh "gpg --batch --import ${GPG_KEY_FILE}"
 
@@ -23,10 +22,10 @@ def call(String OS, String ARCH) {
         gpgconf --kill gpg-agent
         export GPG_TTY=$(tty || true)
         '''
-
-        stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
-        // sh 'rm -rf ~/.gnupg trust.txt'
     }
+
+    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
+    sh 'rm -rf ~/.gnupg trust.txt'
 }
 
 return this

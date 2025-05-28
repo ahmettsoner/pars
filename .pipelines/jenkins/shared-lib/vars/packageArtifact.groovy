@@ -35,13 +35,10 @@ def call(String OS, String ARCH) {
         sh "cd ${binaryTempPath} && zip -r '${newBaseName}' ."
     } else if (archiveFormat == "tar.gz") {
         sh """
-            echo '>>>>>>>4'
             cd ${binaryTempPath} && tar -czf '${newBaseName}' . --warning=no-file-changed || true
-            echo '>>>>>>>5'
             if ! tar -tzf '${binaryTempPath}/${newBaseName}' > /dev/null; then
                 echo "Error: Cannot list contents of archive."
             fi
-            echo '>>>>>>>6'
         """
     } else if (archiveFormat == "7z") {
         sh "cd ${binaryTempPath} && 7z a '${newBaseName}' *"

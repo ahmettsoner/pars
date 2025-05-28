@@ -14,14 +14,11 @@ def call(String OS, String ARCH) {
     sh """
         mkdir -p '${packageSourceDir}'
         cd '${binaryOutputBase}'
-        echo '>>>>>>>1'
         tar -czf '${newBaseName}' . --warning=no-file-changed || true
         if ! tar -tzf '${newBaseName}' > /dev/null; then
             echo "Error with archive: Unable to list contents for validation."
         fi
-        echo '>>>>>>>2'
         cp '${newBaseName}' '${WORKSPACE}/${packageSourceDir}/'
-        echo '>>>>>>>3'
     """
 
     // Build RPM package
