@@ -32,6 +32,8 @@ def call(String BRANCH) {
 
 
   env.BUILD_VERSION = tagName
+  def suffix = tagName.replaceFirst("^${currentBaseVersion}-?", "")
+  env.BUILD_VERSION_RELEASE_NUMBER = suffix
   env.CURRENT_BASE_VERSION = currentBaseVersion
   env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
