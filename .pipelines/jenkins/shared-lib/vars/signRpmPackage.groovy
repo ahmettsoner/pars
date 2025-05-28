@@ -1,7 +1,7 @@
 def call(String OS, String ARCH) {
 
     // Secret file kullanımı (gpg-private-key ID'li secret file)
-    withCredentials([file(credentialsId: 'gpg-private-key', variable: 'GPG_KEY_FILE')]) {
+    withCredentials([file(credentialsId: 'public-rpm.gpg', variable: 'GPG_KEY_FILE')]) {
         unstash "${OS}-${ARCH}-rpm-package-artifacts"
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
         def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
