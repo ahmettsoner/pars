@@ -10,6 +10,21 @@ def call(String OS, String ARCH) {
         file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE'),
         string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE')
     ]) {
+        // Prepare ~/.rpmmacros (DO NOT use %% here, just single %)
+        writeFile file: "${env.HOME}/.rpmmacros", text: """
+%_signature gpg
+%_gpg_name ${gpgIdentity}
+%__gpg /usr/bin/gpg
+%__gpg_sign_cmd %{__gpg} \\
+  --batch \\
+  --yes \\
+  --no-armor \\
+  --pinentry-mode loopback \\
+  --passphrase "${GPG_PASSPHRASE}" \\
+  -u "%{_gpg_name}" \\
+  -sbo %{__signature_filename} %{__plaintext_filename}
+"""
+
         sh '''
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
@@ -29,21 +44,6 @@ def call(String OS, String ARCH) {
         echo "use-agent" > ~/.gnupg/gpg.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
-
-        # Prepare ~/.rpmmacros
-        cat > ~/.rpmmacros <<EOF
-%%_signature gpg
-%%_gpg_name ${gpgIdentity}
-%%__gpg /usr/bin/gpg
-%%__gpg_sign_cmd %%{__gpg} \\
-  --batch \\
-  --yes \\
-  --no-armor \\
-  --pinentry-mode loopback \\
-  --passphrase "$GPG_PASSPHRASE" \\
-  -u "%%{_gpg_name}" \\
-  -sbo %%{__signature_filename} %%{__plaintext_filename}
-EOF
 
         # Restart gpg-agent
         gpgconf --kill gpg-agent
