@@ -13,7 +13,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         def poolPath = "${repoRoot}/pool/main/${APPNAME}"
         def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
 
-        sh """
+        sh '''
             mkdir -p ~/.gnupg
             chmod 700 ~/.gnupg
 
@@ -37,9 +37,12 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --kill gpg-agent
             export GPG_TTY=$(tty || true)
             gpgconf --launch gpg-agent
-            
-            dpkg-sig --sign builder "${debOutputPath}"
-
+        '''
+        
+        // Sign the RPM
+        sh "dpkg-sig --sign builder \"${debOutputPath}\""
+        sh """
+            mkdir -p ~/.gnupg
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
             cp "${debOutputPath}" "${poolPath}/"
