@@ -1,4 +1,4 @@
-def signDebRepo(String DIST, String CODENAME, String ARCH) {
+def call(String DIST, String CODENAME, String ARCH) {
     def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
     def debFileName = "${APPNAME}_${VERSION}_${ARCH}.deb"
     def repoRoot = "${env.ARTIFACT_PATH}/apt"
