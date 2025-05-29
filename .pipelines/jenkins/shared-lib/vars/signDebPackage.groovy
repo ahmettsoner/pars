@@ -16,13 +16,6 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
 
-        gpg --batch --import "$GPG_PUBLIC"
-        gpg --batch --import "$GPG_PRIVATE"
-
-        FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
-        echo "$FPR:6:" > trust.txt
-        gpg --import-ownertrust trust.txt
-
         echo "use-agent" > ~/.gnupg/gpg.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
@@ -30,11 +23,21 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         gpgconf --kill gpg-agent
         export GPG_TTY=$(tty || true)
         gpgconf --launch gpg-agent
+
+        gpg --batch --import "$GPG_PUBLIC"
+        gpg --batch --import "$GPG_PRIVATE"
+
+        FPR=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/ { print $10; exit }')
+        echo "$FPR:6:" > trust.txt
+        gpg --import-ownertrust trust.txt
+
+        # Parolayı önbelleğe yaz
+        echo "$GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$FPR" >/dev/null 2>&1 || true
         '''
 
-        // Sign the .deb file
+        // Sign the .deb file using key ID (or email/UID)
         sh """
-        echo "${GPG_PASSPHRASE}" | dpkg-sig -k "${gpgIdentity}" --sign builder "${debOutputPath}"
+        dpkg-sig -k "${gpgIdentity}" --sign builder "${debOutputPath}"
         """
 
         // Prepare pool path and copy signed .deb
@@ -43,7 +46,6 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         cp ${debOutputPath} ${poolPath}/
         """
 
-        // Loop through each DIST_CODENAME and build Packages, Release, etc.
         def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
         sh """
         mkdir -p ${distPath}
@@ -56,11 +58,9 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" --clearsign -o InRelease Release
         """
 
-        // Cleanup GPG
         sh 'rm -rf ~/.gnupg trust.txt'
     }
 
-    // Re-stash final APT repo
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
 }
 
