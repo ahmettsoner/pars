@@ -1,7 +1,7 @@
 def call(String OS, String ARCH, String DIST_CODENAME) {
     unstash "${OS}-${ARCH}-deb-package-artifacts"
 
-    def newBaseName = "${APPNAME}_${BUILD_VERSION}_${ARCH}.deb"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
     def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
     def repoRoot = "${env.ARTIFACT_PATH}/apt-repo"
