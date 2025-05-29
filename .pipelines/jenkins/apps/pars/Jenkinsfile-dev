@@ -109,7 +109,7 @@ pipeline {
                                             agentInitOnce.initOnce(params.BRANCH)
                                             buildDEBPackage(OS, ARCH)
                                             copyDebAndUpdateChecksums(OS, ARCH)
-                                            signDebPackage(OS, ARCH, ["jammy"])
+                                            signDebPackage(OS, ARCH, "jammy")
                                             agentInitOnce.cleanupOnce()
                                         }
                                     }
