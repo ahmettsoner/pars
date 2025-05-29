@@ -89,3 +89,12 @@ gpg --export-secret-keys --armor YOUR_KEY_ID > private.gpg
 # Base64 Encode
 base64 private.gpg > private.gpg.b64
 ```
+
+YUM REPO
+create yum hosted repo
+default ayarlarlar
+
+-   Repodata Depth: 0
+
+yum.repo.parsdevkit.net
+rpm.repo.parsdevkit.net
