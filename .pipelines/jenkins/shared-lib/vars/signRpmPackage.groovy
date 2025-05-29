@@ -1,69 +1,65 @@
-def call(String OS, String ARCH, List<String> DIST_CODENAMES) {
-    unstash "${OS}-${ARCH}-deb-package-artifacts"
+def call(String OS, String ARCH) {
+    unstash "${OS}-${ARCH}-rpm-package-artifacts"
 
-    def newBaseName = "${APPNAME}_${APPVERSION}_${ARCH}.deb"
-    def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
+    def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
     def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
-    def repoRoot = "${env.ARTIFACT_PATH}/apt-repo"
-    def poolPath = "${repoRoot}/pool/main/${APPNAME}"
 
     withCredentials([
-        file(credentialsId: 'public-deb.gpg', variable: 'GPG_PUBLIC'),
-        file(credentialsId: 'private-deb.gpg', variable: 'GPG_PRIVATE'),
+        file(credentialsId: 'public-rpm.gpg', variable: 'GPG_PUBLIC'),
+        file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE'),
         string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE')
     ]) {
+        // Prepare ~/.rpmmacros (DO NOT use %% here, just single %)
+        writeFile file: "${env.HOME}/.rpmmacros", text: """
+%_signature gpg
+%_gpg_name ${gpgIdentity}
+%__gpg /usr/bin/gpg
+%__gpg_sign_cmd %{__gpg} \\
+  --batch \\
+  --yes \\
+  --no-armor \\
+  --pinentry-mode loopback \\
+  --passphrase "${GPG_PASSPHRASE}" \\
+  -u "%{_gpg_name}" \\
+  -sbo %{__signature_filename} %{__plaintext_filename}
+"""
+
         sh '''
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
 
+        # Import GPG keys
         gpg --batch --import "$GPG_PUBLIC"
         gpg --batch --import "$GPG_PRIVATE"
 
+        # Get fingerprint
         FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
+
+        # Trust key
         echo "$FPR:6:" > trust.txt
         gpg --import-ownertrust trust.txt
 
+        # GPG config for loopback
         echo "use-agent" > ~/.gnupg/gpg.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
 
+        # Restart gpg-agent
         gpgconf --kill gpg-agent
         export GPG_TTY=$(tty || true)
         gpgconf --launch gpg-agent
         '''
 
-        // Sign the .deb file
-        sh """
-        echo "${GPG_PASSPHRASE}" | dpkg-sig -k "${gpgIdentity}" --sign builder "${debOutputPath}"
-        """
+        // Sign the RPM
+        sh "rpm --addsign ${rpmOutputPath}"
 
-        // Prepare pool path and copy signed .deb
-        sh """
-        mkdir -p ${poolPath}
-        cp ${debOutputPath} ${poolPath}/
-        """
-
-        // Loop through each codename and build Packages, Release, etc.
-        DIST_CODENAMES.each { codename ->
-            def distPath = "${repoRoot}/dists/${codename}/main/binary-${ARCH}"
-            sh """
-            mkdir -p ${distPath}
-            cd ${poolPath}
-            dpkg-scanpackages . /dev/null | gzip -9c > ${distPath}/Packages.gz
-
-            cd ${repoRoot}/dists/${codename}
-            apt-ftparchive release . > Release
-            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" -abs -o Release.gpg Release
-            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" --clearsign -o InRelease Release
-            """
-        }
-
-        // Cleanup GPG
-        sh 'rm -rf ~/.gnupg trust.txt'
+        // Clean up GPG traces
+        sh 'rm -rf ~/.gnupg ~/.rpmmacros trust.txt'
     }
 
-    // Re-stash final APT repo
-    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
+    // Re-stash signed package
+    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
 }
 
 return this

@@ -1,13 +1,11 @@
-def call(String DIST, String CODENAME, String ARCH) {
+def call(String OS, String ARCH, List<String> DIST_CODENAMES) {
+    unstash "${OS}-${ARCH}-deb-package-artifacts"
+
+    def newBaseName = "${APPNAME}_${APPVERSION}_${ARCH}.deb"
+    def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
     def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
-    def debFileName = "${APPNAME}_${VERSION}_${ARCH}.deb"
-    def repoRoot = "${env.ARTIFACT_PATH}/apt"
-
-    def poolPath = "${repoRoot}/pool/main/p/${APPNAME}"
-    def distPath = "${repoRoot}/dists/${CODENAME}/main/binary-${ARCH}"
-
-    sh "mkdir -p ${poolPath} ${distPath}"
-    sh "cp ${env.ARTIFACT_PATH}/${debFileName} ${poolPath}/"
+    def repoRoot = "${env.ARTIFACT_PATH}/apt-repo"
+    def poolPath = "${repoRoot}/pool/main/${APPNAME}"
 
     withCredentials([
         file(credentialsId: 'public-deb.gpg', variable: 'GPG_PUBLIC'),
@@ -34,31 +32,38 @@ def call(String DIST, String CODENAME, String ARCH) {
         gpgconf --launch gpg-agent
         '''
 
-        // Generate Packages.gz
+        // Sign the .deb file
         sh """
-        cd ${repoRoot}
-        dpkg-scanpackages --arch ${ARCH} pool > ${distPath}/Packages
-        gzip -kf ${distPath}/Packages
+        echo "${GPG_PASSPHRASE}" | dpkg-sig -k "${gpgIdentity}" --sign builder "${debOutputPath}"
         """
 
-        // Create Release file
+        // Prepare pool path and copy signed .deb
         sh """
-        cd ${distPath}
-        apt-ftparchive release . > Release
+        mkdir -p ${poolPath}
+        cp ${debOutputPath} ${poolPath}/
         """
 
-        // Sign the Release file
-        sh """
-        cd ${distPath}
-        gpg --batch --yes --pinentry-mode loopback --passphrase "${GPG_PASSPHRASE}" -u "${gpgIdentity}" -abs -o Release.gpg Release
-        gpg --batch --yes --pinentry-mode loopback --passphrase "${GPG_PASSPHRASE}" -u "${gpgIdentity}" --clearsign -o InRelease Release
-        """
+        // Loop through each codename and build Packages, Release, etc.
+        DIST_CODENAMES.each { codename ->
+            def distPath = "${repoRoot}/dists/${codename}/main/binary-${ARCH}"
+            sh """
+            mkdir -p ${distPath}
+            cd ${poolPath}
+            dpkg-scanpackages . /dev/null | gzip -9c > ${distPath}/Packages.gz
 
-        // Cleanup
-        sh 'rm -rf ~/.gnupg ~/.rpmmacros trust.txt'
+            cd ${repoRoot}/dists/${codename}
+            apt-ftparchive release . > Release
+            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" -abs -o Release.gpg Release
+            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" --clearsign -o InRelease Release
+            """
+        }
+
+        // Cleanup GPG
+        sh 'rm -rf ~/.gnupg trust.txt'
     }
 
-    stash includes: 'apt/**/*', name: "${DIST}-${ARCH}-deb-repo"
+    // Re-stash final APT repo
+    stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
 }
 
 return this
