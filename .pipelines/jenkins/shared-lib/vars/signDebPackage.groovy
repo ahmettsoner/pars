@@ -42,10 +42,10 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
 
         // Sign the RPM
-        sh '''
+        sh """
             FPR=$(cat fpr.txt)
-            echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$FPR" "$debOutputPath"
-        '''
+            echo "${GPG_PASSPHRASE}" | dpkg-sig --sign builder -k "$FPR" "${debOutputPath}"
+        """
 
         sh """
             echo "[*] Creating APT repo structure..."
