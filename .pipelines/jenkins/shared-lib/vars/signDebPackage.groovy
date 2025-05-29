@@ -8,8 +8,8 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
     def poolPath = "${repoRoot}/pool/main/${APPNAME}"
 
     withCredentials([
-        file(credentialsId: 'public-deb.gpg', variable: 'GPG_PUBLIC'),
-        file(credentialsId: 'private-deb.gpg', variable: 'GPG_PRIVATE'),
+        file(credentialsId: 'public-rpm.gpg', variable: 'GPG_PUBLIC'),
+        file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE'),
         string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE')
     ]) {
         sh '''
