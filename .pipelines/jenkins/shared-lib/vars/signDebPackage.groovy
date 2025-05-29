@@ -9,42 +9,49 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
         def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
         def repoRoot = "${env.WORKSPACE}/apt-repo"
-        def poolPath = "${repoRoot}/pool/main/${APPNAME[0]}/${APPNAME}"
+        def poolPath = "${repoRoot}/pool/main/${APPNAME}"
         def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
 
-        sh """
-            set -e
+        sh '''#!/bin/bash -e
             mkdir -p ~/.gnupg
             chmod 700 ~/.gnupg
-            gpg --import $PRIVATE_GPG
-            gpg --import $PUBLIC_GPG
 
-            echo "Signing .deb package..."
-            dpkg-sig -k '${gpgIdentity}' --sign builder '${debOutputPath}'
+            echo "use-agent" > ~/.gnupg/gpg.conf
+            echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+            echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
 
-            echo "Building APT repository..."
-            mkdir -p '${poolPath}'
-            mkdir -p '${distPath}'
+            gpgconf --kill gpg-agent
+            gpgconf --launch gpg-agent
 
-            cp '${debOutputPath}' '${poolPath}/'
+            gpg --batch --import "$PRIVATE_GPG"
+            gpg --batch --import "$PUBLIC_GPG"
 
-            cd '${repoRoot}'
-            dpkg-scanpackages pool /dev/null | gzip -9c > '${distPath}/Packages.gz'
+            echo "Setting GPG trust..."
+            FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
+            echo "$FPR:6:" > trust.txt
+            gpg --import-ownertrust trust.txt
 
-            cd '${repoRoot}/dists/${DIST_CODENAME}'
+            echo "Signing .deb..."
+            echo "$GPG_PASSPHRASE" | dpkg-sig -k "$FPR" --sign builder "$debOutputPath"
+
+            echo "Creating APT repository..."
+            mkdir -p "${poolPath}" "${distPath}"
+            cp "$debOutputPath" "${poolPath}/"
+
+            cd "${repoRoot}"
+            dpkg-scanpackages pool /dev/null | gzip -9c > "${distPath}/Packages.gz"
+
+            cd "${repoRoot}/dists/${DIST_CODENAME}"
             apt-ftparchive release . > Release
 
-            echo "Signing Release file (detached)..."
-            gpg --batch --yes --default-key '${gpgIdentity}' \\
-                --passphrase '${GPG_PASSPHRASE}' \\
-                --pinentry-mode loopback \\
-                -abs -o Release.gpg Release
+            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "$FPR" -abs -o Release.gpg Release
 
-            echo "Creating InRelease file (clearsigned)..."
-            gpg --batch --yes --default-key '${gpgIdentity}' \\
-                --passphrase '${GPG_PASSPHRASE}' \\
-                --pinentry-mode loopback \\
-                --clearsign -o InRelease Release
-        """
+            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "$FPR" --clearsign -o InRelease Release
+
+            echo "Cleanup"
+            rm -rf ~/.gnupg trust.txt
+        '''
     }
 }
