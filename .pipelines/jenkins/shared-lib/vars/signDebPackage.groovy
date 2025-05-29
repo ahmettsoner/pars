@@ -2,7 +2,8 @@ def call(String OS, String ARCH, String DIST_CODENAME){
     withCredentials([
         file(credentialsId: 'private-rpm.gpg', variable: 'PRIVATE_GPG'),
         file(credentialsId: 'public-rpm.gpg', variable: 'PUBLIC_GPG'),
-        string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE')
+        string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE'),
+        string(credentialsId: 'GPG_FINGERPRINT', variable: 'GPG_FINGERPRINT')
     ]) {
 
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
@@ -17,7 +18,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             #!/bin/bash -e
 
             if [[ ! -f "${debOutputPath}" ]]; then
-                echo "ERROR: .deb file not found at $debOutputPath"
+                echo "ERROR: .deb file not found at ${debOutputPath}"
                 exit 1
             fi
 
@@ -31,20 +32,19 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --kill gpg-agent
             gpgconf --launch gpg-agent
 
-            gpg --batch --import "$PRIVATE_GPG"
-            gpg --batch --import "$PUBLIC_GPG"
+            gpg --batch --import "${PRIVATE_GPG}"
+            gpg --batch --import "${PUBLIC_GPG}"
 
             echo "Setting GPG trust..."
-            FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
-            echo "$FPR:6:" > trust.txt
+            echo "${GPG_FINGERPRINT}:6:" > trust.txt
             gpg --import-ownertrust trust.txt
 
             echo "Signing .deb..."
-            echo "$GPG_PASSPHRASE" | dpkg-sig -k "$FPR" --sign builder "$debOutputPath"
+            echo "${GPG_PASSPHRASE}" | dpkg-sig -k "${GPG_FINGERPRINT}" --sign builder "${debOutputPath}"
 
             echo "Creating APT repository..."
             mkdir -p "${poolPath}" "${distPath}"
-            cp "$debOutputPath" "${poolPath}/"
+            cp "${debOutputPath}" "${poolPath}/"
 
             cd "${repoRoot}"
             dpkg-scanpackages pool /dev/null | gzip -9c > "${distPath}/Packages.gz"
@@ -52,11 +52,11 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             cd "${repoRoot}/dists/${DIST_CODENAME}"
             apt-ftparchive release . > Release
 
-            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "$FPR" -abs -o Release.gpg Release
+            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "${GPG_FINGERPRINT}" -abs -o Release.gpg Release
 
-            echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "$FPR" --clearsign -o InRelease Release
+            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "${GPG_FINGERPRINT}" --clearsign -o InRelease Release
 
             echo "Cleanup"
             rm -rf ~/.gnupg trust.txt

@@ -8,7 +8,8 @@ def call(String OS, String ARCH) {
     withCredentials([
         file(credentialsId: 'public-rpm.gpg', variable: 'GPG_PUBLIC'),
         file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE'),
-        string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE')
+        string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE'),
+        string(credentialsId: 'GPG_FINGERPRINT', variable: 'GPG_FINGERPRINT')
     ]) {
         // Prepare ~/.rpmmacros (DO NOT use %% here, just single %)
         writeFile file: "${env.HOME}/.rpmmacros", text: """
@@ -25,7 +26,7 @@ def call(String OS, String ARCH) {
   -sbo %{__signature_filename} %{__plaintext_filename}
 """
 
-        sh '''
+        sh """
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
 
@@ -33,11 +34,8 @@ def call(String OS, String ARCH) {
         gpg --batch --import "$GPG_PUBLIC"
         gpg --batch --import "$GPG_PRIVATE"
 
-        # Get fingerprint
-        FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
-
         # Trust key
-        echo "$FPR:6:" > trust.txt
+        echo "${GPG_FINGERPRINT}:6:" > trust.txt
         gpg --import-ownertrust trust.txt
 
         # GPG config for loopback
@@ -49,7 +47,7 @@ def call(String OS, String ARCH) {
         gpgconf --kill gpg-agent
         export GPG_TTY=$(tty || true)
         gpgconf --launch gpg-agent
-        '''
+        """
 
         // Sign the RPM
         sh "rpm --addsign ${rpmOutputPath}"
