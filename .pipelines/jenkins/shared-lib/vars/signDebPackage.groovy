@@ -14,36 +14,31 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
 
         sh """
-            set -e
+            mkdir -p ~/.gnupg
+            chmod 700 ~/.gnupg
 
-            echo "[*] Check .deb exists..."
-            if [[ ! -f "${debOutputPath}" ]]; then
-                echo "ERROR: .deb file not found at ${debOutputPath}"
-                exit 1
-            fi
+            # Import GPG keys
+            gpg --batch --import "$GPG_PUBLIC"
+            gpg --batch --import "$GPG_PRIVATE"
 
-            echo "[*] Setting up GPG environment..."
-            export GNUPGHOME=\$(mktemp -d)
-            chmod 700 "\$GNUPGHOME"
+            # Get fingerprint
+            FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
 
-            echo "use-agent" > "\$GNUPGHOME/gpg.conf"
-            echo "pinentry-mode loopback" >> "\$GNUPGHOME/gpg.conf"
-            echo "allow-loopback-pinentry" > "\$GNUPGHOME/gpg-agent.conf"
+            # Trust key
+            echo "$FPR:6:" > trust.txt
+            gpg --import-ownertrust trust.txt
 
+            # GPG config for loopback
+            echo "use-agent" > ~/.gnupg/gpg.conf
+            echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+            echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
+
+            # Restart gpg-agent
             gpgconf --kill gpg-agent
+            export GPG_TTY=$(tty || true)
             gpgconf --launch gpg-agent
-
-            gpg --batch --import "${PRIVATE_GPG}"
-            gpg --batch --import "${PUBLIC_GPG}"
-
-            echo "[*] Trusting GPG key..."
-            echo "${GPG_FINGERPRINT}:6:" > "\$GNUPGHOME/trust.txt"
-            gpg --import-ownertrust "\$GNUPGHOME/trust.txt"
-
-            echo "[*] Signing .deb with dpkg-sig..."
-            GPG_TTY=\$(tty)
-            export GPG_TTY
-            echo "${GPG_PASSPHRASE}" | dpkg-sig --sign builder -k "${GPG_FINGERPRINT}" "${debOutputPath}"
+            
+            dpkg-sig --sign builder "${debOutputPath}"
 
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
@@ -62,8 +57,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             echo "${GPG_PASSPHRASE}" | gpg --batch --yes --pinentry-mode loopback \\
                 --passphrase-fd 0 -u "${GPG_FINGERPRINT}" --clearsign -o InRelease Release
 
-            echo "[*] Cleaning up..."
-            rm -rf "\$GNUPGHOME"
         """
+        sh 'rm -rf ~/.gnupg ~/.rpmmacros trust.txt'
     }
 }

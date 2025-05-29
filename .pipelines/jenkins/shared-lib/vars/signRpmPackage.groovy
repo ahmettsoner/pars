@@ -26,7 +26,7 @@ def call(String OS, String ARCH) {
   -sbo %{__signature_filename} %{__plaintext_filename}
 """
 
-        sh """
+        sh '''
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
 
@@ -34,8 +34,11 @@ def call(String OS, String ARCH) {
         gpg --batch --import "$GPG_PUBLIC"
         gpg --batch --import "$GPG_PRIVATE"
 
+        # Get fingerprint
+        FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
+
         # Trust key
-        echo "${GPG_FINGERPRINT}:6:" > trust.txt
+        echo "$FPR:6:" > trust.txt
         gpg --import-ownertrust trust.txt
 
         # GPG config for loopback
@@ -47,7 +50,7 @@ def call(String OS, String ARCH) {
         gpgconf --kill gpg-agent
         export GPG_TTY=$(tty || true)
         gpgconf --launch gpg-agent
-        """
+        '''
 
         // Sign the RPM
         sh "rpm --addsign ${rpmOutputPath}"
