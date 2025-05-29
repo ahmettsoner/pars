@@ -23,6 +23,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
             # Get fingerprint
             FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
+            echo "$FPR" > fpr.txt
 
             # Trust key
             echo "$FPR:6:" > trust.txt
@@ -39,9 +40,12 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --launch gpg-agent
         '''
 
+
         // Sign the RPM
-        sh "dpkg-sig --sign builder \"${debOutputPath}\""
-        // dpkg-sig -k "\$FPR" --sign builder "${debOutputPath}
+        sh '''
+            FPR=$(cat fpr.txt)
+            echo "$GPG_PASSPHRASE" | dpkg-sig -k "$FPR" --sign builder --no-default-keyring --batch "$debOutputPath"
+        '''
 
         sh """
             echo "[*] Creating APT repo structure..."
