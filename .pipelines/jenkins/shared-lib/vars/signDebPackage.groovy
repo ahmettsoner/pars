@@ -7,12 +7,19 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
         def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
+        
         def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
         def repoRoot = "${env.WORKSPACE}/apt-repo"
         def poolPath = "${repoRoot}/pool/main/${APPNAME}"
         def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
 
         sh '''#!/bin/bash -e
+        
+            if [[ ! -f "$debOutputPath" ]]; then
+                echo "ERROR: .deb file not found at $debOutputPath"
+                exit 1
+            fi
+
             mkdir -p ~/.gnupg
             chmod 700 ~/.gnupg
 
