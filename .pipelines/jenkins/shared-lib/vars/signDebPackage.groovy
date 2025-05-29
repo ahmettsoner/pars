@@ -1,7 +1,7 @@
 def call(String OS, String ARCH, String DIST_CODENAME){
     withCredentials([
-        file(credentialsId: 'private-rpm.gpg', variable: 'PRIVATE_GPG'),
-        file(credentialsId: 'public-rpm.gpg', variable: 'PUBLIC_GPG'),
+        file(credentialsId: 'public-rpm.gpg', variable: 'GPG_PUBLIC'),
+        file(credentialsId: 'private-rpm.gpg', variable: 'GPG_PRIVATE'),
         string(credentialsId: 'GPG_PASSPHRASE', variable: 'GPG_PASSPHRASE'),
         string(credentialsId: 'GPG_FINGERPRINT', variable: 'GPG_FINGERPRINT')
     ]) {
@@ -38,11 +38,11 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             export GPG_TTY=$(tty || true)
             gpgconf --launch gpg-agent
         '''
-        
+
         // Sign the RPM
         sh "dpkg-sig --sign builder \"${debOutputPath}\""
+
         sh """
-            mkdir -p ~/.gnupg
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
             cp "${debOutputPath}" "${poolPath}/"
