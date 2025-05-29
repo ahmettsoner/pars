@@ -41,6 +41,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
         // Sign the RPM
         sh "dpkg-sig --sign builder \"${debOutputPath}\""
+        // dpkg-sig -k "\$FPR" --sign builder "${debOutputPath}
 
         sh """
             echo "[*] Creating APT repo structure..."
@@ -54,13 +55,13 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             apt-ftparchive release . > Release
 
             echo "[*] Signing Release files..."
-            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "${GPG_FINGERPRINT}" -abs -o Release.gpg Release
+            gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "\$FPR" -abs -o Release.gpg Release
 
-            echo "${GPG_PASSPHRASE}" | gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "${GPG_FINGERPRINT}" --clearsign -o InRelease Release
+            gpg --batch --yes --pinentry-mode loopback \\
+                --passphrase-fd 0 -u "\$FPR" --clearsign -o InRelease Release
 
         """
-        sh 'rm -rf ~/.gnupg ~/.rpmmacros trust.txt'
+        sh 'rm -rf ~/.gnupg trust.txt'
     }
 }
