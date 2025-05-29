@@ -39,6 +39,7 @@ WORKDIR /workspace
 RUN apt install -y dpkg-sig
 RUN apt install -y dpkg-dev
 RUN apt install -y apt-utils
+RUN apt install -y gnupg-agent
 
 # Varsayılan komut (argümanla override edilebilir)
 CMD ["java", "-jar", "/workspace/agent.jar"]

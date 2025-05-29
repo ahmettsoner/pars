@@ -15,27 +15,29 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         sh '''
         mkdir -p ~/.gnupg
         chmod 700 ~/.gnupg
+        
+        FPR=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/ { print $10; exit }')
 
+        # GPG agent yapılandır
         echo "use-agent" > ~/.gnupg/gpg.conf
         echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
         echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
 
         gpgconf --kill gpg-agent
-        export GPG_TTY=$(tty || true)
         gpgconf --launch gpg-agent
+        export GPG_TTY=$(tty || true)
 
+        # Trust ve anahtar import işlemleri
         gpg --batch --import "$GPG_PUBLIC"
         gpg --batch --import "$GPG_PRIVATE"
-
-        FPR=$(gpg --list-secret-keys --with-colons | awk -F: '/^fpr/ { print $10; exit }')
         echo "$FPR:6:" > trust.txt
         gpg --import-ownertrust trust.txt
 
-        # Parolayı önbelleğe yaz
-        echo "$GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$FPR" >/dev/null 2>&1 || true
+        # Parolayı önceden cache’e al
+        echo "$GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$FPR"
         '''
 
-        // Sign the .deb file using key ID (or email/UID)
+        // dpkg-sig ile imzala
         sh """
         dpkg-sig -k "${gpgIdentity}" --sign builder "${debOutputPath}"
         """
