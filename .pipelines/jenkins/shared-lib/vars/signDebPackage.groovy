@@ -1,4 +1,4 @@
-def call(String OS, String ARCH, List<String> DIST_CODENAMES) {
+def call(String OS, String ARCH, String DIST_CODENAME) {
     unstash "${OS}-${ARCH}-deb-package-artifacts"
 
     def newBaseName = "${APPNAME}_${BUILD_VERSION}_${ARCH}.deb"
@@ -43,20 +43,18 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES) {
         cp ${debOutputPath} ${poolPath}/
         """
 
-        // Loop through each codename and build Packages, Release, etc.
-        DIST_CODENAMES.each { codename ->
-            def distPath = "${repoRoot}/dists/${codename}/main/binary-${ARCH}"
-            sh """
-            mkdir -p ${distPath}
-            cd ${poolPath}
-            dpkg-scanpackages . /dev/null | gzip -9c > ${distPath}/Packages.gz
+        // Loop through each DIST_CODENAME and build Packages, Release, etc.
+        def distPath = "${repoRoot}/dists/${DIST_CODENAME}/main/binary-${ARCH}"
+        sh """
+        mkdir -p ${distPath}
+        cd ${poolPath}
+        dpkg-scanpackages . /dev/null | gzip -9c > ${distPath}/Packages.gz
 
-            cd ${repoRoot}/dists/${codename}
-            apt-ftparchive release . > Release
-            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" -abs -o Release.gpg Release
-            gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" --clearsign -o InRelease Release
-            """
-        }
+        cd ${repoRoot}/dists/${DIST_CODENAME}
+        apt-ftparchive release . > Release
+        gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" -abs -o Release.gpg Release
+        gpg --batch --yes --passphrase "${GPG_PASSPHRASE}" --pinentry-mode loopback -u "${gpgIdentity}" --clearsign -o InRelease Release
+        """
 
         // Cleanup GPG
         sh 'rm -rf ~/.gnupg trust.txt'
