@@ -40,10 +40,12 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --launch gpg-agent
         '''
 
-
         // Sign the RPM
         sh """
             FPR=$(cat fpr.txt)
+            echo FGPG_PASSPHRASEPR: ${FGPG_PASSPHRASEPR}
+            echo FPR: ${FPR}
+            echo debOutputPath: ${debOutputPath}
             echo ${GPG_PASSPHRASE} | dpkg-sig --sign builder -k "$FPR" "${debOutputPath}"
         """
 
