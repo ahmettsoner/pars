@@ -38,11 +38,25 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --kill gpg-agent
             export GPG_TTY=$(tty || true)
             gpgconf --launch gpg-agent
+
+            # Create gpg-wrapper script
+            cat << 'EOF' > gpg-wrapper
+#!/bin/bash
+exec gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" "$@"
+EOF
+            chmod +x gpg-wrapper
+        '''
+
+        // Use dpkg-sig with gpg-wrapper
+        sh '''
+            export DEBSIG_GPG_EXECUTABLE=./gpg-wrapper
+            dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "${debOutputPath}"
         '''
 
 
-        sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
+        // sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
+
         
-        sh 'rm -rf ~/.gnupg trust.txt'
+        sh 'rm -rf ~/.gnupg trust.txt fpr.txt pass.txt gpg-wrapper'
     }
 }
