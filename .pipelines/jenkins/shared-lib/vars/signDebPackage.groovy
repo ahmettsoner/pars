@@ -57,9 +57,9 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         //         --detach-sign "${debOutputPath}"
 
         // '''
-        withEnv(["PASSPHRASE=${GPG_PASSPHRASE}"]) {
+        withEnv(["PASSPHRASE=${GPG_PASSPHRASE}","FINGERPRINT=${GPG_FINGERPRINT}"]) {
             sh '''
-                echo "$PASSPHRASE" | dpkg-sig --sign builder -k"$FPR" "$debOutputPath"
+                echo "$PASSPHRASE" | dpkg-sig --sign builder -k"$FINGERPRINT" "$debOutputPath"
             '''
         }
         sh """
