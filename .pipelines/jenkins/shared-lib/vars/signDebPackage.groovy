@@ -46,9 +46,19 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             echo GPG_PASSPHRASE: ${GPG_PASSPHRASE}
             echo FPR: ${FPR}
             echo debOutputPath: ${debOutputPath}
-            echo ${GPG_PASSPHRASE} | dpkg-sig --sign builder -k "${FPR}" "${debOutputPath}"
+            
         """
+                // echo "$PASSPHRASE" | dpkg-sig --sign builder -k "$FPR" "$debOutputPath"
+        withEnv(["PASSPHRASE=${GPG_PASSPHRASE}"]) {
+            sh '''
+                gpg --batch --yes --pinentry-mode loopback \
+                    --passphrase "$GPG_PASSPHRASE" \
+                    -u "$FPR" \
+                    --output "${debOutputPath}.gpg" \
+                    --detach-sign "${debOutputPath}"
 
+            '''
+        }
         sh """
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
