@@ -40,7 +40,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --launch gpg-agent
         '''
 
-        writeFile file: 'sign_deb.expect', text: '''
+        writeFile file: 'sign_deb.expect', text: """
         #!/usr/bin/expect -f
 
         set timeout -1
@@ -56,7 +56,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             }
             eof
         }
-        '''
+        """
 
         sh 'chmod +x sign_deb.expect'
 
