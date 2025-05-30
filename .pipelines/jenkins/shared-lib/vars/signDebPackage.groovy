@@ -22,7 +22,6 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
             gpg --batch --import "$GPG_PRIVATE"
 
             FPR=$(gpg --list-keys --with-colons | grep '^fpr' | head -n1 | cut -d':' -f10)
-            echo "$FPR" > fpr.txt
             echo "$FPR:6:" > trust.txt
             gpg --import-ownertrust trust.txt
 
@@ -70,7 +69,6 @@ EOF
             apt-ftparchive release . > Release
 
             echo "[*] Signing Release files..."
-            FPR=\$(cat ../../fpr.txt)
 
             echo "$GPG_PASSPHRASE" | gpg --batch --yes --pinentry-mode loopback \
                 --passphrase-fd 0 -u "$FPR" -abs -o Release.gpg Release
@@ -80,6 +78,6 @@ EOF
         """
 
         // Cleanup
-        sh 'rm -rf ~/.gnupg trust.txt fpr.txt sign.expect'
+        sh 'rm -rf ~/.gnupg trust.txt sign.expect'
     }
 }
