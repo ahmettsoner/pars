@@ -44,7 +44,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         sh """
             echo GELDİ
             FPR=\$(cat fpr.txt)
-            echo FGPG_PASSPHRASEPR: ${FGPG_PASSPHRASEPR}
+            echo GPG_PASSPHRASE: ${GPG_PASSPHRASE}
             echo FPR: \${FPR}
             echo debOutputPath: ${debOutputPath}
             echo ${GPG_PASSPHRASE} | dpkg-sig --sign builder -k \"$FPR" "${debOutputPath}"
