@@ -52,7 +52,7 @@ EOF
             echo "Signing file: ${debOutputPath}"
             ls -l "${debOutputPath}"
             export DEBSIG_GPG_EXECUTABLE=./gpg-wrapper
-            dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "${debOutputPath}"
+            echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$GPG_FINGERPRINT" -- --pinentry-mode loopback "${debOutputPath}"
         """
 
 
