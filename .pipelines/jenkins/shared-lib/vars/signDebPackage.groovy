@@ -40,29 +40,31 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --launch gpg-agent
         '''
 
-        withEnv(["GPG_TTY=$(tty)"]) {
-            sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
+        writeFile file: 'sign_deb.expect', text: '''
+        #!/usr/bin/expect -f
+
+        set timeout -1
+        set passphrase [lindex $argv 0]
+        set key [lindex $argv 1]
+        set deb [lindex $argv 2]
+
+        spawn dpkg-sig --sign builder -k $key $deb
+        expect {
+            "Enter passphrase:" {
+                send "$passphrase\\r"
+                exp_continue
+            }
+            eof
         }
+        '''
+
+        sh 'chmod +x sign_deb.expect'
+
+        sh "./sign_deb.expect \"$GPG_PASSPHRASE\" \"$GPG_FINGERPRINT\" \"$debOutputPath\""
+
+
+        // sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
         
-        sh """
-            echo "[*] Creating APT repo structure..."
-            mkdir -p "${poolPath}" "${distPath}"
-            cp "${debOutputPath}" "${poolPath}/"
-
-            cd "${repoRoot}"
-            dpkg-scanpackages pool /dev/null | gzip -9c > "${distPath}/Packages.gz"
-
-            cd "${repoRoot}/dists/${DIST_CODENAME}"
-            apt-ftparchive release . > Release
-
-            echo "[*] Signing Release files..."
-            gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "\$FPR" -abs -o Release.gpg Release
-
-            gpg --batch --yes --pinentry-mode loopback \\
-                --passphrase-fd 0 -u "\$FPR" --clearsign -o InRelease Release
-
-        """
-        sh 'rm -rf ~/.gnupg trust.txt'
+        // sh 'rm -rf ~/.gnupg trust.txt'
     }
 }
