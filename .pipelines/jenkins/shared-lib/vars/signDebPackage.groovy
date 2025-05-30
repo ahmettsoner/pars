@@ -57,11 +57,9 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         //         --detach-sign "${debOutputPath}"
 
         // '''
-        withEnv(["PASSPHRASE=${GPG_PASSPHRASE}","FINGERPRINT=${GPG_FINGERPRINT}"]) {
-            sh '''
-                echo "$PASSPHRASE" | dpkg-sig --sign builder -k "$FINGERPRINT" "$debOutputPath"
-            '''
-        }
+        sh 'ls -lah "$debOutputPath"'
+
+        sh 'echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "$debOutputPath"''
         sh """
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
