@@ -49,6 +49,8 @@ EOF
 
         // Use dpkg-sig with gpg-wrapper
         sh '''
+            echo "Signing file: ${debOutputPath}"
+            ls -l "${debOutputPath}"
             export DEBSIG_GPG_EXECUTABLE=./gpg-wrapper
             dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "${debOutputPath}"
         '''
