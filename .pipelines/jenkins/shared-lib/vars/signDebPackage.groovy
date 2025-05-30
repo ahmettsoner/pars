@@ -57,7 +57,6 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         //         --detach-sign "${debOutputPath}"
 
         // '''
-        sh 'ls -lah "$debOutputPath"'
 
         sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
         
