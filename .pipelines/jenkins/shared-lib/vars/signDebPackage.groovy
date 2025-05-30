@@ -48,15 +48,18 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             echo debOutputPath: ${debOutputPath}
             
         """
-                // echo "$PASSPHRASE" | dpkg-sig --sign builder -k "$FPR" "$debOutputPath"
+
+        // sh '''
+        //     gpg --batch --yes --pinentry-mode loopback \
+        //         --passphrase "$GPG_PASSPHRASE" \
+        //         -u "$FPR" \
+        //         --output "${debOutputPath}.gpg" \
+        //         --detach-sign "${debOutputPath}"
+
+        // '''
         withEnv(["PASSPHRASE=${GPG_PASSPHRASE}"]) {
             sh '''
-                gpg --batch --yes --pinentry-mode loopback \
-                    --passphrase "$GPG_PASSPHRASE" \
-                    -u "$FPR" \
-                    --output "${debOutputPath}.gpg" \
-                    --detach-sign "${debOutputPath}"
-
+                echo "$PASSPHRASE" | dpkg-sig --sign builder -k"$FPR" "$debOutputPath"
             '''
         }
         sh """
