@@ -30,13 +30,13 @@ pipeline {
                             generateDocs()
                         }
                     }
-                    post {
-                        always {
-                            script {
-                                agentInitOnce.cleanupOnce()
-                            }
-                        }
-                    }
+                    // post {
+                    //     always {
+                    //         script {
+                    //             agentInitOnce.cleanupOnce()
+                    //         }
+                    //     }
+                    // }
                 }
             }
         }
@@ -79,13 +79,13 @@ pipeline {
                                 packageArtifact(OS, ARCH)
                             }
                         }
-                        post {
-                            always {
-                                script {
-                                    agentInitOnce.cleanupOnce()
-                                }
-                            }
-                        }
+                        // post {
+                        //     always {
+                        //         script {
+                        //             agentInitOnce.cleanupOnce()
+                        //         }
+                        //     }
+                        // }
                     }
                     stage("Package for Linux") {
                         when {
@@ -110,7 +110,7 @@ pipeline {
                                             buildDEBPackage(OS, ARCH)
                                             copyDebAndUpdateChecksums(OS, ARCH)
                                             signDebPackage(OS, ARCH, "jammy")
-                                            agentInitOnce.cleanupOnce()
+                                            // agentInitOnce.cleanupOnce()
                                         }
                                     }
                                 )
@@ -135,13 +135,13 @@ pipeline {
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                         }
-                        post {
-                            always {
-                                script {
-                                    agentInitOnce.cleanupOnce()
-                                }
-                            }
-                        }
+                        // post {
+                        //     always {
+                        //         script {
+                        //             agentInitOnce.cleanupOnce()
+                        //         }
+                        //     }
+                        // }
                     }
                 }
             }
@@ -175,13 +175,13 @@ pipeline {
                     archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
                 }
             }
-            post {
-                always {
-                    script {
-                        agentInitOnce.cleanupOnce()
-                    }
-                }
-            }
+            // post {
+            //     always {
+            //         script {
+            //             agentInitOnce.cleanupOnce()
+            //         }
+            //     }
+            // }
         }
 
         stage('Create Gitea Release') {
@@ -197,13 +197,13 @@ pipeline {
 
 
             }
-            post {
-                always {
-                    script {
-                        agentInitOnce.cleanupOnce()
-                    }
-                }
-            }
+            // post {
+            //     always {
+            //         script {
+            //             agentInitOnce.cleanupOnce()
+            //         }
+            //     }
+            // }
         }
     }
 }
