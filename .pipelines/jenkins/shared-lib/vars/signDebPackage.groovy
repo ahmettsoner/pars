@@ -42,6 +42,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
         // Sign the RPM
         sh """
+            echo GELDİ
             FPR=$(cat fpr.txt)
             echo FGPG_PASSPHRASEPR: ${FGPG_PASSPHRASEPR}
             echo FPR: ${FPR}
