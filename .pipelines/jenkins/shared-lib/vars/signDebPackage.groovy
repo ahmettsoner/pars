@@ -59,7 +59,7 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         // '''
         sh 'ls -lah "$debOutputPath"'
 
-        sh 'echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "$debOutputPath"'
+        sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
         
         sh """
             echo "[*] Creating APT repo structure..."
