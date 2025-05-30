@@ -60,7 +60,9 @@ def call(String OS, String ARCH, String DIST_CODENAME){
 
         sh 'chmod +x sign_deb.expect'
 
-        sh "./sign_deb.expect \"$GPG_PASSPHRASE\" \"$GPG_FINGERPRINT\" \"$debOutputPath\""
+        sh(script: 'expect ./sign_deb.expect "$GPG_PASSPHRASE" "$GPG_FINGERPRINT" "$debOutputPath"',
+        environment: [GPG_PASSPHRASE: "${GPG_PASSPHRASE}", GPG_FINGERPRINT: "${GPG_FINGERPRINT}"])
+
 
 
         // sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
