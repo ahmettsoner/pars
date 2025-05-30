@@ -40,26 +40,17 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --launch gpg-agent
         '''
 
-        def FPR = sh(script: 'cat fpr.txt', returnStdout: true).trim()
-        sh """
-            echo GELDİ
-            echo GPG_PASSPHRASE: ${GPG_PASSPHRASE}
-            echo FPR: ${FPR}
-            echo debOutputPath: ${debOutputPath}
-            
-        """
-
-        // sh '''
-        //     gpg --batch --yes --pinentry-mode loopback \
-        //         --passphrase "$GPG_PASSPHRASE" \
-        //         -u "$FPR" \
-        //         --output "${debOutputPath}.gpg" \
-        //         --detach-sign "${debOutputPath}"
-
-        // '''
 
         sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
         
+        // sh """
+        //     gpg --batch --yes --pinentry-mode loopback \
+        //         --passphrase \"$GPG_PASSPHRASE\" \
+        //         -u \"$GPG_FINGERPRINT\" \
+        //         --  \"${debOutputPath}.gpg\" \
+        //         --detach-sign \"${debOutputPath}\"
+
+        // """
         sh """
             echo "[*] Creating APT repo structure..."
             mkdir -p "${poolPath}" "${distPath}"
