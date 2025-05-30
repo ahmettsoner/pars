@@ -44,9 +44,9 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         #!/usr/bin/expect -f
 
         set timeout -1
-        set passphrase [lindex $argv 0]
-        set key [lindex $argv 1]
-        set deb [lindex $argv 2]
+        set passphrase [lindex \$argv 0]
+        set key [lindex \$argv 1]
+        set deb [lindex \$argv 2]
 
         spawn dpkg-sig --sign builder -k $key $deb
         expect {
