@@ -62,6 +62,6 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES){
 
         sh 'rm -rf ~/.gnupg trust.txt ~/.aptly'
 
-        stash name: "${OS}-${ARCH}-aptly-repo", includes: 'aptly-publish/**/*'
+        stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
     }
 }
