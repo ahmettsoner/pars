@@ -32,6 +32,10 @@ def call(String OS, String ARCH, String DIST_CODENAME){
             gpgconf --kill gpg-agent || true
             gpgconf --launch gpg-agent || true
         '''
+        sh """
+            echo '>>>>'
+            ar t ${debOutputPath}
+        """
 
         // Create aptly repo and publish
         sh """
