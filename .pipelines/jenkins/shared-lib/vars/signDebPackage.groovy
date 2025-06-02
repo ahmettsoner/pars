@@ -11,9 +11,9 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES){
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
         def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
         def aptlyRepoName = "${APPNAME}-${OS}-${ARCH}"
+        def debRepoOutputPath = "${env.ARTIFACT_PATH}/${aptlyRepoName}"
 
-        def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb"
-        def publishDir = "${packageOutputBase}/publish"
+        def publishDir = "${debRepoOutputPath}/publish"
 
         sh '''
             set -e
