@@ -91,15 +91,15 @@ EOT
 }
 
 
-resource "null_resource" "ansible_playbook" {
-  depends_on = [local_file.ansible_inventory]
-  provisioner "local-exec" {
-    command = <<EOT
-      for ip in ${join(" ", local.ip_addresses)}; do
-        ssh-keygen -R $ip;
-      done
-      ANSIBLE_PRIVATE_KEY_FILE=../${var.ssh_private_key_path} \
-      ansible-playbook -i ${local_file.ansible_inventory.filename} ../k8s.yml --tags 'etcd'
-    EOT
-  }
-}
+# resource "null_resource" "ansible_playbook" {
+#   depends_on = [local_file.ansible_inventory]
+#   provisioner "local-exec" {
+#     command = <<EOT
+#       for ip in ${join(" ", local.ip_addresses)}; do
+#         ssh-keygen -R $ip;
+#       done
+#       ANSIBLE_PRIVATE_KEY_FILE=../${var.ssh_private_key_path} \
+#       ansible-playbook -i ${local_file.ansible_inventory.filename} ../k8s.yml --tags 'etcd'
+#     EOT
+#   }
+# }

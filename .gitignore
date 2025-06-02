@@ -47,6 +47,10 @@ project.lock.json
 
 samples/**
 
-.terraform*
-terraform.tfstate*
-devops/images/
+*.terraform*
+*terraform.tfstate*
+*.qcow2
+*.img
+*.iso
+
+devops/proxy-cache/Squid/*
