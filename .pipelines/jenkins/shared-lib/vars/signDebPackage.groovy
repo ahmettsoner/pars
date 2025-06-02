@@ -6,6 +6,8 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         string(credentialsId: 'GPG_FINGERPRINT', variable: 'GPG_FINGERPRINT')
     ]) {
 
+        unstash "${OS}-${ARCH}-deb-package-artifacts"
+
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
         def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
         def aptlyRepoName = "${APPNAME}-${OS}-${ARCH}"
@@ -59,6 +61,6 @@ def call(String OS, String ARCH, String DIST_CODENAME){
         // Cleanup
         sh 'rm -rf ~/.gnupg trust.txt ~/.aptly'
 
-        // Artifacts hazır: publishDir içinde Nexus'a upload edebilirsin
+        stash name: "${OS}-${ARCH}-aptly-repo", includes: 'aptly-publish/**/*'
     }
 }
