@@ -10,7 +10,7 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES){
 
         def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
         def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
-        def aptlyRepoName = "${APPNAME}-${OS}-${ARCH}"
+        def aptlyRepoName = "${APPNAME}-repo"
         def debRepoOutputPath = "${env.ARTIFACT_PATH}/${aptlyRepoName}"
 
         def publishDir = "${debRepoOutputPath}/publish"
@@ -35,14 +35,34 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES){
             gpgconf --launch gpg-agent || true
         '''
 
-        sh "ar t ${debOutputPath}"
+        // Repo var mı kontrol et, yoksa oluştur
+        def repoExists = sh(script: "aptly repo list | grep -w ${aptlyRepoName} || true", returnStdout: true).trim()
+        if (!repoExists) {
+            sh "aptly repo create -component=main ${aptlyRepoName}"
+        }
 
-        sh """
-            aptly repo drop -force ${aptlyRepoName} || true
-            aptly repo create -component=main ${aptlyRepoName}
-            aptly repo add ${aptlyRepoName} ${debOutputPath}
-        """
+        // Paketi repo'ya ekle
+        sh "aptly repo add ${aptlyRepoName} ${debOutputPath}"
 
+        // Önceki publish edilmiş mimarileri al
+        def existingArchitectures = ""
+        DIST_CODENAMES.each { dist ->
+            def archs = sh(script: "aptly publish list | grep '^${dist}' | awk '{print \$NF}' | grep ${aptlyRepoName} || true", returnStdout: true).trim()
+            if (archs) {
+                existingArchitectures += archs + ","
+            }
+        }
+
+        // Mevcut mimarileri topla, tekrar eklemeden birleştir
+        existingArchitectures = existingArchitectures.tokenize(',').unique().findAll { it }.join(',')
+        if (existingArchitectures) {
+            existingArchitectures += ",${ARCH}"
+        } else {
+            existingArchitectures = ARCH
+        }
+        existingArchitectures = existingArchitectures.tokenize(',').unique().join(',')
+
+        // Her dist için publish işlemi (önce drop yapılıyor, sonra publish)
         DIST_CODENAMES.each { dist ->
             sh """
                 aptly publish drop ${dist} || true
@@ -50,7 +70,7 @@ def call(String OS, String ARCH, List<String> DIST_CODENAMES){
                 echo "$GPG_PASSPHRASE" | aptly publish repo \
                     -distribution=${dist} \
                     -passphrase="$GPG_PASSPHRASE" \
-                    -architectures=${ARCH} \
+                    -architectures=${existingArchitectures} \
                     ${aptlyRepoName}
             """
         }
