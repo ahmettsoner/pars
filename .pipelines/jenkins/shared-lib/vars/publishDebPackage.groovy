@@ -12,7 +12,6 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
     echo "Upload URL: ${uploadUrl}"
     
     withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${debOutputPath} \"${NEXUS_URL}/apt-${DIST_CODENAME}/${DEB_FILENAME}\""
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${debOutputPath} \"${uploadUrl}\""
     }
 
