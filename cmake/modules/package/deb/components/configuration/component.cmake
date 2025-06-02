@@ -1,6 +1,7 @@
 get_host_os(HOST_OS)
 set(CMAKE_SOURCE_DIR_PATH ${CMAKE_SOURCE_DIR})
 set(DEB_PACK_TYPE "binary")
+set(DEB_COMPRESSOR "gzip")
 set(COMMON_VARIABLES 
     PROJECT_NAME
     APP_NAME
