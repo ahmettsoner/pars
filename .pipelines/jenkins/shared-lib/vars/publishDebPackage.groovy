@@ -31,7 +31,14 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
     echo "Upload URL: ${uploadUrl}"
     
     withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${debOutputPath} \"${uploadUrl}\""
+        // sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${debOutputPath} \"${uploadUrl}\""
+        sh """
+            curl -v -u "${NEXUS_USER}:${NEXUS_PASS}" \\
+                -H "Content-Type: multipart/form-data" \\
+                --data-binary "@${debOutputPath}" \\
+                "${NEXUS_URL}/repository/apt-${DIST_CODENAME}/"
+        """
+
     }
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
