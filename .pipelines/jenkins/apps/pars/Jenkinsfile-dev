@@ -109,7 +109,30 @@ pipeline {
                                             agentInitOnce.initOnce(params.BRANCH)
                                             buildDEBPackage(OS, ARCH)
                                             copyDebAndUpdateChecksums(OS, ARCH)
-                                            signDebPackage(OS, ARCH, ["trixie","focal", "jammy", "noble", "mantic", "lunar", "bionic", "bookworm", "bullseye", "buster", "stretch"])
+                                            def DIST_CODENAMES = [
+                                                // Ubuntu LTS ve güncel sürümler
+                                                // "focal",      // 20.04 LTS
+                                                "jammy",      // 22.04 LTS
+                                                // "noble",      // 24.04 LTS
+                                                // "mantic",     // 23.10
+                                                // "lunar",      // 23.04 (EOL)
+                                                "bionic",     // 18.04 LTS (eski ama hâlâ yaygın)
+                                                
+                                                // // Debian stable/testing/oldstable
+                                                // "bookworm",   // Debian 12 (stable)
+                                                // "bullseye",   // Debian 11 (oldstable)
+                                                // "buster",     // Debian 10 (eski ama bazı sistemlerde hâlâ kullanılıyor)
+                                                
+                                                // // Diğer olası türev veya özel kullanımlar
+                                                // "stretch",    // Debian 9 (eski ama kurumsal sistemlerde hâlâ rastlanabilir)
+                                                // "trixie",     // Debian 13 (testing, yakında stable olacak)
+                                            ]
+
+                                            // signAptlyDebPackage(OS, ARCH, DIST_CODENAMES)
+
+                                            DIST_CODENAMES.each { dist ->
+                                                publishDebPackage(OS, ARCH, dist)
+                                            }
                                             agentInitOnce.cleanupOnce()
                                         }
                                     }
