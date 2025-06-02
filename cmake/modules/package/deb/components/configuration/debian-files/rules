@@ -1,5 +1,6 @@
-file(WRITE ${CONFIG_FILE_PATH} "#!/usr/bin/make -f\n\n%:\n")
+file(WRITE ${CONFIG_FILE_PATH} "#!/usr/bin/make -f\n\n")
 file(APPEND ${CONFIG_FILE_PATH} "export DEB_COMPRESSOR = ${DEB_COMPRESSOR}\n\n")
+file(APPEND ${CONFIG_FILE_PATH} "%:\n")
 file(APPEND ${CONFIG_FILE_PATH} "\tif [ -z \"\$(filter \$(MY_TARGETS), \$@)\" ]; then \\\n")
 file(APPEND ${CONFIG_FILE_PATH} "\t\tdh \$@; \\\n")
 file(APPEND ${CONFIG_FILE_PATH} "\telse \\\n")
