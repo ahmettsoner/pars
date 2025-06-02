@@ -8,8 +8,8 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@example.com', description: 'Git user email')
         string(name: 'GIT_USER_NAME', defaultValue: 'CI Bot', description: 'Git user name')
-        GITEA_URL = 'http://192.168.118.47:3030'
-        NEXUS_URL = 'http://192.168.118.47:8081/repository'
+        string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
+        string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int/repository', description: 'NEXUS_URL')
     }
     environment {
         APPNAME      = "pars"
