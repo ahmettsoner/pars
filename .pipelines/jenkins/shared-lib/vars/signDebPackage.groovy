@@ -52,14 +52,14 @@ EOF
             echo "Signing file: ${debOutputPath}"
             file "${debOutputPath}"
             export DEBSIG_GPG_EXECUTABLE=./gpg-wrapper
-            dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "${debOutputPath}"
+            // dpkg-sig --sign builder -k "$GPG_FINGERPRINT" "${debOutputPath}"
+            echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$GPG_FINGERPRINT" -- --pinentry-mode loopback "${debOutputPath}"
         """
 
 
-        // echo "$GPG_PASSPHRASE" | dpkg-sig --sign builder -k "$GPG_FINGERPRINT" -- --pinentry-mode loopback "${debOutputPath}"
         // sh "echo \"$GPG_PASSPHRASE\" | dpkg-sig --sign builder -k \"$GPG_FINGERPRINT\" \"$debOutputPath\""
 
         
-        sh 'rm -rf ~/.gnupg trust.txt fpr.txt gpg-wrapper'
+        sh 'rm -rf ~/.gnupg trust.txt fpr.txt pass.txt gpg-wrapper'
     }
 }
