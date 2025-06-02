@@ -17,5 +17,5 @@
 -   add apt-jammy hosted repository on nexus
 -   add apt-bionic hosted repository on nexus
 -   add yum hosted repository on nexus
-    -   Repodata Depth: 3
+    -   Repodata Depth: 0
 -
