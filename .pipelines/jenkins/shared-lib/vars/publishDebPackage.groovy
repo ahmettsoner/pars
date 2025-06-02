@@ -21,7 +21,7 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
         default:
             error "Unsupported architecture: ${debArch}"
     }
-    def DEB_FILENAME = "${APPNAME}_${VERSION}.${debArch}.deb"
+    def DEB_FILENAME = "${APPNAME}_${VERSION}_${debArch}.deb"
   
     // Nexus APT upload path:
     def firstChar = APPNAME[0].toLowerCase()
