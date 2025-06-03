@@ -139,12 +139,7 @@ def releaseRepo() {
         fileList.each { filePath ->
             def fileName = filePath.tokenize('/').last()
             echo "Uploading artifact: ${fileName}"
-            sh """
-                curl -v -u "${NEXUS_USER}:${NEXUS_PASS}" \\
-                    -H "Content-Type: multipart/form-data" \\
-                    --data-binary "@${filePath}" \\
-                    "${NEXUS_URL}/repository/raw/"
-            """
+            sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${NEXUS_URL}/repository/raw\""
         }
     }
 }
