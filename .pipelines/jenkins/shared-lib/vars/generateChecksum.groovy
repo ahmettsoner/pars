@@ -13,17 +13,8 @@ def WriteChecksumForBinary(OS, ARCH) {
 def WriteChecksumForArchive(OS, ARCH) {
     unstash "${OS}-${ARCH}-archive-artifacts"
 
-    def archiveFormat = ""
-    switch (OS) {
-        case "windows":
-            archiveFormat = "zip"
-            break
-        case "linux":
-            archiveFormat = "tar.gz"
-            break
-        default:
-            archiveFormat = "tar.gz"
-    }
+
+    def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
     def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
     def type = "Archive"

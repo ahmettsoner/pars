@@ -128,11 +128,17 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
 
                     def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
-                    def originalFileName = "${APPNAME}${ext}"
                     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
                     def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}${ext}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newBaseName}\" \"${remoteFilePath}\""
+
+
+                    def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
+                    def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
+                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.bin.${archiveFormat}"
+
+                    sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
 
 
                     if (OS == 'linux') {
