@@ -1,5 +1,7 @@
 @Library('shared-lib') _
 
+def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+def archList = ['x86_64', 'arm64']
 pipeline {
     agent none
 
@@ -18,8 +20,6 @@ pipeline {
         GITEA_OWNER = 'admin'
         GITEA_REPO = 'pars'
     }
-    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-    def archList = ['x86_64', 'arm64']
 
 
     stages {
