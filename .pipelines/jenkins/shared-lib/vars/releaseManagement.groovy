@@ -101,33 +101,24 @@ def releaseRepo(List<String> osList, List<String> archList) {
         def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/checksums.md"
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md\" \"${remoteChecksumFilePath}\""
 
-        // def releaseJson = """{
-        //     "tag_name": "${env.BUILD_VERSION}",
-        //     "target": "dev",
-        //     "name": "${env.BUILD_VERSION} Release",
-        //     "body": ${groovy.json.JsonOutput.toJson(changelog)},
-        //     "draft": false,
-        //     "prerelease": false
-        // }"""
-
-        // writeFile file: 'release.json', text: releaseJson
-
-        // sh """
-        //     curl -X POST "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases" \\
-        //         -H "Content-Type: application/json" \\
-        //         -H "Authorization: token $GITEA_TOKEN" \\
-        //         -d @release.json
-        // """
-
-        // def releaseInfo = sh(
-        //     script: """curl -s -H "Authorization: token $GITEA_TOKEN" \\
-        //         "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases/tags/${env.BUILD_VERSION}" """,
-        //     returnStdout: true
-        // ).trim()
-
-        // def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
-
-        def String[] fileList = new String[0] 
+        def DIST_CODENAMES = [
+            // Ubuntu LTS ve güncel sürümler
+            "focal",      // 20.04 LTS
+            "jammy",      // 22.04 LTS
+            // "noble",      // 24.04 LTS
+            // "mantic",     // 23.10
+            // "lunar",      // 23.04 (EOL)
+            "bionic",        // 18.04 LTS (eski ama hâlâ yaygın)
+            
+            // // Debian stable/testing/oldstable
+            // "bookworm",   // Debian 12 (stable)
+            // "bullseye",   // Debian 11 (oldstable)
+            // "buster",     // Debian 10 (eski ama bazı sistemlerde hâlâ kullanılıyor)
+            
+            // // Diğer olası türev veya özel kullanımlar
+            // "stretch",    // Debian 9 (eski ama kurumsal sistemlerde hâlâ rastlanabilir)
+            // "trixie",     // Debian 13 (testing, yakında stable olacak)
+        ]
         osList.each { OS ->
             archList.each { ARCH ->
                 if (!(OS == 'netbsd' && ARCH == 'arm64')) {
@@ -161,11 +152,17 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
+                        publishRpmPackage(OS, ARCH)
 
                         def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
                         def remoteDebFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
+
+                        
+                        DIST_CODENAMES.each { dist ->
+                            publishDebPackage(OS, ARCH, dist)
+                        }
                     }
                 }
             }
