@@ -139,13 +139,13 @@ def releaseRepo(List<String> osList, List<String> archList) {
                     def ext = utils.appExt(OS)
                     def archiveFormat = utils.archiveFormat(OS)
 
-                    def newBaseName = "${APPNAME}-${OS}-${platformArch}${ext}"
+                    def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
                     def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newBaseName}\" \"${remoteFilePath}\""
 
 
-                    def newArchiveBaseName = "${APPNAME}-${OS}-${platformArch}.bin.${archiveFormat}"
+                    def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
                     def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
@@ -156,13 +156,13 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         unstash "${OS}-${ARCH}-deb-package-artifacts"
 
 
-                        def newRPMBaseName = "${APPNAME}-${OS}-${platformArch}.rpm"
+                        def newRPMBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
                         def remoteRPMFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
 
-                        def newDebBaseName = "${APPNAME}-${OS}-${platformArch}.deb"
+                        def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
                         def remoteDebFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
