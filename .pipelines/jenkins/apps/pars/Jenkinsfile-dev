@@ -18,6 +18,9 @@ pipeline {
         GITEA_OWNER = 'admin'
         GITEA_REPO = 'pars'
     }
+    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+    def archList = ['x86_64', 'arm64']
+
 
     stages {
         stage("Prepare Workspace") {
@@ -177,9 +180,6 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64', 'arm64']
-
                     generateChecksumFile()
                                     
                     osList.each { OS ->
@@ -215,9 +215,6 @@ pipeline {
 
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-
-                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64', 'arm64']
 
                     releaseManagement.releaseRepo(osList, archList)
                 }

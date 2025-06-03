@@ -69,7 +69,7 @@ def release(List<String> osList, List<String> archList) {
     }
 }
 
-def releaseRepo() {
+def releaseRepo(List<String> osList, List<String> archList) {
     unstash "artifacts-checksums"
     def checksumTest = readFile(env.ARTIFACT_CHECKSUM_MD5_PATH).trim()
 
@@ -81,9 +81,6 @@ def releaseRepo() {
     def changelogText = readFile(env.CHANGELOG_PATH).trim()
 
     def changelog = "${changelogText}\n\n---\n\n${checksumTest}"
-
-    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-    def archList = ['x86_64']//, 'arm64']
 
     // downloads/pars/dev/v1.4.0-dev.3/windows/x86_64/pars.exe
     // downloads/pars/dev/latest/windows/x86_64/pars.exe
