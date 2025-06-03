@@ -92,6 +92,15 @@ def releaseRepo(List<String> osList, List<String> archList) {
         usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
         ]) {
 
+
+        def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/changelog.md"
+        writeFile file: "${env.ARTIFACT_PATH}/changelog.md", text: changelog
+        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/changelog.md" \"${remoteChangelogFilePath}\""
+
+
+        def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/checksums.md"
+        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md" \"${remoteChecksumFilePath}\""
+
         // def releaseJson = """{
         //     "tag_name": "${env.BUILD_VERSION}",
         //     "target": "dev",
@@ -136,7 +145,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
                     def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
                     def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.bin.${archiveFormat}"
+                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.${archiveFormat}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
 
@@ -148,15 +157,5 @@ def releaseRepo(List<String> osList, List<String> archList) {
                 }
             }
         }
-
-        // def fileList = sh(
-        //     script: "find ${env.ARTIFACT_PATH} -type f",
-        //     returnStdout: true
-        // ).trim().split('\n')
-        // fileList.each { filePath ->
-        //     def fileName = filePath.tokenize('/').last()
-        //     echo "Uploading artifact: ${fileName}"
-        //     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${NEXUS_URL}/repository/raw/\""
-        // }
     }
 }
