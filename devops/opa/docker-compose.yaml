@@ -1,0 +1,22 @@
+services:
+  opa:
+    image: openpolicyagent/opa:latest
+    volumes:
+      - ./opa/opa-config.yaml:/etc/opa/opa-config.yaml:ro
+    command:
+      - "run"
+      - "--server"
+      - "--addr=0.0.0.0:8181"
+      - "--config-file=/etc/opa/opa-config.yaml"
+    depends_on:
+      - nginx
+    ports:
+      - 8181:8181
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./bundle:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - 8090:80

@@ -1,0 +1,39 @@
+### Alice read erişimi (izinli)
+POST http://localhost:8181/v1/data/example/allow
+Accept: application/json
+Content-Type: application/json
+
+{
+  "input": {
+    "user": "alice",
+    "action": "read"
+  }
+}
+
+###
+
+### Bob write erişimi (izinli)
+POST http://localhost:8181/v1/data/example/allow
+Accept: application/json
+Content-Type: application/json
+
+{
+  "input": {
+    "user": "bob",
+    "action": "write"
+  }
+}
+
+###
+
+### Eve read erişimi (izin yok)
+POST http://localhost:8181/v1/data/example/allow
+Accept: application/json
+Content-Type: application/json
+
+{
+  "input": {
+    "user": "eve",
+    "action": "read"
+  }
+}

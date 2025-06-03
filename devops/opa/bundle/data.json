@@ -1,0 +1,7 @@
+{
+    "users": [
+        { "name": "alice", "role": "reader" },
+        { "name": "bob", "role": "writer" },
+        { "name": "eve", "role": "guest" }
+    ]
+}
