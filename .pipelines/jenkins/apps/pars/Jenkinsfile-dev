@@ -50,11 +50,11 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux'//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 excludes {
@@ -177,8 +177,8 @@ pipeline {
             steps {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
-                    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-                    def archList = ['x86_64']//, 'arm64']
+                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64', 'arm64']
 
                     generateChecksumFile()
                                     
@@ -216,7 +216,10 @@ pipeline {
                 script {
                     agentInitOnce.initOnce(params.BRANCH)
 
-                    releaseManagement.releaseRepo()
+                    def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+                    def archList = ['x86_64', 'arm64']
+
+                    releaseManagement.releaseRepo(osList, archList)
                 }
 
 

@@ -1,7 +1,4 @@
-def release() {
-
-    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-    def archList = ['x86_64']//, 'arm64']
+def release(List<String> osList, List<String> archList) {
 
     osList.each { OS ->
         archList.each { ARCH ->
