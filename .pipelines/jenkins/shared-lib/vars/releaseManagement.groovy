@@ -138,7 +138,7 @@ def releaseRepo() {
                     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
                     def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${ARCH}${ext}"
 
-                    sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${remoteFilePath}\""
+                    sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${newBaseName} \"${remoteFilePath}\""
 
 
                     if (OS == 'linux') {
