@@ -13,7 +13,7 @@ class Utils implements Serializable {
         return platform.toLowerCase() == 'windows' ? '.exe' : ''
     }
     String archiveFormat(String platform) {
-        return platform.toLowerCase() == 'zip' ? 'tar.gz' : ''
+        return platform.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
     }
 
     /**
