@@ -4,24 +4,9 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
     def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
     def VERSION = env.CURRENT_BASE_VERSION_RAW + (env.BUILD_VERSION_RELEASE_NUMBER ? "-${env.BUILD_VERSION_RELEASE_NUMBER}" : "")
 
-    def debArch = ""
-    switch (ARCH) {
-        case "x86":
-            debArch = "i386"
-            break
-        case "x86_64":
-            debArch = "amd64"
-            break
-        case "arm":
-            debArch = "armhf"
-            break
-        case "arm64":
-            debArch = "arm64"
-            break
-        default:
-            error "Unsupported architecture: ${debArch}"
-    }
-    def DEB_FILENAME = "${APPNAME}_${VERSION}_${debArch}.deb"
+    def utils = new com.parsdevkit.Utils(this)
+    def platformArch = utils.mapArch("debian", ARCH)
+    def DEB_FILENAME = "${APPNAME}_${VERSION}_${platformArch}.deb"
   
     // Nexus APT upload path:
     def firstChar = APPNAME[0].toLowerCase()

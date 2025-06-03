@@ -3,24 +3,9 @@ def call(String OS, String ARCH) {
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
     def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
 
-    def rpmArch = ""
-    switch (ARCH) {
-        case "x86":
-            rpmArch = "i386"
-            break
-        case "x86_64":
-            rpmArch = "x86_64"
-            break
-        case "arm":
-            rpmArch = "armv7hl"
-            break
-        case "arm64":
-            rpmArch = "aarch64"
-            break
-        default:
-            error "Unsupported architecture: ${ARCH}"
-    }
-    def RPM_FILENAME = "${APPNAME}-${CURRENT_BASE_VERSION_RAW}-${BUILD_VERSION_RELEASE_NUMBER}.${rpmArch}.rpm"
+    def utils = new com.parsdevkit.Utils(this)
+    def platformArch = utils.mapArch("rhel", ARCH)
+    def RPM_FILENAME = "${APPNAME}-${CURRENT_BASE_VERSION_RAW}-${BUILD_VERSION_RELEASE_NUMBER}.${platformArch}.rpm"
 
 
     withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {

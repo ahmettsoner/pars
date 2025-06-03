@@ -1,7 +1,7 @@
 @Library('shared-lib') _
 
-def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-def archList = ['x86_64']//, 'arm64']
+def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+def archList = ['x86_64', 'arm64']
 pipeline {
     agent none
 
@@ -29,16 +29,6 @@ pipeline {
                     agent { label 'linux' }
                     steps {
                         script {
-
-                            def utils = new com.mycompany.Utils(this)
-
-                            def env = "production"
-                            if (utils.isProductionEnv(env)) {
-                                utils.printInfo(">>>>> Deploying to production!")
-                            } else {
-                                utils.printInfo(">>>>> Not production")
-                            }
-
                             agentInitOnce.initOnce(params.BRANCH)
                         }
                         script {
@@ -63,11 +53,11 @@ pipeline {
                 axes {
                     axis {
                         name 'OS'
-                        values 'linux'//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 excludes {

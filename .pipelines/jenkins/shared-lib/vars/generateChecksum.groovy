@@ -1,7 +1,8 @@
 def WriteChecksumForBinary(OS, ARCH) {
     unstash "${OS}-${ARCH}-artifacts"
 
-    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
+    def utils = new com.parsdevkit.Utils(this)
+    def ext = utils.appExt(OS)
     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
     def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
     def type = "Binary"
@@ -14,7 +15,8 @@ def WriteChecksumForArchive(OS, ARCH) {
     unstash "${OS}-${ARCH}-archive-artifacts"
 
 
-    def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
+    def utils = new com.parsdevkit.Utils(this)
+    def archiveFormat = utils.archiveFormat(OS)
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
     def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
     def type = "Archive"

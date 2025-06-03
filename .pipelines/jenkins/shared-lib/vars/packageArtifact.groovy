@@ -1,10 +1,11 @@
 def call(String OS, String ARCH) {
-    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
-    def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
+    def utils = new com.parsdevkit.Utils(this)
+    def ext = utils.appExt(OS)
+    def archiveFormat = utils.archiveFormat(OS)
     
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
-    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+    def binaryOutputPath = "${binaryOutputPathBase}/${APPNAME}${ext}"
     
     if (!fileExists(binaryOutputPathBase)) {
         echo "Required files do not exist. Skipping archive step."

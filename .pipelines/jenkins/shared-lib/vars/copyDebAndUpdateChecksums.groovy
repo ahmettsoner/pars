@@ -1,27 +1,12 @@
 def call(String OS, String ARCH) {
-    def debArch = ""
-    switch (ARCH) {
-        case "x86":
-            debArch = "i386"
-            break
-        case "x86_64":
-            debArch = "amd64"
-            break
-        case "arm":
-            debArch = "armhf"
-            break
-        case "arm64":
-            debArch = "arm64"
-            break
-        default:
-            error "Unsupported architecture: ${ARCH}"
-    }
+    def utils = new com.parsdevkit.Utils(this)
+    def platformArch = utils.mapArch("debian", ARCH)
 
     def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb/${ARCH}"
     def debOutputBase = "${packageOutputBase}/output"
-    def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${debArch}.deb"
+    def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${platformArch}.deb"
     def checksumFilePath = "${debOutputBase}/checksum.txt"
     // Dosya var mı kontrolü
     if (!fileExists(debOutputPath)) {

@@ -3,8 +3,9 @@ def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
 
-    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
-    def binaryOutputPath = "${binaryOutputPathBase}/pars${ext}"
+    def utils = new com.parsdevkit.Utils(this)
+    def ext = utils.appExt(OS)
+    def binaryOutputPath = "${binaryOutputPathBase}/${APPNAME}${ext}"
 
     def pckgPath = "usr/bin"
     def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb/${ARCH}"

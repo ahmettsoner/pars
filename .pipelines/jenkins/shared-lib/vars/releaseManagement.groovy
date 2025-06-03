@@ -134,39 +134,19 @@ def releaseRepo(List<String> osList, List<String> archList) {
                     unstash "${OS}-${ARCH}-artifacts"
                     unstash "${OS}-${ARCH}-archive-artifacts"
 
-                    // def appArch = ""
-                    // switch (ARCH) {
-                    //     case "x86":
-                    //         if (OS == "windows"){
-                    //             appArch = "i386"
-                    //         }else if (OS == "linux"){
-                    //             appArch = "i386"
-                    //         }
-                    //         break
-                    //     case "x86_64":
-                    //         appArch = "x86_64"
-                    //         break
-                    //     case "arm":
-                    //         appArch = "armv7hl"
-                    //         break
-                    //     case "arm64":
-                    //         appArch = "aarch64"
-                    //         break
-                    //     default:
-                    //         error "Unsupported architecture: ${ARCH}"
-                    // }
+                    def utils = new com.parsdevkit.Utils(this)
+                    def platformArch = utils.mapArch("rhel", ARCH)
+                    def ext = utils.appExt(OS)
+                    def archiveFormat = utils.archiveFormat(OS)
 
-
-                    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
-                    def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
-                    def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}${ext}"
+                    def newBaseName = "${APPNAME}-${OS}-${platformArch}${ext}"
+                    def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newBaseName}\" \"${remoteFilePath}\""
 
 
-                    def archiveFormat = OS.toLowerCase() == 'windows' ? 'zip' : 'tar.gz'
-                    def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.${archiveFormat}"
+                    def newArchiveBaseName = "${APPNAME}-${OS}-${platformArch}.bin.${archiveFormat}"
+                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
 
@@ -176,14 +156,14 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         unstash "${OS}-${ARCH}-deb-package-artifacts"
 
 
-                        def newRPMBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-                        def remoteRPMFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.rpm"
+                        def newRPMBaseName = "${APPNAME}-${OS}-${platformArch}.rpm"
+                        def remoteRPMFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
 
-                        def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-                        def remoteDebFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${APPNAME}.deb"
+                        def newDebBaseName = "${APPNAME}-${OS}-${platformArch}.deb"
+                        def remoteDebFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
                     }

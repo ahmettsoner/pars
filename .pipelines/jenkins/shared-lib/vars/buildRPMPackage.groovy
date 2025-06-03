@@ -1,5 +1,6 @@
 def call(String OS, String ARCH) {
-    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
+    def utils = new com.parsdevkit.Utils(this)
+    def ext = utils.appExt(OS)
 
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
