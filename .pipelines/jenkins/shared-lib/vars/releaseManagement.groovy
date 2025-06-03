@@ -73,23 +73,8 @@ def release() {
 }
 
 def releaseRepo() {
-
-    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
-    def archList = ['x86_64']//, 'arm64']
-
-    osList.each { OS ->
-        archList.each { ARCH ->
-            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
-                unstash "${OS}-${ARCH}-artifacts"
-                unstash "${OS}-${ARCH}-archive-artifacts"
-                if (OS == 'linux') {
-                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                    unstash "${OS}-${ARCH}-deb-package-artifacts"
-                }
-            }
-        }
-    }
     unstash "artifacts-checksums"
+    def checksumTest = readFile(env.ARTIFACT_CHECKSUM_MD5_PATH).trim()
 
     sh(
         script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --merge-all --output ${env.CHANGELOG_PATH}",
@@ -97,9 +82,16 @@ def releaseRepo() {
     ).trim()
 
     def changelogText = readFile(env.CHANGELOG_PATH).trim()
-    def checksumTest = readFile(env.ARTIFACT_CHECKSUM_MD5_PATH).trim()
 
     def changelog = "${changelogText}\n\n---\n\n${checksumTest}"
+
+    def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+    def archList = ['x86_64']//, 'arm64']
+
+    // downloads/pars/dev/v1.4.0-dev.3/windows/x86_64/pars.exe
+    // downloads/pars/dev/latest/windows/x86_64/pars.exe
+    // downloads/pars/stable/v1.3.0/linux/amd64/pars
+    // downloads/pars/test/v1.4.0-rc1/darwin/arm64/pars
 
     withCredentials([
         string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN'),
@@ -132,14 +124,39 @@ def releaseRepo() {
 
         // def releaseId = new groovy.json.JsonSlurper().parseText(releaseInfo).id
 
-        def fileList = sh(
-            script: "find ${env.ARTIFACT_PATH} -type f",
-            returnStdout: true
-        ).trim().split('\n')
-        fileList.each { filePath ->
-            def fileName = filePath.tokenize('/').last()
-            echo "Uploading artifact: ${fileName}"
-            sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${NEXUS_URL}/repository/raw/\""
+        def String[] fileList = new String[0] 
+        osList.each { OS ->
+            archList.each { ARCH ->
+                if (!(OS == 'netbsd' && ARCH == 'arm64')) {
+                    unstash "${OS}-${ARCH}-artifacts"
+                    unstash "${OS}-${ARCH}-archive-artifacts"
+
+
+
+                    def ext = OS.toLowerCase() == 'windows' ? '.exe' : ''
+                    def originalFileName = "${APPNAME}${ext}"
+                    def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
+                    def remoteFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/${OS}/${ARCH}/${ARCH}${ext}"
+
+                    sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${remoteFilePath}\""
+
+
+                    if (OS == 'linux') {
+                        unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                        unstash "${OS}-${ARCH}-deb-package-artifacts"
+                    }
+                }
+            }
         }
+
+        // def fileList = sh(
+        //     script: "find ${env.ARTIFACT_PATH} -type f",
+        //     returnStdout: true
+        // ).trim().split('\n')
+        // fileList.each { filePath ->
+        //     def fileName = filePath.tokenize('/').last()
+        //     echo "Uploading artifact: ${fileName}"
+        //     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file ${filePath} \"${NEXUS_URL}/repository/raw/\""
+        // }
     }
 }

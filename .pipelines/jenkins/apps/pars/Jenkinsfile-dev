@@ -118,7 +118,7 @@ pipeline {
                                                 // "noble",      // 24.04 LTS
                                                 // "mantic",     // 23.10
                                                 // "lunar",      // 23.04 (EOL)
-                                                "bionic",     // 18.04 LTS (eski ama hâlâ yaygın)
+                                                "bionic",        // 18.04 LTS (eski ama hâlâ yaygın)
                                                 
                                                 // // Debian stable/testing/oldstable
                                                 // "bookworm",   // Debian 12 (stable)
