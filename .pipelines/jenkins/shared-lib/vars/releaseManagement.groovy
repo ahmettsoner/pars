@@ -95,11 +95,11 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
         def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/changelog.md"
         writeFile file: "${env.ARTIFACT_PATH}/changelog.md", text: changelog
-        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/changelog.md" \"${remoteChangelogFilePath}\""
+        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/changelog.md\" \"${remoteChangelogFilePath}\""
 
 
         def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw/downloads/${APPNAME}/${CHANNEL}/${env.BUILD_VERSION}/checksums.md"
-        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md" \"${remoteChecksumFilePath}\""
+        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md\" \"${remoteChecksumFilePath}\""
 
         // def releaseJson = """{
         //     "tag_name": "${env.BUILD_VERSION}",
