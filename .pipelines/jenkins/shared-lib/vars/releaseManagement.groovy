@@ -102,7 +102,7 @@ def releaseRepo() {
     def changelog = "${changelogText}\n\n---\n\n${checksumTest}"
 
     withCredentials([
-        string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')
+        string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN'),
         usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
         ]) {
 
