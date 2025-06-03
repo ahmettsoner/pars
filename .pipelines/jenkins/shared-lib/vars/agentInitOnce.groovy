@@ -2,11 +2,14 @@ def initOnce(String BRANCH) {
   def marker = "${env.WORKSPACE}/.initdone"
   if (!fileExists(marker)) {
     echo "First time init on this agent"
-      setupAgent.call(BRANCH)
+    // Buraya init adımlarını ekleyin, örnek:
+    // setupAgent.call(BRANCH)
+    sh 'echo "Installing dependencies..."'
     writeFile file: marker, text: 'done'
   } else {
     echo "Init already done, skipping"
   }
+  setupAgent.call(BRANCH)
 }
 
 def cleanupOnce() {
