@@ -15,8 +15,7 @@ RUN apt-get update && apt-get install -y \
 # Node.js 22 kurulumu
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
-    npm install -g npm && \
-    npm install -g git-release-manager@0.0.13
+    npm install -g npm
 
 # Go kurulumu
 RUN wget https://go.dev/dl/go1.22.0.linux-amd64.tar.gz && \
@@ -42,6 +41,8 @@ RUN apt install -y apt-utils
 RUN apt install -y gnupg-agent
 RUN apt install -y debsigs
 RUN apt install -y aptly
+
+RUN npm install -g git-release-manager@0.0.14
 
 # Varsayılan komut (argümanla override edilebilir)
 CMD ["java", "-jar", "/workspace/agent.jar"]
