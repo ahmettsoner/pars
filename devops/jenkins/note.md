@@ -21,6 +21,24 @@ System.setProperty("hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT", "true")
 
 ```
 
+```groovy
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/dev']],
+                    userRemoteConfigs: [[url: 'ssh://git@192.168.118.47:2222/admin/pars.git',
+                    credentialsId: 'gitea-admin-ssh-key']]])
+            }
+
+        }
+    }
+}
+
+```
+
 Windows Jenkins Agent
 
 ```

@@ -1,0 +1,208 @@
+@Library('shared-lib') _
+
+def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+def archList = ['x86_64']//, 'arm64']
+pipeline {
+    agent none
+
+    parameters {
+        string(name: 'CHANNEL', defaultValue: 'dev', description: 'Release channel (e.g., dev, prod)')
+        string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
+        string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@parsdevkit.net', description: 'Git user email')
+        string(name: 'GIT_USER_NAME', defaultValue: 'ci-bot', description: 'Git user name')
+        // string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
+        // string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int', description: 'NEXUS_URL')
+        string(name: 'GITEA_URL', defaultValue: 'http://192.168.118.47:3030', description: 'GITEA_URL')
+        string(name: 'NEXUS_URL', defaultValue: 'http://192.168.118.47:8081', description: 'NEXUS_URL')
+    }
+    environment {
+        APPNAME      = "pars"
+        GITEA_OWNER = 'admin'
+        GITEA_REPO = 'pars'
+    }
+
+
+    stages {
+        stage("Prepare Workspace") {
+            parallel {
+                stage("Common Operations") {
+                    agent { label 'linux' }
+                    steps {
+                        script {
+                            agentInitOnce.initOnce(params.BRANCH)
+                        }
+                        script {
+                            generateDocs()
+                        }
+                    }
+                    post {
+                        always {
+                            script {
+                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        stage('Build Binaries') {
+            matrix {
+                axes {
+                    axis {
+                        name 'OS'
+                        values 'linux'//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                    }
+                    axis {
+                        name 'ARCH'
+                        values 'x86_64'//, 'arm64'
+                    }
+                }
+                excludes {
+                    exclude {
+                        axis {
+                            name 'OS'
+                            values 'netbsd'
+                        }
+                        axis {
+                            name 'ARCH'
+                            values 'arm64'
+                        }
+                    }
+                }
+                stages {
+                    stage("Build Binary") {
+                        agent { label "linux" }
+                        steps {
+                            script {
+                                agentInitOnce.initOnce(params.BRANCH)
+                                buildBinary(OS, ARCH)
+                                archiveBinary(OS, ARCH)
+                                packageArtifact(OS, ARCH)
+                            }
+                        }
+                        post {
+                            always {
+                                script {
+                                    agentInitOnce.cleanupOnce()
+                                }
+                            }
+                        }
+                    }
+                    stage("Package for Linux") {
+                        when {
+                            expression { return OS == 'linux' }
+                        }
+                        steps {
+                            script {
+                                parallel(
+                                    "RPM Package": {
+                                        node('rhel') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildRPMPackage(OS, ARCH)
+                                            copyRpmAndUpdateChecksums(OS, ARCH)
+                                            signRpmPackage(OS, ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    },
+                                    "DEB Package": {
+                                        node('debian') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildDEBPackage(OS, ARCH)
+                                            copyDebAndUpdateChecksums(OS, ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    stage("Upload artifacts") {
+                        agent { label 'linux' }
+                        steps {
+                            script {
+                                agentInitOnce.initOnce(params.BRANCH)
+                            }
+
+                            unstash "${OS}-${ARCH}-artifacts"
+                            unstash "${OS}-${ARCH}-archive-artifacts"
+
+                            script {
+                                if (OS == 'linux') {
+                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
+                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                }
+                            }
+                            archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                        }
+                        post {
+                            always {
+                                script {
+                                    agentInitOnce.cleanupOnce()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Generate Checksums File') {
+            agent { label 'linux' }
+            steps {
+                script {
+                    agentInitOnce.initOnce(params.BRANCH)
+                    generateChecksumFile()
+                                    
+                    osList.each { OS ->
+                        archList.each { ARCH ->
+                            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
+                                generateChecksum.WriteChecksumForBinary(OS, ARCH)
+                                generateChecksum.WriteChecksumForArchive(OS, ARCH)
+
+                                if (OS == 'linux'){
+                                    generateChecksum.WriteChecksumForDEBPackage(ARCH)
+                                    generateChecksum.WriteChecksumForRPMPackage(ARCH)
+                                }
+                            }
+                        }
+                    }
+                    
+                    stash includes: "${env.ARTIFACT_CHECKSUM_MD5_PATH}", name: "artifacts-checksums"
+                    archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
+                }
+            }
+            post {
+                always {
+                    script {
+                        agentInitOnce.cleanupOnce()
+                    }
+                }
+            }
+        }
+
+        stage('Create Gitea Release') {
+            agent { label 'linux' }
+            steps {
+
+                script {
+                    agentInitOnce.initOnce(params.BRANCH)
+
+                    releaseManagement.releaseRepo(osList, archList)
+                }
+
+
+
+            }
+            post {
+                always {
+                    script {
+                        agentInitOnce.cleanupOnce()
+                    }
+                }
+            }
+        }
+    }
+}
