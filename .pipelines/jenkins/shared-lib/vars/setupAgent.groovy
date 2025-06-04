@@ -5,7 +5,7 @@ def call(String BRANCH) {
   sh """
     git config --global user.email "${GIT_USER_EMAIL}"
     git config --global user.name "${GIT_USER_NAME}"
-    git fetch --all --tags
+    git fetch --prune origin "+refs/tags/*:refs/tags/*"
   """
 
   def branchExists = sh(script: "git ls-remote --heads origin ${BRANCH}", returnStatus: true) == 0
@@ -15,9 +15,6 @@ def call(String BRANCH) {
   } else {
       sh "git checkout -b dev"
   }
-
-  // Artık BRANCH güncel, merged tag'leri görmek mümkün
-  sh "git tag --merged ${BRANCH}"
 
 
   def currentBaseVersion = sh(
@@ -30,6 +27,10 @@ def call(String BRANCH) {
     returnStdout: true
   ).trim()
 
+  sh """
+    git tag ${tagName}
+    git push origin ${tagName}
+  """
 
   env.BUILD_VERSION = tagName
   def suffix = tagName.replaceFirst("^${currentBaseVersion}-?", "")
