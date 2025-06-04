@@ -31,7 +31,7 @@ def call(String BRANCH) {
       sh "git tag ${tagName} -m \"release ${tagName}\""
       withCredentials([usernamePassword(credentialsId: 'gitea-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
           sh """
-              git remote set-url origin http://${GIT_USER}:${GIT_PASS}@${GITEA_URL}/admin/pars.git
+              git remote set-url origin http://${GIT_USER}:${GIT_PASS}@192.168.118.47:3030/admin/pars.git
               git push origin v1.0.0-dev.1
           """
       }
