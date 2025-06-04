@@ -27,10 +27,10 @@ def call(String BRANCH) {
     returnStdout: true
   ).trim()
 
-  sh """
-    git tag ${tagName}
-    git push origin ${tagName}
-  """
+  sh "git tag ${tagName} -m \"release ${tagName}\""
+  sshagent(['	gitea-admin-ssh-key']) {
+    sh "git push origin ${tagName}"
+  }
 
   env.BUILD_VERSION = tagName
   def suffix = tagName.replaceFirst("^${currentBaseVersion}-?", "")

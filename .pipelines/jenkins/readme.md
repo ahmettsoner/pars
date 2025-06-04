@@ -19,3 +19,7 @@
 -   add yum hosted repository on nexus
     -   Repodata Depth: 0
 -
+
+`ssh-keygen -t rsa -b 4096 -C "admin@local.git"`
+`passphrase`: `33KX4gaYW7kd`
+`git remote set-url local ssh://admin@192.168.118.47:2222/admin/pars.git`
