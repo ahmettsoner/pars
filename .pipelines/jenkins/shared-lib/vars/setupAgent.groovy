@@ -26,7 +26,7 @@ def call(String BRANCH) {
   ).trim()
 
   def tagName = sh(
-    script: 'grm flow phase "${CHANNEL}" --current',
+    script: 'grm flow phase "${CHANNEL}" --next',
     returnStdout: true
   ).trim()
 
