@@ -5,7 +5,7 @@ def call(String BRANCH) {
   sh """
     git config --global user.email "${GIT_USER_EMAIL}"
     git config --global user.name "${GIT_USER_NAME}"
-    git fetch --prune origin "+refs/tags/*:refs/tags/*"
+    git fetch --prune origin "+refs/tags/*:refs/tags/*" || echo "No tags to fetch or fetch failed, skipping"
   """
 
   def branchExists = sh(script: "git ls-remote --heads origin ${BRANCH}", returnStatus: true) == 0
