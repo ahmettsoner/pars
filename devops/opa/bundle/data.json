@@ -1,7 +1,12 @@
 {
-    "users": [
-        { "name": "alice", "role": "reader" },
-        { "name": "bob", "role": "writer" },
-        { "name": "eve", "role": "guest" }
-    ]
+    "authz": {
+        "roles": {
+            "admin": {
+                "permissions": ["view", "write", "delete"]
+            },
+            "user": {
+                "permissions": ["view"]
+            }
+        }
+    }
 }

@@ -3,7 +3,7 @@ services:
     url: http://192.168.118.47:8090
 
 bundles:
-  example:
+  main:
     service: bundle-service
     resource: /bundle.tar.gz
     polling:
