@@ -17,28 +17,30 @@ def call(String BRANCH) {
   }
 
 
-  def currentBaseVersion = sh(
-    script: 'grm flow phase "${CHANNEL}" --next --print=base',
-    returnStdout: true
-  ).trim()
+    if (!env.BUILD_VERSION) {
+      def currentBaseVersion = sh(
+        script: 'grm flow phase "${CHANNEL}" --next --print=base',
+        returnStdout: true
+      ).trim()
 
-  def tagName = sh(
-    script: 'grm flow phase "${CHANNEL}" --next',
-    returnStdout: true
-  ).trim()
+      def tagName = sh(
+        script: 'grm flow phase "${CHANNEL}" --next',
+        returnStdout: true
+      ).trim()
 
-  sh "git tag ${tagName} -m \"release ${tagName}\""
-  withCredentials([usernamePassword(credentialsId: 'gitea-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-      sh """
-          git remote set-url origin http://${GIT_USER}:${GIT_PASS}@192.168.118.47:3030/admin/pars.git
-          git push origin v1.0.0-dev.1
-      """
-  }
+      sh "git tag ${tagName} -m \"release ${tagName}\""
+      withCredentials([usernamePassword(credentialsId: 'gitea-creds', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+          sh """
+              git remote set-url origin http://${GIT_USER}:${GIT_PASS}@${GITEA_URL}/admin/pars.git
+              git push origin v1.0.0-dev.1
+          """
+      }
+      env.BUILD_VERSION = tagName
+      env.CURRENT_BASE_VERSION = currentBaseVersion
+    }
 
-  env.BUILD_VERSION = tagName
-  def suffix = tagName.replaceFirst("^${currentBaseVersion}-?", "")
+  def suffix = BUILD_VERSION.replaceFirst("^${env.CURRENT_BASE_VERSION}-?", "")
   env.BUILD_VERSION_RELEASE_NUMBER = suffix
-  env.CURRENT_BASE_VERSION = currentBaseVersion
   env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
   env.HTML_OUTPUT_DIR = "temp/${env.BUILD_VERSION}/html_docs"
   env.DIST_PATH = "dist"
