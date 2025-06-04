@@ -4,7 +4,7 @@ def call(String OS, String ARCH) {
     def archiveFormat = utils.archiveFormat(OS)
     
     unstash "${OS}-${ARCH}-dist-bin"
-    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "dist/${env.CURRENT_VERSION}/${OS}/bin/${ARCH}"
     def binaryOutputPath = "${binaryOutputPathBase}/${APPNAME}${ext}"
     
     if (!fileExists(binaryOutputPathBase)) {
@@ -15,7 +15,7 @@ def call(String OS, String ARCH) {
     echo "Binary and Checksum files are present."
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-    def binaryTempPath = "dist/temp/${env.BUILD_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
+    def binaryTempPath = "dist/temp/${env.CURRENT_VERSION}/${APPNAME}-${OS}-${ARCH}-${archiveFormat}"
 
 
     unstash "html-outputdir"

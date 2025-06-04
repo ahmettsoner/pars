@@ -2,9 +2,9 @@ def call(String OS, String ARCH) {
     def utils = new com.parsdevkit.Utils(this)
     def platformArch = utils.mapArch("debian", ARCH)
 
-    def plainVersion = env.BUILD_VERSION.replaceFirst(/^v/, "")
+    def plainVersion = env.CURRENT_VERSION.replaceFirst(/^v/, "")
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/deb/${ARCH}"
+    def packageOutputBase = "dist/${env.CURRENT_VERSION}/${OS}/pkg/deb/${ARCH}"
     def debOutputBase = "${packageOutputBase}/output"
     def debOutputPath = "${debOutputBase}/${APPNAME}_${plainVersion}_${platformArch}.deb"
     def checksumFilePath = "${debOutputBase}/checksum.txt"

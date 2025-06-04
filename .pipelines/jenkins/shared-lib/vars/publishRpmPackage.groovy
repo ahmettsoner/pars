@@ -5,7 +5,7 @@ def call(String OS, String ARCH) {
 
     def utils = new com.parsdevkit.Utils(this)
     def platformArch = utils.mapArch("rhel", ARCH)
-    def RPM_FILENAME = "${APPNAME}-${CURRENT_BASE_VERSION_RAW}-${BUILD_VERSION_RELEASE_NUMBER}.${platformArch}.rpm"
+    def RPM_FILENAME = "${APPNAME}-${CURRENT_BASE_VERSION_RAW}-${CURRENT_VERSION_RELEASE_NUMBER}.${platformArch}.rpm"
 
 
     withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {

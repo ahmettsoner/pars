@@ -1,6 +1,6 @@
 def call() {
-    if (!env.BUILD_VERSION) {
-        error "BUILD_VERSION is empty or null"
+    if (!env.CURRENT_VERSION) {
+        error "CURRENT_VERSION is empty or null"
     }
 
 

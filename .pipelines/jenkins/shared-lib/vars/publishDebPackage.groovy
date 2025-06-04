@@ -2,7 +2,7 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
     unstash "${OS}-${ARCH}-deb-package-artifacts"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
-    def VERSION = env.CURRENT_BASE_VERSION_RAW + (env.BUILD_VERSION_RELEASE_NUMBER ? "-${env.BUILD_VERSION_RELEASE_NUMBER}" : "")
+    def VERSION = env.CURRENT_BASE_VERSION_RAW + (env.CURRENT_VERSION_RELEASE_NUMBER ? "-${env.CURRENT_VERSION_RELEASE_NUMBER}" : "")
 
     def utils = new com.parsdevkit.Utils(this)
     def platformArch = utils.mapArch("debian", ARCH)

@@ -15,7 +15,7 @@ def release(List<String> osList, List<String> archList) {
     unstash "artifacts-checksums"
 
     sh(
-        script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.BUILD_VERSION --environment $env.CHANNEL --merge-all --output ${env.CHANGELOG_PATH}",
+        script: "grm changelog generate --from $env.CURRENT_BASE_VERSION-dev.1 --to $env.CURRENT_VERSION --environment $env.CHANNEL --merge-all --output ${env.CHANGELOG_PATH}",
         returnStdout: true
     ).trim()
 
@@ -27,9 +27,9 @@ def release(List<String> osList, List<String> archList) {
     withCredentials([string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN')]) {
 
         def releaseJson = """{
-            "tag_name": "${env.BUILD_VERSION}",
+            "tag_name": "${env.CURRENT_VERSION}",
             "target": "dev",
-            "name": "${env.BUILD_VERSION} Release",
+            "name": "${env.CURRENT_VERSION} Release",
             "body": ${groovy.json.JsonOutput.toJson(changelog)},
             "draft": false,
             "prerelease": false
@@ -46,7 +46,7 @@ def release(List<String> osList, List<String> archList) {
 
         def releaseInfo = sh(
             script: """curl -s -H "Authorization: token $GITEA_TOKEN" \\
-                "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases/tags/${env.BUILD_VERSION}" """,
+                "$GITEA_URL/api/v1/repos/$GITEA_OWNER/$GITEA_REPO/releases/tags/${env.CURRENT_VERSION}" """,
             returnStdout: true
         ).trim()
 

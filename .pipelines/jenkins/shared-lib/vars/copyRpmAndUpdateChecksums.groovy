@@ -1,11 +1,11 @@
 def call(String OS, String ARCH) {
-    def artifactPath = "dist/artifacts/${env.BUILD_VERSION}"
+    def artifactPath = "dist/artifacts/${env.CURRENT_VERSION}"
 
     def utils = new com.parsdevkit.Utils(this)
     def platformArch = utils.mapArch("rhel", ARCH)
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
+    def packageOutputBase = "dist/${env.CURRENT_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def rpmOutputBase = "${packageOutputBase}/RPMS/${platformArch}"
     def checksumFilePath = "${rpmOutputBase}/checksum.txt"
 

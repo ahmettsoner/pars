@@ -6,7 +6,7 @@ def call(String OS, String ARCH) {
     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
 
     unstash "${OS}-${ARCH}-dist-bin"
-    def binaryOutputPathBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
+    def binaryOutputPathBase = "dist/${env.CURRENT_VERSION}/${OS}/bin/${ARCH}"
 
     // Hedef klasörü oluştur
     sh "mkdir -p ${env.ARTIFACT_PATH}"

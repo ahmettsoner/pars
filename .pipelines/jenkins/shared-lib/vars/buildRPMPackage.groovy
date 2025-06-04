@@ -3,11 +3,11 @@ def call(String OS, String ARCH) {
     def ext = utils.appExt(OS)
 
     unstash "${OS}-${ARCH}-dist-bin"
-    def binaryOutputBase = "dist/${env.BUILD_VERSION}/${OS}/bin/${ARCH}"
+    def binaryOutputBase = "dist/${env.CURRENT_VERSION}/${OS}/bin/${ARCH}"
     def originalFileName = "${APPNAME}${ext}"
     def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.tar.gz"
 
-    def packageOutputBase = "dist/${env.BUILD_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
+    def packageOutputBase = "dist/${env.CURRENT_VERSION}/${OS}/pkg/rpm/${ARCH}/${APPNAME}"
     def packageSourceDir = "${packageOutputBase}/SOURCES"
     def tarPath = "${binaryOutputBase}/${newBaseName}"
 
@@ -25,8 +25,8 @@ def call(String OS, String ARCH) {
     // Build RPM package
     sh """
         export GO111MODULE=on
-        make build.rpm.package.${ARCH}.configuration VERSION=${env.BUILD_VERSION}
-        make build.rpm.package.${ARCH}.package VERSION=${env.BUILD_VERSION}
+        make build.rpm.package.${ARCH}.configuration VERSION=${env.CURRENT_VERSION}
+        make build.rpm.package.${ARCH}.package VERSION=${env.CURRENT_VERSION}
     """
 }
 
