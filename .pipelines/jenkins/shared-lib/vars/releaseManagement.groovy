@@ -22,12 +22,12 @@ def releaseRepo(List<String> osList, List<String> archList) {
         ]) {
 
 
-        def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/changelog.md"
+        def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/changelog.md"
         writeFile file: "${env.ARTIFACT_PATH}/changelog.md", text: changelog
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/changelog.md\" \"${remoteChangelogFilePath}\""
 
 
-        def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/checksums.md"
+        def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/checksums.md"
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md\" \"${remoteChecksumFilePath}\""
 
         def DIST_CODENAMES = [
@@ -60,13 +60,13 @@ def releaseRepo(List<String> osList, List<String> archList) {
                     def archiveFormat = utils.archiveFormat(OS)
 
                     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
-                    def remoteFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
+                    def remoteFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newBaseName}\" \"${remoteFilePath}\""
 
 
                     def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
+                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
 
@@ -77,14 +77,14 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
 
                         def newRPMBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-                        def remoteRPMFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
+                        def remoteRPMFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
                         publishRpmPackage(OS, ARCH)
 
                         def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-                        def remoteDebFilePath = "${NEXUS_URL}/repository/raw/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
+                        def remoteDebFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
 

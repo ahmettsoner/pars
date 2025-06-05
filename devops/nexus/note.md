@@ -1,4 +1,9 @@
 ```
+mkdir -p ./devops/nexus/data
+sudo chown -R 200:200 ./devops/nexus/data
+```
+
+```
 docker compose -f ./devops/nexus/docker-compose.yaml  up -d
 ```
 

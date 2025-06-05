@@ -6,9 +6,6 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - nexus-data:/nexus-data
+      - ./data:/nexus-data
     environment:
       - INSTALL4J_ADD_VM_PARAMS=-Xms512m -Xmx2048m -XX:MaxDirectMemorySize=2g
-
-volumes:
-  nexus-data:

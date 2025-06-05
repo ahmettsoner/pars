@@ -21,7 +21,7 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
             curl -v -u "${NEXUS_USER}:${NEXUS_PASS}" \\
                 -H "Content-Type: multipart/form-data" \\
                 --data-binary "@${debOutputPath}" \\
-                "${NEXUS_URL}/repository/apt-${DIST_CODENAME}/"
+                "${NEXUS_URL}/repository/apt-dev-${DIST_CODENAME}/"
         """
     }
 
