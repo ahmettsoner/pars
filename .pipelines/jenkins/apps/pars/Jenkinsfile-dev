@@ -10,10 +10,10 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@parsdevkit.net', description: 'Git user email')
         string(name: 'GIT_USER_NAME', defaultValue: 'ci-bot', description: 'Git user name')
-        // string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
-        // string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int', description: 'NEXUS_URL')
-        string(name: 'GITEA_URL', defaultValue: 'http://192.168.118.47:3030', description: 'GITEA_URL')
-        string(name: 'NEXUS_URL', defaultValue: 'http://192.168.118.47:8081', description: 'NEXUS_URL')
+        string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
+        string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int', description: 'NEXUS_URL')
+        // string(name: 'GITEA_URL', defaultValue: 'http://192.168.118.47:3030', description: 'GITEA_URL')
+        // string(name: 'NEXUS_URL', defaultValue: 'http://192.168.118.47:8081', description: 'NEXUS_URL')
     }
     environment {
         APPNAME      = "pars"
