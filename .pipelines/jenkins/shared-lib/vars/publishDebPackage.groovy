@@ -23,7 +23,6 @@ def call(String OS, String ARCH, String DIST_CODENAME) {
                 --data-binary "@${debOutputPath}" \\
                 "${NEXUS_URL}/repository/apt-${DIST_CODENAME}/"
         """
-
     }
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-deb-package-artifacts"
