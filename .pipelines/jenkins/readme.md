@@ -32,7 +32,7 @@
 -   **artifact:** packages, binaries, archives, installers (dosya türü genel grubu)
 -   **type:** apt, yum, raw, installer, archive, pkg, msi, dmg vb alt kategoriler
 -   **project:** uygulama/proje adı, örn: pars
--   **distribution:** dağıtım türü veya versiyonu (apt için jammy, focal, yum için centos7, almalinux8 vb)
+-   **distribution:** dağıtım türü veya versiyonu (apt için jammy, focal, yum için centos7, almalinux8 vb) veya all
 -   **env:** dev, test, staging, prod gibi ortamlar
 -   **version:** versiyon numarası veya `latest`
 -   **arch:** amd64, x86_64, arm64, armv7 vb mimari
@@ -40,6 +40,8 @@
 -   **ext:** dosya uzantısı (rpm, deb, tar.gz, run, exe vb)
 
 yum
+
+`/releases/{platform}/{artifact}/{type}/{project}/{distribution}/{env}`
 
 -   proxy: /releases/linux/packages/yum/pars/dev/version|latest/arch/app.rpm
     -   /releases/linux/packages/yum/pars/dev/latest/x86_64/app.rpm
@@ -57,3 +59,15 @@ binary/executables
 -   proxy: /releases/linux/binaries/package/pars/dev/version|latest/linux/arch/app
 -   proxy: /releases/linux/binaries/installer/pars/dev/version|latest/linux/arch/app
 -   proxy: /releases/linux/binaries/archive/pars/dev/version|latest/linux/arch/app
+
+`http://localhost:8070/releases/linux/binaries/raw/pars/all/dev/v1.0.0-dev.22/x86_64/pars`
+
+---
+
+`http://localhost:8070/`
+`http://localhost:8070/releases/pars/dev/yum`
+`http://localhost:8070/releases/pars/dev/apt/jammy`
+`http://localhost:8070/releases/pars/dev/apt/jammy/pool/p/pars/pars_1.0.0-dev.22_amd64.deb`
+`http://localhost:8070/releases/pars/dev/v1.0.0-dev.22/changelog.md`
+`http://localhost:8070/releases/pars/dev/v1.0.0-dev.23/linux/binaries/raw/all/x86_64/pars`
+`http://localhost:8070/downloads/public-keys/gpg/public-rpm.gpg`

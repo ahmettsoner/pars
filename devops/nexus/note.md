@@ -1,6 +1,8 @@
 ```
-mkdir -p ./devops/nexus/data
-sudo chown -R 200:200 ./devops/nexus/data
+mkdir -p ./devops/nexus/data/nexus
+mkdir -p ./devops/nexus/data/nginx
+sudo chown -R $(whoami):$(whoami) ./devops/nexus/data
+sudo chown -R 200:200 ./devops/nexus/data/nexus
 ```
 
 ```
