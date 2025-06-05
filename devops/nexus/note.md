@@ -6,7 +6,7 @@ sudo chown -R 200:200 ./devops/nexus/data/nexus
 ```
 
 ```
-docker compose -f ./devops/nexus/docker-compose.yaml  up -d
+docker compose -f ./devops/nexus/docker-compose.yaml up -d
 ```
 
 get admin pass
