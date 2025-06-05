@@ -66,8 +66,7 @@ binary/executables
 
 `http://localhost:8070/`
 `http://localhost:8070/releases/pars/dev/yum`
-`http://localhost:8070/releases/pars/dev/apt/jammy`
-`http://localhost:8070/releases/pars/dev/apt/jammy/pool/p/pars/pars_1.0.0-dev.22_amd64.deb`
+`http://localhost:8070/releases/pars/dev/apt/dists/universal/InRelease`
 `http://localhost:8070/releases/pars/dev/v1.0.0-dev.22/changelog.md`
 `http://localhost:8070/releases/pars/dev/v1.0.0-dev.23/linux/binaries/raw/all/x86_64/pars`
-`http://localhost:8070/downloads/public-keys/gpg/public-rpm.gpg`
+`http://localhost:8070/downloads/keys/gpg/public-deb-dev.gpg`

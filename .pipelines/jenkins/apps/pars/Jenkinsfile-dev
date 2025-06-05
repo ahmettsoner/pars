@@ -120,6 +120,26 @@ pipeline {
                             }
                         }
                     }
+                    stage("Package for Windows") {
+                        when {
+                            expression { return OS == 'windows' }
+                        }
+                        steps {
+                            script {
+                                parallel(
+                                    "MSI Installer": {
+                                        node('windows') {
+                                            agentInitOnce.initOnceWindows(params.BRANCH)
+                                            buildMSIPackage(OS, ARCH)
+                                            copyMsiAndUpdateChecksums(OS, ARCH)
+                                            // signRpmPackage(OS, ARCH)
+                                            agentInitOnce.cleanupOnceWindows()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
                     stage("Upload artifacts") {
                         agent { label 'linux' }
                         steps {
@@ -134,6 +154,8 @@ pipeline {
                                 if (OS == 'linux') {
                                     unstash "${OS}-${ARCH}-rpm-package-artifacts"
                                     unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                } else if (OS == 'windows') {
+                                    unstash "${OS}-${ARCH}-msi-package-artifacts"
                                 }
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
@@ -166,6 +188,8 @@ pipeline {
                                 if (OS == 'linux'){
                                     generateChecksum.WriteChecksumForDEBPackage(ARCH)
                                     generateChecksum.WriteChecksumForRPMPackage(ARCH)
+                                } else if (OS == 'windows'){
+                                    generateChecksum.WriteChecksumForMSIInstaller(ARCH)
                                 }
                             }
                         }
@@ -184,7 +208,7 @@ pipeline {
             }
         }
 
-        stage('Create Gitea Release') {
+        stage('Create Release') {
             agent { label 'linux' }
             steps {
 

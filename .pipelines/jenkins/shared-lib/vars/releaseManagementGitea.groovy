@@ -8,6 +8,8 @@ def release(List<String> osList, List<String> archList) {
                 if (OS == 'linux') {
                     unstash "${OS}-${ARCH}-rpm-package-artifacts"
                     unstash "${OS}-${ARCH}-deb-package-artifacts"
+                } else if (OS == 'windows') {
+                    unstash "${OS}-${ARCH}-msi-package-artifacts"
                 }
             }
         }

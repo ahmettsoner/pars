@@ -97,6 +97,12 @@ gpg --export-secret-keys --armor YOUR_KEY_ID > private.gpg
 base64 private.gpg > private.gpg.b64
 ```
 
+# dearmor public key
+
+```
+gpg --dearmor devops/public.gpg > devops/public-da.gpg
+```
+
 YUM REPO
 create yum hosted repo
 default ayarlarlar
