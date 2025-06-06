@@ -40,23 +40,27 @@ endif
 build.cmake:
 ifeq ($(OS),Windows_NT)
 	$(MAKE) build.cmake.windows $(MAKEOVERRIDES)
+else ifeq ($(OS),windows)
+	$(MAKE) build.cmake.windows $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS")
+	$(error "Unsupported OS: $(OS)")
 endif
 
 build.cmake.%:
 ifeq ($(OS),Windows_NT)
+	$(MAKE) build.cmake.windows.$* $(MAKEOVERRIDES)
+else ifeq ($(OS),windows)
 	$(MAKE) build.cmake.windows.$* $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux.$* $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos.$* $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS")
+	$(error "Unsupported OS: $(OS)")
 endif
 
 
