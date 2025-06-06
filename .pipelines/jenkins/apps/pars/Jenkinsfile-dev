@@ -53,22 +53,22 @@ pipeline {
             matrix {
                 axes {
                     axis {
-                        name 'OS'
+                        name 'TARGET_OS'
                         values 'linux', 'windows'//, 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
-                        name 'ARCH'
+                        name 'TARGET_ARCH'
                         values 'x86_64'//, 'arm64'
                     }
                 }
                 excludes {
                     exclude {
                         axis {
-                            name 'OS'
+                            name 'TARGET_OS'
                             values 'netbsd'
                         }
                         axis {
-                            name 'ARCH'
+                            name 'TARGET_ARCH'
                             values 'arm64'
                         }
                     }
@@ -79,9 +79,9 @@ pipeline {
                         steps {
                             script {
                                 agentInitOnce.initOnce(params.BRANCH)
-                                buildBinary(OS, ARCH)
-                                archiveBinary(OS, ARCH)
-                                packageArtifact(OS, ARCH)
+                                buildBinary(TARGET_OS, TARGET_ARCH)
+                                archiveBinary(TARGET_OS, TARGET_ARCH)
+                                packageArtifact(TARGET_OS, TARGET_ARCH)
                             }
                         }
                         post {
@@ -94,7 +94,7 @@ pipeline {
                     }
                     stage("Package for Linux") {
                         when {
-                            expression { return OS == 'linux' }
+                            expression { return TARGET_OS == 'linux' }
                         }
                         steps {
                             script {
@@ -102,17 +102,17 @@ pipeline {
                                     "RPM Package": {
                                         node('rhel') {
                                             agentInitOnce.initOnce(params.BRANCH)
-                                            buildRPMPackage(OS, ARCH)
-                                            copyRpmAndUpdateChecksums(OS, ARCH)
-                                            signRpmPackage(OS, ARCH)
+                                            buildRPMPackage(TARGET_OS, TARGET_ARCH)
+                                            copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            signRpmPackage(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnce()
                                         }
                                     },
                                     "DEB Package": {
                                         node('debian') {
                                             agentInitOnce.initOnce(params.BRANCH)
-                                            buildDEBPackage(OS, ARCH)
-                                            copyDebAndUpdateChecksums(OS, ARCH)
+                                            buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                            copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnce()
                                         }
                                     }
@@ -122,7 +122,7 @@ pipeline {
                     }
                     stage("Package for Windows") {
                         when {
-                            expression { return OS == 'windows' }
+                            expression { return TARGET_OS == 'windows' }
                         }
                         steps {
                             script {
@@ -130,9 +130,9 @@ pipeline {
                                     "MSI Installer": {
                                         node('windows') {
                                             agentInitOnce.initOnceWindows(params.BRANCH)
-                                            buildMSIPackage(OS, ARCH)
-                                            copyMsiAndUpdateChecksums(OS, ARCH)
-                                            // signRpmPackage(OS, ARCH)
+                                            buildMSIPackage(TARGET_OS, TARGET_ARCH)
+                                            copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            // signRpmPackage(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnceWindows()
                                         }
                                     }
@@ -147,15 +147,15 @@ pipeline {
                                 agentInitOnce.initOnce(params.BRANCH)
                             }
 
-                            unstash "${OS}-${ARCH}-artifacts"
-                            unstash "${OS}-${ARCH}-archive-artifacts"
+                            unstash "${TARGET_OS}-${TARGET_ARCH}-artifacts"
+                            unstash "${TARGET_OS}-${TARGET_ARCH}-archive-artifacts"
 
                             script {
-                                if (OS == 'linux') {
-                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
-                                } else if (OS == 'windows') {
-                                    unstash "${OS}-${ARCH}-msi-package-artifacts"
+                                if (TARGET_OS == 'linux') {
+                                    unstash "${TARGET_OS}-${TARGET_ARCH}-rpm-package-artifacts"
+                                    unstash "${TARGET_OS}-${TARGET_ARCH}-deb-package-artifacts"
+                                } else if (TARGET_OS == 'windows') {
+                                    unstash "${TARGET_OS}-${TARGET_ARCH}-msi-package-artifacts"
                                 }
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
@@ -179,17 +179,17 @@ pipeline {
                     agentInitOnce.initOnce(params.BRANCH)
                     generateChecksumFile()
                                     
-                    osList.each { OS ->
-                        archList.each { ARCH ->
-                            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
-                                generateChecksum.WriteChecksumForBinary(OS, ARCH)
-                                generateChecksum.WriteChecksumForArchive(OS, ARCH)
+                    osList.each { TARGET_OS ->
+                        archList.each { TARGET_ARCH ->
+                            if (!(TARGET_OS == 'netbsd' && TARGET_ARCH == 'arm64')) {
+                                generateChecksum.WriteChecksumForBinary(TARGET_OS, TARGET_ARCH)
+                                generateChecksum.WriteChecksumForArchive(TARGET_OS, TARGET_ARCH)
 
-                                if (OS == 'linux'){
-                                    generateChecksum.WriteChecksumForDEBPackage(ARCH)
-                                    generateChecksum.WriteChecksumForRPMPackage(ARCH)
-                                } else if (OS == 'windows'){
-                                    generateChecksum.WriteChecksumForMSIInstaller(ARCH)
+                                if (TARGET_OS == 'linux'){
+                                    generateChecksum.WriteChecksumForDEBPackage(TARGET_ARCH)
+                                    generateChecksum.WriteChecksumForRPMPackage(TARGET_ARCH)
+                                } else if (TARGET_OS == 'windows'){
+                                    generateChecksum.WriteChecksumForMSIInstaller(TARGET_ARCH)
                                 }
                             }
                         }
