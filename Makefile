@@ -32,42 +32,31 @@ build.cmake.windows:
 build.cmake.windows.%:
 	$(call build_cmake,build/$*,$*,-G "MinGW Makefiles",$(COMMAND_LIST))
 
-# Normalize $(OS) to lowercase
-OS_LOWER := $(shell echo $(OS) | tr A-Z a-z)
 
+ifneq ($(OS),Windows_NT)
 UNAME_S := $(shell uname -s)
-UNAME_S_LOWER := $(shell echo $(UNAME_S) | tr A-Z a-z)
-
-# Detect Windows environments
-IS_WINDOWS := 0
-ifeq ($(findstring windows,$(OS_LOWER)),windows)
-	IS_WINDOWS := 1
-else ifneq (,$(filter mingw% msys% cygwin%,$(UNAME_S_LOWER)))
-	IS_WINDOWS := 1
 endif
 
-
-
 build.cmake:
-ifeq ($(IS_WINDOWS),1)
+ifeq ($(OS),Windows_NT)
 	$(MAKE) build.cmake.windows $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS: $(OS)")
+	$(error "Unsupported OS")
 endif
 
 build.cmake.%:
-ifeq ($(IS_WINDOWS),1)
+ifeq ($(OS),Windows_NT)
 	$(MAKE) build.cmake.windows.$* $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux.$* $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos.$* $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS: $(OS)")
+	$(error "Unsupported OS")
 endif
 
 
