@@ -45,7 +45,7 @@ else ifeq ($(UNAME_S),Linux)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS")
+	$(error "Unsupported OS: $(OS)")
 endif
 
 build.cmake.%:
@@ -56,7 +56,7 @@ else ifeq ($(UNAME_S),Linux)
 else ifeq ($(UNAME_S),Darwin)
 	$(MAKE) build.cmake.macos.$* $(MAKEOVERRIDES)
 else
-	$(error "Unsupported OS")
+	$(error "Unsupported OS: $(OS)")
 endif
 
 
