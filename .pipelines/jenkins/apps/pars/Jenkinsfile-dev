@@ -130,7 +130,7 @@ pipeline {
                                     "MSI Installer": {
                                         node('windows') {
                                             agentInitOnce.initOnceWindows(params.BRANCH)
-                                            buildMSIPackage(TARGET_OS, TARGET_ARCH)
+                                            buildMSIInstaller(TARGET_OS, TARGET_ARCH)
                                             copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
                                             // signRpmPackage(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnceWindows()

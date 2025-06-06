@@ -40,8 +40,6 @@ endif
 build.cmake:
 ifeq ($(OS),Windows_NT)
 	$(MAKE) build.cmake.windows $(MAKEOVERRIDES)
-else ifeq ($(OS),windows)
-	$(MAKE) build.cmake.windows $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Darwin)
@@ -52,8 +50,6 @@ endif
 
 build.cmake.%:
 ifeq ($(OS),Windows_NT)
-	$(MAKE) build.cmake.windows.$* $(MAKEOVERRIDES)
-else ifeq ($(OS),windows)
 	$(MAKE) build.cmake.windows.$* $(MAKEOVERRIDES)
 else ifeq ($(UNAME_S),Linux)
 	$(MAKE) build.cmake.linux.$* $(MAKEOVERRIDES)

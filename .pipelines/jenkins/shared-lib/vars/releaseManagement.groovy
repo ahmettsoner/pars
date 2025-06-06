@@ -115,8 +115,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
                             """
                         }
 
-                        publishMsiPackage(OS, ARCH)
-
+                        publishMsiInstaller(OS, ARCH)
                     }
                 }
             }
