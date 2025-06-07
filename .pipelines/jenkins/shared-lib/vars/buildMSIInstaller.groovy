@@ -16,7 +16,7 @@ def call(String OS, String ARCH) {
         Push-Location "${binaryOutputBase}"
         try {
             $archiveName = '${newBaseName}'
-            Compress-Archive -Path * -DestinationPath \$archiveName -Force
+            Compress-Archive -Path * -DestinationPath $archiveName -Force
         } catch {
             Write-Host "Compress-Archive failed: $($_.Exception.Message)"
         }
