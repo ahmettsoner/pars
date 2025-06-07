@@ -153,8 +153,8 @@ pipeline {
                                 if (TARGET_OS == 'linux') {
                                     unstash "${TARGET_OS}-${TARGET_ARCH}-rpm-package-artifacts"
                                     unstash "${TARGET_OS}-${TARGET_ARCH}-deb-package-artifacts"
-                                } else if (TARGET_OS == 'windows') {
-                                    unstash "${TARGET_OS}-${TARGET_ARCH}-msi-package-artifacts"
+                                // } else if (TARGET_OS == 'windows') {
+                                //     unstash "${TARGET_OS}-${TARGET_ARCH}-msi-package-artifacts"
                                 }
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
