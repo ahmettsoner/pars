@@ -12,7 +12,7 @@
     -   private-rpm.gpg
         -   Secret File
     -   GPG_PASSPHRASE:
-        -   Secret Text
+        -   Secret TextE
 
 -   add apt-jammy hosted repository on nexus
 -   add apt-bionic hosted repository on nexus
