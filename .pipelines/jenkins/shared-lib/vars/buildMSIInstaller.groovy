@@ -16,14 +16,14 @@ def call(String OS, String ARCH) {
 
     powershell """
         \$ErrorActionPreference = 'Stop'
-        New-Item -ItemType Directory -Force -Path \"{packageSourceDir}' | Out-Null
+        New-Item -ItemType Directory -Force -Path \"${packageSourceDir}\" | Out-Null
         Push-Location \"${binaryOutputBase}\"
         try {
             Compress-Archive -Path * -DestinationPath \"${newBaseName}\" -Force
         } catch {
             Write-Host "Compress-Archive failed: $($_.Exception.Message)"
         }
-        if (!(Test-Path E{newBaseName}')) {
+        if (!(Test-Path \"${newBaseName}')) {
             Write-Host "Error with archive: Unable to validate archive contents."
         }
         Copy-Item -Path \"${newBaseName}\" -Destination \"${WORKSPACE}\\${packageSourceDir}\" -Force
