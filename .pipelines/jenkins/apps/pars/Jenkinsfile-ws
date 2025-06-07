@@ -1,16 +1,12 @@
 pipeline {
     agent none
     stages {
-        stage('Show PATH') {
+        stage('Check WiX') {
+            agent { label 'windows' }
             steps {
                 powershell '''
                     Write-Host "PATH: $env:PATH"
                 '''
-            }
-        }
-        stage('Check WiX') {
-            agent { label 'windows' }
-            steps {
                 powershell '''
                     wix --version
                 '''
