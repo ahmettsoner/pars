@@ -23,7 +23,7 @@ def call(String OS, String ARCH) {
         } catch {
             Write-Host "Compress-Archive failed: $($_.Exception.Message)"
         }
-        if (!(Test-Path \"${newBaseName}')) {
+        if (!(Test-Path \"${newBaseName}\")) {
             Write-Host "Error with archive: Unable to validate archive contents."
         }
         Copy-Item -Path \"${newBaseName}\" -Destination \"${WORKSPACE}\\${packageSourceDir}\" -Force
