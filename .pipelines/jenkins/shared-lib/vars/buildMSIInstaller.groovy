@@ -15,7 +15,7 @@ def call(String OS, String ARCH) {
         New-Item -ItemType Directory -Force -Path "${packageSourceDir}" | Out-Null
         Push-Location "${binaryOutputBase}"
         try {
-            \$archiveName = '${newBaseName}'
+            $archiveName = '${newBaseName}'
             Compress-Archive -Path * -DestinationPath \$archiveName -Force
         } catch {
             Write-Host "Compress-Archive failed: $($_.Exception.Message)"
