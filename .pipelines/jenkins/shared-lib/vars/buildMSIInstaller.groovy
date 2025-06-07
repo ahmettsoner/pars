@@ -15,10 +15,9 @@ def call(String OS, String ARCH) {
         New-Item -ItemType Directory -Force -Path "${packageSourceDir}" | Out-Null
         Push-Location "${binaryOutputBase}"
         try {
-            $archiveName = '${newBaseName}'
-            Compress-Archive -Path * -DestinationPath $archiveName -Force
+            Compress-Archive -Path * -DestinationPath "${newBaseName}" -Force
         } catch {
-            Write-Host "Compress-Archive failed: $_.Exception.Message"
+            Write-Host "Compress-Archive failed: (\$_.Exception.Message)"
         }
         if (!(Test-Path "${newBaseName}")) {
             Write-Host "Error with archive: Unable to validate archive contents."
@@ -26,6 +25,7 @@ def call(String OS, String ARCH) {
         Copy-Item -Path "${newBaseName}" -Destination "${WORKSPACE}\\${packageSourceDir}" -Force
         Pop-Location
     """
+
 
     // Build MSI package
     powershell """
