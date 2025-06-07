@@ -10,8 +10,12 @@ def call(String OS, String ARCH) {
     def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\pkg\\msi\\${ARCH}\\${APPNAME}"
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
 
+    powershell """
+            Write-Host ">>>>>: ${packageSourceDir}'"
+    """
+
     // Create zip (Windows PowerShell)
-    powershell '''
+    powershell """
         \$ErrorActionPreference = 'Stop'
         New-Item -ItemType Directory -Force -Path '${packageSourceDir}' | Out-Null
         Push-Location '${binaryOutputBase}'
@@ -25,12 +29,12 @@ def call(String OS, String ARCH) {
         }
         Copy-Item -Path '${newBaseName}' -Destination '${WORKSPACE}\\${packageSourceDir}' -Force
         Pop-Location
-    '''
+    """
 
     // Build MSI package
-    powershell '''
+    powershell """
         \$env:GO111MODULE = "on"
         make build.msi.package.${ARCH}.configuration VERSION=${env.CURRENT_VERSION}
         make build.msi.package.${ARCH}.package VERSION=${env.CURRENT_VERSION}
-    '''
+    """
 }
