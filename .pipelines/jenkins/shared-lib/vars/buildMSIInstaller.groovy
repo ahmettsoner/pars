@@ -14,7 +14,7 @@ def call(String OS, String ARCH) {
         Write-Host ">>>>>: ${packageSourceDir}'"
     """
 
-    powershell '''
+    powershell """
         \$ErrorActionPreference = 'Stop'
         New-Item -ItemType Directory -Force -Path '${packageSourceDir}' | Out-Null
         Push-Location '${binaryOutputBase}'
@@ -28,7 +28,7 @@ def call(String OS, String ARCH) {
         }
         Copy-Item -Path '${newBaseName}' -Destination '${WORKSPACE}\\${packageSourceDir}' -Force
         Pop-Location
-    '''
+    """
 
     // Build MSI package
     powershell """
