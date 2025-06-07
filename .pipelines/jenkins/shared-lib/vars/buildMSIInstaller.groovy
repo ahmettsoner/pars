@@ -11,15 +11,12 @@ def call(String OS, String ARCH) {
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
 
     powershell """
-        Write-Host ">>>>>: ${newBaseName}'"
-    """
-
-    powershell """
         \$ErrorActionPreference = 'Stop'
         New-Item -ItemType Directory -Force -Path "${packageSourceDir}" | Out-Null
         Push-Location "${binaryOutputBase}"
         try {
-            Compress-Archive -Path * -DestinationPath "${newBaseName}" -Force
+            \$archiveName = '${newBaseName}'
+            Compress-Archive -Path * -DestinationPath \$archiveName -Force
         } catch {
             Write-Host "Compress-Archive failed: $($_.Exception.Message)"
         }
