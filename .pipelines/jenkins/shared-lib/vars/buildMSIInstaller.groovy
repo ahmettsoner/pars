@@ -5,18 +5,12 @@ def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-dist-bin"
     def binaryOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\bin\\${ARCH}"
     def originalFileName = "${APPNAME}${ext}"
-    def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.tar.gz"
+    def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.zip"
 
     def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\pkg\\msi\\${ARCH}\\${APPNAME}"
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
-    def tarPath = "${binaryOutputBase}\\${newBaseName}"
 
-
-    echo "CURRENT_VERSION: ${env.CURRENT_VERSION}"
-    echo "CURRENT_BASE_VERSION_RAW: ${env.CURRENT_BASE_VERSION_RAW}"
-    echo "APPNAME: ${APPNAME}"
-
-    // Create tar.gz (Windows PowerShell)
+    // Create zip (Windows PowerShell)
     powershell """
         \$ErrorActionPreference = 'Stop'
         New-Item -ItemType Directory -Force -Path '${packageSourceDir}' | Out-Null
@@ -24,7 +18,7 @@ def call(String OS, String ARCH) {
         try {
             Compress-Archive -Path * -DestinationPath '${newBaseName}' -Force
         } catch {
-            Write-Host "Compress-Archive failed: \$($_.Exception.Message)"
+            Write-Host "Compress-Archive failed: $($_.Exception.Message)"
         }
         if (!(Test-Path '${newBaseName}')) {
             Write-Host "Error with archive: Unable to validate archive contents."
