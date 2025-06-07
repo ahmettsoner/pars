@@ -11,24 +11,24 @@ def call(String OS, String ARCH) {
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
 
     powershell """
-        Write-Host ">>>>>: ${packageSourceDir}'"
+        Write-Host ">>>>>: ${newBaseName}'"
     """
 
-    powershell """
-        \$ErrorActionPreference = 'Stop'
-        New-Item -ItemType Directory -Force -Path \"${packageSourceDir}\" | Out-Null
-        Push-Location \"${binaryOutputBase}\"
-        try {
-            Compress-Archive -Path * -DestinationPath \"${newBaseName}\" -Force
-        } catch {
-            Write-Host "Compress-Archive failed: $($_.Exception.Message)"
-        }
-        if (!(Test-Path \"${newBaseName}\")) {
-            Write-Host "Error with archive: Unable to validate archive contents."
-        }
-        Copy-Item -Path \"${newBaseName}\" -Destination \"${WORKSPACE}\\${packageSourceDir}\" -Force
-        Pop-Location
-    """
+    // powershell """
+    //     \$ErrorActionPreference = 'Stop'
+    //     New-Item -ItemType Directory -Force -Path \"${packageSourceDir}\" | Out-Null
+    //     Push-Location \"${binaryOutputBase}\"
+    //     try {
+    //         Compress-Archive -Path * -DestinationPath \"${newBaseName}\" -Force
+    //     } catch {
+    //         Write-Host "Compress-Archive failed: $($_.Exception.Message)"
+    //     }
+    //     if (!(Test-Path \"${newBaseName}\")) {
+    //         Write-Host "Error with archive: Unable to validate archive contents."
+    //     }
+    //     Copy-Item -Path \"${newBaseName}\" -Destination \"${WORKSPACE}\\${packageSourceDir}\" -Force
+    //     Pop-Location
+    // """
 
     // Build MSI package
     powershell """
