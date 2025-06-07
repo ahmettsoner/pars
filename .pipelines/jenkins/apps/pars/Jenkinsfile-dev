@@ -124,19 +124,15 @@ pipeline {
                         when {
                             expression { return TARGET_OS == 'windows' }
                         }
-                        environment {
-                            TARGETOS = "${TARGET_OS}"
-                            TARGETARCH = "${TARGET_ARCH}"
-                        }
                         steps {
                             script {
                                 parallel(
                                     "MSI Installer": {
                                         node('windows') {
                                             agentInitOnce.initOnceWindows(params.BRANCH)
-                                            buildMSIInstaller(TARGETOS, TARGETARCH)
-                                            copyMsiAndUpdateChecksums(TARGETOS, TARGETARCH)
-                                            agentInitOnce.cleanupOnceWindows()
+                                            // buildMSIInstaller(TARGET_OS, TARGET_ARCH)
+                                            // copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            // agentInitOnce.cleanupOnceWindows()
                                         }
                                     }
                                 )
