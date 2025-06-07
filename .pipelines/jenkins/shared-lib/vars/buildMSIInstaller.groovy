@@ -18,7 +18,7 @@ def call(String OS, String ARCH) {
             $archiveName = '${newBaseName}'
             Compress-Archive -Path * -DestinationPath $archiveName -Force
         } catch {
-            Write-Host "Compress-Archive failed: $($_.Exception.Message)"
+            Write-Host "Compress-Archive failed: $_.Exception.Message"
         }
         if (!(Test-Path "${newBaseName}")) {
             Write-Host "Error with archive: Unable to validate archive contents."
