@@ -1,0 +1,13 @@
+pipeline {
+    agent node
+    stages {
+        stage('Check WiX') {
+            agent { label 'windows' }
+            steps {
+                powershell '''
+                    wix --version
+                '''
+            }
+        }
+    }
+}
