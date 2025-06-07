@@ -11,7 +11,7 @@ def call(String OS, String ARCH) {
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
 
     powershell """
-        Write-Host ">>>>>: ${newBaseName}'"
+        Write-Host ">>>>>: '${newBaseName}'"
     """
 
     // powershell """
