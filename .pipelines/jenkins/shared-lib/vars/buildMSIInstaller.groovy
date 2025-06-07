@@ -11,6 +11,11 @@ def call(String OS, String ARCH) {
     def packageSourceDir = "${packageOutputBase}\\SOURCES"
     def tarPath = "${binaryOutputBase}\\${newBaseName}"
 
+
+    echo "CURRENT_VERSION: ${env.CURRENT_VERSION}"
+    echo "CURRENT_BASE_VERSION_RAW: ${env.CURRENT_BASE_VERSION_RAW}"
+    echo "APPNAME: ${APPNAME}"
+
     // Create tar.gz (Windows PowerShell)
     powershell """
         \$ErrorActionPreference = 'Stop'
