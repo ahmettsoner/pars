@@ -1,12 +1,13 @@
 provider "libvirt" {
-  uri = "qemu:///session"
+  uri = "qemu:///system"
 }
 
 resource "libvirt_pool" "custom_pool" {
   name = var.vm_pool
   type = "dir"
-  # path = "/var/lib/libvirt/pools/k8s_pool"
-  path = "/home/ahmettsoner/pools/k8s_pool2"
+  target {
+    path = "/home/ahmettsoner/pools/k8s_pool2"
+  }
 }
 
 
@@ -36,20 +37,43 @@ resource "local_file" "public_key_openssh" {
   content  = tls_private_key.private_key.public_key_openssh
 }
 
+resource "libvirt_network" "terraform_network" {
+  name      = var.vm_network_name
+  mode      = "nat"
+  domain    = "terraform.local"
+  addresses = ["192.168.100.0/24"]
 
+  dhcp {
+    enabled = true
+  }
+
+  autostart = true
+}
+
+module "windows_vm" {
+  source           = "./modules/windows"
+  vm_name          = "windows-server-2022"
+  memory           = 8192
+  vcpus            = 4
+  pool_id          = libvirt_pool.custom_pool.name
+  network_id       = libvirt_network.terraform_network.id
+  windows_iso_path = "/home/ahmetsoner/AS/prs/pars/devops/images/SERVER_EVAL_x64FRE_en-us.iso"
+  virtio_iso_path  = "/home/ahmetsoner/AS/prs/pars/devops/images/virtio-win-0.1.100.iso"
+  autounattend_iso_path = "/home/ahmetsoner/AS/prs/pars/devops/images/autounattend.iso"
+}
 
 # Masters modülünü çağırıyoruz
-module "etcd_vm" {
-  source                = "./modules/etcd"
-  vm_pool               = libvirt_pool.custom_pool.name
-  base_volume_id        = libvirt_volume.base_volume.id
-  ssh_private_key_path  = local_file.private_key_pem.filename
-  ssh_authorized_key    = local_file.public_key_openssh.content
-  username              = var.vm_user
-  memory                = 1024
-  vcpu                  = 1
-  network_name          = var.network_name
-}
+# module "etcd_vm" {
+#   source                = "./modules/etcd"
+#   vm_pool               = libvirt_pool.custom_pool.name
+#   base_volume_id        = libvirt_volume.base_volume.id
+#   ssh_private_key_path  = local_file.private_key_pem.filename
+#   ssh_authorized_key    = local_file.public_key_openssh.content
+#   username              = var.vm_user
+#   memory                = 1024
+#   vcpu                  = 1
+#   network_name          = var.network_name
+# }
 
 # # HAProxy VM modülünü çağırıyoruz
 # module "loadbalancer_vm" {
