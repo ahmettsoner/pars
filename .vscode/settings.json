@@ -1,5 +1,4 @@
 {
-    "editor.formatOnSave": true,
     "go.toolsEnvVars": {
         "GOFLAGS": "-mod=readonly"
     },

@@ -27,3 +27,9 @@ variable "network_name" {
   type    = string
   default = "default"
 }
+
+variable "vm_network_name" {
+  description = "Libvirt network name"
+  type        = string
+  default     = "terraform-net"
+}

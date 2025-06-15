@@ -9,3 +9,8 @@
 # output "worker_ips" {
 #   value = module.worker_vms.vm_ips
 # }
+
+
+output "vm_network_name" {
+  value = libvirt_network.terraform_network.name
+}

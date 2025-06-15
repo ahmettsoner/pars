@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64"
+      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
+      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <SetupUILanguage>
+        <UILanguage>en-US</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>en-US</InputLocale>
+      <SystemLocale>en-US</SystemLocale>
+      <UILanguage>en-US</UILanguage>
+      <UserLocale>en-US</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64"
+      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
+      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+      <DiskConfiguration>
+        <Disk wcm:action="add">
+          <DiskID>0</DiskID>
+          <WillWipeDisk>true</WillWipeDisk>
+          <CreatePartitions>
+            <CreatePartition wcm:action="add">
+              <Order>1</Order>
+              <Type>Primary</Type>
+              <Size>50000</Size> <!-- MB cinsinden, örnek -->
+            </CreatePartition>
+          </CreatePartitions>
+          <ModifyPartitions>
+            <ModifyPartition wcm:action="add">
+              <Active>true</Active>
+              <Format>NTFS</Format>
+              <Label>Windows</Label>
+              <Letter>C</Letter>
+              <Order>1</Order>
+              <PartitionID>1</PartitionID>
+            </ModifyPartition>
+          </ModifyPartitions>
+        </Disk>
+        <WillShowUI>OnError</WillShowUI>
+      </DiskConfiguration>
+
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/Index</Key>
+              <Value>1</Value>
+            </MetaData>
+          </InstallFrom>
+          <InstallTo>
+            <DiskID>0</DiskID>
+            <PartitionID>1</PartitionID>
+          </InstallTo>
+          <WillShowUI>OnError</WillShowUI>
+        </OSImage>
+      </ImageInstall>
+
+      <UserData>
+        <AcceptEula>true</AcceptEula>
+        <FullName>Administrator</FullName>
+        <Organization>MyOrg</Organization>
+      </UserData>
+
+    </component>
+  </settings>
+
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64"
+      publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS"
+      xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+      <AutoLogon>
+        <Password>
+          <Value>User123!</Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Enabled>true</Enabled>
+        <Username>user1</Username>
+      </AutoLogon>
+      <RegisteredOrganization>MyOrg</RegisteredOrganization>
+      <RegisteredOwner>Administrator</RegisteredOwner>
+      <TimeZone>UTC</TimeZone>
+      <FirstLogonCommands>
+        <!-- 1. OpenSSH Server kur -->
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0"</CommandLine>
+          <Description>Install SSH</Description>
+        </SynchronousCommand>
+
+        <!-- 2. SSH servisini başlat ve otomatik başlasın -->
+        <SynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Start-Service sshd; Set-Service -Name sshd -StartupType 'Automatic'"</CommandLine>
+          <Description>Enable SSH</Description>
+        </SynchronousCommand>
+
+        <!-- 3. Güvenlik duvarında SSH portunu aç -->
+        <SynchronousCommand wcm:action="add">
+          <Order>3</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "New-NetFirewallRule -Name sshd -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22"</CommandLine>
+          <Description>Allow SSH in firewall</Description>
+        </SynchronousCommand>
+
+        <!-- 4. sshd_config dosyasını düzenle -->
+        <SynchronousCommand wcm:action="add">
+          <Order>4</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "(Get-Content 'C:\ProgramData\ssh\sshd_config') -replace '#?PubkeyAuthentication.*', 'PubkeyAuthentication yes' -replace '^Match Group administrators','#Match Group administrators' -replace '^\s+AuthorizedKeysFile __PROGRAMDATA__.*', '#        AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys' | Set-Content 'C:\ProgramData\ssh\sshd_config'"</CommandLine>
+          <Description>Configure sshd_config</Description>
+        </SynchronousCommand>
+
+        <!-- 5. ssh key tanımlanması -->
+        <!-- <SynchronousCommand wcm:action="add">
+          <Order>5</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "$p=$env:USERPROFILE; $ssh=Join-Path $p '.ssh'; $key=Join-Path $ssh 'authorized_keys'; New-Item -ItemType Directory -Path $ssh -Force; Set-Content -Path $key -Value 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCdyr8788+c/Kl5TGCLO1pXUODWb0OYa4w5cAKoz40227gdlfo0tMXlny8mrUH9KvuKXPtLYKU42vMx+SDJKD8/cN1SN/umAaxwgAGMTIQMfOjo5aAiOwK5jLK1dLr0bDj2AUiqhrwj8WmGJB4Z+GYa0AZHkfrgrgoSW+KN0J+KvkBjamHOu6FUL7DUZC3vnsnZVo4IomRENsxnjIlsVatIzJcgl3b5kAXtKOzLJ5/UTUCNmjRJmbV6u4j8okQAfkFePaotyDTUcKJYgOdP5kHGexXGIjBAodfhbBmxwC2dx4T/KTH9/nqdVXq9mhbArJO70yAkZVeSLYFfNUY0i6GW7FQNrL9yuceG+PnzIpr8hktRopTZWw/vJU60QYbBUhLW4uhWE3aE56eznWA6LNED2DijK5d5U5ZeAIU3i9wcKVP4RzvszTEfoE0jvLl5FkEda7ufmhcqGyOgFHlUlPutct94UFHZ+fTEnSfz+JtP2ADxRZKGBcWvLD8Y813Y0rswT1Ib7Eumi784JvtxbJoIqbuc4EdcUm/SIlHjKTjrZ47sU65dEklNkJMi91/9z3ZnSbydGkl5JobzfH8U6VanwOApEb9Dyun2SgFiNs4Qf/klOhjz57V8qkoBesOk+E4bR1BCHiuQ4Mi+J3e4U9yB6HxAo/uIGlLK5swW4OysNw== ahmet.soner@pusula.int' -Encoding ascii; icacls $ssh /inheritance:r; icacls $ssh /grant $env:USERNAME`:F; icacls $key /inheritance:r; icacls $key /grant $env:USERNAME`:F"</CommandLine>
+          <Description>Configure sshd_config</Description>
+        </SynchronousCommand> -->
+
+        <!-- 8. sshd servisini yeniden başlat -->
+        <SynchronousCommand wcm:action="add">
+          <Order>8</Order>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Restart-Service sshd"</CommandLine>
+          <Description>Restart SSHD</Description>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+      <UserAccounts>
+        <AdministratorPassword>
+          <Value>Admin123!</Value>
+          <PlainText>true</PlainText>
+        </AdministratorPassword>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>user1</Name>
+            <Group>Administrators</Group>
+            <Password>
+              <Value>User123!</Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <DisplayName>User One</DisplayName>
+            <Description>SSH User</Description>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+    </component>
+  </settings>
+</unattend>
