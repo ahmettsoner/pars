@@ -4,6 +4,13 @@ resource "libvirt_volume" "windows_disk" {
   size   = 50 * 1024 * 1024 * 1024  # 50 GB
   format = "qcow2"
 }
+resource "libvirt_volume" "autounattend_disk" {
+  name   = "${var.vm_name}_autounattend.qcow2"
+  source = var.autounattend_iso_path
+  pool   = var.pool_id
+  size   = 50 * 1024 * 1024 * 1024  # 50 GB
+  format = "qcow2"
+}
 
 resource "libvirt_domain" "windows_vm" {
   name   = var.vm_name
@@ -15,7 +22,10 @@ resource "libvirt_domain" "windows_vm" {
   disk {
     volume_id = libvirt_volume.windows_disk.id
   }
-  
+
+  disk {
+    file = var.autounattend_iso_path
+  }
 
   disk {
     file = var.windows_iso_path
@@ -23,11 +33,6 @@ resource "libvirt_domain" "windows_vm" {
 
   disk {
     file = var.virtio_iso_path
-    device = cdrom
-  }
-
-  disk {
-    file = var.autounattend_iso_path
   }
 
   network_interface {

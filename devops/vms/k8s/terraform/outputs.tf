@@ -12,5 +12,5 @@
 
 
 output "vm_network_name" {
-  value = libvirt_network.terraform_network.name
+  value = libvirt_network.example_network.name
 }

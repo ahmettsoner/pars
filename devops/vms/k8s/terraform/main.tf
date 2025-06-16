@@ -37,11 +37,12 @@ resource "local_file" "public_key_openssh" {
   content  = tls_private_key.private_key.public_key_openssh
 }
 
-resource "libvirt_network" "terraform_network" {
-  name      = var.vm_network_name
+resource "libvirt_network" "example_network" {
+  name      = "terraform-network"
+  bridge    = "br-terraform"
   mode      = "nat"
   domain    = "terraform.local"
-  addresses = ["192.168.100.0/24"]
+  addresses = ["192.168.200.0/24"]
 
   dhcp {
     enabled = true
@@ -56,10 +57,10 @@ module "windows_vm" {
   memory           = 8192
   vcpus            = 4
   pool_id          = libvirt_pool.custom_pool.name
-  network_id       = libvirt_network.terraform_network.id
-  windows_iso_path = "/home/ahmetsoner/AS/prs/pars/devops/images/SERVER_EVAL_x64FRE_en-us.iso"
-  virtio_iso_path  = "/home/ahmetsoner/AS/prs/pars/devops/images/virtio-win-0.1.100.iso"
-  autounattend_iso_path = "/home/ahmetsoner/AS/prs/pars/devops/images/autounattend.iso"
+  network_id       = libvirt_network.example_network.id
+  windows_iso_path = "/home/ahmettsoner/AS/prj/pars/devops/images/SERVER_EVAL_x64FRE_en-us.iso"
+  virtio_iso_path  = "/home/ahmettsoner/AS/prj/pars/devops/images/virtio-win.iso"
+  autounattend_iso_path = "/home/ahmettsoner/AS/prj/pars/devops/images/autounattend.iso"
 }
 
 # Masters modülünü çağırıyoruz

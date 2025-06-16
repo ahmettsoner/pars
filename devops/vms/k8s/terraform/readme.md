@@ -148,9 +148,11 @@ sudo ./devops/vms/k8s/terraform/modules/windows/scripts/create-autounattend-iso.
 ```
 ```bash
 sudo rm /var/lib/libvirt/images/win2022.qcow2
-
+```
+```bash
 sudo qemu-img create -f qcow2 /var/lib/libvirt/images/win2022.qcow2 50G
-
+```
+```bash
 sudo virt-install \
   --name win2022 \
   --memory 4096 \
@@ -165,6 +167,8 @@ sudo virt-install \
   --boot cdrom,hd \
   --noautoconsole
 
+```
+```bash
 
 sudo virt-install \
   --name win2022 \
