@@ -1,6 +1,6 @@
 @Library('shared-lib') _
 
-def osList = ['linux']//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+def osList = ['linux', 'windows']//, 'darwin', 'openbsd', 'netbsd', 'freebsd']
 def archList = ['x86_64']//, 'arm64']
 pipeline {
     agent none
@@ -10,10 +10,11 @@ pipeline {
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@parsdevkit.net', description: 'Git user email')
         string(name: 'GIT_USER_NAME', defaultValue: 'ci-bot', description: 'Git user name')
-        // string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
-        // string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int', description: 'NEXUS_URL')
-        string(name: 'GITEA_URL', defaultValue: 'http://192.168.118.47:3030', description: 'GITEA_URL')
-        string(name: 'NEXUS_URL', defaultValue: 'http://192.168.118.47:8081', description: 'NEXUS_URL')
+        string(name: 'GITEA_URL', defaultValue: 'http://git.pusula.int', description: 'GITEA_URL')
+        string(name: 'GITEA_BASE_URL', defaultValue: 'git.pusula.int', description: 'GITEA_URL')
+        string(name: 'NEXUS_URL', defaultValue: 'http://nexus.pusula.int', description: 'NEXUS_URL')
+        // string(name: 'GITEA_URL', defaultValue: 'http://192.168.118.47:3030', description: 'GITEA_URL')
+        // string(name: 'NEXUS_URL', defaultValue: 'http://192.168.118.47:8081', description: 'NEXUS_URL')
     }
     environment {
         APPNAME      = "pars"
@@ -52,22 +53,22 @@ pipeline {
             matrix {
                 axes {
                     axis {
-                        name 'OS'
-                        values 'linux'//, 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        name 'TARGET_OS'
+                        values 'linux', 'windows'//, 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
-                        name 'ARCH'
+                        name 'TARGET_ARCH'
                         values 'x86_64'//, 'arm64'
                     }
                 }
                 excludes {
                     exclude {
                         axis {
-                            name 'OS'
+                            name 'TARGET_OS'
                             values 'netbsd'
                         }
                         axis {
-                            name 'ARCH'
+                            name 'TARGET_ARCH'
                             values 'arm64'
                         }
                     }
@@ -78,9 +79,9 @@ pipeline {
                         steps {
                             script {
                                 agentInitOnce.initOnce(params.BRANCH)
-                                buildBinary(OS, ARCH)
-                                archiveBinary(OS, ARCH)
-                                packageArtifact(OS, ARCH)
+                                buildBinary(TARGET_OS, TARGET_ARCH)
+                                archiveBinary(TARGET_OS, TARGET_ARCH)
+                                packageArtifact(TARGET_OS, TARGET_ARCH)
                             }
                         }
                         post {
@@ -93,7 +94,7 @@ pipeline {
                     }
                     stage("Package for Linux") {
                         when {
-                            expression { return OS == 'linux' }
+                            expression { return TARGET_OS == 'linux' }
                         }
                         steps {
                             script {
@@ -101,18 +102,37 @@ pipeline {
                                     "RPM Package": {
                                         node('rhel') {
                                             agentInitOnce.initOnce(params.BRANCH)
-                                            buildRPMPackage(OS, ARCH)
-                                            copyRpmAndUpdateChecksums(OS, ARCH)
-                                            signRpmPackage(OS, ARCH)
+                                            buildRPMPackage(TARGET_OS, TARGET_ARCH)
+                                            copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            signRpmPackage(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnce()
                                         }
                                     },
                                     "DEB Package": {
                                         node('debian') {
                                             agentInitOnce.initOnce(params.BRANCH)
-                                            buildDEBPackage(OS, ARCH)
-                                            copyDebAndUpdateChecksums(OS, ARCH)
+                                            buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                            copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
                                             agentInitOnce.cleanupOnce()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    stage("Package for Windows") {
+                        when {
+                            expression { return TARGET_OS == 'windows' }
+                        }
+                        steps {
+                            script {
+                                parallel(
+                                    "MSI Installer": {
+                                        node('windows') {
+                                            agentInitOnce.initOnceWindows(params.BRANCH)
+                                            buildMSIInstaller(TARGET_OS, TARGET_ARCH)
+                                            // copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            // agentInitOnce.cleanupOnceWindows()
                                         }
                                     }
                                 )
@@ -126,13 +146,15 @@ pipeline {
                                 agentInitOnce.initOnce(params.BRANCH)
                             }
 
-                            unstash "${OS}-${ARCH}-artifacts"
-                            unstash "${OS}-${ARCH}-archive-artifacts"
+                            unstash "${TARGET_OS}-${TARGET_ARCH}-artifacts"
+                            unstash "${TARGET_OS}-${TARGET_ARCH}-archive-artifacts"
 
                             script {
-                                if (OS == 'linux') {
-                                    unstash "${OS}-${ARCH}-rpm-package-artifacts"
-                                    unstash "${OS}-${ARCH}-deb-package-artifacts"
+                                if (TARGET_OS == 'linux') {
+                                    unstash "${TARGET_OS}-${TARGET_ARCH}-rpm-package-artifacts"
+                                    unstash "${TARGET_OS}-${TARGET_ARCH}-deb-package-artifacts"
+                                // } else if (TARGET_OS == 'windows') {
+                                //     unstash "${TARGET_OS}-${TARGET_ARCH}-msi-package-artifacts"
                                 }
                             }
                             archiveArtifacts artifacts: 'dist/artifacts/**/*', fingerprint: true
@@ -156,15 +178,17 @@ pipeline {
                     agentInitOnce.initOnce(params.BRANCH)
                     generateChecksumFile()
                                     
-                    osList.each { OS ->
-                        archList.each { ARCH ->
-                            if (!(OS == 'netbsd' && ARCH == 'arm64')) {
-                                generateChecksum.WriteChecksumForBinary(OS, ARCH)
-                                generateChecksum.WriteChecksumForArchive(OS, ARCH)
+                    osList.each { TARGET_OS ->
+                        archList.each { TARGET_ARCH ->
+                            if (!(TARGET_OS == 'netbsd' && TARGET_ARCH == 'arm64')) {
+                                generateChecksum.WriteChecksumForBinary(TARGET_OS, TARGET_ARCH)
+                                generateChecksum.WriteChecksumForArchive(TARGET_OS, TARGET_ARCH)
 
-                                if (OS == 'linux'){
-                                    generateChecksum.WriteChecksumForDEBPackage(ARCH)
-                                    generateChecksum.WriteChecksumForRPMPackage(ARCH)
+                                if (TARGET_OS == 'linux'){
+                                    generateChecksum.WriteChecksumForDEBPackage(TARGET_ARCH)
+                                    generateChecksum.WriteChecksumForRPMPackage(TARGET_ARCH)
+                                } else if (TARGET_OS == 'windows'){
+                                    generateChecksum.WriteChecksumForMSIInstaller(TARGET_ARCH)
                                 }
                             }
                         }
@@ -183,7 +207,7 @@ pipeline {
             }
         }
 
-        stage('Create Gitea Release') {
+        stage('Create Release') {
             agent { label 'linux' }
             steps {
 

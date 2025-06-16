@@ -46,5 +46,23 @@ def WriteChecksumForRPMPackage(ARCH) {
 
     sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
+def WriteChecksumForMSIInstaller(ARCH) {
+    def OS = 'windows'
+    unstash "${OS}-${ARCH}-msi-package-artifacts"
+
+    def newBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
+    def artifactPath = "${env.ARTIFACT_PATH}\\${newBaseName}"
+    def checksumVar = powershell(
+        script: "(Get-FileHash -Algorithm SHA256 '${artifactPath}').Hash",
+        returnStdout: true
+    ).trim()
+
+    def type = "MSI"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksumVar} |"
+
+    powershell """
+        Add-Content -Path '${env.ARTIFACT_CHECKSUM_MD5_PATH}' -Value '${line}'
+    """
+}
 
 return this

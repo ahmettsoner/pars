@@ -54,8 +54,4 @@ samples/**
 *.iso
 
 devops/proxy-cache/Squid/*
-devops/nexus/*
-devops/nexus/data/nexus/log/*
-devops/nexus/data/nexus/blobs/*
-devops/nexus/data/nexus/restore-from-backup/*
-devops/nexus/data/nexus/tmp/*
+devops/nexus/data/*
