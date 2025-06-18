@@ -6,7 +6,7 @@ sudo chown -R 200:200 ./devops/nexus/data/nexus
 ```
 
 ```
-docker compose -f ./devops/nexus/docker-compose.yaml  up -d
+docker compose -f ./devops/nexus/docker-compose.yaml up -d
 ```
 
 get admin pass
@@ -95,6 +95,12 @@ gpg --export-secret-keys --armor YOUR_KEY_ID > private.gpg
 
 # Base64 Encode
 base64 private.gpg > private.gpg.b64
+```
+
+# dearmor public key
+
+```
+gpg --dearmor devops/public.gpg > devops/public-da.gpg
 ```
 
 YUM REPO

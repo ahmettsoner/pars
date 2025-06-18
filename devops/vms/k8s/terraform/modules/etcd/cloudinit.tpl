@@ -1,7 +1,7 @@
 #cloud-config
 hostname: ${hostname}
 users:
-    - name: automation
+    - name: ${username}
       sudo: ALL=(ALL) NOPASSWD:ALL
       shell: /bin/bash
       ssh-authorized-keys:

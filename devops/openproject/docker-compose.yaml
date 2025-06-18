@@ -1,0 +1,38 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: openproject
+      POSTGRES_PASSWORD: openproject
+      POSTGRES_DB: openproject
+    volumes:
+      - openproject-db:/var/lib/postgresql/data
+    networks:
+      - openproject-net
+
+  openproject:
+    image: openproject/community:13
+    depends_on:
+      - db
+    ports:
+      - "8060:80"
+    environment:
+      OPENPROJECT_DATABASE__ADAPTER: postgresql
+      OPENPROJECT_DATABASE__HOST: db
+      OPENPROJECT_DATABASE__USERNAME: openproject
+      OPENPROJECT_DATABASE__PASSWORD: openproject
+      OPENPROJECT_DATABASE__DATABASE: openproject
+      RAILS_FORCE_SSL: "false"
+    volumes:
+      - openproject-data:/var/openproject/assets
+    networks:
+      - openproject-net
+
+volumes:
+  openproject-db:
+  openproject-data:
+
+networks:
+  openproject-net:

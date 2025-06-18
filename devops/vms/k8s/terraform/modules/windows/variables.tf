@@ -1,17 +1,22 @@
-variable "vm_name" {
-  type        = string
-  description = "Name of the Windows Server VM"
-}
+variable "vm_pool" {}
+variable "ssh_authorized_key" {}
+variable "ssh_private_key_path" {}
+variable "username" {}
+variable "memory" { default = 1024 }
+variable "vcpu" { default = 1 }
+variable "network_name" { default = "default" }
 
-variable "memory" {
-  type        = number
-  default     = 4096
-}
 
-variable "vcpus" {
-  type        = number
-  default     = 2
-}
+variable "module_name" { default = "etcd" }
+
+variable "vm_name" { default = "k8s-etcd-vm" }
+variable "vm_hostname" { default = "etcd-vm" }
+variable "vm_count" { default = 3 }
+variable "vm_ip_suffix" { default = "192.168.124.xxx" }
+variable "vm_ip_block" { default = "24" }
+variable "automation_username" { default = "automation" }
+
+
 
 variable "windows_iso_path" {
   type        = string
@@ -23,16 +28,8 @@ variable "virtio_iso_path" {
   description = "Path to VirtIO drivers ISO"
 }
 
-variable "pool_id" {
-  type        = string
-  description = "Libvirt storage pool to use"
-}
 
 variable "network_id" {
   type        = string
   description = "Libvirt network ID"
-}
-variable "autounattend_iso_path" {
-  type        = string
-  description = "Path to ISO file containing Autounattend.xml"
 }

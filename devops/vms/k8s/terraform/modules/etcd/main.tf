@@ -18,6 +18,7 @@ data "template_file" "cloudinit" {
   vars = {
     ssh_authorized_key = var.ssh_authorized_key
     hostname           = var.vm_hostname
+    username           = var.automation_username
   }
 }
 data "template_file" "cloudinit_meta" {
