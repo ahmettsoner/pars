@@ -43,7 +43,7 @@
             <CreatePartition wcm:action="add">
               <Order>1</Order>
               <Type>Primary</Type>
-              <Size>50000</Size> <!-- MB cinsinden, örnek -->
+              <Size>50000</Size>
             </CreatePartition>
           </CreatePartitions>
           <ModifyPartitions>
@@ -138,7 +138,7 @@
 
         <SynchronousCommand wcm:action="add">
           <Order>6</Order>
-          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Content -Path (Join-Path $env:USERPROFILE '.ssh\authorized_keys') -Value 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDHzBcXY1OfUNall8daYKCKEGYJC7BB7cyLhhj14h7paL0LJ3vwjlKtsK2xqmjEZYweD2hDwGpKEWJfcp1qnJDA6D6egRhYgcIPtssy4YaoFQZC2FMZ95NZA8fbHykKuVGntXNs6riQY3iRrI/1Nn/NqKM3UdfGow9oPSTYqJoC7AnbizGLJ55MRRuDfUDq1NqAinkqulnSdyIQZBjDHnHDF2/OZRjWezqsygIstl32ojMCo6GzpzhWq6hOM3xTrJgU6e2+TXIQc/YnhO2ZGsQPgIwtJLTGlTKrfHFy43N3wSfEYTK3BgrVK6fKTWm54rNmUaZmDt8wK1BgICo26XLo7t60pIP4B0Urr2YRl42hHg+tUux4hrfP15v77VH4wovsaDDZF8S1Cv9wHVvhOn048XaFChota2NkGU0IktCZPsPdwhndEtSkj8Y4cd7Q9e9NygZjWGOe/305Wh1/gpM7lOsaIgqeTEtGk33kzDNKOycpIVzoPo5prRyAKZn+0iSSAU8xqwlaEiT12tC6/8mn+yuAr1QO4LVjGOMNS0JSQdL5k6TgRBSirrM0kC51setGYhJ9kgftaFIMfi4pfOu7Tr1++WjYyElQxFhQCK3YHuIU6Ph7dqD89YBpOXDYjWLXeZHYc4huI0htFPyBtIytZ74z/g9bRLs8Mh4iRKERKQ==
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Content -Path (Join-Path $env:USERPROFILE '.ssh\authorized_keys') -Value 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDI9tj1Bzo0PBfyUEsc4590HlhaPKvGcn+QP41yYCbxXakT1bYbeiiVSqYKa/m/NmX9WQcyyblvhMSYndTpeuZBdQrBU5BEE92PvE4dWazGgSCX448/agHsrHNo4q2G/7bcYG8MlhEB8iFpFa6StQw0/TepvcbffdXPn8GuoHjQU80DY1nwV2+cYKOt8UPLsEHuLMMK/lLNN6SDAmOpwMOpzRr+RHwSuzEU/6ow2TGh0JV7LgW1A2PXmKckNz1HVk0XfvllrYh/WyndFGVi48o8Ry9AuAVr65oUQse4HvT69PZl7oBY/hSln/HKJRA4gnouomREYstaTpFEQckzX5ACU+nHP1gDVix+KylISleqCbK7YgKrQVEJTnGv+N/GDIh1Nh8zTPat9bkLUiV0PSRLrsseU1V9p4zo6H9pYvDUjhv0NH5oXz9QUZqGSkGA1dmKg4c+IY7SMFe9wVSOAcjS4eYVVN6pGVDc5SZyTt1JmREB7+Bk3RtXP/1TXOpd6adUR236OrcfPt3fIoUKYRsLXZ+vrXyD9w1lKh0TYWz2Hrfy34L+n6lEqIGVQ4tGoDvpoZ0DXLIqjRvz5ndvDWZzsAALfyWTgc7e2Ck6yHlAodXG3LiJDuWbEiOiIuOhOtgNx5EPmpRDcBbUQ8wEGnUZupQNk24bAxZNyOu5YqHZzQ==
 ' -Encoding ascii"</CommandLine>
           <Description>Write public key to authorized_keys</Description>
         </SynchronousCommand>

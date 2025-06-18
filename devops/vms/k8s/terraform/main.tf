@@ -16,7 +16,7 @@ resource "libvirt_pool" "custom_pool" {
 resource "libvirt_volume" "base_volume" {
   name   = "ubuntu-minimal-base"
   pool   = libvirt_pool.custom_pool.name
-  source = "../../../images/jammy-server-cloudimg-amd64.qcow2"
+  source = "/var/lib/libvirt/images/jammy-server-cloudimg-amd64.qcow2"
   format = "qcow2"
 }
 
@@ -33,8 +33,8 @@ module "windows_vm" {
   ssh_private_key_path  = local_file.private_key_pem.filename
   ssh_authorized_key    = local_file.public_key_openssh.content
   username              = var.vm_user
-  windows_iso_path =    "/home/ahmetsoner/AS/prs/pars/devops/images/SERVER_EVAL_x64FRE_en-us.iso"
-  virtio_iso_path  =    "/home/ahmetsoner/AS/prs/pars/devops/images/virtio-win.iso"
+  windows_iso_path =    "/var/lib/libvirt/images/SERVER_EVAL_x64FRE_en-us.iso"
+  virtio_iso_path  =    "/var/lib/libvirt/images/virtio-win.iso"
 }
 
 # Masters modülünü çağırıyoruz

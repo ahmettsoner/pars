@@ -6,37 +6,32 @@ sudo usermod -aG libvirt libvirt-qemu
 sudo systemctl restart libvirtd
 ```
 
-```bash
-rm -rf ./vms/k8s/terraform/.terraform* ./vms/k8s/terraform/terraform.tfstate*
+```
+cp -r ./devops/images/ /var/lib/libvirt/images
 ```
 
 ```bash
-mkdir -p ./images
+rm -rf ./devops/vms/k8s/terraform/.terraform* ./devops/vms/k8s/terraform/terraform.tfstate*
+```
+
+
+```bash
+wget -P /var/lib/libvirt/images https://dl.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
 ```
 
 ```bash
-wget -P ./images https://dl.fedoraproject.org/pub/fedora/linux/releases/41/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
+wget -P /var/lib/libvirt/images https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
+qemu-img convert -O qcow2 /var/lib/libvirt/images/jammy-server-cloudimg-amd64.img /var/lib/libvirt/images/jammy-server-cloudimg-amd64.qcow2
 ```
 
 ```bash
-wget -P ./images https://cloud-images.ubuntu.com/jammy/current/jammy-server-cloudimg-amd64.img
-qemu-img convert -O qcow2 ./images/jammy-server-cloudimg-amd64.img ./images/jammy-server-cloudimg-amd64.qcow2
+wget -P /var/lib/libvirt/images https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
+qemu-img convert -O qcow2 /var/lib/libvirt/images/ubuntu-22.04-minimal-cloudimg-amd64.img /var/lib/libvirt/images/ubuntu-22.04-minimal-cloudimg-amd64.qcow2
 ```
 
 ```bash
-wget -P ./images https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
-qemu-img convert -O qcow2 ./images/ubuntu-22.04-minimal-cloudimg-amd64.img ./images/ubuntu-22.04-minimal-cloudimg-amd64.qcow2
-```
-
-```bash
-sudo cp /usr/share/OVMF/OVMF_VARS.fd /var/lib/libvirt/qemu/nvram/windows-server-2022_VARS.fd
-sudo chown qemu:kvm /var/lib/libvirt/qemu/nvram/windows-server-2022_VARS.fd
-sudo cat /var/lib/libvirt/qemu/nvram/windows-server-2022_VARS.fd
-```
-
-```bash
-wget -P ./images https://go.microsoft.com/fwlink/p/?LinkID=2195280&clcid=0x409&culture=en-us&country=US
-wget -P ./images https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.100/virtio-win.iso
+wget -P /var/lib/libvirt/images https://go.microsoft.com/fwlink/p/?LinkID=2195280&clcid=0x409&culture=en-us&country=US
+wget -P /var/lib/libvirt/images https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.100/virtio-win.iso
 ```
 
 ```bash
@@ -68,10 +63,6 @@ terraform -chdir=./devops/vms/k8s/terraform apply -auto-approve
 
 ```bash
 terraform -chdir=./devops/vms/k8s/terraform destroy -auto-approve
-```
-
-```
-sudo apt install ovmf
 ```
 
 list vms:
@@ -122,7 +113,7 @@ sudo virsh vol-delete k8s_commoninit_worker.iso
 ```
 
 ```bash
-ssh -i ./vms/k8s/terraform/files/ssh_keys/infra_id_rsa automation@192.168.124.171
+ssh -i ./devops/vms/k8s/terraform/files/ssh_keys/infra_id_rsa automation@192.168.124.171
 ssh -i ~/.ssh/id_rsa user1@192.168.122.24
 ```
 

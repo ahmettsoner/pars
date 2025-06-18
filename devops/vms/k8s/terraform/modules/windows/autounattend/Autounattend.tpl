@@ -43,7 +43,7 @@
             <CreatePartition wcm:action="add">
               <Order>1</Order>
               <Type>Primary</Type>
-              <Size>50000</Size> <!-- MB cinsinden, örnek -->
+              <Size>50000</Size>
             </CreatePartition>
           </CreatePartitions>
           <ModifyPartitions>

@@ -76,10 +76,10 @@ resource "libvirt_domain" "windows_vm" {
   }
 }
 
-locals {
-  depends_on = [libvirt_domain.windows_vm]
-  ip_addresses = libvirt_domain.windows_vm.network_interface[0].addresses
-}
+# locals {
+#   depends_on = [libvirt_domain.windows_vm]
+#   ip_addresses = libvirt_domain.windows_vm.network_interface[0].addresses
+# }
 
 
 # resource "local_file" "ansible_inventory" {
