@@ -79,6 +79,40 @@ Remove-Item $installerPath
 cmake --version
 ```
 
+* Install MinGW
+```pwsh
+choco install mingw -y
+$mingwPath = "C:\ProgramData\mingw64\mingw64\bin"
+
+# [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$mingwPath", "User")
+$env:PATH = $env:PATH+ ";$mingwPath"
+```
+
+* Install Git
+```pwsh
+# Set version (adjust if needed)
+$gitVersion = "2.45.1"
+
+# Download URL for 64-bit Git installer
+$gitUrl = "https://github.com/git-for-windows/git/releases/download/v$gitVersion.windows.1/Git-$gitVersion-64-bit.exe"
+
+# Path to save installer
+$installerPath = "$env:TEMP\Git-Installer.exe"
+
+# Download Git installer
+Invoke-WebRequest -Uri $gitUrl -OutFile $installerPath
+
+# Install silently (default options)
+Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT" -Wait
+
+# Clean up
+Remove-Item $installerPath
+
+# Verify Git version
+git --version
+
+```
+
 * Instal OpenJDK
 ```pwsh
 # Java versiyonu (Temurin 17 LTS örneği)
@@ -165,4 +199,29 @@ Register-ScheduledTask -TaskName $taskName -Action $Action -Trigger $Trigger -Pr
 
 # Task'ı hemen başlat
 Start-ScheduledTask -TaskName $taskName
+```
+
+
+
+* Install WIX
+```pwsh
+# WiX CLI MSI URL'si
+$wixMsiUrl = "https://github.com/wixtoolset/wix/releases/download/v6.0.1/wix-cli-x64.msi"
+
+# Geçici dosya yolu
+$tempMsiPath = "$env:TEMP\wix-cli-x64.msi"
+
+# MSI dosyasını indir
+Invoke-WebRequest -Uri $wixMsiUrl -OutFile $tempMsiPath
+
+# MSI'yı sessiz (silent) kur
+Start-Process msiexec.exe -ArgumentList "/i `"$tempMsiPath`" /quiet /norestart" -Wait
+
+# İndirilen MSI dosyasını sil (isteğe bağlı)
+Remove-Item $tempMsiPath
+
+# WiX CLI yolunu kontrol etmek için ekleyebilirsin (örneğin PATH değişkenine)
+# Normalde kurulum PATH'e ekler, yoksa
+$env:PATH = "C:\Program Files\WiX Toolset v6.0\bin;" + $env:PATH
+
 ```

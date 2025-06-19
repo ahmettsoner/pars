@@ -1,9 +1,9 @@
 def call(String BRANCH) {
   checkout scm
   powershell """
-    git -C "${env.WORKSPACE}" config --global --add safe.directory "${env.WORKSPACE}"
-    git config --global user.email "${GIT_USER_EMAIL}"
-    git config --global user.name "${GIT_USER_NAME}"
+    git -C "${env.WORKSPACE}" config --system --add safe.directory "${env.WORKSPACE}"
+    git config --system user.email "${GIT_USER_EMAIL}"
+    git config --system user.name "${GIT_USER_NAME}"
     try {
       git fetch --prune origin "+refs/tags/*:refs/tags/*"
     } catch {
