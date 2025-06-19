@@ -14,3 +14,6 @@
 output "vm_network_name" {
   value = libvirt_network.example_network.name
 }
+# output "windows_vm_ips" {
+#   value = module.windows_vm.vm_ips
+# }

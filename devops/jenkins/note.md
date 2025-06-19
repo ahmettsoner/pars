@@ -49,7 +49,7 @@ ssh Administrator@192.168.122.118
 curl.exe -sO http://192.168.122.1:8080/jnlpJars/agent.jar
 ```
 
-```
+```pwsh
 $Action = New-ScheduledTaskAction -Execute "java.exe" -Argument '-jar "C:\Users\Administrator\jenkins\agent.jar" -url http://192.168.122.1:8080/ -secret 7d417c2e9f05e250bb734bdd8e13050ff2185bad27d9fb12395db5f9e8e98e22 -name windows -webSocket -workDir "C:\Users\Administrator\jenkins"'
 $Trigger = New-ScheduledTaskTrigger -AtStartup
 $Principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest

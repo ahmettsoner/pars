@@ -80,22 +80,6 @@ resource "local_file" "ansible_inventory" {
   ]))
 }
 
-resource "null_resource" "wait_for_vm" {
-  provisioner "local-exec" {
-    command = <<EOT
-    IP=$(virsh domifaddr ${var.vm_name} | grep ipv4 | awk '{print $4}' | cut -d'/' -f1)
-    while [ -z "$IP" ]; do
-      echo "VM IP alınamadı, bekleniyor..."
-      sleep 10
-      IP=$(virsh domifaddr ${var.vm_name} | grep ipv4 | awk '{print $4}' | cut -d'/' -f1)
-    done
-    echo "VM IP: $IP"
-    EOT
-  }
-
-  depends_on = [libvirt_domain.windows_vm]
-}
-
 
 resource "null_resource" "ansible_playbook" {
   depends_on = [local_file.ansible_inventory]

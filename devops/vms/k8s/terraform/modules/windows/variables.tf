@@ -7,12 +7,12 @@ variable "vcpu" { default = 1 }
 variable "network_name" { default = "default" }
 
 
-variable "module_name" { default = "etcd" }
+variable "module_name" { default = "windows" }
 
-variable "vm_name" { default = "k8s-etcd-vm" }
-variable "vm_hostname" { default = "etcd-vm" }
-variable "vm_count" { default = 3 }
-variable "vm_ip_suffix" { default = "192.168.124.xxx" }
+variable "vm_name" { default = "k8s-windows-vm" }
+variable "vm_hostname" { default = "windows-vm" }
+variable "vm_count" { default = 1 }
+variable "vm_ip_suffix" { default = "192.168.200.xxx" }
 variable "vm_ip_block" { default = "24" }
 variable "automation_username" { default = "automation" }
 

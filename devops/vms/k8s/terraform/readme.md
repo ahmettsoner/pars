@@ -7,7 +7,7 @@ sudo systemctl restart libvirtd
 ```
 
 ```
-cp -r ./devops/images/ /var/lib/libvirt/images
+cp -r ./devops/images/ /var/lib/libvirt
 ```
 
 ```bash
@@ -40,8 +40,11 @@ sudo dnf install wimlib wimlib-utils genisoimage p7zip p7zip-plugins cabextract
 ```
 
 ```bash
-chmod +x devops/vms/k8s/terraform/modules/windows/scripts/create-autounattend-iso.sh
+chmod +x ./devops/vms/k8s/terraform/modules/windows/scripts/create-autounattend-iso.sh
 sudo ./devops/vms/k8s/terraform/modules/windows/scripts/create-autounattend-iso.sh ./devops/vms/k8s/terraform/modules/windows/autounattend ./devops/images/autounattend.iso
+```
+```bash
+chmod +x ./devops/vms/k8s/terraform/modules/windows/scripts/get_ip.sh
 ```
 
 ```bash
@@ -201,23 +204,3 @@ Set-Content -Path $authKeysPath -Value $publicKey -Encoding ascii
 
 
 
-**Tamamlanan:**
-`Metaveri Validasyon alt yapısının hazırlanması`
-`Metaveri - FluentValidation entegrasyonunun sağlanması`
-`Metaveri Validasyon Frontent alt yapısının hazırlanması`
-`Metaveri - React validasyon entegrasyonunun sağlanması`
-`Metaveri NotEmptyValidator hazırlanması`
-`Metaveri ExclusiveBetweenValidator hazırlanması`
-
-**Hazırlanacak:**
-`Metaveri LengthValidator hazırlanması`
-`Metaveri ComparisonValidator hazırlanması`
-`Metaveri RegularExpressionValidator hazırlanması`
-`Metaveri BetweenValidator hazırlanması`
-`Metaveri EmailValidator hazırlanması`
-`Metaveri NotEmptyValidator hazırlanması`
-`Metaveri NotNullValidator hazırlanması`
-`Metaveri EqualValidator hazırlanması`
-`Metaveri GreaterThanOrEqualValidator hazırlanması`
-`Metaveri InclusiveBetweenValidator hazırlanması`
-`Metaveri LessThanOrEqualValidator hazırlanması`
