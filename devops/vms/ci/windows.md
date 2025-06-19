@@ -58,7 +58,7 @@ npm -v
 * Install Cmake
 ```pwsh
 # Set version (adjust as needed)
-$cmakeVersion = "3.27.3"
+$cmakeVersion = "4.0.3"
 
 # Download URL for Windows x64 installer (.msi)
 $cmakeUrl = "https://github.com/Kitware/CMake/releases/download/v$cmakeVersion/cmake-$cmakeVersion-windows-x86_64.msi"
@@ -79,13 +79,12 @@ Remove-Item $installerPath
 cmake --version
 ```
 
+* Make
+```pwsh
+```
+
 * Install MinGW
 ```pwsh
-choco install mingw -y
-$mingwPath = "C:\ProgramData\mingw64\mingw64\bin"
-
-# [Environment]::SetEnvironmentVariable("Path", $env:Path + ";$mingwPath", "User")
-$env:PATH = $env:PATH+ ";$mingwPath"
 ```
 
 * Install Git
@@ -153,11 +152,6 @@ if ($currentPath -notlike "*$newPath*") {
 # Versiyon kontrolü
 java -version
 javac -version
-```
-
-* Make
-```pwsh
-choco install make -y
 ```
 
 * Git Release Manager
