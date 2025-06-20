@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-project(Pars)
+project(Pars LANGUAGES NONE)
 
 # find_program(GO_EXEC go PATHS /usr/local/bin /usr/bin)
 # if(NOT GO_EXEC)
