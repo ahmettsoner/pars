@@ -203,4 +203,10 @@ Remove-Item $tempMsiPath
 # Normalde kurulum PATH'e ekler, yoksa
 $env:PATH = "C:\Program Files\WiX Toolset v6.0\bin;" + $env:PATH
 
+#!!! BU bölüm kontrollü olarak yeniden test edilecek 
+$oldPath = "[Environment]::GetEnvironmentVariable("Path", "Machine")"
+$wixPath = "C:\Program Files\WiX Toolset v6.0\bin"
+$newPath = $oldPath + ";" + $wixPath
+[Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
+
 ```
