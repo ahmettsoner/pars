@@ -27,10 +27,10 @@ build.cmake.macos.%:
 	$(call build_cmake,build/$*,$*,-G "Unix Makefiles",$(COMMAND_LIST))
 
 build.cmake.windows:
-	$(call build_cmake,build/current,$(VERSION),-G "MinGW Makefiles",$(COMMAND_LIST))
+	$(call build_cmake,build/current,$(VERSION),-DCMAKE_MAKE_PROGRAM=mingw32-make -G "MinGW Makefiles",$(COMMAND_LIST))
 
 build.cmake.windows.%:
-	$(call build_cmake,build/$*,$*,-G "MinGW Makefiles",$(COMMAND_LIST))
+	$(call build_cmake,build/$*,$*,-DCMAKE_MAKE_PROGRAM=mingw32-make -G "MinGW Makefiles",$(COMMAND_LIST))
 
 
 ifneq ($(OS),Windows_NT)

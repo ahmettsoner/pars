@@ -116,8 +116,7 @@ sudo virsh vol-delete k8s_commoninit_worker.iso
 ```
 
 ```bash
-ssh -i ./devops/vms/k8s/terraform/files/ssh_keys/infra_id_rsa automation@192.168.124.171
-ssh -i ~/.ssh/id_rsa user1@192.168.122.24
+ssh -i ./devops/vms/k8s/terraform/files/ssh_keys/infra_id_rsa automation@192.168.200.23
 ```
 
 ```bash

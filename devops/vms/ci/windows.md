@@ -3,6 +3,22 @@
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 ```
 
+* Install Cmake
+```pwsh
+choco install cmake -y
+```
+
+* Make
+```pwsh
+choco install make -y
+```
+
+* Install MinGW
+```pwsh
+choco install mingw -y
+```
+
+
 
 * Install Go
 ```pwsh
@@ -55,37 +71,6 @@ npm -v
 ```
 
 
-* Install Cmake
-```pwsh
-# Set version (adjust as needed)
-$cmakeVersion = "4.0.3"
-
-# Download URL for Windows x64 installer (.msi)
-$cmakeUrl = "https://github.com/Kitware/CMake/releases/download/v$cmakeVersion/cmake-$cmakeVersion-windows-x86_64.msi"
-
-# Target path for the installer
-$installerPath = "$env:TEMP\cmake-installer.msi"
-
-# Download the installer
-Invoke-WebRequest -Uri $cmakeUrl -OutFile $installerPath
-
-# Run installer silently, add to PATH for all users
-Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$installerPath`" /quiet ADD_CMAKE_TO_PATH=System" -Wait
-
-# Clean up
-Remove-Item $installerPath
-
-# Verify installation
-cmake --version
-```
-
-* Make
-```pwsh
-```
-
-* Install MinGW
-```pwsh
-```
 
 * Install Git
 ```pwsh
