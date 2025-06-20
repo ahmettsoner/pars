@@ -23,6 +23,8 @@ def call(String OS, String ARCH) {
             Write-Host "Error with archive: Unable to validate archive contents."
         }
         Copy-Item -Path "${newBaseName}" -Destination "${WORKSPACE}\\${packageSourceDir}" -Force
+        Copy-Item -Path "${originalFileName}" -Destination "${WORKSPACE}\\${packageSourceDir}" -Force
+
         Pop-Location
     """
 
