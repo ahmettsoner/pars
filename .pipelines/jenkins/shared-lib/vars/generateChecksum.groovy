@@ -57,9 +57,7 @@ def WriteChecksumForMSIInstaller(ARCH) {
     def type = "MSI"
     def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
-    powershell """
-        Add-Content -Path '${env.ARTIFACT_CHECKSUM_MD5_PATH}' -Value '${line}'
-    """
+    sh "echo \"${line}\" >> ${env.ARTIFACT_CHECKSUM_MD5_PATH}"
 }
 
 return this

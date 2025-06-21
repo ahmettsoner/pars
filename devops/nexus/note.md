@@ -103,11 +103,18 @@ base64 private.gpg > private.gpg.b64
 gpg --dearmor devops/public.gpg > devops/public-da.gpg
 ```
 
-YUM REPO
-create yum hosted repo
-default ayarlarlar
+## APT REPO
+create apt hosted repo
+name: apt-universial
+distribution: universial
+signin key: private.gpg
+passphrase: 33KX4gaYW7kd
 
--   Repodata Depth: 0
+
+## YUM REPO
+create yum hosted repo
+name: yum
+repodata Depth: 0
 
 yum.repo.parsdevkit.net
 rpm.repo.parsdevkit.net
