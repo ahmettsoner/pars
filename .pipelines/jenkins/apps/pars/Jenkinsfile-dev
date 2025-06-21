@@ -1,7 +1,7 @@
 @Library('shared-lib') _
 
-def osList = ['linux', 'windows']//, 'darwin', 'openbsd', 'netbsd', 'freebsd']
-def archList = ['x86_64']//, 'arm64']
+def osList = ['linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd']
+def archList = ['x86_64', 'arm64']
 
 def targets = [
     windows: [
@@ -75,11 +75,11 @@ pipeline {
                 axes {
                     axis {
                         name 'TARGET_OS'
-                        values 'linux', 'windows'//, 'darwin', 'openbsd', 'netbsd', 'freebsd'
+                        values 'linux', 'windows', 'darwin', 'openbsd', 'netbsd', 'freebsd'
                     }
                     axis {
                         name 'TARGET_ARCH'
-                        values 'x86_64'//, 'arm64'
+                        values 'x86_64', 'arm64'
                     }
                 }
                 excludes {
