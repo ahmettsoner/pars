@@ -119,8 +119,8 @@ pipeline {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
-                            stages{
                         parallel {
+                            stages{
                                 stage("RPM Package") {
                                     agent { label "rhel" }
                                     steps {
