@@ -4,7 +4,7 @@ def call(String OS, String ARCH) {
 
     def plainVersion = env.CURRENT_VERSION.replaceFirst(/^v/, "")
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
-    def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\pkg\\msi\\${ARCH}"
+    def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\ins\\msi\\${ARCH}"
     def msiOutputBase = "${packageOutputBase}\\output"
     def msiOutputPath = "${msiOutputBase}\\${APPNAME}.msi"
     def checksumFilePath = "${msiOutputBase}\\checksum.txt"
