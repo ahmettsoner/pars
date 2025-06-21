@@ -5,25 +5,25 @@ def archList = ['x86_64']//, 'arm64']
 
 def targets = [
     windows: [
-        x86_64: ['binary', 'msi', 'choco'],
-        amd64  : ['binary', 'msi', 'choco']
+        x86_64: ['binary', 'binary-archive', 'msi', 'choco'],
+        amd64  : ['binary', 'binary-archive', 'msi', 'choco']
     ],
     linux: [
-        x86_64: ['binary', 'deb', 'rpm'],
-        amd64  : ['binary', 'deb', 'rpm']
+        x86_64: ['binary', 'binary-archive', 'deb', 'rpm'],
+        amd64  : ['binary', 'binary-archive', 'deb', 'rpm']
     ],
     darwin: [
-        x86_64: ['binary'],
-        amd64  : ['binary']
+        x86_64: ['binary', 'binary-archive', 'dmg', 'breq'],
+        amd64  : ['binary', 'binary-archive', 'dmg', 'brew']
     ],
     openbsd: [
-        x86_64: ['binary']
+        x86_64: ['binary', 'binary-archive']
     ],
     netbsd: [
-        x86_64: ['binary']
+        x86_64: ['binary', 'binary-archive']
     ],
     freebsd: [
-        x86_64: ['binary']
+        x86_64: ['binary', 'binary-archive']
     ]
 ]
 pipeline {
@@ -50,23 +50,19 @@ pipeline {
 
     stages {
         stage("Prepare Workspace") {
-            parallel {
-                stage("Common Operations") {
-                    agent { label 'linux' }
-                    steps {
-                        script {
-                            agentInitOnce.initOnce(params.BRANCH)
-                        }
-                        script {
-                            generateDocs()
-                        }
-                    }
-                    post {
-                        cleanup {
-                            script {
-                                agentInitOnce.cleanupOnce()
-                            }
-                        }
+            agent { label 'linux' }
+            steps {
+                script {
+                    agentInitOnce.initOnce(params.BRANCH)
+                }
+                script {
+                    generateDocs()
+                }
+            }
+            post {
+                cleanup {
+                    script {
+                        agentInitOnce.cleanupOnce()
                     }
                 }
             }
@@ -104,6 +100,8 @@ pipeline {
                         steps {
                             script {
                                 agentInitOnce.initOnce(params.BRANCH)
+                            }
+                            script {
                                 buildBinary(TARGET_OS, TARGET_ARCH)
                                 archiveBinary(TARGET_OS, TARGET_ARCH)
                                 packageArtifact(TARGET_OS, TARGET_ARCH)
@@ -124,21 +122,44 @@ pipeline {
                         steps {
                             script {
                                 parallel(
-                                    "RPM Package": {
-                                        node('rhel') {
-                                            agentInitOnce.initOnce(params.BRANCH)
-                                            buildRPMPackage(TARGET_OS, TARGET_ARCH)
-                                            copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                            signRpmPackage(TARGET_OS, TARGET_ARCH)
-                                            agentInitOnce.cleanupOnce()
+
+                                    stage("RPM Package") {
+                                        agent { label "rhel" }
+                                        steps {
+                                            script {
+                                                agentInitOnce.initOnce(params.BRANCH)
+                                            }
+                                            script {
+                                                buildRPMPackage(TARGET_OS, TARGET_ARCH)
+                                                copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                                signRpmPackage(TARGET_OS, TARGET_ARCH)
+                                            }
                                         }
-                                    },
-                                    "DEB Package": {
-                                        node('debian') {
-                                            agentInitOnce.initOnce(params.BRANCH)
+                                        post {
+                                            cleanup {
+                                                script {
+                                                    agentInitOnce.cleanupOnce()
+                                                }
+                                            }
+                                        }
+                                    }
+                                    stage("RPM Package") {
+                                        agent { label "rhel" }
+                                        steps {
+                                            script {
+                                                agentInitOnce.initOnce(params.BRANCH)
+                                            }
+                                            script {
                                             buildDEBPackage(TARGET_OS, TARGET_ARCH)
                                             copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                            agentInitOnce.cleanupOnce()
+                                            }
+                                        }
+                                        post {
+                                            cleanup {
+                                                script {
+                                                    agentInitOnce.cleanupOnce()
+                                                }
+                                            }
                                         }
                                     }
                                 )
