@@ -97,7 +97,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
                         def newMsiBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
                         def remoteMsiFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.msi"
-                        def localMsiPath = "${env.ARTIFACT_PATH}\\${newmsiBaseName}"
+                        def localMsiPath = "${env.ARTIFACT_PATH}/${newmsiBaseName}"
 
                         withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                             powershell """
