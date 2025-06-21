@@ -80,19 +80,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         def localMsiPath = "${env.ARTIFACT_PATH}/${newmsiBaseName}"
 
                         withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                            powershell """
-                                \$username = '${NEXUS_USER}'
-                                \$password = '${NEXUS_PASS}'
-                                \$url = '${remoteMsiFilePath}'
-                                \$filePath = '${localMsiPath}'
-
-                                Write-Host "Uploading \$filePath to \$url..."
-                                Invoke-WebRequest -Uri \$url `
-                                                -Method Put `
-                                                -InFile \$filePath `
-                                                -Credential (New-Object System.Management.Automation.PSCredential(\$username, (ConvertTo-SecureString \$password -AsPlainText -Force))) `
-                                                -UseBasicParsing
-                            """
+                            sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${localMsiPath}\" \"${remoteMsiFilePath}\""
                         }
 
                         publishMsiInstaller(OS, ARCH)
