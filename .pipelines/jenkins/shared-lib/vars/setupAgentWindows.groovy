@@ -48,11 +48,11 @@ def call(String BRANCH) {
   def suffix = env.CURRENT_VERSION.replaceFirst("^${env.CURRENT_BASE_VERSION}-?", "")
   env.CURRENT_VERSION_RELEASE_NUMBER = suffix
   env.CURRENT_BASE_VERSION_RAW = env.CURRENT_BASE_VERSION?.startsWith('v') ? env.CURRENT_BASE_VERSION.substring(1) : env.CURRENT_BASE_VERSION
-  env.HTML_OUTPUT_DIR = "temp\\${env.CURRENT_VERSION}\\html_docs"
+  env.HTML_OUTPUT_DIR = "temp/${env.CURRENT_VERSION}/html_docs"
   env.DIST_PATH = "dist"
-  env.ARTIFACT_PATH = "dist\\artifacts\\${env.CURRENT_VERSION}"
+  env.ARTIFACT_PATH = "dist/artifacts/${env.CURRENT_VERSION}"
   env.CHANGES_PATH = ".changes"
-  env.CHANGELOG_PATH = "${env.CHANGES_PATH}\\${env.CURRENT_VERSION}.md"
+  env.CHANGELOG_PATH = "${env.CHANGES_PATH}/${env.CURRENT_VERSION}.md"
 
   echo "CURRENT_VERSION: ${env.CURRENT_VERSION}"
 
