@@ -142,7 +142,6 @@ pipeline {
                                 agentInitOnce.cleanupOnce()
                             }
                         }
-                        }
                     }
                     stage("Package for Windows") {
                         when {
