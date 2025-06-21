@@ -7,7 +7,7 @@ file(APPEND ${CONFIG_FILE_PATH} "            <ComponentGroupRef Id='ProductCompo
 file(APPEND ${CONFIG_FILE_PATH} "        </Feature>\n")
 file(APPEND ${CONFIG_FILE_PATH} "        <ComponentGroup Id='ProductComponents' Directory='INSTALLFOLDER'>\n")
 file(APPEND ${CONFIG_FILE_PATH} "            <Component>\n")
-file(APPEND ${CONFIG_FILE_PATH} "                <File Source='${APP_NAME}${EXT}' Name='SOURCES/${APP_NAME}${EXT}' />\n")
+file(APPEND ${CONFIG_FILE_PATH} "                <File Source='${APP_NAME}${EXT}' Name='${APP_NAME}${EXT}' />\n")
 file(APPEND ${CONFIG_FILE_PATH} "            </Component>\n")
 file(APPEND ${CONFIG_FILE_PATH} "            <Component Id='EnvVars' Guid='10bede1b-8042-5b7f-ab13-9b714da6f27d'>\n")
 file(APPEND ${CONFIG_FILE_PATH} "                <CreateFolder />\n")

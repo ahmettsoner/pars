@@ -8,7 +8,7 @@ def call(String OS, String ARCH) {
     def newBaseName = "${APPNAME}-${env.CURRENT_BASE_VERSION_RAW}.zip"
 
     def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\ins\\msi\\${ARCH}\\${APPNAME}"
-    def packageSourceDir = "${packageOutputBase}\\SOURCES"
+    def packageSourceDir = "${packageOutputBase}"
 
     powershell """
         \$ErrorActionPreference = 'Stop'
