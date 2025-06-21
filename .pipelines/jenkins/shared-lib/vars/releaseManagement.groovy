@@ -58,29 +58,14 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         unstash "${OS}-${ARCH}-deb-package-artifacts"
 
 
-                        // def newRPMBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-                        // def remoteRPMFilePath = "${NEXUS_URL}/repository/yum-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
-
-                        // sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
-
                         publishRpmPackage(OS, ARCH)
-
-                        // def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-                        // def remoteDebFilePath = "${NEXUS_URL}/repository/apt-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
-
-                        // sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
 
                         
                         publishDebPackage(OS, ARCH)
                     } else if (OS == 'windows') {
                         unstash "${OS}-${ARCH}-msi-package-artifacts"
 
-                        def newMsiBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
-                        def remoteMsiFilePath = "${NEXUS_URL}/repository/msi-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.msi"
-
-                        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newMsiBaseName}\" \"${remoteMsiFilePath}\""
-
-                        // publishMsiInstaller(OS, ARCH)
+                        publishMsiInstaller(OS, ARCH)
                     }
                 }
             }
