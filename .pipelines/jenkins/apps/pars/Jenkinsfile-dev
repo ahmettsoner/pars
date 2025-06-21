@@ -115,69 +115,50 @@ pipeline {
                             }
                         }
                     }
-                    stage("Package for Linux (.rpm)") {
+                    stage("Package for Linux") {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
-                        agent { label 'debian' }
                         steps {
                             script {
-                                agentInitOnce.initOnce(params.BRANCH)
-                            }
-                            script {
-                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
-                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                            }
-                        }
-                        post {
-                            cleanup {
-                                script {
-                                    agentInitOnce.cleanupOnce()
-                                }
+                                parallel(
+                                    "RPM Package": {
+                                        node('rhel') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildRPMPackage(TARGET_OS, TARGET_ARCH)
+                                            copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            signRpmPackage(TARGET_OS, TARGET_ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    },
+                                    "DEB Package": {
+                                        node('debian') {
+                                            agentInitOnce.initOnce(params.BRANCH)
+                                            buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                            copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                            agentInitOnce.cleanupOnce()
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
-                    stage("Package for Linux (.deb)") {
-                        when {
-                            expression { return TARGET_OS == 'linux' }
-                        }
-                        agent { label 'debian' }
-                        steps {
-                            script {
-                                agentInitOnce.initOnce(params.BRANCH)
-                            }
-                            script {
-                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
-                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                            }
-                        }
-                        post {
-                            cleanup {
-                                script {
-                                    agentInitOnce.cleanupOnce()
-                                }
-                            }
-                        }
-                    }
-                    stage("Package for Windows (.msi)") {
+                    stage("Package for Windows") {
                         when {
                             expression { return TARGET_OS == 'windows' }
                         }
-                        agent { label 'windows' }
                         steps {
                             script {
-                                agentInitOnce.initOnce(params.BRANCH)
-                            }
-                            script {
+                                parallel(
+                                    "MSI Installer": {
+                                        node('windows') {
+                                            agentInitOnce.initOnceWindows(params.BRANCH)
                                             buildMSIInstaller(TARGET_OS, TARGET_ARCH)
                                             // copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                            }
-                        }
-                        post {
-                            cleanup {
-                                script {
-                                    agentInitOnce.cleanupOnce()
-                                }
+                                            agentInitOnce.cleanupOnceWindows()
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
