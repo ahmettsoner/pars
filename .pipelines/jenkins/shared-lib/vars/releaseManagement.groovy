@@ -63,7 +63,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
-                        publishRpmPackage(OS, ARCH)
+                        // publishRpmPackage(OS, ARCH)
 
                         def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
                         def remoteDebFilePath = "${NEXUS_URL}/repository/apt-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
@@ -71,18 +71,16 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
 
                         
-                        publishDebPackage(OS, ARCH, "universial")
+                        // publishDebPackage(OS, ARCH, "universial")
                     } else if (OS == 'windows') {
                         unstash "${OS}-${ARCH}-msi-package-artifacts"
 
                         def newMsiBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
                         def remoteMsiFilePath = "${NEXUS_URL}/repository/msi-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.msi"
 
-                        withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
-                            sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newMsiBaseName}\" \"${remoteMsiFilePath}\""
-                        }
+                        sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newMsiBaseName}\" \"${remoteMsiFilePath}\""
 
-                        publishMsiInstaller(OS, ARCH)
+                        // publishMsiInstaller(OS, ARCH)
                     }
                 }
             }
