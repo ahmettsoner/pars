@@ -16,7 +16,7 @@ def call(String OS, String ARCH) {
 
     // Artifact dizinine kopyala (PowerShell)
     powershell """
-        Copy-Item -Path '${msiOutputPath}' -Destination '${env.ARTIFACT_PATH}\\${newBaseName}' -Force
+        Copy-Item -Path '${msiOutputPath}' -Destination 'dist\\artifacts\\${env.CURRENT_VERSION}\\${newBaseName}' -Force
     """
 
     // Stash işlemi

@@ -1,8 +1,7 @@
 def call(String BRANCH) {
   checkout scm
-  sh "git -C '${env.WORKSPACE}' config --global --add safe.directory '${env.WORKSPACE}'"
-
   sh """
+    git -C '${env.WORKSPACE}' config --global --add safe.directory '${env.WORKSPACE}'
     git config --global user.email "${GIT_USER_EMAIL}"
     git config --global user.name "${GIT_USER_NAME}"
     git fetch --prune origin "+refs/tags/*:refs/tags/*" || echo "No tags to fetch or fetch failed, skipping"

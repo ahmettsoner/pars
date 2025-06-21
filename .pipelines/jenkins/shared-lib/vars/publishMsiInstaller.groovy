@@ -1,7 +1,7 @@
 def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-msi-package-artifacts"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
-    def msiOutputPath = "${env.ARTIFACT_PATH}\\${newBaseName}"
+    def msiOutputPath = "dist\\artifacts\\${env.CURRENT_VERSION}\\${newBaseName}"
 
     withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
         powershell """

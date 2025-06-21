@@ -7,7 +7,13 @@ class Utils implements Serializable {
         this.steps = steps
     }
 
-
+    def normalizePath(String path) {
+        if (isUnix()) {
+            return path.replaceAll('\\\\', '/')
+        } else {
+            return path.replaceAll('/', '\\\\')
+        }
+    }
 
     String appExt(String platform) {
         return platform.toLowerCase() == 'windows' ? '.exe' : ''
