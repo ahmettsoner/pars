@@ -2,7 +2,7 @@ def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-rpm-package-artifacts"
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-    def rpmOutputPath = "${env.ARTIFACT_PATH}\\${newBaseName}"
+    def rpmOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
     def gpgIdentity = "ParsDevKit (Pars Repo Key) <support@parsdevkit.net>"
 
     withCredentials([
