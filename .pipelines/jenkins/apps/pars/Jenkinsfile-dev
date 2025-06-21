@@ -123,9 +123,17 @@ pipeline {
                         steps {
                             script {
                                 agentInitOnce.initOnce(params.BRANCH)
+                            }
+                            script {
                                 buildDEBPackage(TARGET_OS, TARGET_ARCH)
                                 copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                        post {
+                            cleanup {
+                                script {
+                                    agentInitOnce.cleanupOnce()
+                                }
                             }
                         }
                     }
@@ -137,28 +145,39 @@ pipeline {
                         steps {
                             script {
                                 agentInitOnce.initOnce(params.BRANCH)
+                            }
+                            script {
                                 buildDEBPackage(TARGET_OS, TARGET_ARCH)
                                 copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                        post {
+                            cleanup {
+                                script {
+                                    agentInitOnce.cleanupOnce()
+                                }
                             }
                         }
                     }
-                    stage("Package for Windows") {
+                    stage("Package for Windows (.msi)") {
                         when {
                             expression { return TARGET_OS == 'windows' }
                         }
+                        agent { label 'windows' }
                         steps {
                             script {
-                                parallel(
-                                    "MSI Installer": {
-                                        node('windows') {
-                                            agentInitOnce.initOnceWindows(params.BRANCH)
+                                agentInitOnce.initOnce(params.BRANCH)
+                            }
+                            script {
                                             buildMSIInstaller(TARGET_OS, TARGET_ARCH)
                                             // copyMsiAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                            agentInitOnce.cleanupOnceWindows()
-                                        }
-                                    }
-                                )
+                            }
+                        }
+                        post {
+                            cleanup {
+                                script {
+                                    agentInitOnce.cleanupOnce()
+                                }
                             }
                         }
                     }
