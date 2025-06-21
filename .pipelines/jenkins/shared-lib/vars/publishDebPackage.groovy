@@ -1,4 +1,4 @@
-def call(String OS, String ARCH, String DIST_CODENAME) {
+def call(String OS, String ARCH) {
     unstash "${OS}-${ARCH}-deb-package-artifacts"
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
     def debOutputPath = "${env.ARTIFACT_PATH}/${newBaseName}"
