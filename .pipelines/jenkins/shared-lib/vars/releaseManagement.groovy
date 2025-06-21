@@ -22,32 +22,14 @@ def releaseRepo(List<String> osList, List<String> archList) {
     ]) {
 
 
-        def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/changelog.md"
+        def remoteChangelogFilePath = "${NEXUS_URL}/repository/release-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/changelog.md"
         writeFile file: "${env.ARTIFACT_PATH}/changelog.md", text: changelog
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/changelog.md\" \"${remoteChangelogFilePath}\""
 
 
-        def remoteChecksumFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/checksums.md"
+        def remoteChecksumFilePath = "${NEXUS_URL}/repository/release-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/checksums.md"
         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/Checksums.md\" \"${remoteChecksumFilePath}\""
 
-        def DIST_CODENAMES = [
-            // Ubuntu LTS ve güncel sürümler
-            "focal",      // 20.04 LTS
-            "jammy",      // 22.04 LTS
-            // "noble",      // 24.04 LTS
-            // "mantic",     // 23.10
-            // "lunar",      // 23.04 (EOL)
-            "bionic",        // 18.04 LTS (eski ama hâlâ yaygın)
-            
-            // // Debian stable/testing/oldstable
-            // "bookworm",   // Debian 12 (stable)
-            // "bullseye",   // Debian 11 (oldstable)
-            // "buster",     // Debian 10 (eski ama bazı sistemlerde hâlâ kullanılıyor)
-            
-            // // Diğer olası türev veya özel kullanımlar
-            // "stretch",    // Debian 9 (eski ama kurumsal sistemlerde hâlâ rastlanabilir)
-            // "trixie",     // Debian 13 (testing, yakında stable olacak)
-        ]
         osList.each { OS ->
             archList.each { ARCH ->
                 if (!(OS == 'netbsd' && ARCH == 'arm64')) {
@@ -60,13 +42,13 @@ def releaseRepo(List<String> osList, List<String> archList) {
                     def archiveFormat = utils.archiveFormat(OS)
 
                     def newBaseName = "${APPNAME}-${OS}-${ARCH}${ext}"
-                    def remoteFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
+                    def remoteFilePath = "${NEXUS_URL}/repository/binary-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}${ext}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newBaseName}\" \"${remoteFilePath}\""
 
 
                     def newArchiveBaseName = "${APPNAME}-${OS}-${ARCH}.bin.${archiveFormat}"
-                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
+                    def remoteArchiveFilePath = "${NEXUS_URL}/repository/binary-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.${archiveFormat}"
 
                     sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newArchiveBaseName}\" \"${remoteArchiveFilePath}\""
 
@@ -89,14 +71,12 @@ def releaseRepo(List<String> osList, List<String> archList) {
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
 
                         
-                        DIST_CODENAMES.each { dist ->
-                            publishDebPackage(OS, ARCH, dist)
-                        }
+                        publishDebPackage(OS, ARCH, "universial")
                     } else if (OS == 'windows') {
                         unstash "${OS}-${ARCH}-msi-package-artifacts"
 
                         def newMsiBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
-                        def remoteMsiFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.msi"
+                        def remoteMsiFilePath = "${NEXUS_URL}/repository/msi-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.msi"
                         def localMsiPath = "${env.ARTIFACT_PATH}/${newmsiBaseName}"
 
                         withCredentials([usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {

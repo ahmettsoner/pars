@@ -104,35 +104,47 @@ gpg --dearmor devops/public.gpg > devops/public-da.gpg
 ```
 
 ## APT REPO
-create apt hosted repo
+type: apt (hosted)
 name: apt-dev
 distribution: universial
 signin key: private.gpg
 passphrase: 33KX4gaYW7kd
 
-
 ## YUM REPO
-create yum hosted repo
+type: yum (hosted)
 name: yum-dev
 repodata Depth: 0
 
 yum.repo.parsdevkit.net
 rpm.repo.parsdevkit.net
 
-## RAW REPO
-name: raw-dev
+## RELEASE REPO
+type: raw (hosted)
+name: release-dev
+
+## BINARY REPO
+type: raw (hosted)
+name: binary-dev
+
+## MSI REPO
+type: raw (hosted)
+name: msi-dev
 
 ## KEYS REPO
+type: raw (hosted)
 name: keys
+upload:
+      public.gpg > /gpg/public-rpm-dev.gpg
+      public-da.gpg > /gpg/public-deb-dev.gpg
 
 ## NGINX conf:
-```
+```nginx
 server {
     listen 80;
 
-   
+    # Binary
     location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/(?<version>[^/]+)/(?<platform>[^/]+)/binaries/raw/all/(?<arch>[^/]+)/(?<app>[^/]+)$ {
-        proxy_pass http://nexus-main:8081/repository/raw-$env/$project/$env/$version/$platform/$arch/$app;
+        proxy_pass http://nexus-main:8081/repository/binary-$env/$project/$env/$version/$platform/$arch/$app;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -140,8 +152,9 @@ server {
         proxy_intercept_errors on; 
     }
    
+    # Release
     location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/(?<version>[^/]+)/(?<file>[^/]+)$ {
-        proxy_pass http://nexus-main:8081/repository/raw-$env/$project/$env/$version/$file;
+        proxy_pass http://nexus-main:8081/repository/release-$env/$project/$env/$version/$file;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -149,6 +162,7 @@ server {
         proxy_intercept_errors on; 
     }
    
+    # Yum
     location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/yum/(?<child>.*)$ {
         proxy_pass http://nexus-main:8081/repository/yum-$env/$child;
         proxy_set_header Host $host;
@@ -158,6 +172,7 @@ server {
         proxy_intercept_errors on; 
     }
 
+    # Apt
     location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/apt/(?<child>.*)$ {
         proxy_pass http://nexus:8081/repository/apt-$env/$child;
         proxy_set_header Host $host;
@@ -167,7 +182,17 @@ server {
         proxy_intercept_errors on; 
     }
 
-   
+    # Msi
+    location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/msi/(?<child>.*)$ {
+        proxy_pass http://nexus:8081/repository/apt-$env/$child;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+
+    # Keys
     location ~ ^/downloads/keys/(?<type>[^/]+)/(?<file>[^/]+)$ {
         proxy_pass http://nexus:8081/repository/keys/$type/$file;
         proxy_set_header Host $host;
