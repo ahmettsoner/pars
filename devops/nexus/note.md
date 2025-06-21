@@ -105,7 +105,7 @@ gpg --dearmor devops/public.gpg > devops/public-da.gpg
 
 ## APT REPO
 create apt hosted repo
-name: apt-universial
+name: apt-dev
 distribution: universial
 signin key: private.gpg
 passphrase: 33KX4gaYW7kd
@@ -113,8 +113,84 @@ passphrase: 33KX4gaYW7kd
 
 ## YUM REPO
 create yum hosted repo
-name: yum
+name: yum-dev
 repodata Depth: 0
 
 yum.repo.parsdevkit.net
 rpm.repo.parsdevkit.net
+
+## RAW REPO
+name: raw-dev
+
+## KEYS REPO
+name: keys
+
+## NGINX conf:
+```
+server {
+    listen 80;
+
+   
+    location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/(?<version>[^/]+)/(?<platform>[^/]+)/binaries/raw/all/(?<arch>[^/]+)/(?<app>[^/]+)$ {
+        proxy_pass http://nexus-main:8081/repository/raw-$env/$project/$env/$version/$platform/$arch/$app;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+   
+    location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/(?<version>[^/]+)/(?<file>[^/]+)$ {
+        proxy_pass http://nexus-main:8081/repository/raw-$env/$project/$env/$version/$file;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+   
+    location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/yum/(?<child>.*)$ {
+        proxy_pass http://nexus-main:8081/repository/yum-$env/$child;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+
+    location ~ ^/releases/(?<project>[^/]+)/(?<env>[^/]+)/apt/(?<child>.*)$ {
+        proxy_pass http://nexus:8081/repository/apt-$env/$child;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+
+   
+    location ~ ^/downloads/keys/(?<type>[^/]+)/(?<file>[^/]+)$ {
+        proxy_pass http://nexus:8081/repository/keys/$type/$file;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+
+    location / {
+        proxy_pass http://nexus:8081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_intercept_errors on; 
+    }
+
+    error_page 301 302 303 307 308 400 401 403 404 500 502 503 504 /custom_error.html;
+ 
+    location = /custom_404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+}
+```

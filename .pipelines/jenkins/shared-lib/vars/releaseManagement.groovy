@@ -19,7 +19,7 @@ def releaseRepo(List<String> osList, List<String> archList) {
     withCredentials([
         string(credentialsId: 'GITEA_TOKEN', variable: 'GITEA_TOKEN'),
         usernamePassword(credentialsId: 'nexus-credential', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')
-        ]) {
+    ]) {
 
 
         def remoteChangelogFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/changelog.md"
@@ -77,14 +77,14 @@ def releaseRepo(List<String> osList, List<String> archList) {
 
 
                         def newRPMBaseName = "${APPNAME}-${OS}-${ARCH}.rpm"
-                        def remoteRPMFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
+                        def remoteRPMFilePath = "${NEXUS_URL}/repository/yum-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.rpm"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newRPMBaseName}\" \"${remoteRPMFilePath}\""
 
                         publishRpmPackage(OS, ARCH)
 
                         def newDebBaseName = "${APPNAME}-${OS}-${ARCH}.deb"
-                        def remoteDebFilePath = "${NEXUS_URL}/repository/raw-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
+                        def remoteDebFilePath = "${NEXUS_URL}/repository/apt-dev/${APPNAME}/${CHANNEL}/${env.CURRENT_VERSION}/${OS}/${platformArch}/${APPNAME}.deb"
 
                         sh "curl -v -u \"${NEXUS_USER}:${NEXUS_PASS}\" --upload-file \"${env.ARTIFACT_PATH}/${newDebBaseName}\" \"${remoteDebFilePath}\""
 
