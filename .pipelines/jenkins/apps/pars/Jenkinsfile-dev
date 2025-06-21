@@ -2,6 +2,30 @@
 
 def osList = ['linux', 'windows']//, 'darwin', 'openbsd', 'netbsd', 'freebsd']
 def archList = ['x86_64']//, 'arm64']
+
+def targets = [
+    windows: [
+        x86_64: ['binary', 'msi', 'choco'],
+        amd64  : ['binary', 'msi', 'choco']
+    ],
+    linux: [
+        x86_64: ['binary', 'deb', 'rpm'],
+        amd64  : ['binary', 'deb', 'rpm']
+    ],
+    darwin: [
+        x86_64: ['binary'],
+        amd64  : ['binary']
+    ],
+    openbsd: [
+        x86_64: ['binary']
+    ],
+    netbsd: [
+        x86_64: ['binary']
+    ],
+    freebsd: [
+        x86_64: ['binary']
+    ]
+]
 pipeline {
     agent none
 
