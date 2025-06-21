@@ -119,49 +119,36 @@ pipeline {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
-                        parallel {
-                            stages{
-                                stage("RPM Package") {
-                                    agent { label "rhel" }
-                                    steps {
-                                        script {
-                                            agentInitOnce.initOnce(params.BRANCH)
-                                        }
-                                        script {
-                                            buildRPMPackage(TARGET_OS, TARGET_ARCH)
-                                            copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                            signRpmPackage(TARGET_OS, TARGET_ARCH)
+                        stages {
+                            stage('Parallel Build Packages') {
+                                parallel {
+                                    stage('RPM Package') {
+                                        agent { label 'rhel' }
+                                        steps {
+                                            script {
+                                                agentInitOnce.initOnce(params.BRANCH)
+                                                buildRPMPackage(TARGET_OS, TARGET_ARCH)
+                                                copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                                signRpmPackage(TARGET_OS, TARGET_ARCH)
+                                                agentInitOnce.cleanupOnce()
+                                            }
                                         }
                                     }
-                                    post {
-                                        cleanup {
+                                    stage('DEB Package') {
+                                        agent { label 'debian' }
+                                        steps {
                                             script {
+                                                agentInitOnce.initOnce(params.BRANCH)
+                                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
                                                 agentInitOnce.cleanupOnce()
                                             }
                                         }
                                     }
                                 }
-                                stage("RPM Package") {
-                                    agent { label "rhel" }
-                                    steps {
-                                        script {
-                                            agentInitOnce.initOnce(params.BRANCH)
-                                        }
-                                        script {
-                                            buildDEBPackage(TARGET_OS, TARGET_ARCH)
-                                            copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                        }
-                                    }
-                                    post {
-                                        cleanup {
-                                            script {
-                                                agentInitOnce.cleanupOnce()
-                                            }
-                                        }
-                                    }
-                                }
-                        }
                             }
+                        }
+
                     }
                     stage("Package for Windows") {
                         when {
