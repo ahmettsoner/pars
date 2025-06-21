@@ -115,7 +115,7 @@ pipeline {
                             }
                         }
                     }
-                    stage("Package for Linux") {
+                    stage("Package for Linux (.rpm)") {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
@@ -129,7 +129,7 @@ pipeline {
                             }
                         }
                     }
-                    stage("Package for Linux") {
+                    stage("Package for Linux (.deb)") {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
