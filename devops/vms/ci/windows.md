@@ -120,6 +120,7 @@ Start-ScheduledTask -TaskName $taskName
 * Install Cmake
 ```pwsh
 choco install cmake -y
+[System.Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";C:\Program Files\CMake\bin", [System.EnvironmentVariableTarget]::Machine)
 ```
 
 * Make

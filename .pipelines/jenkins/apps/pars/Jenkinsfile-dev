@@ -6,7 +6,7 @@ pipeline {
     agent none
 
     parameters {
-        string(name: 'CHANNEL', defaultValue: 'dev', description: 'Release channel (e.g., dev, prod)')
+        choice(name: 'CHANNEL', choices: ['dev', 'staging', 'prod'], description: 'Release channel (e.g., dev, prod)')
         string(name: 'BRANCH', defaultValue: 'dev', description: 'Branch to checkout')
         string(name: 'GIT_USER_EMAIL', defaultValue: 'ci@parsdevkit.net', description: 'Git user email')
         string(name: 'GIT_USER_NAME', defaultValue: 'ci-bot', description: 'Git user name')
