@@ -52,13 +52,10 @@ def WriteChecksumForMSIInstaller(ARCH) {
 
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
     def artifactPath = "${env.ARTIFACT_PATH}\\${newBaseName}"
-    def checksumVar = powershell(
-        script: "(Get-FileHash -Algorithm SHA256 '${artifactPath}').Hash",
-        returnStdout: true
-    ).trim()
+    def checksum = sh(script: "sha256sum ${env.ARTIFACT_PATH}/${newBaseName} | awk '{print \$1}'", returnStdout: true).trim()
 
     def type = "MSI"
-    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksumVar} |"
+    def line = "| ${OS} | ${ARCH} | ${type} | ${newBaseName} | ${checksum} |"
 
     powershell """
         Add-Content -Path '${env.ARTIFACT_CHECKSUM_MD5_PATH}' -Value '${line}'
