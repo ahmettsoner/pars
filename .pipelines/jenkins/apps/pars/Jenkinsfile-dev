@@ -119,36 +119,30 @@ pipeline {
                         when {
                             expression { return TARGET_OS == 'linux' }
                         }
-                        stages {
-                            stage('Parallel Build Packages') {
-                                parallel {
-                                    stage('RPM Package') {
-                                        agent { label 'rhel' }
-                                        steps {
-                                            script {
-                                                agentInitOnce.initOnce(params.BRANCH)
-                                                buildRPMPackage(TARGET_OS, TARGET_ARCH)
-                                                copyRpmAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                                signRpmPackage(TARGET_OS, TARGET_ARCH)
-                                                agentInitOnce.cleanupOnce()
-                                            }
-                                        }
-                                    }
-                                    stage('DEB Package') {
-                                        agent { label 'debian' }
-                                        steps {
-                                            script {
-                                                agentInitOnce.initOnce(params.BRANCH)
-                                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
-                                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
-                                                agentInitOnce.cleanupOnce()
-                                            }
-                                        }
-                                    }
-                                }
+                        agent { label 'debian' }
+                        steps {
+                            script {
+                                agentInitOnce.initOnce(params.BRANCH)
+                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                agentInitOnce.cleanupOnce()
                             }
                         }
-
+                    }
+                    stage("Package for Linux") {
+                        when {
+                            expression { return TARGET_OS == 'linux' }
+                        }
+                        agent { label 'debian' }
+                        steps {
+                            script {
+                                agentInitOnce.initOnce(params.BRANCH)
+                                buildDEBPackage(TARGET_OS, TARGET_ARCH)
+                                copyDebAndUpdateChecksums(TARGET_OS, TARGET_ARCH)
+                                agentInitOnce.cleanupOnce()
+                            }
+                        }
+                        }
                     }
                     stage("Package for Windows") {
                         when {
