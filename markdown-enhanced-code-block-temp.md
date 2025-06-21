@@ -1,22 +1,14 @@
 ```pwsh
-# Set version (adjust as needed)
-$cmakeVersion = "3.27.3"
+$wixMsiUrl = "https://github.com/wixtoolset/wix/releases/download/v6.0.1/wix-cli-x64.msi"
+$tempMsiPath = "$env:TEMP\wix-cli-x64.msi"
+Invoke-WebRequest -Uri $wixMsiUrl -OutFile $tempMsiPath
+Start-Process msiexec.exe -ArgumentList "/i `"$tempMsiPath`" /quiet /norestart" -Wait
+Remove-Item $tempMsiPath
+$wixPath = "C:\Program Files\WiX Toolset v6.0\bin"
+$env:PATH = $wixPath + ";" + $env:PATH
 
-# Download URL for Windows x64 installer (.msi)
-$cmakeUrl = "https://github.com/Kitware/CMake/releases/download/v$cmakeVersion/cmake-$cmakeVersion-windows-x86_64.msi"
-
-# Target path for the installer
-$installerPath = "$env:TEMP\cmake-installer.msi"
-
-# Download the installer
-Invoke-WebRequest -Uri $cmakeUrl -OutFile $installerPath
-
-# Run installer silently, add to PATH for all users
-Start-Process -FilePath "msiexec.exe" -ArgumentList "/i `"$installerPath`" /quiet ADD_CMAKE_TO_PATH=System" -Wait
-
-# Clean up
-Remove-Item $installerPath
-
-# Verify installation
-cmake --version
+#!!! BU bölüm kontrollü olarak yeniden test edilecek 
+$oldPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+$newPath = $oldPath + ";" + $wixPath
+[Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
 ```

@@ -22,9 +22,24 @@ resource "libvirt_volume" "base_volume" {
 
 
 
-module "windows_vm" {
-  source                = "./modules/windows"
-  vm_name               = "windows-server-2022"
+# module "windows_vm" {
+#   source                = "./modules/windows"
+#   vm_name               = "windows-server-2022"
+#   memory                = 8192
+#   vcpu                  = 4
+#   vm_pool               = libvirt_pool.custom_pool.name
+#   network_id            = libvirt_network.example_network.id
+#   network_name          = libvirt_network.example_network.name
+#   ssh_private_key_path  = local_file.private_key_pem.filename
+#   ssh_authorized_key    = local_file.public_key_openssh.content
+#   username              = var.vm_user
+#   windows_iso_path =    "/var/lib/libvirt/images/SERVER_EVAL_x64FRE_en-us.iso"
+#   virtio_iso_path  =    "/var/lib/libvirt/images/virtio-win.iso"
+# }
+
+module "agent_vm" {
+  source                = "./modules/agent"
+  vm_name               = "agent-server-2022"
   memory                = 8192
   vcpu                  = 4
   vm_pool               = libvirt_pool.custom_pool.name
@@ -33,7 +48,7 @@ module "windows_vm" {
   ssh_private_key_path  = local_file.private_key_pem.filename
   ssh_authorized_key    = local_file.public_key_openssh.content
   username              = var.vm_user
-  windows_iso_path =    "/var/lib/libvirt/images/SERVER_EVAL_x64FRE_en-us.iso"
+  agent_iso_path =      "/var/lib/libvirt/images/SERVER_EVAL_x64FRE_en-us.iso"
   virtio_iso_path  =    "/var/lib/libvirt/images/virtio-win.iso"
 }
 

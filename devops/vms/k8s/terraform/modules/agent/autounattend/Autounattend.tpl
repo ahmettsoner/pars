@@ -95,7 +95,7 @@
           <PlainText>true</PlainText>
         </Password>
         <Enabled>true</Enabled>
-        <Username>automation</Username>
+        <Username>${username}</Username>
       </AutoLogon>
       <RegisteredOrganization>MyOrg</RegisteredOrganization>
       <RegisteredOwner>Administrator</RegisteredOwner>
@@ -138,8 +138,7 @@
 
         <SynchronousCommand wcm:action="add">
           <Order>6</Order>
-          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Content -Path (Join-Path $env:USERPROFILE '.ssh\authorized_keys') -Value 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDpqUd/UDUwuzpbOWCTZt6rnwT5De2v+XEMedd5jBGHKPMJKOU+FRQXKwYHFAxwepmdvaFD90kZfYSn2i7sNbS57ngVbwdnockpSR9N4RhdCB+day24vdm2jDiw5Xhz72sVnI0VsUyXvxNBfpweSdrLAjUDtlcW7Y8bAv+5xqbkPeP/bmo5eNltXUBKYtyig95zqoLdurjSY1H1JMSTE6ziaA4u+1WV83YK69/XYASxun3WFHhwVsd2aNj3//ec2QoVVhKpYyjOkgPQ0KBwMbKyF2SCI48oXUIiUmMuM9MsT+s1TWy3ozDjRz5o1BkGNteMHsE3splWPJ0aTl/dqSM7IkAZwdNvxNusjbtSgGZ9/aCzik9UwTYpvm85lmMZMp3tcjoZPq/giAW9PKtraxEl8Fi/xZA1eH0NdUkxhDOLy5ShQshC8qdGYzWQx1kI1/gxnbzgCsYiR0asqltWWq0p3Pd5v/VVotNlpI1UxeqhYnh6lPunYdsxqlCjQ/sFRGw1dhb/M95Ry4I9BsiPYt3E2IZlkTRTOQzb81ktYmaQiZL+mcy4wv0KBvNROZ858d20hiVnPy7uWXzTxPTUYmhn5SSxgYYnJz25c9jVD4rTTdmG4EGEuPSqaqd311EQFsZinepw0yv1NDR66Q4EoC+Kranj/upbJYIF/2Kr/miFsQ==
-' -Encoding ascii"</CommandLine>
+          <CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -Command "Set-Content -Path (Join-Path $env:USERPROFILE '.ssh\authorized_keys') -Value '${ssh_authorized_key}' -Encoding ascii"</CommandLine>
           <Description>Write public key to authorized_keys</Description>
         </SynchronousCommand>
 
@@ -162,7 +161,7 @@
         </AdministratorPassword>
         <LocalAccounts>
           <LocalAccount wcm:action="add">
-            <Name>automation</Name>
+            <Name>${username}</Name>
             <Group>Administrators</Group>
             <Password>
               <Value>User123!</Value>
