@@ -19,7 +19,7 @@ def call(String OS, String ARCH) {
     def rpmOutputPath = rpmFiles[0]
 
     // Copy RPM file to artifact path with new name
-    sh "cp '${rpmOutputPath}' '${env.ARTIFACT_PATH}\${newBaseName}'"
+    sh "cp '${rpmOutputPath}' '${env.ARTIFACT_PATH}\\${newBaseName}'"
 
     stash includes: 'dist/artifacts/**/*', name: "${OS}-${ARCH}-rpm-package-artifacts"
 }
