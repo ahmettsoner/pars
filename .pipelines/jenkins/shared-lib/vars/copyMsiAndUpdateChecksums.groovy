@@ -6,7 +6,7 @@ def call(String OS, String ARCH) {
     def newBaseName = "${APPNAME}-${OS}-${ARCH}.msi"
     def packageOutputBase = "dist\\${env.CURRENT_VERSION}\\${OS}\\pkg\\msi\\${ARCH}"
     def msiOutputBase = "${packageOutputBase}\\output"
-    def msiOutputPath = "${msiOutputBase}\\${APPNAME}_${plainVersion}_${platformArch}.msi"
+    def msiOutputPath = "${msiOutputBase}\\${APPNAME}.msi"
     def checksumFilePath = "${msiOutputBase}\\checksum.txt"
 
     // Dosya var mı kontrolü
