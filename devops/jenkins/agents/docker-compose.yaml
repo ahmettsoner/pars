@@ -11,75 +11,75 @@ services:
     command: >
       java -jar /workspace/agent.jar
       -url http://host.docker.internal:8080/
-      -secret b2e068da37226505ceb6d39cf3b94f5b7708cf5c06d5e96e8f26bd5d83c960c9
+      -secret 29a236ebcb6f755cfc9c96540f7a1cc8894b232890d709d6555b050533304bcc
       -name ubuntu
       -webSocket
       -workDir /workspace
 
-  jenkins-agent-ubuntu2:
-    build:
-      context: .
-      dockerfile: Dockerfile-ubuntu-agent
-    container_name: jenkins-agent-ubuntu2
-    restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    working_dir: /workspace
-    command: >
-      java -jar /workspace/agent.jar
-      -url http://host.docker.internal:8080/
-      -secret 92214ba80a98a39ee68235e085e99a6d4b550da42f853396257b118f9787ce4e
-      -name ubuntu2
-      -webSocket
-      -workDir /workspace
+  # jenkins-agent-ubuntu2:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-ubuntu-agent
+  #   container_name: jenkins-agent-ubuntu2
+  #   restart: unless-stopped
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   working_dir: /workspace
+  #   command: >
+  #     java -jar /workspace/agent.jar
+  #     -url http://host.docker.internal:8080/
+  #     -secret 92214ba80a98a39ee68235e085e99a6d4b550da42f853396257b118f9787ce4e
+  #     -name ubuntu2
+  #     -webSocket
+  #     -workDir /workspace
 
-  jenkins-agent-ubuntu3:
-    build:
-      context: .
-      dockerfile: Dockerfile-ubuntu-agent
-    container_name: jenkins-agent-ubuntu3
-    restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    working_dir: /workspace
-    command: >
-      java -jar /workspace/agent.jar
-      -url http://host.docker.internal:8080/
-      -secret ca7d01e51411d594918e6db6b0cf10379264fae997598400d7c9bcf778b53a1d
-      -name ubuntu3
-      -webSocket
-      -workDir /workspace
+  # jenkins-agent-ubuntu3:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-ubuntu-agent
+  #   container_name: jenkins-agent-ubuntu3
+  #   restart: unless-stopped
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   working_dir: /workspace
+  #   command: >
+  #     java -jar /workspace/agent.jar
+  #     -url http://host.docker.internal:8080/
+  #     -secret ca7d01e51411d594918e6db6b0cf10379264fae997598400d7c9bcf778b53a1d
+  #     -name ubuntu3
+  #     -webSocket
+  #     -workDir /workspace
 
-  jenkins-agent-ubuntu4:
-    build:
-      context: .
-      dockerfile: Dockerfile-ubuntu-agent
-    container_name: jenkins-agent-ubuntu4
-    restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    working_dir: /workspace
-    command: >
-      java -jar /workspace/agent.jar
-      -url http://host.docker.internal:8080/
-      -secret eff7e3d1e0ebd20b4fd16ecbfb27e5c076d7ae2a5c5974f5bf664beadca2a982
-      -name ubuntu4
-      -webSocket
-      -workDir /workspace
+  # jenkins-agent-ubuntu4:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-ubuntu-agent
+  #   container_name: jenkins-agent-ubuntu4
+  #   restart: unless-stopped
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   working_dir: /workspace
+  #   command: >
+  #     java -jar /workspace/agent.jar
+  #     -url http://host.docker.internal:8080/
+  #     -secret eff7e3d1e0ebd20b4fd16ecbfb27e5c076d7ae2a5c5974f5bf664beadca2a982
+  #     -name ubuntu4
+  #     -webSocket
+  #     -workDir /workspace
 
-  jenkins-agent-ubuntu5:
-    build:
-      context: .
-      dockerfile: Dockerfile-ubuntu-agent
-    container_name: jenkins-agent-ubuntu5
-    restart: unless-stopped
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    working_dir: /workspace
-    command: >
-      java -jar /workspace/agent.jar
-      -url http://host.docker.internal:8080/
-      -secret 345978cba70a1b92693aeb658a761ca54a34c1443004c23e771872028422515b
-      -name ubuntu5
-      -webSocket
-      -workDir /workspace
+  # jenkins-agent-ubuntu5:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-ubuntu-agent
+  #   container_name: jenkins-agent-ubuntu5
+  #   restart: unless-stopped
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  #   working_dir: /workspace
+  #   command: >
+  #     java -jar /workspace/agent.jar
+  #     -url http://host.docker.internal:8080/
+  #     -secret 345978cba70a1b92693aeb658a761ca54a34c1443004c23e771872028422515b
+  #     -name ubuntu5
+  #     -webSocket
+  #     -workDir /workspace
