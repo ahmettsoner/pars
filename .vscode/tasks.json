@@ -2,6 +2,20 @@
     "version": "2.0.0",
     "tasks": [
         {
+          "label": "Build Go Binary",
+          "type": "shell",
+          "command": "go build -o ${workspaceFolder}/bin/pars",
+          "options": {
+              "cwd": "${workspaceFolder}/src",
+              "shell": {
+                  "executable": "${env:ComSpec}",
+                  "args": ["/d", "/c"]
+              }
+          },
+          "group": "build",
+          "problemMatcher": ["$go"]
+        },
+        {
             "label": "Build Pars",
             "type": "shell",
             "command": "go build",

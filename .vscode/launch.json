@@ -2,14 +2,16 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Launch Go Program",
+        "name": "Debug Go CLI Source",
         "type": "go",
         "request": "launch",
         "mode": "auto",
-        "program": "${workspaceFolder}/src/pars.go",
-        "args": [],
-        "env": {},
-        "buildFlags": ""
+        "program": "${workspaceFolder}/src",
+        "cwd": "${workspaceFolder}/src",
+        "console": "integratedTerminal",
+        "args": [
+          "-i"
+        ]
       }
     ]
   }
