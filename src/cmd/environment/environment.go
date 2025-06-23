@@ -6,19 +6,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	switchTo string
-)
-
 var EnvironmentCmd = &cobra.Command{
 	Use:     "environment",
 	Aliases: []string{"env"},
 	Short:   "Environment information",
 	Long:    `Environment information`,
-	Run:     executeFunc,
-}
-
-func executeFunc(cmd *cobra.Command, args []string) {
 }
 
 func init() {

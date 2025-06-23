@@ -12,30 +12,45 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name      string
-	noInit    bool = true
-	filePaths []string
-)
+type SubmitOptions struct {
+	Name      string
+	Workspace string
+	NoInit    bool
+	FilePaths []string
+}
 
+var commandOptions = SubmitOptions{
+	NoInit: true,
+}
 var maxArgumentCount int = 0
 
 var SubmitCmd = &cobra.Command{
-	Use:     "submit",
-	Aliases: []string{"s"},
-	Short:   "Group Information",
-	Long:    `Group Information`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "submit",
+	Aliases:           []string{"s"},
+	Short:             "Group Information",
+	Long:              `Group Information`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
+	}
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 	// if len(args) == 1 {
 	// 	name = args[0]
 
@@ -52,22 +67,22 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	// 		log.Fatal(err)
 	// 	}
 	// } else
-	if len(filePaths) > 0 {
+	if len(commandOptions.FilePaths) > 0 {
 
-		allFiles, err := utils.WalkDir(filePaths...)
+		allFiles, err := utils.WalkDir(commandOptions.FilePaths...)
 		if err != nil {
-			fmt.Println("Error processing file paths:", err)
-			return
+			return fmt.Errorf("Error processing file paths: %v", allFiles)
 		}
 
 		groupService := group.GroupEngine{}
-		if err := groupService.CreateGroupsFromFile(!noInit, allFiles...); err != nil {
+		if err := groupService.CreateGroupsFromFile(!commandOptions.NoInit, allFiles...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
-		fmt.Println("Please provide a file location for the submit group(s)")
-		os.Exit(1)
+		return fmt.Errorf("Please provide a file location for the submit group(s)")
 	}
+
+	return nil
 }
 
 func init() {
@@ -76,9 +91,9 @@ func init() {
 
 func addSubCommands() {
 
-	SubmitCmd.Flags().BoolVarP(&noInit, "no-init", "", false, "Create group but do not initialize")
+	SubmitCmd.Flags().BoolVarP(&commandOptions.NoInit, "no-init", "", false, "Create group but do not initialize")
 
-	SubmitCmd.Flags().StringSliceVarP(&filePaths, "file", "f", nil, "Comma-separated list of declaration files")
+	SubmitCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
 	SubmitCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 

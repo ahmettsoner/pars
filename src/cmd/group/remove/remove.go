@@ -15,32 +15,47 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	names []string
-	// workspaceName string
-	force     string
-	filePaths []string
-)
+type RemoveOptions struct {
+	Names     []string
+	Workspace string
+	Force     string
+	FilePaths []string
+}
+
+var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:     "remove name [name]...",
-	Aliases: []string{"r"},
-	Short:   "Group Information",
-	Long:    `Group Information`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
+	Use:               "remove name [name]...",
+	Aliases:           []string{"r"},
+	Short:             "Group Information",
+	Long:              `Group Information`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
+	}
 
-	if len(args) > 0 {
-		names = args
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
+	}
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	if len(commandOptions.Names) > 0 {
 
 		groupService := services.NewGroupService(utils.GetEnvironment())
-		for _, name := range names {
+		for _, name := range commandOptions.Names {
 			group, err := groupService.Remove(name, true)
 			if err != nil {
 				log.Fatal(err)
@@ -48,15 +63,16 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 			fmt.Println("Group (" + group.Name + ") deleted permanently")
 		}
-	} else if len(filePaths) > 0 {
+	} else if len(commandOptions.FilePaths) > 0 {
 		groupService := group.GroupEngine{}
-		if err := groupService.RemoveGroupsFromFile(true, filePaths...); err != nil {
+		if err := groupService.RemoveGroupsFromFile(true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		fmt.Println("Please provide a name for the group")
 		os.Exit(1)
 	}
+	return nil
 }
 
 func init() {
@@ -64,7 +80,7 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringSliceVarP(&filePaths, "file", "f", nil, "Comma-separated list of declaration files")
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
 	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 

@@ -3,7 +3,6 @@ package test
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"parsdevkit.net/operation/services"
 
@@ -14,52 +13,61 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name          string
-	workspaceName string
-)
+type CleanOptions struct {
+	Name      string
+	Workspace string
+}
+
+var commandOptions CleanOptions
+var maxArgumentCount int = 1
 
 var TestCmd = &cobra.Command{
 	Use:     "test",
 	Aliases: []string{"t"},
 	Short:   "Test project(s)",
 	Long:    `Test project(s)`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
-		if len(args) == 0 {
-			fmt.Println("Please provide a project name")
-			os.Exit(1)
-		} else if len(args) > 0 {
-			name = args[0]
-		}
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only project name is expected.")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(name) {
-		cmd.Help()
-		os.Exit(0)
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
 	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	project, err := projectService.Test(name, workspaceName)
+	project, err := projectService.Test(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Println("Project (" + project.Name + ") packages tested")
+
+	return nil
 }
 
 func init() {
-	TestCmd.Flags().StringVarP(&name, "name", "n", "", "Project name")
+	TestCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 
-	TestCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
-	// RemoveCommand.Flags().StringVarP(&force, "force", "", "", "Force to delete")
-
-	// if err := RemoveCommand.MarkFlagRequired("force"); err != nil {
-	// 	fmt.Println(err)
-	// }
+	TestCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

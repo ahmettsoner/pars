@@ -16,73 +16,83 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name string
-	path string
-)
+type InitOptions struct {
+	Name string
+	Path string
+}
 
+var commandOptions InitOptions
 var maxArgumentCount int = 2
+var workspaceService = services.NewWorkspaceService(utils.GetEnvironment())
 
 var InitCmd = &cobra.Command{
-	Use:     "init [name] [path]",
-	Aliases: []string{"i"},
-	Short:   "Initialize new Pars workspace",
-	Long:    `Create new workspace for Pars, that contains one or more project(s)`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "init [name] [path]",
+	Aliases:           []string{"i"},
+	Short:             "Initialize new Pars workspace",
+	Long:              `Create new workspace for Pars, that contains one or more project(s)`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+func validateArgs(cmd *cobra.Command, args []string) error {
+
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
 
 	if len(args) > 0 {
-		name = args[0]
+		commandOptions.Name = args[0]
 	}
 	if len(args) > 1 {
-		path = args[1]
+		commandOptions.Path = args[1]
 	}
 
-	if utils.IsEmpty(name) {
-		name = "workspace"
-		existingDefaultNamedWorkspaces, err := workspaceService.ListByNameStartWith(name)
+	if utils.IsEmpty(commandOptions.Name) {
+		commandOptions.Name = "workspace"
+		existingDefaultNamedWorkspaces, err := workspaceService.ListByNameStartWith(commandOptions.Name)
 		if err != nil {
 			log.Fatal(err)
 		}
 
 		existingDefaultNamedWorkspaceCount := len(*existingDefaultNamedWorkspaces)
 		if existingDefaultNamedWorkspaceCount > 0 {
-			name = fmt.Sprintf("%v_%d", name, existingDefaultNamedWorkspaceCount)
+			commandOptions.Name = fmt.Sprintf("%v_%d", commandOptions.Name, existingDefaultNamedWorkspaceCount)
 		}
 		// fmt.Printf("Default name (%v), \n", name)
 	}
-	if utils.IsEmpty(path) {
-		path = name
+	if utils.IsEmpty(commandOptions.Path) {
+		commandOptions.Path = commandOptions.Name
 	}
 
-	if !filepath.IsAbs(path) {
+	if !filepath.IsAbs(commandOptions.Path) {
 		cwd, err := os.Getwd()
 		if err != nil {
 			fmt.Println("Current working directory not recognized:", err)
 			os.Exit(1)
 		}
-		path = filepath.Join(cwd, path)
+		commandOptions.Path = filepath.Join(cwd, commandOptions.Path)
 	}
 
-	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(structs.NewHeader(structs.StructTypes.Workspace, name, structs.Metadata{}), workspace.NewWorkspaceSpecification(0, name, path)))
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(structs.NewHeader(structs.StructTypes.Workspace, commandOptions.Name, structs.Metadata{}), workspace.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	fmt.Printf("New workspace (%v) created at: %v\n", workspace.Specifications.Name, workspace.Specifications.Path)
+
+	return nil
 }
-
-
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if len(args) == 0 {

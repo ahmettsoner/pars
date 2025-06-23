@@ -3,7 +3,6 @@ package project
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"parsdevkit.net/structs/project"
 
@@ -21,38 +20,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name          string
-	workspaceName string
-	force         string
-)
+type ProjectOptions struct {
+	Name      string
+	Workspace string
+}
+
+var commandOptions ProjectOptions
+var maxArgumentCount int = 1
 
 var ProjectCmd = &cobra.Command{
 	Use:     "project",
 	Aliases: []string{"p"},
 	Short:   "Project Information",
 	Long:    `Project Information`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
-		if len(args) == 0 {
-			fmt.Println("Please provide a name for the new project")
-			os.Exit(1)
-		} else if len(args) > 0 {
-			name = args[0]
-		}
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only project name is expected.")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(name) {
-		cmd.Help()
-		os.Exit(0)
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
 	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	return nil
+}
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	projectGroup, projectName, err := project.ParseProjectFullName(commandOptions.Name)
 
 	groupRespository := repositories.NewGroupRepository(utils.GetEnvironment())
 	groupId := 0
@@ -70,7 +80,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	if utils.IsEmpty(projectName) && groupId > 0 {
-		projectEntities, err := projectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", projectGroup), workspaceName)
+		projectEntities, err := projectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", projectGroup), commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -79,7 +89,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			providers.VSCodeExecute("", (*projectEntities)[0].Specifications.GetAbsoluteGroupPath())
 		}
 	} else {
-		project, err := projectService.GetByFullNameWorkspace(name, workspaceName)
+		project, err := projectService.GetByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,6 +101,8 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	return nil
+
 }
 
 func init() {
@@ -98,7 +110,7 @@ func init() {
 }
 
 func addSubCommands() {
-	ProjectCmd.Flags().StringVarP(&name, "name", "n", "", "Project name")
+	ProjectCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 
-	ProjectCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	ProjectCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

@@ -18,18 +18,26 @@ var ListCommand = &cobra.Command{
 	Aliases: []string{"l"},
 	Example: `  pars workspace list [flags]
   pars wl [flags]`,
-	Short: "List workspace project(s)",
-	Long:  `List workspace project(s)`,
-	Run:   executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Short:   "List workspace project(s)",
+	Long:    `List workspace project(s)`,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 	workspaceList, err := workspaceService.List()
 	if err != nil {
@@ -68,6 +76,6 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Println(workspace.Name)
 		}
 	}
+
+	return nil
 }
-
-

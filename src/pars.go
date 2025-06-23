@@ -1,6 +1,11 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+
 	"parsdevkit.net/cmd"
 	"parsdevkit.net/core/utils"
 )
@@ -9,7 +14,15 @@ var version string
 
 func main() {
 
-	cmd.Execute()
+
+	if len(os.Args) > 1 && (os.Args[1] == "-i" || os.Args[1] == "--interactive") {
+		runInteractiveMode()
+	} else {
+		if err := cmd.RootCmd.Execute(); err != nil {
+			fmt.Println("Error:", err)
+			os.Exit(1)
+		}
+	}
 	// logLevel := utils.GetLogLevel()
 
 	// if logLevel != core.LogLevels.None {
@@ -23,4 +36,30 @@ func main() {
 	// }
 
 	utils.SetVersion(version)
+}
+func runInteractiveMode() {
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("🔁 Interactive Cobra CLI Mode. Type 'exit' to quit.")
+
+	for {
+		fmt.Print("pars >> ")
+		line, _ := reader.ReadString('\n')
+		line = strings.TrimSpace(line)
+
+		if line == "exit" || line == "quit" {
+			fmt.Println("👋 Bye!")
+			break
+		}
+
+		if line == "" {
+			continue
+		}
+
+		args := strings.Split(line, " ")
+		cmd.RootCmd.SetArgs(args)
+
+		if err := cmd.RootCmd.Execute(); err != nil {
+			fmt.Println("❌ Error:", err)
+		}
+	}
 }

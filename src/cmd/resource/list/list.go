@@ -13,21 +13,38 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	workspaceName string
-)
+type ListOptions struct {
+	Workspace string
+}
+
+var commandOptions ListOptions
+var maxArgumentCount int = 0
 
 var ListCommand = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
 	Short:   "List resource(s)",
 	Long:    `List resource(s)`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
+	return nil
+}
 
-	checkGlobals := utils.IsEmpty(workspaceName)
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 	objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
 	dataResourceService := services.NewDataResourceService(utils.GetEnvironment())
 
@@ -35,9 +52,9 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("*** Global Resources ***")
 		fmt.Println()
 
-		workspaceName = "None"
+		commandOptions.Workspace = "None"
 
-		objectResourceList, err := objectResourceService.ListByWorkspace(workspaceName)
+		objectResourceList, err := objectResourceService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -51,7 +68,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("--------------------------")
 		fmt.Println()
 
-		dataResourceList, err := dataResourceService.ListByWorkspace(workspaceName)
+		dataResourceList, err := dataResourceService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -61,16 +78,16 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("- %v\n", resource.GetFullInformation())
 		}
 
-		workspaceName = ""
+		commandOptions.Workspace = ""
 		fmt.Println()
 	}
 
 	fmt.Println("*** Workspace Specific Resources ***")
 	fmt.Println()
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-	objectResourceList, err := objectResourceService.ListByWorkspace(workspaceName)
+	objectResourceList, err := objectResourceService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,7 +101,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	fmt.Println("--------------------------")
 	fmt.Println()
 
-	dataResourceList, err := dataResourceService.ListByWorkspace(workspaceName)
+	dataResourceList, err := dataResourceService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,6 +111,5 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Printf("- %v\n", resource.GetFullInformation())
 	}
 
+	return nil
 }
-
-

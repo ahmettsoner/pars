@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 
 	"parsdevkit.net/operation/services"
@@ -9,6 +10,26 @@ import (
 
 	manifestServices "parsdevkit.net/engines"
 )
+
+func GetActiveWorkspaceNameV2(workspaceName string) (string, error) {
+	if !utils.IsEmpty(workspaceName) {
+		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+		if !workspaceService.IsExists(workspaceName) {
+			return "", fmt.Errorf("workspace '%s' does not exist", workspaceName)
+		}
+		return workspaceName, nil
+	}
+
+	// workspaceName boşsa context'ten al
+	appContext := manifestServices.GetContext()
+	name := appContext.CurrentWorkspace.Name
+
+	if utils.IsEmpty(name) {
+		return "", fmt.Errorf("no active workspace found; please initialize or switch to one")
+	}
+
+	return name, nil
+}
 
 func GetActiveWorkspaceName(workspaceName string) string {
 

@@ -1,37 +1,37 @@
 package project
 
 import (
-	"parsdevkit.net/providers"
-
-	parsCMDCommon "parsdevkit.net/core/cmd"
-
 	"github.com/spf13/cobra"
 )
 
-var (
-	workspaceName string
-)
-
-var WorkspaceCommand = &cobra.Command{
-	Use:     "workspace",
-	Aliases: []string{"w"},
-	Short:   "Workspace workspace",
-	Long:    `Workspace workspace`,
-	Run:     executeFunc,
+type ProjectOptions struct {
+	Name string
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+var commandOptions ProjectOptions
 
-	path := parsCMDCommon.GetActiveWorkspacePath(workspaceName)
+var ProjectCommand = &cobra.Command{
+	Use:     "project",
+	Aliases: []string{"p"},
+	Short:   "Edit project(s)",
+	Long:    `Edit project(s)`,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
+}
 
-	providers.VSCodeExecute("", path)
+func validateArgs(cmd *cobra.Command, args []string) error {
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+	return nil
 }
 
 func init() {
-	WorkspaceCommand.Flags().StringVarP(&workspaceName, "name", "n", "", "Workspace name")
-	// WorkspaceCommand.Flags().StringVarP(&force, "force", "", "", "Force to delete")
-
-	// if err := WorkspaceCommand.MarkFlagRequired("force"); err != nil {
-	// 	fmt.Println(err)
-	// }
+	ProjectCommand.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 }

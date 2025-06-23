@@ -16,10 +16,20 @@ var ListCmd = &cobra.Command{
 	Aliases: []string{"l"},
 	Short:   "List group(s)",
 	Long:    `List group(s)`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
@@ -31,6 +41,5 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Printf("- %v\n", group.Name)
 	}
 
+	return nil
 }
-
-

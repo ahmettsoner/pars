@@ -13,20 +13,38 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	workspaceName string
-)
+type ListOptions struct {
+	Workspace string
+}
+
+var commandOptions ListOptions
+var maxArgumentCount int = 0
 
 var ListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
 	Short:   "List task(s)",
 	Long:    `List task(s)`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	checkGlobals := utils.IsEmpty(workspaceName)
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 	taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
 	if checkGlobals {
@@ -34,9 +52,9 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("*** Global Tasks ***")
 		fmt.Println()
 
-		workspaceName = "None"
+		commandOptions.Workspace = "None"
 
-		taskList, err := taskService.ListByWorkspace(workspaceName)
+		taskList, err := taskService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -46,16 +64,16 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("- %v\n", task.Name)
 		}
 
-		workspaceName = ""
+		commandOptions.Workspace = ""
 	}
 
 	fmt.Println()
 	fmt.Println("*** Workspace Specific Tasks ***")
 	fmt.Println()
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-	taskList, err := taskService.ListByWorkspace(workspaceName)
+	taskList, err := taskService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -65,6 +83,5 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Printf("- %v\n", task.Name)
 	}
 
+	return nil
 }
-
-

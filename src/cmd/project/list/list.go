@@ -14,37 +14,48 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	workspaceName string
-)
+type ListOptions struct {
+	Workspace string
+}
+
+var commandOptions ListOptions
+var maxArgumentCount int = 0
 
 var ListCmd = &cobra.Command{
-	Use:     "list",
-	Aliases: []string{"l"},
-	Short:   "List project(s)",
-	Long:    `List project(s)`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > 0 {
-			return fmt.Errorf("There is no argument supported")
-		}
-		return nil
-	},
+	Use:               "list",
+	Aliases:           []string{"l"},
+	Short:             "List project(s)",
+	Long:              `List project(s)`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
+	return nil
+}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+	}
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	applicationProjectList, err := applicationProjectService.ListByWorkspace(workspaceName)
+	applicationProjectList, err := applicationProjectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Printf("(%d) application project available\n", len(*applicationProjectList))
 
-	applicationProjectListBasic, err := applicationProjectService.ListIndividualByWorkspace(workspaceName)
+	applicationProjectListBasic, err := applicationProjectService.ListIndividualByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,7 +75,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	for _, group := range *groupList {
 
-		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Name), workspaceName)
+		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Name), commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -79,7 +90,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
-
+	return nil
 }
 
 func init() {
@@ -87,7 +98,7 @@ func init() {
 }
 
 func addSubCommands() {
-	ListCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	ListCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 	ListCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 }
 

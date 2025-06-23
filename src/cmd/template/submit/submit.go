@@ -12,56 +12,59 @@ import (
 	"parsdevkit.net/engines/sharedTemplate"
 )
 
-var (
-	// declarationFile bool = false
-	noInit    bool = false
-	filePaths []string
-)
+type SubmitOptions struct {
+	NoInit    bool
+	FilePaths []string
+}
 
+var commandOptions = SubmitOptions{
+	NoInit: true,
+}
 var maxArgumentCount int = 0
 
 var SubmitCmd = &cobra.Command{
-	Use:     "submit",
-	Aliases: []string{"s"},
-	Short:   "Template Information",
-	Long:    `Template Information`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "submit",
+	Aliases:           []string{"s"},
+	Short:             "Template Information",
+	Long:              `Template Information`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	}
+	return nil
+}
 
-	if len(filePaths) > 0 {
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	if len(commandOptions.FilePaths) > 0 {
 		sharedTemplateService := sharedTemplate.SharedTemplateEngine{}
-		if err := sharedTemplateService.CreateTemplatesFromFile(!noInit, filePaths...); err != nil {
+		if err := sharedTemplateService.CreateTemplatesFromFile(!commandOptions.NoInit, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 		codeTemplateService := codeTemplate.CodeTemplateEngine{}
-		if err := codeTemplateService.CreateTemplatesFromFile(!noInit, filePaths...); err != nil {
+		if err := codeTemplateService.CreateTemplatesFromFile(!commandOptions.NoInit, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 		fileTemplateService := fileTemplate.FileTemplateEngine{}
-		if err := fileTemplateService.CreateTemplatesFromFile(!noInit, filePaths...); err != nil {
+		if err := fileTemplateService.CreateTemplatesFromFile(!commandOptions.NoInit, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		cmd.Help()
 	}
-}
 
-func init() {
-	addSubCommands()
-}
-
-func addSubCommands() {
-	SubmitCmd.Flags().StringSliceVarP(&filePaths, "file", "f", nil, "Comma-separated list of declaration files")
-	SubmitCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
+	return nil
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -77,6 +80,15 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 
 	return nil, cobra.ShellCompDirectiveNoFileComp
 }
+func init() {
+	addSubCommands()
+}
+
+func addSubCommands() {
+	SubmitCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
+	SubmitCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
+}
+
 func fileFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	if len(args) > 0 {
 		return nil, cobra.ShellCompDirectiveNoFileComp

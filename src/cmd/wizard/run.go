@@ -14,5 +14,3 @@ var WizardCmd = &cobra.Command{
 func executeFunc(cmd *cobra.Command, args []string) {
 	cmd.Help()
 }
-
-

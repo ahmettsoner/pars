@@ -16,41 +16,54 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name                              string
-	workspaceDescribeViewTypeEnumFlag core.WorkspaceDescribeViewTypeEnumFlag
-	pathOnly                          bool
-)
+type DescribeOptions struct {
+	Name                  string
+	WorkspaceDescribeView core.WorkspaceDescribeViewTypeEnumFlag
+	PathOnly              bool
+}
+
+var commandOptions DescribeOptions
 var maxArgumentCount int = 1
 
 var DescribeCmd = &cobra.Command{
-	Use:     "describe [name]",
-	Aliases: []string{"d"},
-	Short:   "Information about workspace",
-	Long:    `Information about workspace`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "describe [name]",
+	Aliases:           []string{"d"},
+	Short:             "Information about workspace",
+	Long:              `Information about workspace`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if len(args) > 0 {
-		name = args[0]
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
 	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only group name is expected.")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
+	}
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	appContext := engines.GetContext()
 
 	if appContext.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")
 	} else {
-		if utils.IsEmpty(name) {
+		if utils.IsEmpty(commandOptions.Name) {
 			if appContext != nil {
-				name = appContext.CurrentWorkspace.Name
+				commandOptions.Name = appContext.CurrentWorkspace.Name
 			} else {
 				log.Fatal("Workspace cannot be accessable")
 			}
@@ -58,7 +71,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	}
 
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-	workspace, err := workspaceService.GetByName(name)
+	workspace, err := workspaceService.GetByName(commandOptions.Name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -72,21 +85,20 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			log.Fatal(err)
 		}
 
-		if pathOnly {
+		if commandOptions.PathOnly {
 			fmt.Print(workspace.Specifications.Path)
-			return
 		}
 
 		fmt.Printf("Workspace (%v) has %d project\n", workspace.Name, len(*projectList))
 		fmt.Printf("Path : %v \n", workspace.Specifications.Path)
 
 		fmt.Printf("\nProjects:\n")
-		if workspaceDescribeViewTypeEnumFlag.Value == "flat" {
+		if commandOptions.WorkspaceDescribeView.Value == "flat" {
 			for _, e := range *projectList {
 				name := fmt.Sprintf(" - %v", e.GetFullInformation())
 				fmt.Println(name)
 			}
-		} else if workspaceDescribeViewTypeEnumFlag.Value == "hierarchical" {
+		} else if commandOptions.WorkspaceDescribeView.Value == "hierarchical" {
 			groups := make(map[string][]string)
 			keys := []string{}
 
@@ -118,26 +130,8 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
-}
 
-func init() {
-	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
-	workspaceDescribeViewTypeEnumFlag.Value = core.WorkspaceDescribeViewTypes.Hierarchical
-	DescribeCmd.Flags().VarP(&workspaceDescribeViewTypeEnumFlag, "view", "v", fmt.Sprintf("Select view type %v", workspaceDescribeViewTypeValues))
-	DescribeCmd.RegisterFlagCompletionFunc("view", viewTypeFlagCompletion)
-
-	DescribeCmd.Flags().BoolVarP(&pathOnly, "path", "p", false, "Show path only")
-}
-func viewTypeFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	var suggestions = make([]string, 0)
-
-	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
-
-	for _, _type := range workspaceDescribeViewTypeValues {
-		suggestions = append(suggestions, string(_type))
-	}
-
-	return suggestions, cobra.ShellCompDirectiveNoSpace
+	return nil
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -151,6 +145,26 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 	}
 
 	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp
+}
+
+func init() {
+	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
+	commandOptions.WorkspaceDescribeView.Value = core.WorkspaceDescribeViewTypes.Hierarchical
+	DescribeCmd.Flags().VarP(&commandOptions.WorkspaceDescribeView, "view", "v", fmt.Sprintf("Select view type %v", workspaceDescribeViewTypeValues))
+	DescribeCmd.RegisterFlagCompletionFunc("view", viewTypeFlagCompletion)
+
+	DescribeCmd.Flags().BoolVarP(&commandOptions.PathOnly, "path", "p", false, "Show path only")
+}
+func viewTypeFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	var suggestions = make([]string, 0)
+
+	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
+
+	for _, _type := range workspaceDescribeViewTypeValues {
+		suggestions = append(suggestions, string(_type))
+	}
+
+	return suggestions, cobra.ShellCompDirectiveNoSpace
 }
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {

@@ -3,7 +3,6 @@ package describe
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"parsdevkit.net/operation/services"
@@ -15,46 +14,51 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name          string
-	workspaceName string
-	force         string
-)
+type DescribeOptions struct {
+	Name      string
+	Workspace string
+	Force     string
+}
+
+var commandOptions DescribeOptions
+var maxArgumentCount int = 1
 
 var DescribeCmd = &cobra.Command{
-	Use:     "describe",
-	Aliases: []string{"d"},
-	Short:   "Information about project",
-	Long:    `Information about project`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) == 0 {
-			return fmt.Errorf("Required at least 1 project name")
-		}
-		return nil
-	},
+	Use:               "describe",
+	Aliases:           []string{"d"},
+	Short:             "Information about project",
+	Long:              `Information about project`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
-		if len(args) == 0 {
-			fmt.Println("Please provide a name for the new project")
-			os.Exit(1)
-		} else if len(args) > 0 {
-			name = args[0]
-		}
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
+	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only group name is expected.")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(name) {
-		cmd.Help()
-		os.Exit(0)
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
 	}
+	return nil
+}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	projectList, err := projectService.ListByFullNameWorkspace(name, workspaceName)
+	projectList, err := projectService.ListByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,6 +77,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		layers := fmt.Sprintf("\t Layers: %v", e.Specifications.Configuration.Layers)
 		fmt.Println(layers)
 	}
+	return nil
 }
 
 func init() {
@@ -80,19 +85,17 @@ func init() {
 }
 
 func addSubCommands() {
-	DescribeCmd.Flags().StringVarP(&name, "name", "n", "", "Project name")
+	DescribeCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 
-	DescribeCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	DescribeCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 	DescribeCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 }
 
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
-
 	var suggestions = make([]string, 0)
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	projectList, err := projectService.ListByWorkspace(workspaceName)
+	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}

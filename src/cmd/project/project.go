@@ -3,7 +3,8 @@ package project
 import (
 	"parsdevkit.net/cmd/project/describe"
 	"parsdevkit.net/cmd/project/list"
-	"parsdevkit.net/cmd/project/new"
+
+	// "parsdevkit.net/cmd/project/new"
 	"parsdevkit.net/cmd/project/remove"
 	"parsdevkit.net/cmd/project/submit"
 
@@ -27,7 +28,7 @@ func init() {
 }
 
 func addSubCommands() {
-	ProjectCmd.AddCommand(new.NewCmd)
+	// ProjectCmd.AddCommand(new.NewCmd)
 	ProjectCmd.AddCommand(submit.SubmitCmd)
 	ProjectCmd.AddCommand(remove.RemoveCmd)
 	ProjectCmd.AddCommand(describe.DescribeCmd)

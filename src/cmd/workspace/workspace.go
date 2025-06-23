@@ -14,9 +14,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	switchTo string
-)
+type WorkspaceOptions struct {
+	SwitchTo string
+}
+
+var commandOptions WorkspaceOptions
 
 var WorkspaceCmd = &cobra.Command{
 	Use:     "workspace",
@@ -27,10 +29,10 @@ var WorkspaceCmd = &cobra.Command{
 }
 
 func executeFunc(cmd *cobra.Command, args []string) {
-	if !utils.IsEmpty(switchTo) {
+	if !utils.IsEmpty(commandOptions.SwitchTo) {
 
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-		workspace, err := workspaceService.ChangeCurrentWorkspace(switchTo)
+		workspace, err := workspaceService.ChangeCurrentWorkspace(commandOptions.SwitchTo)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,7 +46,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 func init() {
 	addSubCommands()
 
-	WorkspaceCmd.Flags().StringVarP(&switchTo, "switch", "s", "", "Switch to workspace")
+	WorkspaceCmd.Flags().StringVarP(&commandOptions.SwitchTo, "switch", "s", "", "Switch to workspace")
 	WorkspaceCmd.RegisterFlagCompletionFunc("switch", switchFlagCompletion)
 }
 

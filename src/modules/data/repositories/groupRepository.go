@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 
 	"parsdevkit.net/core/utils"
 
@@ -38,7 +39,7 @@ func (s *GroupRepository) GetByName(name string) (*entities.Group, error) {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
-		return nil, result.Error
+		return nil, fmt.Errorf("Unexpected error occured while retrieving workspace '%s': %w", name, result.Error)
 	}
 	return entity, nil
 }

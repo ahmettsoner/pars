@@ -15,65 +15,80 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	names         []string
-	workspaceName string
-	force         string
-	filePaths     []string
-)
+type RemoveOptions struct {
+	Names     []string
+	Workspace string
+	Force     string
+	FilePaths []string
+}
+
+var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"r"},
 	Short:   "Task Information",
 	Long:    `Task Information`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if len(filePaths) > 0 {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
+
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
+	}
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.FilePaths) > 0 {
 		taskService := commonTask.CommonTaskEngine{}
-		if err := taskService.RemoveTasksFromFile(true, filePaths...); err != nil {
+		if err := taskService.RemoveTasksFromFile(true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 
-		if len(names) == 0 {
+		if len(commandOptions.Names) == 0 {
 			if len(args) == 0 {
 				fmt.Println("Please provide a name for the remove the remove")
 				os.Exit(1)
 			} else if len(args) > 0 {
-				name = args[0]
+				commandOptions.Names = args
 			}
 		}
 
-		if len(names) == 0 {
-			cmd.Help()
-			os.Exit(0)
-		}
-
-		checkGlobals := utils.IsEmpty(workspaceName)
+		checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 		taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
-		for _, name := range names {
+		for _, name := range commandOptions.Names {
 			if checkGlobals {
-				workspaceName = "None"
+				commandOptions.Workspace = "None"
 
-				if taskService.IsExists(name, workspaceName) {
-					task, err := taskService.Remove(name, workspaceName, true)
+				if taskService.IsExists(name, commandOptions.Workspace) {
+					task, err := taskService.Remove(name, commandOptions.Workspace, true)
 					if err != nil {
 						log.Fatal(err)
 					}
 					fmt.Println("Task (" + task.Name + ") deleted permanently")
 				}
 
-				workspaceName = ""
+				commandOptions.Workspace = ""
 			}
 
-			workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-			if taskService.IsExists(name, workspaceName) {
-				task, err := taskService.Remove(name, workspaceName, true)
+			if taskService.IsExists(name, commandOptions.Workspace) {
+				task, err := taskService.Remove(name, commandOptions.Workspace, true)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -81,6 +96,8 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			}
 		}
 	}
+
+	return nil
 }
 
 func init() {
@@ -88,7 +105,7 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringSliceVarP(&names, "name", "n", nil, "Template names")
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "name", "n", nil, "Template names")
 
-	RemoveCmd.Flags().StringSliceVarP(&filePaths, "files", "f", nil, "Comma-separated list of declaration files")
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "files", "f", nil, "Comma-separated list of declaration files")
 }

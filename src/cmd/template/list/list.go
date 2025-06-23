@@ -13,20 +13,36 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	workspaceName string
-)
+type ListOptions struct {
+	Workspace string
+}
+
+var commandOptions ListOptions
+var maxArgumentCount int = 0
 
 var ListCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
 	Short:   "List template(s)",
 	Long:    `List template(s)`,
-	Run:     executeFunc,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	checkGlobals := utils.IsEmpty(workspaceName)
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+	checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
 	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 	fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())
@@ -35,9 +51,9 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("*** Global Templates ***")
 		fmt.Println()
 
-		workspaceName = "None"
+		commandOptions.Workspace = "None"
 
-		sharedTemplateList, err := sharedTemplateService.ListByWorkspace(workspaceName)
+		sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -51,7 +67,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("--------------------------")
 		fmt.Println()
 
-		codeTemplateList, err := codeTemplateService.ListByWorkspace(workspaceName)
+		codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -65,7 +81,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		fmt.Println("--------------------------")
 		fmt.Println()
 
-		fileTemplateList, err := fileTemplateService.ListByWorkspace(workspaceName)
+		fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -75,16 +91,16 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("- %v\n", template.GetFullInformation())
 		}
 
-		workspaceName = ""
+		commandOptions.Workspace = ""
 		fmt.Println()
 	}
 
 	fmt.Println("*** Workspace Specific Templates ***")
 	fmt.Println()
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(workspaceName)
+	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -98,7 +114,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	fmt.Println("--------------------------")
 	fmt.Println()
 
-	codeTemplateList, err := codeTemplateService.ListByWorkspace(workspaceName)
+	codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -112,7 +128,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	fmt.Println("--------------------------")
 	fmt.Println()
 
-	fileTemplateList, err := fileTemplateService.ListByWorkspace(workspaceName)
+	fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -121,6 +137,6 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	for _, template := range *fileTemplateList {
 		fmt.Printf("- %v\n", template.GetFullInformation())
 	}
+
+	return nil
 }
-
-

@@ -15,49 +15,66 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	// declarationFile bool = false
-	workspaceName string
-	noInit        bool = true
-	filePaths     []string
-)
+type SubmitOptions struct {
+	Name      string
+	Workspace string
+	NoInit    bool
+	FilePaths []string
+}
 
+var commandOptions = SubmitOptions{
+	NoInit: true,
+}
 var maxArgumentCount int = 0
 
 var SubmitCmd = &cobra.Command{
-	Use:     "submit",
-	Aliases: []string{"s"},
-	Short:   "Initialize project",
-	Long:    `Initialize project`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "submit",
+	Aliases:           []string{"s"},
+	Short:             "Initialize project",
+	Long:              `Initialize project`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	}
+	return nil
+}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
+	}
 
-	if len(filePaths) > 0 {
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+	}
 
-		allFiles, err := utils.WalkDir(filePaths...)
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	if len(commandOptions.FilePaths) > 0 {
+
+		allFiles, err := utils.WalkDir(commandOptions.FilePaths...)
 		if err != nil {
 			fmt.Println("Error processing file paths:", err)
-			return
 		}
 
 		applicationProjectService := applicationProject.ApplicationProjectEngine{}
-		if err := applicationProjectService.CreateProjectsFromFile(workspaceName, !noInit, allFiles...); err != nil {
+		if err := applicationProjectService.CreateProjectsFromFile(commandOptions.Workspace, !commandOptions.NoInit, allFiles...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		cmd.Help()
 	}
+
+	return nil
 }
 
 func init() {
@@ -65,17 +82,17 @@ func init() {
 }
 
 func addSubCommands() {
-	SubmitCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	SubmitCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 	SubmitCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 
-	SubmitCmd.Flags().BoolVarP(&noInit, "no-init", "", false, "Create project but do not initialize")
+	SubmitCmd.Flags().BoolVarP(&commandOptions.NoInit, "no-init", "", false, "Create project but do not initialize")
 
 	// SubmitCmd.AddCommand(pars.ParsCmd)
 	// SubmitCmd.AddCommand(dotnet.DotnetCmd)
 	// SubmitCmd.AddCommand(angular.AngularCmd)
 	// SubmitCmd.AddCommand(goPkg.GoCmd)
 	// SubmitCmd.Flags().BoolVarP(&declarationFile, "from-file", "", false, "Create from declaration file")
-	SubmitCmd.Flags().StringSliceVarP(&filePaths, "file", "f", nil, "Comma-separated list of declaration files")
+	SubmitCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
 	SubmitCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 

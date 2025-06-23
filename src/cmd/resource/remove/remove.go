@@ -18,100 +18,108 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	names         []string
-	workspaceName string
-	force         string
-	filePaths     []string
-)
+type RemoveOptions struct {
+	Names     []string
+	Workspace string
+	Force     string
+	FilePaths []string
+}
+
+var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:     "remove",
-	Aliases: []string{"r"},
-	Short:   "Resource Information",
-	Long:    `Resource Information`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
+	Use:               "remove",
+	Aliases:           []string{"r"},
+	Short:             "Resource Information",
+	Long:              `Resource Information`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
 
-	if len(args) > 0 {
-		names = args
+	return nil
+}
 
-		checkGlobals := utils.IsEmpty(workspaceName)
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
+	}
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	if len(commandOptions.Names) > 0 {
+
+		checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 
 		objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
 		dataResourceService := services.NewDataResourceService(utils.GetEnvironment())
 
-		for _, name := range names {
+		for _, name := range commandOptions.Names {
 			if checkGlobals {
-				workspaceName = "None"
+				commandOptions.Workspace = "None"
 
-				if objectResourceService.IsExists(name, workspaceName) {
-					objectResource, err := objectResourceService.Remove(name, workspaceName, true, true)
+				if objectResourceService.IsExists(name, commandOptions.Workspace) {
+					objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
 					if err != nil {
 						log.Fatal(err)
 					}
 					fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
 				}
 
-				if dataResourceService.IsExists(name, workspaceName) {
-					dataResource, err := dataResourceService.Remove(name, workspaceName, true, true)
+				if dataResourceService.IsExists(name, commandOptions.Workspace) {
+					dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
 					if err != nil {
 						log.Fatal(err)
 					}
 					fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
 				}
 
-				workspaceName = ""
+				commandOptions.Workspace = ""
 			}
 
-			workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-			if objectResourceService.IsExists(name, workspaceName) {
-				objectResource, err := objectResourceService.Remove(name, workspaceName, true, true)
+			if objectResourceService.IsExists(name, commandOptions.Workspace) {
+				objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
 				if err != nil {
 					log.Fatal(err)
 				}
 				fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
 			}
 
-			if dataResourceService.IsExists(name, workspaceName) {
-				dataResource, err := dataResourceService.Remove(name, workspaceName, true, true)
+			if dataResourceService.IsExists(name, commandOptions.Workspace) {
+				dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
 				if err != nil {
 					log.Fatal(err)
 				}
 				fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
 			}
 		}
-	} else if len(filePaths) > 0 {
+	} else if len(commandOptions.FilePaths) > 0 {
 		objectResourceService := objectResource.ObjectResourceEngine{}
-		if err := objectResourceService.RemoveResourcesFromFile(true, filePaths...); err != nil {
+		if err := objectResourceService.RemoveResourcesFromFile(true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 
 		dataResourceService := dataResource.DataResourceEngine{}
-		if err := dataResourceService.RemoveResourcesFromFile(true, filePaths...); err != nil {
+		if err := dataResourceService.RemoveResourcesFromFile(true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		fmt.Println("Please provide a name for the resource")
 		os.Exit(1)
 	}
-}
 
-func init() {
-	addSubCommands()
-}
-
-func addSubCommands() {
-
-	RemoveCmd.Flags().StringSliceVarP(&filePaths, "file", "f", nil, "Comma-separated list of declaration files")
-	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
+	return nil
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -122,6 +130,16 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 	}
 
 	return suggestions, cobra.ShellCompDirectiveNoFileComp
+}
+
+func init() {
+	addSubCommands()
+}
+
+func addSubCommands() {
+
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
+	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 
 func listResourceNameSuggestions(args []string, toComplete string) []string {

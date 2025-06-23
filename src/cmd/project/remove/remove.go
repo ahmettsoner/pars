@@ -17,57 +17,77 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	names         []string
-	workspaceName string
-	force         string
-	filePaths     []string
-)
+type RemoveOptions struct {
+	Names     []string
+	Workspace string
+	Force     string
+	FilePaths []string
+}
+
+var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:     "remove",
-	Aliases: []string{"r"},
-	Short:   "Project Removing",
-	Long:    `Project Removing`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		return nil
-	},
+	Use:               "remove",
+	Aliases:           []string{"r"},
+	Short:             "Project Removing",
+	Long:              `Project Removing`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	return nil
+}
 
-	if len(filePaths) > 0 {
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
+	}
+
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+	}
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	if len(commandOptions.FilePaths) > 0 {
 		applicationProjectService := applicationProject.ApplicationProjectEngine{}
-		if err := applicationProjectService.RemoveProjectsFromFile(workspaceName, true, filePaths...); err != nil {
+		if err := applicationProjectService.RemoveProjectsFromFile(commandOptions.Workspace, true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	}
 
-	if len(args) > 0 {
-		names = args
+	if len(commandOptions.Names) > 0 {
 
 		applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
-		for _, name := range names {
-			applicationProject, err := applicationProjectService.Remove(name, workspaceName, false, true)
+		for _, name := range commandOptions.Names {
+			applicationProject, err := applicationProjectService.Remove(name, commandOptions.Workspace, false, true)
 			if err != nil {
 				log.Fatal(err)
 			}
 
 			fmt.Println("Project (" + applicationProject.Name + ") deleted permanently")
 		}
-	} else if len(filePaths) > 0 {
+	} else if len(commandOptions.FilePaths) > 0 {
 		applicationProjectService := applicationProject.ApplicationProjectEngine{}
-		if err := applicationProjectService.RemoveProjectsFromFile(workspaceName, true, filePaths...); err != nil {
+		if err := applicationProjectService.RemoveProjectsFromFile(commandOptions.Workspace, true, commandOptions.FilePaths...); err != nil {
 			log.Fatal(err)
 		}
 	} else {
 		fmt.Println("Please provide a name for the project")
 		os.Exit(1)
 	}
+
+	return nil
 }
 
 func init() {
@@ -75,10 +95,10 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	RemoveCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 	RemoveCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 
-	RemoveCmd.Flags().StringSliceVarP(&filePaths, "files", "f", nil, "Comma-separated list of declaration files")
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "files", "f", nil, "Comma-separated list of declaration files")
 	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 
@@ -94,11 +114,9 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
-
 	var suggestions = make([]string, 0)
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	projectList, err := projectService.ListByWorkspace(workspaceName)
+	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)
 	}

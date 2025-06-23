@@ -3,7 +3,6 @@ package describe
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"parsdevkit.net/operation/services"
@@ -13,42 +12,47 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name string
-	// workspaceName string
-	force string
-)
+type DescribeOptions struct {
+	Name      string
+	Workspace string
+	Force     string
+}
+
+var commandOptions DescribeOptions
 var maxArgumentCount int = 1
 
 var DescribeCmd = &cobra.Command{
-	Use:     "describe [name]",
-	Aliases: []string{"d"},
-	Short:   "Information about project",
-	Long:    `Information about project`,
-	Run:     executeFunc,
-	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) > maxArgumentCount {
-			return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
-		}
-		return nil
-	},
+	Use:               "describe [name]",
+	Aliases:           []string{"d"},
+	Short:             "Information about project",
+	Long:              `Information about project`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
 	ValidArgsFunction: validArguments,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if len(args) > 0 {
-		name = args[0]
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
 	}
-
-	if utils.IsEmpty(name) {
-		cmd.Help()
-		os.Exit(0)
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only group name is expected.")
 	}
+	return nil
+}
 
-	// workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
+	}
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	groupService := services.NewGroupService(utils.GetEnvironment())
-	group, err := groupService.GetByName(name)
+	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -73,15 +77,8 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		name := fmt.Sprintf("\t - %v", e.GetFullInformation())
 		fmt.Println(name)
 	}
-}
 
-func init() {
-	addSubCommands()
-}
-
-func addSubCommands() {
-	// DescribeCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
-	// DescribeCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
+	return nil
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -95,6 +92,15 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 	}
 
 	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp
+}
+
+func init() {
+	addSubCommands()
+}
+
+func addSubCommands() {
+	// DescribeCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	// DescribeCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 }
 func listGroupNameSuggestions(args []string, toComplete string) []string {
 

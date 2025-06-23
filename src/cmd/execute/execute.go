@@ -2,7 +2,6 @@ package execute
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"parsdevkit.net/operation/services"
@@ -14,52 +13,62 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	name          string
-	workspaceName string
-)
+type ExecuteOptions struct {
+	Name      string
+	Workspace string
+}
+
+var commandOptions ExecuteOptions
+var maxArgumentCount int = 1
 
 var ExecuteCmd = &cobra.Command{
 	Use:     "execute",
 	Aliases: []string{"x"},
 	Short:   "Execute project(s)",
 	Long:    `Execute project(s)`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
-		if len(args) == 0 {
-			fmt.Println("Please provide a project name")
-			os.Exit(1)
-		} else if len(args) > 0 {
-			name = args[0]
-		}
+func validateArgs(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("error: too many arguments. Only project name is expected.")
+	}
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(name) {
-		cmd.Help()
-		os.Exit(0)
+	if utils.IsEmpty(commandOptions.Workspace) {
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
 	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	return nil
+}
+
+// TODO: !WARN Burdan hata kontolü devam
+func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	project, err := projectService.Run(name, workspaceName)
+	project, err := projectService.Clean(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to clean project '%s': %w", commandOptions.Name, err)
 	}
 
-	fmt.Println("Project (" + project.Name + ") executing...")
+	fmt.Fprintf(os.Stdout, "✔ Project '%s' cleaned successfully\n", project.Name)
+
+	return nil
 }
 
 func init() {
-	ExecuteCmd.Flags().StringVarP(&name, "name", "n", "", "Project name")
+	ExecuteCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 
-	ExecuteCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
-	// RemoveCommand.Flags().StringVarP(&force, "force", "", "", "Force to delete")
-
-	// if err := RemoveCommand.MarkFlagRequired("force"); err != nil {
-	// 	fmt.Println(err)
-	// }
+	ExecuteCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

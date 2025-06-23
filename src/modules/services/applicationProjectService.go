@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -976,6 +977,80 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 	return &project.Specifications, nil
 }
 
+func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse full project name '%s': %w", name, err)
+	}
+
+	workspaceEntity, err := s.workspaceRespository.GetByName(workspaceName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get workspace '%s': %w", name, err)
+	}
+	if workspaceEntity == nil {
+		return nil, fmt.Errorf("there are no workspace '%s': %w", name, err)
+	}
+
+	groupId := 0
+	projectGroupEntity, err := s.groupRespository.GetByName(projectGroup)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get group '%s': %w", name, err)
+	}
+	if projectGroupEntity != nil {
+		return nil, fmt.Errorf("there are no group '%s': %w", name, err)
+	}
+
+	if groupId > 0 {
+		logrus.Debugf("project (%v) in the group (%v)", projectName, projectGroup)
+	}
+
+	//TODO: iyileştirilecek, kolay çözüm uygulandı
+	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s': %w", projectGroup, workspaceName, err)
+		}
+		if projectEntities != nil {
+			return nil, fmt.Errorf("there are no project for group '%s' in workspace '%s': %w", projectGroup, workspaceName, err)
+		}
+
+		var latestValue *applicationproject.ProjectSpecification
+		for _, entity := range *projectEntities {
+			var project applicationproject.ProjectBaseStruct
+			err = json.Unmarshal([]byte(entity.Document), &project)
+			if err != nil {
+				return nil, err
+			}
+			latestValue, _ = s.Clean(project.GetFullName(), workspaceName)
+		}
+
+		return latestValue, nil
+	}
+
+	entity, err := s.projectRespository.GetByNameGroupAndWorkspaceName(projectName, projectGroup, workspaceName)
+	if err != nil {
+		return nil, err
+	}
+	if entity == nil {
+		return nil, errors.New("Project name (" + name + ") is not correct")
+	}
+	// entity.Workspace = workspaceEntity
+
+	var project applicationproject.ProjectBaseStruct
+	err = json.Unmarshal([]byte(entity.Document), &project)
+	if err != nil {
+		return nil, err
+	}
+
+	projectManager := platformsCommon.ManagerFactory(project.Specifications.Platform.Type)
+
+	err = projectManager.CleanProject(project.Specifications)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &project.Specifications, nil
+}
 func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
