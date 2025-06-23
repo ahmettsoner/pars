@@ -56,6 +56,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.10.0 // indirect
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

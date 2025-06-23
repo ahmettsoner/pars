@@ -6,8 +6,6 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/errors"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -57,9 +55,8 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {
-		return err
+		return fmt.Errorf("xxx: Group Specification Çözümlenemedi %w", err)
 	} else {
-
 		s.GroupIdentifier = tempIdentifierObject.GroupIdentifier
 	}
 
@@ -70,7 +67,7 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	if err := unmarshal(&tempObject); err != nil {
 		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
+			return fmt.Errorf("xxx: Group Specification Path ve Package dönüştürme hatası oluştu %w", err)
 		}
 	} else {
 		s.Path = tempObject.Path
@@ -86,7 +83,7 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 	}
 
 	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
+		return fmt.Errorf("xxx: Group Specification Name alanı tanımlı değil")
 	}
 
 	if len(s.Package) == 0 {

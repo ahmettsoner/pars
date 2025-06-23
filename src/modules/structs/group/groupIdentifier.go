@@ -3,8 +3,7 @@ package group
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,6 +17,11 @@ func NewGroupIdentifier(id int, name string) GroupIdentifier {
 		ID:   id,
 		Name: name,
 	}
+}
+func (e GroupIdentifier) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
 }
 
 func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -39,10 +43,6 @@ func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error
 		}
 	} else {
 		s.Name = value
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return fmt.Errorf("xxx: Group Identifier Name alanı tanımlı değil")
 	}
 
 	return nil

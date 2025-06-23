@@ -3,6 +3,7 @@ package group
 import (
 	"fmt"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs"
 
 	"parsdevkit.net/core/utils"
@@ -20,6 +21,12 @@ func NewGroupBaseStruct(header structs.Header, specifications GroupSpecification
 		Header:         header,
 		Specifications: specifications,
 	}
+}
+func (e GroupBaseStruct) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Name, v.Required),
+		v.Field(&e.Specifications.GroupIdentifier.Name, v.Required),
+	)
 }
 
 func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {

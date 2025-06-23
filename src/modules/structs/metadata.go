@@ -43,7 +43,6 @@ func (s *Metadata) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return err
 		}
-
 	}
 
 	return nil

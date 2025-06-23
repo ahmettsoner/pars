@@ -115,6 +115,7 @@ func (s GroupEngine) CreateGroups(groups []groupStruct.GroupBaseStruct, init boo
 	GroupEngine := services.NewGroupService(utils.GetEnvironment())
 
 	for _, group := range groups {
+		group.Validate()
 		if ok := GroupEngine.IsExists(group.Name); ok {
 			newModelHash, err := utils.CalculateHashFromObject(group)
 			if err != nil {
