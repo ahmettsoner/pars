@@ -399,6 +399,9 @@ func (s *ApplicationProjectService) ListByWorkspace(workspaceName string) (*([]a
 	for _, entity := range *entityList {
 		var project applicationproject.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
+		if err != nil {
+			return nil, fmt.Errorf("Application Project data %+v is corrupted or not in the expected format: %w", entity.Document, err)
+		}
 
 		projectList = append(projectList, project)
 	}

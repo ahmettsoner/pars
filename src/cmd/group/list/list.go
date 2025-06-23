@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -33,7 +32,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to retrieve groups: %w", err)
 	}
 
 	fmt.Printf("(%d) group available\n\n", len(*groupList))

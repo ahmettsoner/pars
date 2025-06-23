@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"parsdevkit.net/persistence/contexts"
@@ -20,12 +21,12 @@ func NewGenerationHistoryRepository(environment string) *GenerationHistoryReposi
 
 func (s *GenerationHistoryRepository) Get(id int) (*entities.GenerationHistory, error) {
 	entity := new(entities.GenerationHistory)
-	result := s.DbContext.Database.First(&entity, id)
+	result := s.DbContext.Database.First(entity, id)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
-		return nil, result.Error
+		return nil, fmt.Errorf("failed to get GenerationHistory with id %d: %w", id, result.Error)
 	}
 	return entity, nil
 }

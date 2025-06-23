@@ -1,11 +1,11 @@
 package group
 
 import (
+	"fmt"
+
 	"parsdevkit.net/structs"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,9 +28,8 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 	}
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
-		return err
+		return fmt.Errorf("xxx: Group Header Çözümlenemedi %w", err)
 	} else {
-
 		s.Header = tempHeaderObject.Header
 	}
 
@@ -41,14 +40,15 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
 		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
+			return fmt.Errorf("xxx: Group Specification dönüştürme hatası oluştu %w", err)
 		}
+		return fmt.Errorf("xxx: Group Specification Çözümlenemedi %w", err)
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
 	}
 
 	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
+		return fmt.Errorf("xxx: Group Name alanı tanımlı değil")
 	}
 
 	return nil

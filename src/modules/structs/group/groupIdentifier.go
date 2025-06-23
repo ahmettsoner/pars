@@ -1,9 +1,9 @@
 package group
 
 import (
-	"parsdevkit.net/core/utils"
+	"fmt"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -30,20 +30,19 @@ func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error
 
 			err := unmarshal(&tempObject)
 			if err != nil {
-				return err
+				return fmt.Errorf("xxx: Group Identifier Çözümlenemedi %w", err)
 			}
 
 			s.Name = tempObject.Name
 		} else {
-			return err
+			return fmt.Errorf("xxx: Group Identifier dönüştürme hatası oluştu %w", err)
 		}
-
 	} else {
 		s.Name = value
 	}
 
 	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
+		return fmt.Errorf("xxx: Group Identifier Name alanı tanımlı değil")
 	}
 
 	return nil

@@ -36,7 +36,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only project name is expected.")
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
 	}
 	return nil
 }
@@ -46,23 +46,24 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(commandOptions.Workspace)
+	if err != nil {
+		return fmt.Errorf("failed to find active workspace '%s': %w", commandOptions.Name, err)
 	}
+	commandOptions.Workspace = workspaceName
 
 	return nil
 }
 
-// TODO: !WARN Burdan hata kontolü devam
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	project, err := projectService.Clean(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
-		return fmt.Errorf("failed to clean project '%s': %w", commandOptions.Name, err)
+		return fmt.Errorf("failed to execute project '%s': %w", commandOptions.Name, err)
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Project '%s' cleaned successfully\n", project.Name)
+	fmt.Fprintf(os.Stdout, "✔ Project '%s' executed successfully\n", project.Name)
 
 	return nil
 }

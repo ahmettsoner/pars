@@ -37,7 +37,7 @@ var RemoveCmd = &cobra.Command{
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: group name(s) is required. Provide it with '--name' or as an argument.")
 	}
 
 	return nil
@@ -58,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		for _, name := range commandOptions.Names {
 			group, err := groupService.Remove(name, true)
 			if err != nil {
-				log.Fatal(err)
+				return fmt.Errorf("failed to remove group '%s': %w", name, err)
 			}
 
 			fmt.Println("Group (" + group.Name + ") deleted permanently")
@@ -66,11 +66,10 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	} else if len(commandOptions.FilePaths) > 0 {
 		groupService := group.GroupEngine{}
 		if err := groupService.RemoveGroupsFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("failed to remove group(s): %w", err)
 		}
 	} else {
-		fmt.Println("Please provide a name for the group")
-		os.Exit(1)
+		return fmt.Errorf("Please provide names or file paths to remove group(s)")
 	}
 	return nil
 }
@@ -80,6 +79,9 @@ func init() {
 }
 
 func addSubCommands() {
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "name", "n", nil, "Comma-separated list of names")
+	// RemoveCmd.RegisterFlagCompletionFunc("name", nameFlagCompletion)
+
 	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
 	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }

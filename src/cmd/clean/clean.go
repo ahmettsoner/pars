@@ -72,9 +72,4 @@ func init() {
 	CleanCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
 
 	CleanCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
-	// RemoveCommand.Flags().StringVarP(&commandOptions.Force, "force", "", "", "Force to delete")
-
-	// if err := RemoveCommand.MarkFlagRequired("force"); err != nil {
-	// 	fmt.Println(err)
-	// }
 }

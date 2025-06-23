@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 
 	"parsdevkit.net/core/utils"
 
@@ -184,7 +183,7 @@ func (s *ProjectRepository) ListByWorkspaceNameAndGroup(workspaceName string, gr
 	var entities = make(([]entities.Project), 0)
 	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Specifications.Group') = ?", workspaceName, groupName).Find(&entities)
 	if result.Error != nil {
-		return nil, fmt.Errorf("Unexpected error occured while retrieving project for workspace '%s' and group '%s' : %w", workspaceName, groupName, result.Error)
+		return nil, result.Error
 	}
 	return &entities, nil
 }

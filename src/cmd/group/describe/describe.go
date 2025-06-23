@@ -37,7 +37,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only group name is expected.")
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
 	}
 	return nil
 }
@@ -54,7 +54,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to retrieve group '%s': %w", commandOptions.Name, err)
 	}
 
 	name := fmt.Sprintf("Group Name:\t%v", group.Name)
@@ -69,7 +69,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	projectList, err := projectService.ListByGroupName(group.Name)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed to retrieve group projects '%s': %w", commandOptions.Name, err)
 	}
 
 	fmt.Printf("Projects:\n")

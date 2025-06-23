@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -36,11 +35,10 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	environmentService := services.NewEnvironmentService()
 	environmentlist, err := environmentService.List()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("failed list environments: %w", err)
 	}
 
 	fmt.Printf("(%d) environment available\n", (len(environmentlist) + 1))
-
 	fmt.Println("* Default")
 	for _, e := range environmentlist {
 		fmt.Printf("- %v\n", e)

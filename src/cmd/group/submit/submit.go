@@ -2,7 +2,6 @@ package submit
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -51,32 +50,17 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	// if len(args) == 1 {
-	// 	name = args[0]
 
-	// 	var structData = struct {
-	// 		Name string
-	// 	}{
-	// 		Name: name,
-	// 	}
-
-	// 	var templateFilePath = "/group/group.yaml.templ"
-
-	// 	groupService := group.GroupEngine{}
-	// 	if err := groupService.CreateGroupsFromTemplate(!noInit, structData, templateFilePath); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// } else
 	if len(commandOptions.FilePaths) > 0 {
 
 		allFiles, err := utils.WalkDir(commandOptions.FilePaths...)
 		if err != nil {
-			return fmt.Errorf("Error processing file paths: %v", allFiles)
+			return fmt.Errorf("Error processing file paths for group: %v", allFiles)
 		}
 
 		groupService := group.GroupEngine{}
 		if err := groupService.CreateGroupsFromFile(!commandOptions.NoInit, allFiles...); err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Error creating group(s): %v", allFiles)
 		}
 	} else {
 		return fmt.Errorf("Please provide a file location for the submit group(s)")
