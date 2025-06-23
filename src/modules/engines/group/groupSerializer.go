@@ -1,6 +1,7 @@
 package group
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -51,7 +52,7 @@ func (s GroupSerializer) GetGroupStructsFromFile(files ...string) ([]group.Group
 		}
 		groupStructs, err := s.GetGroupStructsFromString(string(data))
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("❌ Failed to serializing: %v\n", err)
 		}
 		groups = append(groups, groupStructs...)
 

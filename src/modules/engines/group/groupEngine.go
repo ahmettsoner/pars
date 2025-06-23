@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	textTemplate "text/template"
 
+	"parsdevkit.net/core/utils/json"
+
 	groupStruct "parsdevkit.net/structs/group"
 
 	"parsdevkit.net/operation/services"
@@ -69,12 +71,12 @@ func (s GroupEngine) CreateGroupsFromFile(init bool, files ...string) error {
 		groupSerializer := GroupSerializer{}
 		groupsFromFile, err := groupSerializer.GetGroupStructsFromFile(allFiles...)
 		if err != nil {
-			return err
+			return fmt.Errorf("❌ Failed to serializing: %v\n", err)
 		}
 
 		logrus.Debugf("found %v group", len(groupsFromFile))
 		if err := s.CreateGroups(groupsFromFile, init); err != nil {
-			return err
+			return fmt.Errorf("❌ Failed to creating groups \n\t%v", err)
 		}
 	}
 	return nil
@@ -115,7 +117,15 @@ func (s GroupEngine) CreateGroups(groups []groupStruct.GroupBaseStruct, init boo
 	GroupEngine := services.NewGroupService(utils.GetEnvironment())
 
 	for _, group := range groups {
-		group.Validate()
+		if err := group.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(group)
+			return fmt.Errorf("group invalid: %v instance: %s", err, jsonObject)
+		}
+	}
+
+	for _, group := range groups {
+
+		return fmt.Errorf("type must be StructType")
 		if ok := GroupEngine.IsExists(group.Name); ok {
 			newModelHash, err := utils.CalculateHashFromObject(group)
 			if err != nil {

@@ -60,7 +60,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		groupService := group.GroupEngine{}
 		if err := groupService.CreateGroupsFromFile(!commandOptions.NoInit, allFiles...); err != nil {
-			return fmt.Errorf("Error creating group(s): %v", allFiles)
+			return fmt.Errorf("Error creating group(s) on %v\n\t%v", allFiles, err)
 		}
 	} else {
 		return fmt.Errorf("Please provide a file location for the submit group(s)")
