@@ -97,7 +97,7 @@ replace parsdevkit.net/core/utils => ../utils
 
 replace parsdevkit.net/providers => ../providers
 
-replace parsdevkit.net/models => ../models
+replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/core => ../../core
 

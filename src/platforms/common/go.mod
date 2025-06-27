@@ -8,7 +8,7 @@ replace parsdevkit.net/core/utils => ../../modules/utils
 
 replace parsdevkit.net/structs => ../../modules/structs
 
-replace parsdevkit.net/models => ../../modules/models
+replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/platforms/core => ../core
 

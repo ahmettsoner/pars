@@ -50,7 +50,7 @@ replace parsdevkit.net/core/utils => ./modules/utils
 
 replace parsdevkit.net/providers => ./components/providers
 
-replace parsdevkit.net/models => ./modules/models
+replace parsdevkit.net/models => ./models
 
 replace parsdevkit.net/engines => ./modules/engines
 

@@ -70,4 +70,4 @@ replace parsdevkit.net/providers => ../providers
 
 replace parsdevkit.net/structs => ../structs
 
-replace parsdevkit.net/models => ../models
+replace parsdevkit.net/models => ../../models

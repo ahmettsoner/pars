@@ -37,7 +37,7 @@ replace parsdevkit.net/platforms/pars => ../platforms/pars
 
 replace parsdevkit.net/structs => ../modules/structs
 
-replace parsdevkit.net/models => ../modules/models
+replace parsdevkit.net/models => ../models
 
 replace parsdevkit.net/operation/services => ../modules/services
 

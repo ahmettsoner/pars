@@ -8,7 +8,7 @@ replace parsdevkit.net/core/utils => ../../modules/utils
 
 replace parsdevkit.net/structs => ../../modules/structs
 
-replace parsdevkit.net/models => ../../modules/models
+replace parsdevkit.net/models => ../../models
 
 require (
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
