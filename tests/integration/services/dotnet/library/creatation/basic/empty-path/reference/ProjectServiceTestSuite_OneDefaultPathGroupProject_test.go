@@ -13,6 +13,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/test"
@@ -86,7 +87,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -128,8 +129,8 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -168,7 +169,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -212,8 +213,8 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -252,7 +253,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -299,8 +300,8 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName1, structs.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName2, structs.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -340,7 +341,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(structs.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(projectStruct.NewHeader(schemas.StructTypes.Project, projectStruct.StructKinds.Application, referenceProjectName, structs.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)

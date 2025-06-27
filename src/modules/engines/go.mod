@@ -1,28 +1,42 @@
 module parsdevkit.net/engines
 
-go 1.22
+go 1.23.7
 
 require (
 	github.com/sirupsen/logrus v1.9.3
 	gopkg.in/yaml.v3 v3.0.1
+	parsdevkit.net/context v0.0.0-00010101000000-000000000000
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000
 	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
+	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
+	parsdevkit.net/templates v0.0.0-00010101000000-000000000000
 )
 
-require parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
+require (
+	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000
+	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
+)
 
 require (
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.10.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
 	gorm.io/gorm v1.25.7 // indirect
 	modernc.org/libc v1.22.5 // indirect
 	modernc.org/mathutil v1.5.0 // indirect
@@ -32,7 +46,6 @@ require (
 	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000 // indirect
@@ -41,8 +54,6 @@ require (
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace parsdevkit.net/operation/services => ../services
@@ -68,6 +79,22 @@ replace parsdevkit.net/platforms/go => ../platforms/go
 replace parsdevkit.net/platforms/pars => ../platforms/pars
 
 replace parsdevkit.net/structs => ../structs
+
+replace parsdevkit.net/modules/project/application => ../project/application
+
+replace parsdevkit.net/modules/template/code => ../template/code
+
+replace parsdevkit.net/modules/template/shared => ../template/shared
+
+replace parsdevkit.net/modules/template/file => ../template/file
+
+replace parsdevkit.net/modules/task/common => ../task/common
+
+replace parsdevkit.net/modules/resource/data => ../resource/data
+
+replace parsdevkit.net/modules/group/group => ../group/group
+
+replace parsdevkit.net/modules/resource/object => ../resource/object
 
 replace parsdevkit.net/core/utils => ../utils
 

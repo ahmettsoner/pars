@@ -13,6 +13,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/persistence/repositories"
@@ -179,7 +180,7 @@ func CreateNewSampleTemplateWithSet(name, set string) (*entities.Template, *code
 func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(structs.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,
@@ -210,7 +211,7 @@ func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(structs.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,

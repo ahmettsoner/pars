@@ -10,6 +10,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"parsdevkit.net/core/schemas"
 )
 
 func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) {
@@ -22,7 +23,7 @@ func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, envi
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			workspaceName,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

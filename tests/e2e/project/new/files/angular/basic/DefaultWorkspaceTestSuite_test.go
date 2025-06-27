@@ -105,7 +105,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.Destroy(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -188,7 +188,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
-	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)

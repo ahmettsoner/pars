@@ -9,6 +9,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/persistence/repositories"
@@ -175,7 +176,7 @@ func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Group,
+			schemas.StructTypes.Group,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -194,7 +195,7 @@ func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Group,
+			schemas.StructTypes.Group,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

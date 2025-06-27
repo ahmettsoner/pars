@@ -3,10 +3,10 @@ package sharedtemplate
 import (
 	"fmt"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/template"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/schemas"
 )
 
 type TemplateBaseStruct struct {
@@ -15,8 +15,8 @@ type TemplateBaseStruct struct {
 	Configurations TemplateConfiguration
 }
 
-func (e TemplateBaseStruct) GetHeader() structs.SchemaHeader {
-	return structs.SchemaHeader{
+func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
+	return schemas.SchemaHeader{
 		Type: e.Header.Type,
 		Kind: string(e.Header.Kind),
 		Name: e.Header.Name,

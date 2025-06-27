@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_Header_Basic(t *testing.T) {
@@ -26,7 +27,7 @@ Metadata:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := structs.Header{
-		Type:     structs.StructTypes.Project,
+		Type:     schemas.StructTypes.Project,
 		Name:     "CMD",
 		Metadata: structs.Metadata{},
 	}
@@ -56,7 +57,7 @@ Metadata:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := structs.Header{
-		Type: structs.StructTypes.Project,
+		Type: schemas.StructTypes.Project,
 		Name: "CMD",
 		Metadata: structs.Metadata{
 			Tags: []string{"foo", "bar"},

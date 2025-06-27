@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
-	"parsdevkit.net/structs"
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/task"
 )
 
@@ -14,8 +14,8 @@ type TaskBaseStruct struct {
 	Configurations TaskConfiguration
 }
 
-func (e TaskBaseStruct) GetHeader() structs.SchemaHeader {
-	return structs.SchemaHeader{
+func (e TaskBaseStruct) GetHeader() schemas.SchemaHeader {
+	return schemas.SchemaHeader{
 		Type: e.Header.Type,
 		Kind: string(e.Header.Kind),
 		Name: e.Header.Name,

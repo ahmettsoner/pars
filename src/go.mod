@@ -1,8 +1,24 @@
 module pars
 
-go 1.22
+go 1.23.7
 
 toolchain go1.24.2
+
+replace parsdevkit.net/modules/project/application => ./modules/project/application
+
+replace parsdevkit.net/modules/template/code => ./modules/template/code
+
+replace parsdevkit.net/modules/template/shared => ./modules/template/shared
+
+replace parsdevkit.net/modules/template/file => ./modules/template/file
+
+replace parsdevkit.net/modules/task/common => ./modules/task/common
+
+replace parsdevkit.net/modules/resource/data => ./modules/resource/data
+
+replace parsdevkit.net/modules/group/group => ./modules/group/group
+
+replace parsdevkit.net/modules/resource/object => ./modules/resource/object
 
 replace parsdevkit.net/operation/services => ./modules/services
 
@@ -40,14 +56,13 @@ replace parsdevkit.net/models => ./modules/models
 
 replace parsdevkit.net/engines => ./modules/engines
 
-replace parsdevkit.net/templates => ./modules/templates
+replace parsdevkit.net/templates => ./core/templates
 
 replace parsdevkit.net/cmd => ./cmd
 
 require (
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -94,6 +109,14 @@ require (
 	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
@@ -106,6 +129,7 @@ require (
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/structs v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )
 

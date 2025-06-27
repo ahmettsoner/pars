@@ -10,6 +10,7 @@ import (
 	parsCMDCommon "parsdevkit.net/core/cmd"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/engines"
 	v2 "parsdevkit.net/engines/v2"
 	"parsdevkit.net/operation/services"
 
@@ -57,7 +58,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(commandOptions.Workspace)
+		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(engines.GetContext(), commandOptions.Workspace)
 		if err != nil {
 			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 		}
@@ -86,7 +87,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 			}
 
-			err = v2.DispatchEngineProcess(result)
+			err = v2.DispatchEngineProcess(engines.GetContext(), result)
 			if err != nil {
 				log.Fatalf("Engine processing failed: %v", err)
 			}

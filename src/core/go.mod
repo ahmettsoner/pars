@@ -16,7 +16,7 @@ replace parsdevkit.net/persistence/repositories => ../modules/data/repositories
 
 replace parsdevkit.net/persistence/contexts => ../modules/data/contexts
 
-replace parsdevkit.net/templates => ../modules/templates
+replace parsdevkit.net/templates => ../core/templates
 
 replace parsdevkit.net/core/utils => ../modules/utils
 

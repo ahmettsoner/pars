@@ -3,18 +3,13 @@ package engines
 import (
 	"log"
 
-	"parsdevkit.net/structs/workspace"
-
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core"
 	"parsdevkit.net/core/utils"
 )
 
-type Context struct {
-	CurrentWorkspace *workspace.WorkspaceBaseStruct
-}
-
-func GetContext() *Context {
+func GetContext() *core.Context {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 
 	currentWorkspace, err := workspaceService.GetActiveWorkspace()
@@ -29,8 +24,8 @@ func GetContext() *Context {
 		}
 	}
 
-	context := Context{
-		CurrentWorkspace: currentWorkspace,
+	context := core.Context{
+		CurrentWorkspace: currentWorkspace.GetHeader(),
 	}
 
 	return &context

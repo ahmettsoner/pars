@@ -2,29 +2,18 @@ package structs
 
 import (
 	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/schemas"
 
 	"gopkg.in/yaml.v3"
 )
 
-type Schema interface {
-	Validate() error
-	// PrintInfo()
-	GetHeader() SchemaHeader
-}
-
-type SchemaHeader struct {
-	Type StructType `yaml:"Type"`
-	Kind string     `yaml:"Kind"`
-	Name string     `yaml:"Name"`
-}
-
 type Header struct {
-	Type     StructType
+	Type     schemas.StructType
 	Name     string
 	Metadata Metadata
 }
 
-func NewHeader(_type StructType, name string, metadata Metadata) Header {
+func NewHeader(_type schemas.StructType, name string, metadata Metadata) Header {
 	return Header{
 		Type:     _type,
 		Name:     name,
@@ -44,9 +33,9 @@ func (s *Header) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&value); err != nil {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject struct {
-				Type     StructType `yaml:"Type"`
-				Name     string     `yaml:"Name"`
-				Metadata Metadata   `yaml:"Metadata"`
+				Type     schemas.StructType `yaml:"Type"`
+				Name     string             `yaml:"Name"`
+				Metadata Metadata           `yaml:"Metadata"`
 			}
 
 			err := unmarshal(&tempObject)

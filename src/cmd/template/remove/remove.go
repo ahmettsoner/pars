@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/engines"
 )
 
 type RemoveOptions struct {
@@ -105,7 +106,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				commandOptions.Workspace = ""
 			}
 
-			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
+			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(engines.GetContext(), commandOptions.Workspace)
 
 			ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
 			if err != nil {

@@ -56,7 +56,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	appContext := engines.GetContext()
 
-	if appContext.CurrentWorkspace == nil {
+	if &appContext.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")
 	} else {
 		if utils.IsEmpty(commandOptions.Name) {

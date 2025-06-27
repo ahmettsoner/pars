@@ -1,9 +1,12 @@
 package v2
 
-import "parsdevkit.net/structs"
+import (
+	"parsdevkit.net/core"
+	"parsdevkit.net/core/schemas"
+)
 
 type Engine interface {
-	Validate(data []structs.Schema) bool
-	Process(data []structs.Schema) error
-	Destroy(data []structs.Schema) error
+	Validate(data []schemas.Schema) bool
+	Process(ctx *core.Context, data []schemas.Schema) error
+	Destroy(ctx *core.Context, data []schemas.Schema) error
 }

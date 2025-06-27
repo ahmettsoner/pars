@@ -11,6 +11,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/core/schemas"
 	goModels "parsdevkit.net/platforms/go/models"
 
 	"parsdevkit.net/core/utils"
@@ -70,7 +71,7 @@ Configuration:
 			},
 			[]applicationproject.ProjectBaseStruct{
 				applicationproject.NewProjectBaseStruct(
-					project.NewHeader(structs.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
+					project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
 					applicationproject.NewProjectSpecification(
 						0,
 						"",

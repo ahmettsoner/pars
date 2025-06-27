@@ -1,6 +1,7 @@
 package workspace
 
 import (
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
@@ -9,6 +10,13 @@ import (
 type WorkspaceBaseStruct struct {
 	structs.Header
 	Specifications WorkspaceSpecification
+}
+
+func (e WorkspaceBaseStruct) GetHeader() schemas.SchemaHeader {
+	return schemas.SchemaHeader{
+		Type: e.Header.Type,
+		Name: e.Header.Name,
+	}
 }
 
 func NewWorkspaceBaseStruct(header structs.Header, specifications WorkspaceSpecification) WorkspaceBaseStruct {

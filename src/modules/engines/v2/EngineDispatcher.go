@@ -3,19 +3,28 @@ package v2
 import (
 	"fmt"
 
+	"parsdevkit.net/core"
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
-	engines "parsdevkit.net/engines/v2/engines"
-	"parsdevkit.net/structs"
+	group "parsdevkit.net/modules/group/group"
+	projectApplication "parsdevkit.net/modules/project/application"
+	resourceData "parsdevkit.net/modules/resource/data"
+	resourceObject "parsdevkit.net/modules/resource/object"
+	taskCommon "parsdevkit.net/modules/task/common"
+	templateCode "parsdevkit.net/modules/template/code"
+	templateFile "parsdevkit.net/modules/template/file"
+	templateShared "parsdevkit.net/modules/template/shared"
 )
 
 var engineRegistry = map[string]Engine{
-	"Group":               engines.GroupEngine{},
-	"Project.Application": engines.ApplicationProjectEngine{},
-	"Resource.Data":       engines.DataResourceEngine{},
-	"Resource.Object":     engines.ObjectResourceEngine{},
-	"Template.Code":       engines.CodeTemplateEngine{},
-	"Template.File":       engines.FileTemplateEngine{},
-	"Template.Shared":     engines.SharedTemplateEngine{},
+	"Group":               group.GroupEngine{},
+	"Project.Application": projectApplication.ApplicationProjectEngine{},
+	"Resource.Data":       resourceData.DataResourceEngine{},
+	"Resource.Object":     resourceObject.ObjectResourceEngine{},
+	"Template.Code":       templateCode.CodeTemplateEngine{},
+	"Template.File":       templateFile.FileTemplateEngine{},
+	"Template.Shared":     templateShared.SharedTemplateEngine{},
+	"Task.Common":         taskCommon.CommonTaskEngine{},
 }
 var orderedKeys = []string{
 	"Group",
@@ -25,11 +34,12 @@ var orderedKeys = []string{
 	"Template.File",
 	"Template.Code",
 	"Template.Shared",
+	"Task.Common",
 }
 
-func DispatchEngineProcess(t []structs.Schema) error {
+func DispatchEngineProcess(ctx *core.Context, t []schemas.Schema) error {
 
-	schemaGroups := make(map[string][]structs.Schema, 0)
+	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {
 		header := data.GetHeader()
 
@@ -51,7 +61,7 @@ func DispatchEngineProcess(t []structs.Schema) error {
 			}
 
 			fmt.Printf("Processing '%s' Schemas\n", key)
-			err := engine.Process(data)
+			err := engine.Process(ctx, data)
 			if err != nil {
 				return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
 			}
@@ -59,9 +69,9 @@ func DispatchEngineProcess(t []structs.Schema) error {
 	}
 	return nil
 }
-func DispatchEngineDestroy(t []structs.Schema) error {
+func DispatchEngineDestroy(ctx *core.Context, t []schemas.Schema) error {
 
-	schemaGroups := make(map[string][]structs.Schema, 0)
+	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {
 		header := data.GetHeader()
 
@@ -83,7 +93,7 @@ func DispatchEngineDestroy(t []structs.Schema) error {
 			}
 
 			fmt.Printf("Destroying '%s' Schemas\n", key)
-			err := engine.Destroy(data)
+			err := engine.Destroy(ctx, data)
 			if err != nil {
 				return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
 			}

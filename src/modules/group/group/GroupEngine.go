@@ -1,0 +1,134 @@
+package group
+
+import (
+	"fmt"
+
+	"github.com/sirupsen/logrus"
+	"parsdevkit.net/operation/services"
+	groupStruct "parsdevkit.net/structs/group"
+
+	"parsdevkit.net/core"
+	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utils"
+)
+
+type GroupEngine struct{}
+
+func (s GroupEngine) Validate(data []schemas.Schema) bool {
+	for _, item := range data {
+		_, ok := item.(*groupStruct.GroupBaseStruct)
+		if !ok {
+			return false
+		}
+	}
+
+	return true
+}
+func (s GroupEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+	groups := make([]groupStruct.GroupBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		group, ok := item.(*groupStruct.GroupBaseStruct)
+		if !ok {
+			return fmt.Errorf("invalid item type in Process: expected groupStruct.GroupBaseStruct, got %T", item)
+		}
+		groups = append(groups, *group)
+	}
+
+	return s.createGroups(groups, false)
+}
+func (s GroupEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+	groups := make([]groupStruct.GroupBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		group, ok := item.(*groupStruct.GroupBaseStruct)
+		if !ok {
+			return fmt.Errorf("invalid item type in Destroy: expected groupStruct.GroupBaseStruct, got %T", item)
+		}
+		groups = append(groups, *group)
+	}
+
+	return s.removeGroups(groups, false)
+}
+
+func (s GroupEngine) createGroups(groups []groupStruct.GroupBaseStruct, init bool) error {
+
+	groupsReadyToCreate := make([]groupStruct.GroupBaseStruct, 0)
+	groupsForUpdate := make([]groupStruct.GroupBaseStruct, 0)
+	groupService := services.NewGroupService(utils.GetEnvironment())
+
+	for _, group := range groups {
+		ok, err := groupService.IsExists(group.Name)
+		if err != nil {
+			return err
+		}
+		if ok {
+			newModelHash, err := utils.CalculateHashFromObject(group)
+			if err != nil {
+				return err
+			}
+			structHash, err := groupService.GetHash(group.Name)
+			if err != nil {
+				return err
+			}
+
+			if newModelHash != structHash {
+				groupsForUpdate = append(groupsForUpdate, group)
+			}
+		} else {
+			groupsReadyToCreate = append(groupsReadyToCreate, group)
+		}
+	}
+	logrus.Debugf("'%d' group(s) detected that will create", len(groupsReadyToCreate))
+	logrus.Debugf("'%d' group(s) detected that will update", len(groupsForUpdate))
+
+	logrus.Debugf("creating %v new groups ", len(groupsReadyToCreate))
+	logrus.Debugf("updating %v groups ", len(groupsForUpdate))
+	for _, group := range groupsReadyToCreate {
+
+		if _, err := groupService.Save(group); err != nil {
+			return err
+		}
+
+		fmt.Printf("%v Group created\n", group.Name)
+	}
+
+	logrus.Debugf("updating %v groups ", len(groupsForUpdate))
+	for _, group := range groupsForUpdate {
+
+		if _, err := groupService.Save(group); err != nil {
+			return err
+		}
+
+		fmt.Printf("%v Group updated\n", group.Name)
+	}
+
+	return nil
+}
+
+func (s GroupEngine) removeGroups(groups []groupStruct.GroupBaseStruct, permanent bool) error {
+
+	GroupEngine := services.NewGroupService(utils.GetEnvironment())
+	groupsReadyToDelete := make([]groupStruct.GroupBaseStruct, 0)
+	for _, group := range groups {
+		ok, err := GroupEngine.IsExists(group.Name)
+		if err != nil {
+			return err
+		}
+		if ok {
+			groupsReadyToDelete = append(groupsReadyToDelete, group)
+		}
+	}
+
+	for _, group := range groupsReadyToDelete {
+
+		if _, err := GroupEngine.Remove(group.Name, permanent); err != nil {
+			return err
+		}
+
+		fmt.Printf("%v Group deleted\n", group.Name)
+
+	}
+
+	return nil
+}

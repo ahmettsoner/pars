@@ -3,6 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
@@ -59,7 +60,7 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := applicationproject.ProjectBaseStruct{
-		Header: project.NewHeader(structs.StructTypes.Project, project.StructKinds.Application, "Pars.CMD", structs.Metadata{
+		Header: project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Pars.CMD", structs.Metadata{
 			Tags: []string{"tag1", "tag2"},
 		},
 		),
@@ -85,7 +86,7 @@ Specifications:
 				},
 				[]applicationproject.ProjectBaseStruct{
 					applicationproject.NewProjectBaseStruct(
-						project.NewHeader(structs.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
+						project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
 						applicationproject.NewProjectSpecification(
 							0,
 							"",

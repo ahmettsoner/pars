@@ -1,6 +1,22 @@
 module pars/tests
 
-go 1.22
+go 1.23.7
+
+replace parsdevkit.net/modules/project/application => ../src/modules/project/application
+
+replace parsdevkit.net/modules/template/code => ../src/modules/template/code
+
+replace parsdevkit.net/modules/template/shared => ../src/modules/template/shared
+
+replace parsdevkit.net/modules/template/file => ../src/modules/template/file
+
+replace parsdevkit.net/modules/task/common => ../src/modules/task/common
+
+replace parsdevkit.net/modules/resource/data => ../src/modules/resource/data
+
+replace parsdevkit.net/modules/group/group => ../src/modules/group/group
+
+replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
 
 replace parsdevkit.net/operation/services => ../src/modules/services
 
@@ -38,7 +54,7 @@ replace parsdevkit.net/models => ../src/modules/models
 
 replace parsdevkit.net/engines => ../src/modules/engines
 
-replace parsdevkit.net/templates => ../src/modules/templates
+replace parsdevkit.net/templates => ../src/core/templates
 
 replace parsdevkit.net/cmd => ../src/cmd
 
@@ -52,6 +68,7 @@ require (
 	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
+	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/dotnet v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000
@@ -65,7 +82,14 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 )
 
@@ -108,7 +132,7 @@ require (
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect; indirec
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )

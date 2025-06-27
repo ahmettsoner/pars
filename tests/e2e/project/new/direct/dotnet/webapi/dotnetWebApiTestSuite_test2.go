@@ -108,7 +108,7 @@ func (suite *DotnetWebApiTestSuite) TestCreateGroupProject() {
 	projectName := suite.faker.Project.Name()
 	fullName := fmt.Sprintf("%v/%v", projectGroup, projectName)
 
-	common.NewGroupsuite.T(), projectGroup, suite.environment)
+	common.NewGroup(suite.T(), projectGroup, suite.environment)
 
 	commands := []string{
 		"project",
@@ -199,7 +199,7 @@ func (suite *DotnetWebApiTestSuite) TestCreateGroupNTierProject() {
 	projectName := suite.faker.Project.Name()
 	fullName := fmt.Sprintf("%v/%v", projectGroup, projectName)
 
-	common.NewGroupsuite.T(), projectGroup, suite.environment)
+	common.NewGroup(suite.T(), projectGroup, suite.environment)
 
 	commands := []string{
 		"project",

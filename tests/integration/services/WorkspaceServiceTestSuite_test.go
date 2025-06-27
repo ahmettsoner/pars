@@ -16,6 +16,7 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/core/schemas"
 )
 
 type WorkspaceServiceTestSuite struct {
@@ -94,7 +95,7 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -112,7 +113,7 @@ func BasicWorkspace_WithSpecification(specifications workspace.WorkspaceSpecific
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			specifications.Name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -127,7 +128,7 @@ func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStru
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

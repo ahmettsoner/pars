@@ -19,13 +19,14 @@ import (
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
+	"parsdevkit.net/core/schemas"
 )
 
 func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			workspaceName,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -233,7 +234,7 @@ func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Group,
+			schemas.StructTypes.Group,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

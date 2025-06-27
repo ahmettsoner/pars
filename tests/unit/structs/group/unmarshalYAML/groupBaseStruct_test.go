@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_GroupBaseStruct_FullData(t *testing.T) {
@@ -32,7 +33,7 @@ Specifications:
 
 	expected := group.GroupBaseStruct{
 		Header: structs.Header{
-			Type: structs.StructTypes.Group,
+			Type: schemas.StructTypes.Group,
 			Name: "Pars.CMD",
 			Metadata: structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

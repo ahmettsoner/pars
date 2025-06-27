@@ -3,6 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
@@ -41,7 +42,7 @@ References:
 		},
 		[]applicationproject.ProjectBaseStruct{
 			applicationproject.NewProjectBaseStruct(
-				project.NewHeader(structs.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
+				project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
 				applicationproject.NewProjectSpecification(
 					0,
 					"",

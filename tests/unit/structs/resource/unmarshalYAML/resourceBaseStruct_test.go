@@ -12,6 +12,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_ResourceBaseStruct_ObjectKind_FullData(t *testing.T) {
@@ -53,7 +54,7 @@ Specifications:
 
 	expected := objectresource.NewResourceBaseStruct(
 		resource.NewHeader(
-			structs.StructTypes.Resource,
+			schemas.StructTypes.Resource,
 			resource.StructKinds.Object,
 			"Pars.CMD",
 			structs.Metadata{

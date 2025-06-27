@@ -12,6 +12,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_TemplateBaseStruct_FullData(t *testing.T) {
@@ -41,7 +42,7 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(structs.StructTypes.Template, templateStruct.StructKinds.Code, "Entity", structs.NewMetadata([]string{"tag1", "tag2"})),
+		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, "Entity", structs.NewMetadata([]string{"tag1", "tag2"})),
 		codetemplate.NewTemplateSpecification(0,
 			"Entity",
 			"",

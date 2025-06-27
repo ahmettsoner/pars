@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"log"
 
+	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
-
-	manifestServices "parsdevkit.net/engines"
 )
 
-func GetActiveWorkspaceNameV2(workspaceName string) (string, error) {
+func GetActiveWorkspaceNameV2(ctx *core.Context, workspaceName string) (string, error) {
 	if !utils.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		ok, err := workspaceService.IsExists(workspaceName)
@@ -24,9 +23,7 @@ func GetActiveWorkspaceNameV2(workspaceName string) (string, error) {
 		return workspaceName, nil
 	}
 
-	// workspaceName boşsa context'ten al
-	appContext := manifestServices.GetContext()
-	name := appContext.CurrentWorkspace.Name
+	name := ctx.CurrentWorkspace.Name
 
 	if utils.IsEmpty(name) {
 		return "", fmt.Errorf("no active workspace found; please initialize or switch to one")
@@ -35,9 +32,7 @@ func GetActiveWorkspaceNameV2(workspaceName string) (string, error) {
 	return name, nil
 }
 
-func GetActiveWorkspaceName(workspaceName string) string {
-
-	appContext := manifestServices.GetContext()
+func GetActiveWorkspaceName(ctx *core.Context, workspaceName string) string {
 
 	if !utils.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
@@ -49,7 +44,7 @@ func GetActiveWorkspaceName(workspaceName string) string {
 			log.Fatal("Workspace name (" + workspaceName + ") is not correct")
 		}
 	} else {
-		workspaceName = appContext.CurrentWorkspace.Name
+		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
 	if utils.IsEmpty(workspaceName) {
@@ -59,22 +54,20 @@ func GetActiveWorkspaceName(workspaceName string) string {
 	return workspaceName
 }
 
-func GetActiveWorkspacePath(workspaceName string) string {
+func GetActiveWorkspacePath(ctx *core.Context, workspaceName string) string {
 
-	appContext := manifestServices.GetContext()
-
-	if !utils.IsEmpty(workspaceName) {
-		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-		workspace, err := workspaceService.GetByName(workspaceName)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if workspace == nil {
-			log.Fatal("Workspace name (" + workspaceName + ") is not correct")
-		}
-		return workspace.Specifications.GetAbsolutePath()
-	} else {
-		return appContext.CurrentWorkspace.Specifications.GetAbsolutePath()
+	if utils.IsEmpty(workspaceName) {
+		workspaceName = ctx.CurrentWorkspace.Name
 	}
+
+	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspace, err := workspaceService.GetByName(workspaceName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if workspace == nil {
+		log.Fatal("Workspace name (" + workspaceName + ") is not correct")
+	}
+	return workspace.Specifications.GetAbsolutePath()
 
 }

@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/template"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 )
 
@@ -16,8 +16,8 @@ type TemplateBaseStruct struct {
 	Configurations TemplateConfiguration
 }
 
-func (e TemplateBaseStruct) GetHeader() structs.SchemaHeader {
-	return structs.SchemaHeader{
+func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
+	return schemas.SchemaHeader{
 		Type: e.Header.Type,
 		Kind: string(e.Header.Kind),
 		Name: e.Header.Name,

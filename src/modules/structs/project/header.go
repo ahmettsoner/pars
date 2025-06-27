@@ -2,6 +2,7 @@ package project
 
 import (
 	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs"
 )
 
@@ -10,7 +11,7 @@ type Header struct {
 	Kind StructKind
 }
 
-func NewHeader(_type structs.StructType, kind StructKind, name string, metadata structs.Metadata) Header {
+func NewHeader(_type schemas.StructType, kind StructKind, name string, metadata structs.Metadata) Header {
 	return Header{
 		Header: structs.NewHeader(_type, name, metadata),
 		Kind:   kind,

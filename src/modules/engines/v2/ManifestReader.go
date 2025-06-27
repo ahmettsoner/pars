@@ -11,9 +11,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/structs"
 	groupStruct "parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
@@ -23,18 +23,18 @@ import (
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 )
 
-var registry = map[string]func() structs.Schema{
-	"Group":               func() structs.Schema { return &groupStruct.GroupBaseStruct{} },
-	"Project.Application": func() structs.Schema { return &applicationproject.ProjectBaseStruct{} },
-	"Resource.Data":       func() structs.Schema { return &dataresource.ResourceBaseStruct{} },
-	"Resource.Object":     func() structs.Schema { return &objectsource.ResourceBaseStruct{} },
-	"Template.Code":       func() structs.Schema { return &codetemplate.TemplateBaseStruct{} },
-	"Template.File":       func() structs.Schema { return &filetemplate.TemplateBaseStruct{} },
-	"Template.Shared":     func() structs.Schema { return &sharedtemplate.TemplateBaseStruct{} },
+var registry = map[string]func() schemas.Schema{
+	"Group":               func() schemas.Schema { return &groupStruct.GroupBaseStruct{} },
+	"Project.Application": func() schemas.Schema { return &applicationproject.ProjectBaseStruct{} },
+	"Resource.Data":       func() schemas.Schema { return &dataresource.ResourceBaseStruct{} },
+	"Resource.Object":     func() schemas.Schema { return &objectsource.ResourceBaseStruct{} },
+	"Template.Code":       func() schemas.Schema { return &codetemplate.TemplateBaseStruct{} },
+	"Template.File":       func() schemas.Schema { return &filetemplate.TemplateBaseStruct{} },
+	"Template.Shared":     func() schemas.Schema { return &sharedtemplate.TemplateBaseStruct{} },
 }
 
-func LoadTemplate(yamlData []byte) (structs.Schema, error) {
-	var header structs.SchemaHeader
+func LoadTemplate(yamlData []byte) (schemas.Schema, error) {
+	var header schemas.SchemaHeader
 	if err := yaml.Unmarshal(yamlData, &header); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal header: %w", err)
 	}
@@ -60,14 +60,14 @@ func LoadTemplate(yamlData []byte) (structs.Schema, error) {
 	return target, nil
 }
 
-func GetAllManifestFilesInPath(path ...string) ([]structs.Schema, error) {
+func GetAllManifestFilesInPath(path ...string) ([]schemas.Schema, error) {
 
 	allFiles, err := utils.GetAllFilesInPath(path...)
 	if err != nil {
 		return nil, fmt.Errorf("Error processing file paths: %v\n%w", allFiles, err)
 	}
 
-	schemas := make([]structs.Schema, 0)
+	schemas := make([]schemas.Schema, 0)
 	for _, file := range allFiles {
 
 		stringData, err := os.ReadFile(file)
@@ -92,9 +92,9 @@ func GetAllManifestFilesInPath(path ...string) ([]structs.Schema, error) {
 	return schemas, nil
 }
 
-func GenerateManifestFilesFromTemplate(data any, templateFiles ...string) ([]structs.Schema, error) {
+func GenerateManifestFilesFromTemplate(data any, templateFiles ...string) ([]schemas.Schema, error) {
 
-	schemas := make([]structs.Schema, 0)
+	schemas := make([]schemas.Schema, 0)
 	logrus.Debugf("found %v template(s) to create project", len(templateFiles))
 	for _, templateFilePath := range templateFiles {
 

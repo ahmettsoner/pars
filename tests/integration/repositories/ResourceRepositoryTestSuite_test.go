@@ -11,6 +11,7 @@ import (
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/persistence/entities"
@@ -179,7 +180,7 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
 		resource.NewHeader(
-			structs.StructTypes.Resource,
+			schemas.StructTypes.Resource,
 			resource.StructKinds.Object,
 			name,
 			structs.Metadata{
@@ -232,7 +233,7 @@ func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStr
 
 	resource := objectresource.NewResourceBaseStruct(
 		resource.NewHeader(
-			structs.StructTypes.Resource,
+			schemas.StructTypes.Resource,
 			resource.StructKinds.Object,
 			name,
 			structs.Metadata{

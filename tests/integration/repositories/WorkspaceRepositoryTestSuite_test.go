@@ -11,6 +11,7 @@ import (
 
 	"parsdevkit.net/persistence/entities"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/core/test/common"
@@ -175,7 +176,7 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -193,7 +194,7 @@ func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStru
 
 	workspace := workspace.NewWorkspaceBaseStruct(
 		structs.NewHeader(
-			structs.StructTypes.Workspace,
+			schemas.StructTypes.Workspace,
 			name,
 			structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

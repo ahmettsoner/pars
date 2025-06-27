@@ -3,6 +3,7 @@
         "GOFLAGS": "-mod=readonly"
     },
     "go.testTimeout": "3m",
+    "go.testFlags": ["-v", "-p=8"],
     "go.lintOnSave": "workspace",
     "go.formatTool": "gofmt",
     "go.useLanguageServer": true,

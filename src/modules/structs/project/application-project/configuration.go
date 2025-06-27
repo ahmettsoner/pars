@@ -3,6 +3,7 @@ package applicationproject
 import (
 	"encoding/json"
 
+	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
@@ -100,7 +101,7 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Dependencies = tempObject.Dependencies
 		for _, ref := range tempObject.References {
 			projSpec := NewProjectBaseStruct(
-				project.NewHeader(structs.StructTypes.Project, project.StructKinds.Application, ref.Name, structs.Metadata{}),
+				project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, ref.Name, structs.Metadata{}),
 				NewProjectSpecification(
 					0,
 					"",

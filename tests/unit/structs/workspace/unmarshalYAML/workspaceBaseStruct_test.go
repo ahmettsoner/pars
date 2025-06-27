@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_WorkspaceBaseStruct_FullData(t *testing.T) {
@@ -32,7 +33,7 @@ Specifications:
 
 	expected := workspace.WorkspaceBaseStruct{
 		Header: structs.Header{
-			Type: structs.StructTypes.Workspace,
+			Type: schemas.StructTypes.Workspace,
 			Name: "Pars.CMD",
 			Metadata: structs.Metadata{
 				Tags: []string{"tag1", "tag2"},

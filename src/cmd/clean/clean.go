@@ -11,6 +11,7 @@ import (
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/engines"
 )
 
 type CleanOptions struct {
@@ -47,7 +48,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Name = args[0]
 	}
 
-	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(commandOptions.Workspace)
+	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(engines.GetContext(), commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 	}

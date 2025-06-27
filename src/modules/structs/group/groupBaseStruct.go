@@ -9,6 +9,7 @@ import (
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 type GroupBaseStruct struct {
@@ -16,8 +17,8 @@ type GroupBaseStruct struct {
 	Specifications GroupSpecification
 }
 
-func (e GroupBaseStruct) GetHeader() structs.SchemaHeader {
-	return structs.SchemaHeader{
+func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
+	return schemas.SchemaHeader{
 		Type: e.Header.Type,
 		Name: e.Header.Name,
 	}
