@@ -9,7 +9,7 @@ src/modules/utils/ @org/pars-core-team
 
 # Dev Team
 src/cmd/ @org/pars-dev-team
-src/modules/providers/ @org/pars-dev-team
+src/components/providers/ @org/pars-dev-team
 src/modules/services/ @org/pars-dev-team
 src/templates/ @org/pars-dev-team
 

@@ -5,23 +5,18 @@ import (
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs/task"
 )
 
 type TaskBaseStruct struct {
-	task.Header
+	Header         schemas.SchemaHeader
 	Specifications TaskSpecification
 	Configurations TaskConfiguration
 }
 
 func (e TaskBaseStruct) GetHeader() schemas.SchemaHeader {
-	return schemas.SchemaHeader{
-		Type: e.Header.Type,
-		Kind: string(e.Header.Kind),
-		Name: e.Header.Name,
-	}
+	return e.Header
 }
-func NewTaskBaseStruct(header task.Header, specifications TaskSpecification, configurations TaskConfiguration) TaskBaseStruct {
+func NewTaskBaseStruct(header schemas.SchemaHeader, specifications TaskSpecification, configurations TaskConfiguration) TaskBaseStruct {
 	return TaskBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -35,15 +30,13 @@ func (e TaskBaseStruct) Validate() error {
 	)
 }
 func (s *TaskBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		task.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
@@ -67,5 +60,5 @@ func (s *TaskBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error 
 }
 
 func (s *TaskBaseStruct) GetFullInformation() string {
-	return fmt.Sprintf("%v", s.Name)
+	return fmt.Sprintf("%v", s.Header.Name)
 }

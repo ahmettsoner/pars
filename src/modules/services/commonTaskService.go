@@ -150,7 +150,7 @@ func (s CommonTaskService) saveTaskInformation(taskMommonl commontask.TaskBaseSt
 	}
 
 	taskEntity := entities.Task{
-		Name:     taskMommonl.Name,
+		Name:     taskMommonl.Header.Name,
 		Document: string(jsonData),
 	}
 

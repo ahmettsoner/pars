@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/project"
@@ -42,7 +41,7 @@ References:
 		},
 		[]applicationproject.ProjectBaseStruct{
 			applicationproject.NewProjectBaseStruct(
-				project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
+				schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), "Logging", schemas.Metadata{}),
 				applicationproject.NewProjectSpecification(
 					0,
 					"",

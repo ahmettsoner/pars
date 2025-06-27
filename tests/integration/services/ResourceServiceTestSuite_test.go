@@ -3,7 +3,6 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 	"parsdevkit.net/structs/resource"
@@ -65,7 +64,7 @@ func (suite *ResourceServiceTestSuite) Test_CreateResource() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(resource.Name, resource.Specifications.Workspace, true, true)
+			suite.service.Remove(resource.Header.Name, resource.Specifications.Workspace, true, true)
 		}
 	})
 }
@@ -86,7 +85,7 @@ func (suite *ResourceServiceTestSuite) Test_GetByName() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(resource.Name, resource.Specifications.Workspace, true, true)
+			suite.service.Remove(resource.Header.Name, resource.Specifications.Workspace, true, true)
 		}
 	})
 }
@@ -97,11 +96,11 @@ func TestResourceServiceTestSuite(t *testing.T) {
 func BasicResource(name string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			string(resource.ResourceKinds.Object),
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{},
 			},
 		),
@@ -126,11 +125,11 @@ func BasicResource(name string) *objectresource.ResourceBaseStruct {
 func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			string(resource.ResourceKinds.Object),
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -179,11 +178,11 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			string(resource.ResourceKinds.Object),
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

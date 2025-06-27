@@ -81,7 +81,7 @@ func (s WorkspaceService) saveWorkspaceInformation(workspaceModel workspace.Work
 	}
 
 	workspaceEntity := entities.Workspace{
-		Name:     workspaceModel.Name,
+		Name:     workspaceModel.Header.Name,
 		Document: string(jsonData),
 	}
 
@@ -169,7 +169,7 @@ func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.
 		return nil, err
 	}
 	if existingWorkspace != nil {
-		return nil, errors.New("Workspace directory reserved to (" + existingWorkspace.Name + ")")
+		return nil, errors.New("Workspace directory reserved to (" + existingWorkspace.Header.Name + ")")
 	}
 
 	worskpaceExistingEntity, err := s.workspaceRespository.GetByName(workspaceName)

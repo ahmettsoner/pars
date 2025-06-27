@@ -58,7 +58,7 @@ func (s GroupEngine) createGroups(groups []groupStruct.GroupBaseStruct, init boo
 	groupService := services.NewGroupService(utils.GetEnvironment())
 
 	for _, group := range groups {
-		ok, err := groupService.IsExists(group.Name)
+		ok, err := groupService.IsExists(group.Header.Name)
 		if err != nil {
 			return err
 		}
@@ -67,7 +67,7 @@ func (s GroupEngine) createGroups(groups []groupStruct.GroupBaseStruct, init boo
 			if err != nil {
 				return err
 			}
-			structHash, err := groupService.GetHash(group.Name)
+			structHash, err := groupService.GetHash(group.Header.Name)
 			if err != nil {
 				return err
 			}
@@ -90,7 +90,7 @@ func (s GroupEngine) createGroups(groups []groupStruct.GroupBaseStruct, init boo
 			return err
 		}
 
-		fmt.Printf("%v Group created\n", group.Name)
+		fmt.Printf("%v Group created\n", group.Header.Name)
 	}
 
 	logrus.Debugf("updating %v groups ", len(groupsForUpdate))
@@ -100,7 +100,7 @@ func (s GroupEngine) createGroups(groups []groupStruct.GroupBaseStruct, init boo
 			return err
 		}
 
-		fmt.Printf("%v Group updated\n", group.Name)
+		fmt.Printf("%v Group updated\n", group.Header.Name)
 	}
 
 	return nil
@@ -111,7 +111,7 @@ func (s GroupEngine) removeGroups(groups []groupStruct.GroupBaseStruct, permanen
 	GroupEngine := services.NewGroupService(utils.GetEnvironment())
 	groupsReadyToDelete := make([]groupStruct.GroupBaseStruct, 0)
 	for _, group := range groups {
-		ok, err := GroupEngine.IsExists(group.Name)
+		ok, err := GroupEngine.IsExists(group.Header.Name)
 		if err != nil {
 			return err
 		}
@@ -122,11 +122,11 @@ func (s GroupEngine) removeGroups(groups []groupStruct.GroupBaseStruct, permanen
 
 	for _, group := range groupsReadyToDelete {
 
-		if _, err := GroupEngine.Remove(group.Name, permanent); err != nil {
+		if _, err := GroupEngine.Remove(group.Header.Name, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Group deleted\n", group.Name)
+		fmt.Printf("%v Group deleted\n", group.Header.Name)
 
 	}
 

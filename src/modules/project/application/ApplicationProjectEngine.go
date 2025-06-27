@@ -124,12 +124,12 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 
 		project.Specifications.Configuration.References = projectReferences
 
-		logrus.Debugf("trying to create %v", project.Name)
+		logrus.Debugf("trying to create %v", project.Header.Name)
 		if _, err := projectService.Create(project, init); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v (%d) Project created\n", project.Name, index)
+		fmt.Printf("%v (%d) Project created\n", project.Header.Name, index)
 
 	}
 
@@ -290,7 +290,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			for _, newRef := range project.Specifications.Configuration.References {
 				found := false
 				for _, existingRef := range existingProject.Specifications.Configuration.References {
-					if newRef.Name == existingRef.Name {
+					if newRef.Header.Name == existingRef.Header.Name {
 						found = true
 						// if !reflect.DeepEqual(newRef, existingRef) {
 						if newRef.Specifications.Name != existingRef.Specifications.Name || newRef.Specifications.Group != existingRef.Specifications.Group || newRef.Specifications.Workspace != existingRef.Specifications.Workspace {
@@ -313,7 +313,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			for _, existingRef := range existingProject.Specifications.Configuration.References {
 				found := false
 				for _, newRef := range project.Specifications.Configuration.References {
-					if newRef.Name == existingRef.Name {
+					if newRef.Header.Name == existingRef.Header.Name {
 						found = true
 						break
 					}
@@ -388,7 +388,7 @@ func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectSt
 
 func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.ApplicationContext, project *applicationprojectStruct.ProjectBaseStruct) error {
 
-	logrus.Debugf("filling project (%v) information", project.Name)
+	logrus.Debugf("filling project (%v) information", project.Header.Name)
 
 	activeWorkspace, err := s.getWorkspace(ctx, *project)
 	if err != nil {
@@ -396,9 +396,9 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Applicati
 	}
 
 	//WARN: Doğru mu oldu?
-	project.Specifications.Workspace = activeWorkspace.Name
+	project.Specifications.Workspace = activeWorkspace.Header.Name
 	project.Specifications.WorkspaceObject = activeWorkspace.Specifications
-	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Name, project.Name)
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, project.Header.Name)
 
 	group, err := s.getGroup(*project)
 	if err != nil {
@@ -406,9 +406,9 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Applicati
 	}
 
 	//WARN: Doğru mu oldu?
-	project.Specifications.Group = group.Name
+	project.Specifications.Group = group.Header.Name
 	project.Specifications.GroupObject = *&group.Specifications
-	logrus.Debugf("group (%v) detected for (%v)", group.Name, project.Name)
+	logrus.Debugf("group (%v) detected for (%v)", group.Header.Name, project.Header.Name)
 
 	projectReferences, err := s.getProjectReferences(*project)
 	if err != nil {
@@ -474,7 +474,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 	projectReferences := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 
 	for _, reference := range prj.Specifications.Configuration.References {
-		logrus.Debugf("reference (%v) processing for (%v)", reference.Name, prj.Name)
+		logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
 		selectedProject, err := s.getProjectReference(prj, reference)
 		if err != nil {
@@ -497,24 +497,24 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
 
-	logrus.Debugf("reference (%v) processing for (%v)", reference.Name, prj.Name)
+	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
 	if reference.Specifications.ID == 0 {
 
-		logrus.Debugf("found new project defination for (%v) referenced by (%v)", reference.Name, prj.Name)
+		logrus.Debugf("found new project defination for (%v) referenced by (%v)", reference.Header.Name, prj.Header.Name)
 
 		if reference.Specifications.WorkspaceObject.ID == 0 {
 			if utils.IsEmpty(reference.Specifications.Workspace) {
 				reference.Specifications.Workspace = prj.Specifications.Workspace
-				logrus.Debugf("decided to using same workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Name)
+				logrus.Debugf("decided to using same workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 			}
 			selectedWorkspace, err := workspaceService.GetByName(reference.Specifications.Workspace)
 			if err != nil {
 				return nil, err
 			}
-			reference.Specifications.Workspace = selectedWorkspace.Name
+			reference.Specifications.Workspace = selectedWorkspace.Header.Name
 			reference.Specifications.WorkspaceObject = selectedWorkspace.Specifications
-			logrus.Debugf("different workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Name)
+			logrus.Debugf("different workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 		}
 
 		selectedProject, err := projectService.GetByFullNameWorkspace(reference.GetFullName(), reference.Specifications.Workspace)
@@ -544,9 +544,9 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 
 	for _, project := range projects {
 
-		logrus.Debugf("checking references for project (%v)", project.Name)
+		logrus.Debugf("checking references for project (%v)", project.Header.Name)
 		for _, reference := range project.Specifications.Configuration.References {
-			logrus.Debugf("validating reference (%v) for project (%v)", reference.Name, project.Name)
+			logrus.Debugf("validating reference (%v) for project (%v)", reference.Header.Name, project.Header.Name)
 			//TODO: kontrol edilecek, id checkler iptal ediliyor
 			if reference.Specifications.ID == 0 {
 				if _, ok := projectMap[reference.GetUniqueKey()]; !ok {
@@ -560,7 +560,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 						return nil, err
 					}
 					if !ok {
-						return nil, errors.New("Invalid Reference in Project '" + project.Name + "'. '" + reference.Name + "' not found.")
+						return nil, errors.New("Invalid Reference in Project '" + project.Header.Name + "'. '" + reference.Header.Name + "' not found.")
 					}
 				}
 			}
@@ -584,19 +584,19 @@ func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.Projec
 
 	logrus.Debugf("'%d' projects ordering", len(projects))
 	for _, project := range projects {
-		logrus.Debugf("project '%v' processing for order", project.Name)
+		logrus.Debugf("project '%v' processing for order", project.Header.Name)
 		if _, ok := sortedProjectMap[project.GetUniqueKey()]; !ok {
 			projectReferences := project.Specifications.Configuration.References
-			logrus.Debugf("project '%v' has '%d' references with map key %v", project.Name, len(projectReferences), project.GetUniqueKey())
+			logrus.Debugf("project '%v' has '%d' references with map key %v", project.Header.Name, len(projectReferences), project.GetUniqueKey())
 			if projectReferences == nil || len(projectReferences) == 0 {
-				logrus.Debugf("project '%v' has no reference", project.Name)
+				logrus.Debugf("project '%v' has no reference", project.Header.Name)
 				sortedProjectMap[project.GetUniqueKey()] = project
 				sortedProjects = append(sortedProjects, project)
 			} else {
 				var allInMap bool = true
-				logrus.Debugf("project '%v' has '%d' reference(s)", project.Name, len(projectReferences))
+				logrus.Debugf("project '%v' has '%d' reference(s)", project.Header.Name, len(projectReferences))
 				for _, reference := range projectReferences {
-					logrus.Debugf("validating reference (%v) for project (%v)", reference.Name, project.Name)
+					logrus.Debugf("validating reference (%v) for project (%v)", reference.Header.Name, project.Header.Name)
 					if reference.Specifications.ID == 0 {
 						if _, ok := sortedProjectMap[reference.GetUniqueKey()]; !ok {
 							ok, err := projectService.IsExists(reference.GetFullName(), reference.Specifications.Workspace)
@@ -605,7 +605,7 @@ func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.Projec
 							}
 							if !ok { //Bu kontrol buraya gelmeden, "sortProjectsByReference(projects []project.ProjectBaseStruct)" burda da yapılıyor, algoritma iyileştirilebilir
 								allInMap = false
-								logrus.Debugf("reference (%v) for project (%v), is not in ordered list yet", reference.Name, project.Name)
+								logrus.Debugf("reference (%v) for project (%v), is not in ordered list yet", reference.Header.Name, project.Header.Name)
 								break
 							}
 						}
@@ -614,14 +614,14 @@ func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.Projec
 				if allInMap {
 					sortedProjectMap[project.GetUniqueKey()] = project
 					sortedProjects = append(sortedProjects, project)
-					logrus.Debugf("all references in ordered list for project '%v'. Project is adding to ordered list", project.Name)
+					logrus.Debugf("all references in ordered list for project '%v'. Project is adding to ordered list", project.Header.Name)
 				} else {
 					unOrderedProjects = append(unOrderedProjects, project)
-					logrus.Debugf("all references is not in ordered list for project '%v'. Project is adding to unordered list", project.Name)
+					logrus.Debugf("all references is not in ordered list for project '%v'. Project is adding to unordered list", project.Header.Name)
 				}
 			}
 		} else {
-			logrus.Debugf("project '%v' also ordered", project.Name)
+			logrus.Debugf("project '%v' also ordered", project.Header.Name)
 		}
 	}
 	logrus.Debugf("'%d' project(s) are not ordered", len(unOrderedProjects))

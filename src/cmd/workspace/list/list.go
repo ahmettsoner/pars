@@ -58,22 +58,22 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	fmt.Println()
 	if activeWorkspace != nil && selectedWorkspace != nil {
-		if activeWorkspace.Name == selectedWorkspace.Name {
-			fmt.Printf("* %v (active & selected)\n", activeWorkspace.Name)
+		if activeWorkspace.Header.Name == selectedWorkspace.Header.Name {
+			fmt.Printf("* %v (active & selected)\n", activeWorkspace.Header.Name)
 		} else {
-			fmt.Printf("* %v (active)\n", activeWorkspace.Name)
-			fmt.Printf("%v (selected)\n", selectedWorkspace.Name)
+			fmt.Printf("* %v (active)\n", activeWorkspace.Header.Name)
+			fmt.Printf("%v (selected)\n", selectedWorkspace.Header.Name)
 		}
 	} else if activeWorkspace != nil {
-		fmt.Printf("* %v (active)\n", activeWorkspace.Name)
+		fmt.Printf("* %v (active)\n", activeWorkspace.Header.Name)
 	} else if selectedWorkspace != nil {
-		fmt.Printf("* %v (selected)\n", selectedWorkspace.Name)
+		fmt.Printf("* %v (selected)\n", selectedWorkspace.Header.Name)
 	}
 
 	for _, workspace := range *workspaceList {
-		if (activeWorkspace == nil || activeWorkspace.Name != workspace.Name) &&
-			(selectedWorkspace == nil || selectedWorkspace.Name != workspace.Name) {
-			fmt.Println(workspace.Name)
+		if (activeWorkspace == nil || activeWorkspace.Header.Name != workspace.Header.Name) &&
+			(selectedWorkspace == nil || selectedWorkspace.Header.Name != workspace.Header.Name) {
+			fmt.Println(workspace.Header.Name)
 		}
 	}
 

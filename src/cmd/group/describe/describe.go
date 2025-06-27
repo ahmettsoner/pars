@@ -58,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Failed to retrieve group '%s'\n%w", commandOptions.Name, err)
 	}
 
-	name := fmt.Sprintf("Group Name:\t%v", group.Name)
+	name := fmt.Sprintf("Group Name:\t%v", group.Header.Name)
 	fmt.Println(name)
 
 	path := fmt.Sprintf("Path:\t\t%v", group.Specifications.Path)
@@ -68,7 +68,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	fmt.Println(packageName)
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	projectList, err := projectService.ListByGroupName(group.Name)
+	projectList, err := projectService.ListByGroupName(group.Header.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group projects '%s'\n%w", commandOptions.Name, err)
 	}
@@ -118,8 +118,8 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, group := range *groupList {
-		if !utils.Contains(args, group.Name) && strings.HasPrefix(group.Name, toComplete) {
-			suggestions = append(suggestions, group.Name)
+		if !utils.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
+			suggestions = append(suggestions, group.Header.Name)
 		}
 	}
 	return suggestions
@@ -145,8 +145,8 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Name) && strings.HasPrefix(workspace.Name, toComplete) {
-			suggestions = append(suggestions, workspace.Name)
+		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}
 	return suggestions

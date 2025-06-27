@@ -2,13 +2,12 @@ package workspace
 
 import (
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type WorkspaceBaseStruct struct {
-	structs.Header
+	Header         schemas.SchemaHeader
 	Specifications WorkspaceSpecification
 }
 
@@ -19,7 +18,7 @@ func (e WorkspaceBaseStruct) GetHeader() schemas.SchemaHeader {
 	}
 }
 
-func NewWorkspaceBaseStruct(header structs.Header, specifications WorkspaceSpecification) WorkspaceBaseStruct {
+func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications WorkspaceSpecification) WorkspaceBaseStruct {
 	return WorkspaceBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -32,15 +31,13 @@ func (e WorkspaceBaseStruct) Validate() error {
 }
 
 func (s *WorkspaceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		structs.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı

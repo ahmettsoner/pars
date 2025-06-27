@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"
@@ -175,10 +174,11 @@ func CreateNewSampleWorkspaceWithSet(name, set string) (*entities.Workspace, *wo
 func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -193,10 +193,11 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

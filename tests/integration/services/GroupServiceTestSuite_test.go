@@ -58,7 +58,7 @@ func (suite *GroupServiceTestSuite) Test_CreateGroup() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(group.Name, true)
+			suite.service.Remove(group.Header.Name, true)
 		}
 	})
 }
@@ -80,7 +80,7 @@ func (suite *GroupServiceTestSuite) Test_GetByName() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(group.Name, true)
+			suite.service.Remove(group.Header.Name, true)
 		}
 	})
 }

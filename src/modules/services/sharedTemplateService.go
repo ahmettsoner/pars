@@ -149,7 +149,7 @@ func (s SharedTemplateService) saveTemplateInformation(templateModel sharedtempl
 	}
 
 	templateEntity := entities.Template{
-		Name:     templateModel.Name,
+		Name:     templateModel.Header.Name,
 		Document: string(jsonData),
 	}
 

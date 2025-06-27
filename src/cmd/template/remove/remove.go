@@ -76,7 +76,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					if err != nil {
 						return fmt.Errorf("Failed to remove Gblobal Code template(s) '%s'\n%w", name, err)
 					}
-					fmt.Println("Template (" + codeTemplate.Name + ") deleted permanently")
+					fmt.Println("Template (" + codeTemplate.Header.Name + ") deleted permanently")
 				}
 
 				ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
@@ -88,7 +88,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					if err != nil {
 						return fmt.Errorf("Failed to remove Global File template(s) '%s'\n%w", name, err)
 					}
-					fmt.Println("Template (" + fileTemplate.Name + ") deleted permanently")
+					fmt.Println("Template (" + fileTemplate.Header.Name + ") deleted permanently")
 				}
 
 				ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
@@ -100,7 +100,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					if err != nil {
 						return fmt.Errorf("Failed to remove Global Shared template(s) '%s'\n%w", name, err)
 					}
-					fmt.Println("Template (" + sharedTemplate.Name + ") deleted permanently")
+					fmt.Println("Template (" + sharedTemplate.Header.Name + ") deleted permanently")
 				}
 
 				commandOptions.Workspace = ""
@@ -117,7 +117,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("Failed to remove Active Workspace Code template(s) '%s'\n%w", name, err)
 				}
-				fmt.Println("Template (" + codeTemplate.Name + ") deleted permanently")
+				fmt.Println("Template (" + codeTemplate.Header.Name + ") deleted permanently")
 			}
 
 			ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
@@ -129,7 +129,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("Failed to remove Active Workspace File template(s) '%s'\n%w", name, err)
 				}
-				fmt.Println("Template (" + fileTemplate.Name + ") deleted permanently")
+				fmt.Println("Template (" + fileTemplate.Header.Name + ") deleted permanently")
 			}
 
 			ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
@@ -141,7 +141,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("Failed to remove Active Workspace Shared template(s) '%s'\n%w", name, err)
 				}
-				fmt.Println("Template (" + sharedTemplate.Name + ") deleted permanently")
+				fmt.Println("Template (" + sharedTemplate.Header.Name + ") deleted permanently")
 			}
 		}
 		fmt.Fprintf(os.Stdout, "✔ template(s) '%v' removed successfully\n", commandOptions.Names)
@@ -180,8 +180,8 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *sharedTemplateList {
-		if !utils.Contains(args, resource.Name) && strings.HasPrefix(resource.Name, toComplete) {
-			suggestions = append(suggestions, resource.Name)
+		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
 
@@ -192,8 +192,8 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *fileTemplateList {
-		if !utils.Contains(args, resource.Name) && strings.HasPrefix(resource.Name, toComplete) {
-			suggestions = append(suggestions, resource.Name)
+		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
 
@@ -204,8 +204,8 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *codeTemplateList {
-		if !utils.Contains(args, resource.Name) && strings.HasPrefix(resource.Name, toComplete) {
-			suggestions = append(suggestions, resource.Name)
+		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
 

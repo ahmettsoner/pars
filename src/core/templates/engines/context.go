@@ -63,10 +63,10 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 			CodeTemplateOperations.PopulateContext ile context bilgisini al
 	*/
 
-	workspace := base.Workspace.Original.Name
+	workspace := base.Workspace.Original.Header.Name
 	set := base.Project.Original.Specifications.Set
 	project := ""
-	resource := base.Resource.Original.Name
+	resource := base.Resource.Original.Header.Name
 	layer := base.Layer.Original.Name
 	section := ""
 	template := ""

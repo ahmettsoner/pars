@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -25,10 +24,11 @@ import (
 func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			workspaceName,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -233,10 +233,11 @@ func GetPackages(index int, count int, withVersion bool) []applicationproject.Pa
 func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

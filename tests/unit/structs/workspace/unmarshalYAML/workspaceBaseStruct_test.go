@@ -3,7 +3,6 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
@@ -32,10 +31,10 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := workspace.WorkspaceBaseStruct{
-		Header: structs.Header{
+		Header: schemas.SchemaHeader{
 			Type: schemas.StructTypes.Workspace,
 			Name: "Pars.CMD",
-			Metadata: structs.Metadata{
+			Metadata: schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		},

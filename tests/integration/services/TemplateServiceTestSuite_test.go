@@ -3,7 +3,6 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
@@ -65,7 +64,7 @@ func (suite *TemplateServiceTestSuite) Test_CreateTemplate() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(template.Name, template.Specifications.Workspace, true)
+			suite.service.Remove(template.Header.Name, template.Specifications.Workspace, true)
 		}
 	})
 }
@@ -86,7 +85,7 @@ func (suite *TemplateServiceTestSuite) Test_GetByName() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(template.Name, template.Specifications.Workspace, true)
+			suite.service.Remove(template.Header.Name, template.Specifications.Workspace, true)
 		}
 	})
 }
@@ -98,7 +97,7 @@ func TestTemplateServiceTestSuite(t *testing.T) {
 func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,
@@ -129,7 +128,7 @@ func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,

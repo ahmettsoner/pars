@@ -71,16 +71,16 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 	}
 
 	for _, resource := range resources {
-		ok, err := resourceService.IsExists(resource.Name, resource.Specifications.Workspace)
+		ok, err := resourceService.IsExists(resource.Header.Name, resource.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Name, err)
+			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
 			newModelHash, err := utils.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}
-			structHash, err := resourceService.GetHash(resource.Name)
+			structHash, err := resourceService.GetHash(resource.Header.Name)
 			if err != nil {
 				return err
 			}
@@ -107,7 +107,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 			return err
 		}
 
-		fmt.Printf("%v Resource created\n", resource.Name)
+		fmt.Printf("%v Resource created\n", resource.Header.Name)
 	}
 
 	logrus.Debugf("updating %v resources ", len(resourcesForUpdate))
@@ -121,7 +121,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 			return err
 		}
 
-		fmt.Printf("%v Resource updated\n", resource.Name)
+		fmt.Printf("%v Resource updated\n", resource.Header.Name)
 	}
 
 	return nil
@@ -132,9 +132,9 @@ func (s ObjectResourceEngine) removeResources(resources []objectresourceStruct.R
 	resourceService := services.NewObjectResourceService(utils.GetEnvironment())
 	resourcesReadyToDelete := make([]objectresourceStruct.ResourceBaseStruct, 0)
 	for _, resource := range resources {
-		ok, err := resourceService.IsExists(resource.Name, resource.Specifications.Workspace)
+		ok, err := resourceService.IsExists(resource.Header.Name, resource.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Name, err)
+			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
 			resourcesReadyToDelete = append(resourcesReadyToDelete, resource)
@@ -143,11 +143,11 @@ func (s ObjectResourceEngine) removeResources(resources []objectresourceStruct.R
 
 	for _, resource := range resourcesReadyToDelete {
 
-		if _, err := resourceService.Remove(resource.Name, resource.Specifications.Workspace, true, permanent); err != nil {
+		if _, err := resourceService.Remove(resource.Header.Name, resource.Specifications.Workspace, true, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Resource deleted\n", resource.Name)
+		fmt.Printf("%v Resource deleted\n", resource.Header.Name)
 
 	}
 
@@ -157,7 +157,7 @@ func (s ObjectResourceEngine) generate(model objectresourceStruct.ResourceBaseSt
 
 	resourceService := services.NewObjectResourceService(utils.GetEnvironment())
 
-	result, err := resourceService.GetByName(model.Name)
+	result, err := resourceService.GetByName(model.Header.Name)
 	if err != nil {
 		return nil, err
 	}

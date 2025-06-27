@@ -155,7 +155,7 @@ func (s GroupService) saveGroupInformation(groupModel group.GroupBaseStruct) (*g
 	}
 
 	groupEntity := entities.Group{
-		Name:     groupModel.Name,
+		Name:     groupModel.Header.Name,
 		Document: string(jsonData),
 	}
 

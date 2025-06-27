@@ -4,7 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
@@ -76,7 +75,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences() {
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName, schemas.Metadata{}),
 			referenceProject,
 		),
 	}
@@ -102,11 +101,11 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 	referenceProject2 := CreateNewTestProject(suite.T(), projectName2, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName1, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName1, schemas.Metadata{}),
 			referenceProject,
 		),
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName2, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName2, schemas.Metadata{}),
 			referenceProject2,
 		),
 	}
@@ -134,7 +133,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences() {
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName, schemas.Metadata{}),
 			referenceProject,
 		),
 	}
@@ -165,7 +164,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences_GroupedProjec
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName, schemas.Metadata{}),
 			referenceProject,
 		),
 	}
@@ -192,11 +191,11 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 	referenceProject2 := CreateNewTestProjectWithGroup(suite.T(), projectName2, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName1, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName1, schemas.Metadata{}),
 			referenceProject,
 		),
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName2, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName2, schemas.Metadata{}),
 			referenceProject2,
 		),
 	}
@@ -226,7 +225,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences_GroupedProj
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(
-			project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, projectName, structs.Metadata{}),
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), projectName, schemas.Metadata{}),
 			referenceProject,
 		),
 	}

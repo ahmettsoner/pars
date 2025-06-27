@@ -84,7 +84,7 @@ func switchFlagCompletion(cmd *cobra.Command, args []string, toComplete string) 
 
 	var workspaces = make([]string, 0)
 	for _, workspace := range *workspaceList {
-		workspaces = append(workspaces, workspace.Name)
+		workspaces = append(workspaces, workspace.Header.Name)
 	}
 
 	return workspaces, cobra.ShellCompDirectiveNoFileComp

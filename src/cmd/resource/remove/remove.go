@@ -73,7 +73,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					if err != nil {
 						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", commandOptions.Names, err)
 					}
-					fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
+					fmt.Println("Resource (" + objectResource.Header.Name + ") deleted permanently")
 				}
 
 				ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
@@ -85,7 +85,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					if err != nil {
 						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", name, err)
 					}
-					fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
+					fmt.Println("Resource (" + dataResource.Header.Name + ") deleted permanently")
 				}
 
 				commandOptions.Workspace = ""
@@ -102,7 +102,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", commandOptions.Names, err)
 				}
-				fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
+				fmt.Println("Resource (" + objectResource.Header.Name + ") deleted permanently")
 			}
 
 			ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
@@ -114,7 +114,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if err != nil {
 					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", name, err)
 				}
-				fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
+				fmt.Println("Resource (" + dataResource.Header.Name + ") deleted permanently")
 			}
 		}
 	}
@@ -155,8 +155,8 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *objectResourceList {
-		if !utils.Contains(args, resource.Name) && strings.HasPrefix(resource.Name, toComplete) {
-			suggestions = append(suggestions, resource.Name)
+		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
 
@@ -167,8 +167,8 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *dataResourceList {
-		if !utils.Contains(args, resource.Name) && strings.HasPrefix(resource.Name, toComplete) {
-			suggestions = append(suggestions, resource.Name)
+		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
 	return suggestions

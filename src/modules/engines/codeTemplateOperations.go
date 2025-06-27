@@ -43,7 +43,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 		if err != nil {
 			return err
 		}
-		logrus.Debugf("%d Template(s) found for layer '%v' on Resource %v\n", len(*setTemplates), layer.Name, model.Name)
+		logrus.Debugf("%d Template(s) found for layer '%v' on Resource %v\n", len(*setTemplates), layer.Name, model.Header.Name)
 
 		projectService := services.NewApplicationProjectService(s.environment)
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
@@ -65,7 +65,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 			}
 		}
 
-		logrus.Debugf("%d Project(s) found for layer '%v' on Resource %v\n", len(*setProjects), layer.Name, model.Name)
+		logrus.Debugf("%d Project(s) found for layer '%v' on Resource %v\n", len(*setProjects), layer.Name, model.Header.Name)
 	}
 	return nil
 }
@@ -79,7 +79,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 		if err != nil {
 			return err
 		}
-		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Name)
+		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Header.Name)
 
 		projectService := services.NewApplicationProjectService(s.environment)
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
@@ -102,7 +102,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 			}
 		}
 
-		logrus.Debugf("%d Project(s) found for layer '%v' on Template %v\n", len(*setProjects), modelLayer.Name, model.Name)
+		logrus.Debugf("%d Project(s) found for layer '%v' on Template %v\n", len(*setProjects), modelLayer.Name, model.Header.Name)
 	}
 	return nil
 }
@@ -166,7 +166,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 											return err
 										}
 
-										generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Name, newResourceModelHash, template.Name, newTemplateModelHash, resourceLayerSection.Name, newLayerSectionModelHash, layer.Name)
+										generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Header.Name, newResourceModelHash, template.Header.Name, newTemplateModelHash, resourceLayerSection.Name, newLayerSectionModelHash, layer.Name)
 										err = s.generationHistoryRepository.Create(generationHistory)
 										if err != nil {
 											return err
@@ -218,7 +218,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 				return err
 			}
 
-			generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Name, newResourceModelHash, template.Name, newTemplateModelHash, "", newLayerSectionModelHash, layer.Name)
+			generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Header.Name, newResourceModelHash, template.Header.Name, newTemplateModelHash, "", newLayerSectionModelHash, layer.Name)
 			err = s.generationHistoryRepository.Create(generationHistory)
 			if err != nil {
 				return err
@@ -232,7 +232,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 func (s CodeTemplateOperations) CheckGeneration(project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, section objectresource.Section, layer objectresource.Layer) (bool, string, string, string, error) {
 	var generate = true
 
-	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Name, template.Name, section.Name, layer.Name)
+	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)
 	if err != nil {
 		return false, "", "", "", err
 	}
@@ -275,7 +275,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	if generate {
 		if !utils.IsEmpty(template.Configurations.Selectors.Project.Name) {
 			generate = false
-			if template.Configurations.Selectors.Project.Name == project.Name {
+			if template.Configurations.Selectors.Project.Name == project.Header.Name {
 				generate = true
 			}
 		}
@@ -297,7 +297,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	if generate {
 		if !utils.IsEmpty(template.Configurations.Selectors.Resource.Name) {
 			generate = false
-			if template.Configurations.Selectors.Resource.Name == resource.Name {
+			if template.Configurations.Selectors.Resource.Name == resource.Header.Name {
 				generate = true
 			}
 		}

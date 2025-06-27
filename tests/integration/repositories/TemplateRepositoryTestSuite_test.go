@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
@@ -180,7 +179,7 @@ func CreateNewSampleTemplateWithSet(name, set string) (*entities.Template, *code
 func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,
@@ -211,7 +210,7 @@ func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, name, structs.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,

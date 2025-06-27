@@ -3,10 +3,9 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_Metadata_Tags_SingleLine(t *testing.T) {
@@ -19,10 +18,10 @@ Tags: tag1, tag2
 
 	// Act
 
-	var data structs.Metadata
+	var data schemas.Metadata
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := structs.Metadata{
+	expected := schemas.Metadata{
 		Tags: []string{"tag1", "tag2"},
 	}
 
@@ -42,10 +41,10 @@ Tags:
 
 	// Act
 
-	var data structs.Metadata
+	var data schemas.Metadata
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := structs.Metadata{
+	expected := schemas.Metadata{
 		Tags: []string{"tag1", "tag2"},
 	}
 

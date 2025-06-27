@@ -3,7 +3,6 @@ package common
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/operation/services"
@@ -22,10 +21,11 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			workspaceName,
-			structs.Metadata{
+			"",
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

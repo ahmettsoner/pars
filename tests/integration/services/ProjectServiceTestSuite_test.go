@@ -187,11 +187,11 @@ func (suite *ProjectServiceTestSuite) Test_ListGroupProjects_ByOnlyGroupFullName
 
 	project1 := *objects.BasicProject_WithName(projectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project1.Specifications.Path = utils.PathToArray(projectPath1)
-	project1.Specifications.ProjectIdentifier.Group = group.Name
+	project1.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project1.Specifications.GroupObject = group.Specifications
 	project2 := *objects.BasicProject_WithName(projectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project2.Specifications.Path = utils.PathToArray(projectPath2)
-	project2.Specifications.ProjectIdentifier.Group = group.Name
+	project2.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project2.Specifications.GroupObject = group.Specifications
 
 	temp1, err := suite.service.Create(project1, true)
@@ -224,7 +224,7 @@ func (suite *ProjectServiceTestSuite) Test_GetProject_ByFullNameAndWorkspace() {
 
 	project1 := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project1.Specifications.Path = utils.PathToArray(projectPath)
-	project1.Specifications.ProjectIdentifier.Group = group.Name
+	project1.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project1.Specifications.GroupObject = group.Specifications
 
 	temp1, err := suite.service.Create(project1, true)

@@ -192,7 +192,7 @@ func (s ObjectResourceService) Remove(name, workspace string, force, permanent b
 		return nil, err
 	}
 
-	err = s.generationHistoryRespository.DeleteBySetAndResource(resource.Specifications.Set, resource.Name)
+	err = s.generationHistoryRespository.DeleteBySetAndResource(resource.Specifications.Set, resource.Header.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func (s ObjectResourceService) saveResourceInformation(resourceModel objectresou
 	}
 
 	resourceEntity := entities.Resource{
-		Name:     resourceModel.Name,
+		Name:     resourceModel.Header.Name,
 		Document: string(jsonData),
 	}
 

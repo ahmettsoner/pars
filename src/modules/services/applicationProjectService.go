@@ -43,21 +43,21 @@ func NewApplicationProjectService(environment string) *ApplicationProjectService
 // OK!
 func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseStruct, init bool) (*applicationproject.ProjectBaseStruct, error) {
 
-	logrus.Debugf("project %v creating", model.Name)
+	logrus.Debugf("project %v creating", model.Header.Name)
 
 	if _, err := s.saveProjectInformation(model); err != nil {
-		logrus.Warnf("yyy: rolling back the creating %v!", model.Name)
+		logrus.Warnf("yyy: rolling back the creating %v!", model.Header.Name)
 		_, err := s.rollbackSaveProjectInformation(model)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, err)
 		}
-		return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
 	if init {
 		_, err := s.GenerateProject(model)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
@@ -84,27 +84,27 @@ func (s ApplicationProjectService) GetByName(name string) (*applicationproject.P
 }
 func (s *ApplicationProjectService) GenerateProject(model applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
-	result, err := s.GetByName(model.Name)
+	result, err := s.GetByName(model.Header.Name)
 	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 	}
 
 	if result == nil {
-		return nil, fmt.Errorf("xxx: Application Project tanımlı değil '%s'", model.Name)
+		return nil, fmt.Errorf("xxx: Application Project tanımlı değil '%s'", model.Header.Name)
 	}
 
 	if _, err := s.CreateProjectFolder(model); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje klasörü hazırlama aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje klasörü hazırlama aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 	}
 
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 	if !utils.IsEmpty(model.Specifications.Group) {
 		groupStatus, err := projectManager.IsGroupFileExists(model.Specifications)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, grup path kontrolü aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluştururken, grup path kontrolü aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 		}
 		if !groupStatus {
 			err := projectManager.CreateGroup(model.Specifications)
@@ -117,37 +117,37 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 	if err := projectManager.CreateProject(model.Specifications); err != nil {
 		_, err := s.rollbackSaveProjectInformation(model)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluştururken meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, err)
 		}
-		return nil, fmt.Errorf("xxx: Application Project oluştururken hata meydana geldi: '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
 	if !utils.IsEmpty(model.Specifications.Group) {
 		err := projectManager.AddToGroup(model.Specifications)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, gruba ekleme işlemi sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluştururken, gruba ekleme işlemi sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
 	if err := projectManager.RemoveDefaultFiles(model.Specifications); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururma aşamasında default files kaldırma işlemi sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururma aşamasında default files kaldırma işlemi sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
 	if _, err := s.CreateAllProjectFolders(model); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin dizinleri oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin dizinleri oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
 	if model.Specifications.Configuration.Dependencies != nil {
 		err := s.AddPackageToProject(model, model.Specifications.Configuration.Dependencies...)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
 	if model.Specifications.Configuration.References != nil {
 		err := s.AddReferenceToProject(model, model.Specifications.Configuration.References...)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
@@ -156,12 +156,12 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 func (s ApplicationProjectService) AddPackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationproject.Package) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket eklerken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return fmt.Errorf("xxx: Application Project Paket eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	err = projectManager.AddPackageToProject(model.Specifications, packages)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Name, packages, err)
+		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, packages, err)
 	}
 	return nil
 
@@ -169,25 +169,25 @@ func (s ApplicationProjectService) AddPackageToProject(model applicationproject.
 func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationproject.Package) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return fmt.Errorf("xxx: Application Project Paket kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	err = projectManager.RemovePackageFromProject(model.Specifications, packages)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Name, packages, err)
+		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, packages, err)
 	}
 	return nil
 }
 func (s ApplicationProjectService) AddReferenceToProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Reference eklerken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return fmt.Errorf("xxx: Application Project Reference eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	for _, ref := range references {
 		err := projectManager.AddReferenceToProject(model.Specifications, []applicationproject.ProjectSpecification{ref.Specifications})
 		if err != nil {
-			return fmt.Errorf("xxx: Application Project Reference eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Name, references, err)
+			return fmt.Errorf("xxx: Application Project Reference eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
 	}
 
@@ -196,13 +196,13 @@ func (s ApplicationProjectService) AddReferenceToProject(model applicationprojec
 func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Reference kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return fmt.Errorf("xxx: Application Project Reference kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	for _, ref := range references {
 		err := projectManager.RemoveReferenceFromProject(model.Specifications, []applicationproject.ProjectSpecification{ref.Specifications})
 		if err != nil {
-			return fmt.Errorf("xxx: Application Project Reference kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Name, references, err)
+			return fmt.Errorf("xxx: Application Project Reference kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
 	}
 
@@ -216,18 +216,18 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 	folderPath := filepath.Join(folders...)
 
 	if err := os.MkdirAll(folderPath, os.ModePerm); err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü oluştururken hata oluştu: '%s' Path: '%+v'\n%w", model.Name, folderPath, err)
+		return "", fmt.Errorf("xxx: Application Project proje klasörü oluştururken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü tanımlanırken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return "", fmt.Errorf("xxx: Application Project proje klasörü tanımlanırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	if len(paths) > 0 {
 		err := projectManager.AddFolderToProjectDefinition(model.Specifications, paths...)
 		if err != nil {
-			return "", fmt.Errorf("xxx: Application Project proje klasörü tanımlanırken hata oluştu: '%s' Path: '%+v'\n%w", model.Name, folderPath, err)
+			return "", fmt.Errorf("xxx: Application Project proje klasörü tanımlanırken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 		}
 	}
 	foldersRelativePath := filepath.Join(foldersRelative...)
@@ -241,19 +241,19 @@ func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.
 
 	logrus.Debugf("Deleting project folder %s", folderPath)
 	if err := os.RemoveAll(folderPath); err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", model.Name, folderPath, err)
+		return "", fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü kaldırılırken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return "", fmt.Errorf("xxx: Application Project proje klasörü kaldırılırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
 	if len(paths) > 0 {
 		err := projectManager.RemoveFolderFromProjectDefinition(model.Specifications, paths...)
 
 		if err != nil {
-			return "", fmt.Errorf("xxx: Application Project proje klasörü kaldırılırken hata oluştu: '%s' Path: '%+v'\n%w", model.Name, folderPath, err)
+			return "", fmt.Errorf("xxx: Application Project proje klasörü kaldırılırken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 		}
 	}
 	foldersRelativePath := filepath.Join(foldersRelative...)
@@ -264,7 +264,7 @@ func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.
 	for _, layer := range layers {
 		_, err := s.CreateProjectFolder(project, layer.Path)
 		if err != nil {
-			return fmt.Errorf("xxx: Application Project layer klasörü oluştururken hata oluştu: '%s'\n%w", project.Name, err)
+			return fmt.Errorf("xxx: Application Project layer klasörü oluştururken hata oluştu: '%s'\n%w", project.Header.Name, err)
 		}
 	}
 
@@ -274,7 +274,7 @@ func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.
 	for _, layer := range layers {
 		_, err := s.DeleteProjectFolder(project, layer.Path)
 		if err != nil {
-			return fmt.Errorf("xxx: Application Project layer klasörü kaldırılırken hata oluştu: '%s'\n%w", project.Name, err)
+			return fmt.Errorf("xxx: Application Project layer klasörü kaldırılırken hata oluştu: '%s'\n%w", project.Header.Name, err)
 		}
 	}
 
@@ -286,7 +286,7 @@ func (s ApplicationProjectService) CreateAllProjectFolders(project applicationpr
 
 		createdFolder, err := s.CreateProjectFolder(project, value.GetPathAsArray()...)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project layer klasörü oluştururken hata oluştu: '%s'\n%w", project.Name, err)
+			return nil, fmt.Errorf("xxx: Application Project layer klasörü oluştururken hata oluştu: '%s'\n%w", project.Header.Name, err)
 		}
 
 		folders = append(folders, createdFolder)
@@ -295,7 +295,7 @@ func (s ApplicationProjectService) CreateAllProjectFolders(project applicationpr
 }
 func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.ProjectBaseStruct, layer string, paths []string, filename string, content string) (*applicationproject.ProjectBaseStruct, error) {
 
-	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Name, layer)
+	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Header.Name, layer)
 
 	var projectLayer *applicationproject.Layer = nil
 	for _, layerItem := range model.Specifications.Configuration.Layers {
@@ -315,31 +315,31 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 
 		err := os.MkdirAll(fileDirPath, os.ModePerm)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project layer'a dosya eklerken hata oluştu: '%s' Path: '%+v'\n%w", model.Name, fileDirPath, err)
+			return nil, fmt.Errorf("xxx: Application Project layer'a dosya eklerken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, fileDirPath, err)
 		}
 		_, fileState := os.Stat(fullFilePath)
 		var file *os.File
 		if os.IsNotExist(fileState) {
 			file, fileState = os.Create(fullFilePath)
 			if fileState != nil {
-				return nil, fmt.Errorf("xxx: Application Project layer'a yeni dosya eklerken durum kontrolü hatası oluştu: '%s' Path: '%+v'\n%w", model.Name, fileDirPath, fileState)
+				return nil, fmt.Errorf("xxx: Application Project layer'a yeni dosya eklerken durum kontrolü hatası oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, fileDirPath, fileState)
 			}
 			defer file.Close()
 
 			_, writeError := file.Write(fileContent)
 			if writeError != nil {
-				return nil, fmt.Errorf("xxx: Application Project layer'a yeni dosya eklerken yazma işlemi hatası oluştu: '%s' Path: '%+v'\n%w", model.Name, fileDirPath, writeError)
+				return nil, fmt.Errorf("xxx: Application Project layer'a yeni dosya eklerken yazma işlemi hatası oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, fileDirPath, writeError)
 			}
 		} else {
 			file, fileState = os.OpenFile(fullFilePath, os.O_WRONLY|os.O_TRUNC, 0644)
 			if fileState != nil {
-				return nil, fmt.Errorf("xxx: Application Project layer'da dosya güncellerken durum kontrolü hatası oluştu: '%s' Path: '%+v'\n%w", model.Name, fileDirPath, fileState)
+				return nil, fmt.Errorf("xxx: Application Project layer'da dosya güncellerken durum kontrolü hatası oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, fileDirPath, fileState)
 			}
 			defer file.Close()
 
 			_, writeError := file.Write(fileContent)
 			if writeError != nil {
-				return nil, fmt.Errorf("xxx: Application Project layer'da dosya güncellerken yazma işlemi hatası oluştu: '%s' Path: '%+v'\n%w", model.Name, fileDirPath, writeError)
+				return nil, fmt.Errorf("xxx: Application Project layer'da dosya güncellerken yazma işlemi hatası oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, fileDirPath, writeError)
 			}
 		}
 	}
@@ -919,7 +919,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			if count == 0 {
 				if !utils.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
 					logrus.Debugf("project group (%v) has no other project inside, all things removing belong to group", projectGroup)
-					logrus.Debugf("removing path %v \n project: %v, group: %v", project.Specifications.GetAbsoluteGroupPath(), project.Name, project.Specifications.Group)
+					logrus.Debugf("removing path %v \n project: %v, group: %v", project.Specifications.GetAbsoluteGroupPath(), project.Header.Name, project.Specifications.Group)
 					if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseGroupPath()); err != nil {
 						return nil, fmt.Errorf("xxx: GApplication Project silme aşamasında child proje bulunmayan grubun path'ini silme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 					}
@@ -1616,7 +1616,7 @@ func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*
 
 func (s *ApplicationProjectService) saveProjectInformation(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
-	logrus.Debugf("project %v information saving", projectModel.Name)
+	logrus.Debugf("project %v information saving", projectModel.Header.Name)
 
 	jsonData, err := json.Marshal(projectModel)
 	if err != nil {
@@ -1624,7 +1624,7 @@ func (s *ApplicationProjectService) saveProjectInformation(projectModel applicat
 	}
 
 	projectEntity := entities.Project{
-		Name:     projectModel.Name,
+		Name:     projectModel.Header.Name,
 		Document: string(jsonData),
 	}
 
@@ -1633,13 +1633,13 @@ func (s *ApplicationProjectService) saveProjectInformation(projectModel applicat
 		return nil, fmt.Errorf("xxx: Application Project kayıt aşamasında beklenmeyen hata oluştu %+v\n%w", projectEntity, err)
 	}
 
-	logrus.Debugf("project %v information saved", projectModel.Name)
+	logrus.Debugf("project %v information saved", projectModel.Header.Name)
 	return &projectModel, nil
 }
 
 func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
-	logrus.Debugf("project %v information rolling back", projectModel.Name)
+	logrus.Debugf("project %v information rolling back", projectModel.Header.Name)
 
 	jsonData, err := json.Marshal(projectModel)
 	if err != nil {
@@ -1647,7 +1647,7 @@ func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel 
 	}
 
 	projectEntity := entities.Project{
-		Name:     projectModel.Name,
+		Name:     projectModel.Header.Name,
 		Document: string(jsonData),
 	}
 
@@ -1656,6 +1656,6 @@ func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel 
 		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %+v\n%w", projectEntity, err)
 	}
 
-	logrus.Debugf("project %v information saved", projectModel.Name)
+	logrus.Debugf("project %v information saved", projectModel.Header.Name)
 	return &projectModel, nil
 }

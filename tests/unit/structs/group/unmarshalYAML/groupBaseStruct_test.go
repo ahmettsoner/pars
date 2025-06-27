@@ -3,7 +3,6 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 
 	"github.com/stretchr/testify/assert"
@@ -32,10 +31,11 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := group.GroupBaseStruct{
-		Header: structs.Header{
+		Header: schemas.SchemaHeader{
 			Type: schemas.StructTypes.Group,
+			Kind: "",
 			Name: "Pars.CMD",
-			Metadata: structs.Metadata{
+			Metadata: schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		},

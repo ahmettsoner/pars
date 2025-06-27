@@ -5,26 +5,21 @@ import (
 	"fmt"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
-	"parsdevkit.net/structs/project"
 
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 )
 
 type ProjectBaseStruct struct {
-	project.Header
+	Header         schemas.SchemaHeader
 	Specifications ProjectSpecification
 }
 
 func (e ProjectBaseStruct) GetHeader() schemas.SchemaHeader {
-	return schemas.SchemaHeader{
-		Type: e.Header.Type,
-		Kind: string(e.Header.Kind),
-		Name: e.Header.Name,
-	}
+	return e.Header
 }
 
-func NewProjectBaseStruct(header project.Header, specifications ProjectSpecification) ProjectBaseStruct {
+func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpecification) ProjectBaseStruct {
 	return ProjectBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -37,15 +32,13 @@ func (e ProjectBaseStruct) Validate() error {
 }
 
 func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		project.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
@@ -66,15 +59,13 @@ func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) err
 }
 
 func (s *ProjectBaseStruct) UnmarshalJSON(data []byte) error {
-	var tempHeaderObject struct {
-		project.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := json.Unmarshal(data, &tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	var tempSpecificationObject struct {
@@ -92,18 +83,18 @@ func (s *ProjectBaseStruct) UnmarshalJSON(data []byte) error {
 }
 
 func (s *ProjectBaseStruct) GetUniqueKey() string {
-	return fmt.Sprintf("%v-%v-%v", s.Specifications.Group, s.Name, s.Specifications.Workspace)
+	return fmt.Sprintf("%v-%v-%v", s.Specifications.Group, s.Header.Name, s.Specifications.Workspace)
 }
 
 func (s *ProjectBaseStruct) GetInformation() string {
-	return fmt.Sprintf("%v (%v)", s.Name, s.Specifications.Set)
+	return fmt.Sprintf("%v (%v)", s.Header.Name, s.Specifications.Set)
 }
 
 func (s *ProjectBaseStruct) GetFullName() string {
 	if !utils.IsEmpty(s.Specifications.Group) {
-		return fmt.Sprintf("%v/%v", s.Specifications.Group, s.Name)
+		return fmt.Sprintf("%v/%v", s.Specifications.Group, s.Header.Name)
 	} else {
-		return fmt.Sprintf("%v", s.Name)
+		return fmt.Sprintf("%v", s.Header.Name)
 	}
 }
 

@@ -396,7 +396,7 @@ func (s *ObjectResourceService) MessageToModel(message objectresource.Message) o
 func (s *ObjectResourceService) WorkspaceToModel(workspace workspace.WorkspaceBaseStruct) objectResources.Workspace {
 
 	var result objectResources.Workspace = objectResources.Workspace{
-		Name: workspace.Name,
+		Name: workspace.Header.Name,
 	}
 
 	return result
@@ -406,7 +406,7 @@ func (s *ObjectResourceService) ApplicationProjectToModel(project applicationpro
 	packages := project.Specifications.GetAllPackage()
 
 	var result objectResources.ApplicationProject = objectResources.ApplicationProject{
-		Name:    project.Name,
+		Name:    project.Header.Name,
 		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(project.Specifications.Labels...),
 	}
@@ -418,7 +418,7 @@ func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.Templa
 	packages := template.Specifications.Package
 
 	var result objectResources.FileTemplate = objectResources.FileTemplate{
-		Name:    template.Name,
+		Name:    template.Header.Name,
 		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
@@ -430,7 +430,7 @@ func (s *ObjectResourceService) CodeTemplateToModel(template codetemplate.Templa
 	packages := template.Specifications.Package
 
 	var result objectResources.CodeTemplate = objectResources.CodeTemplate{
-		Name:    template.Name,
+		Name:    template.Header.Name,
 		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}

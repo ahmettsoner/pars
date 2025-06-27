@@ -77,14 +77,14 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	for _, group := range *groupList {
 
-		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Name), commandOptions.Workspace)
+		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Header.Name), commandOptions.Workspace)
 		if err != nil {
-			return fmt.Errorf("Failed to list Group '%s' projects\n%w", group.Name, err)
+			return fmt.Errorf("Failed to list Group '%s' projects\n%w", group.Header.Name, err)
 		}
 
 		if len(*applicationProjectList) > 0 {
 			fmt.Println()
-			fmt.Printf("%v/", group.Name)
+			fmt.Printf("%v/", group.Header.Name)
 			fmt.Println()
 
 			for _, project := range *applicationProjectList {
@@ -122,8 +122,8 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Name) && strings.HasPrefix(workspace.Name, toComplete) {
-			suggestions = append(suggestions, workspace.Name)
+		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}
 	return suggestions

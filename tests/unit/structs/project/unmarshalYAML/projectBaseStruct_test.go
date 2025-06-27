@@ -5,7 +5,6 @@ import (
 
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/project"
@@ -60,7 +59,7 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := applicationproject.ProjectBaseStruct{
-		Header: project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Pars.CMD", structs.Metadata{
+		Header: schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), "Pars.CMD", schemas.Metadata{
 			Tags: []string{"tag1", "tag2"},
 		},
 		),
@@ -86,7 +85,7 @@ Specifications:
 				},
 				[]applicationproject.ProjectBaseStruct{
 					applicationproject.NewProjectBaseStruct(
-						project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, "Logging", structs.Metadata{}),
+						schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), "Logging", schemas.Metadata{}),
 						applicationproject.NewProjectSpecification(
 							0,
 							"",

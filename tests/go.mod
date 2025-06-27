@@ -22,25 +22,25 @@ replace parsdevkit.net/operation/services => ../src/modules/services
 
 replace parsdevkit.net/application => ../src/application
 
-replace parsdevkit.net/persistence/entities => ../src/modules/data/entities
+replace parsdevkit.net/persistence/entities => ../src/data/entities
 
-replace parsdevkit.net/persistence/repositories => ../src/modules/data/repositories
+replace parsdevkit.net/persistence/repositories => ../src/data/repositories
 
-replace parsdevkit.net/persistence/contexts => ../src/modules/data/contexts
+replace parsdevkit.net/persistence/contexts => ../src/data/contexts
 
-replace parsdevkit.net/platforms/core => ../src/modules/platforms/core
+replace parsdevkit.net/platforms/core => ../src/platforms/core
 
-replace parsdevkit.net/platforms/common => ../src/modules/platforms/common
+replace parsdevkit.net/platforms/common => ../src/platforms/common
 
-replace parsdevkit.net/platforms/angular => ../src/modules/platforms/angular
+replace parsdevkit.net/platforms/angular => ../src/platforms/angular
 
-replace parsdevkit.net/platforms/nodejs => ../src/modules/platforms/nodejs
+replace parsdevkit.net/platforms/nodejs => ../src/platforms/nodejs
 
-replace parsdevkit.net/platforms/dotnet => ../src/modules/platforms/dotnet
+replace parsdevkit.net/platforms/dotnet => ../src/platforms/dotnet
 
-replace parsdevkit.net/platforms/go => ../src/modules/platforms/go
+replace parsdevkit.net/platforms/go => ../src/platforms/go
 
-replace parsdevkit.net/platforms/pars => ../src/modules/platforms/pars
+replace parsdevkit.net/platforms/pars => ../src/platforms/pars
 
 replace parsdevkit.net/structs => ../src/modules/structs
 
@@ -48,9 +48,9 @@ replace parsdevkit.net/context => ../src/modules/context
 
 replace parsdevkit.net/core/utils => ../src/modules/utils
 
-replace parsdevkit.net/providers => ../src/modules/providers
+replace parsdevkit.net/providers => ../src/components/providers
 
-replace parsdevkit.net/models => ../src/modules/models
+replace parsdevkit.net/models => ../src/models
 
 replace parsdevkit.net/engines => ../src/modules/engines
 

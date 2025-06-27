@@ -3,7 +3,6 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
@@ -42,7 +41,7 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := codetemplate.NewTemplateBaseStruct(
-		templateStruct.NewHeader(schemas.StructTypes.Template, templateStruct.StructKinds.Code, "Entity", structs.NewMetadata([]string{"tag1", "tag2"})),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
 		codetemplate.NewTemplateSpecification(0,
 			"Entity",
 			"",

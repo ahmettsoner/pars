@@ -66,7 +66,7 @@ func TemplateEngine(templateFile string, data any) (string, error) {
 	}
 
 	for _, sharedTempl := range *sharedTemplateList {
-		tempDef := fmt.Sprintf("{{define \"%v\"}}%v{{end}}", sharedTempl.Name, sharedTempl.Specifications.Template.Content)
+		tempDef := fmt.Sprintf("{{define \"%v\"}}%v{{end}}", sharedTempl.Header.Name, sharedTempl.Specifications.Template.Content)
 		_, err := tmpl.Parse(tempDef)
 		if err != nil {
 			return "", err

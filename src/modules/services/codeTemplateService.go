@@ -152,7 +152,7 @@ func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*co
 		return nil, err
 	}
 
-	err = s.generationHistoryRespository.DeleteBySetAndTemplate(template.Specifications.Set, template.Name)
+	err = s.generationHistoryRespository.DeleteBySetAndTemplate(template.Specifications.Set, template.Header.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func (s CodeTemplateService) saveTemplateInformation(templateModel codetemplate.
 	}
 
 	templateEntity := entities.Template{
-		Name:     templateModel.Name,
+		Name:     templateModel.Header.Name,
 		Document: string(jsonData),
 	}
 

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
+	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/stretchr/testify/assert"
@@ -112,7 +113,7 @@ csharp@V8
 	var data applicationproject.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(models.CSharpVersions.V8))
+	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
 
 	// Assert
 	a.NoError(err)
@@ -133,7 +134,7 @@ Version: V8
 	var data applicationproject.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(models.CSharpVersions.V8))
+	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
 
 	// Assert
 	a.NoError(err)

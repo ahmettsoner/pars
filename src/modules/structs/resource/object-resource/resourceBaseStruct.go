@@ -4,27 +4,22 @@ import (
 	"fmt"
 
 	v "github.com/go-ozzo/ozzo-validation/v4"
-	"parsdevkit.net/structs/resource"
 
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 )
 
 type ResourceBaseStruct struct {
-	resource.Header
+	Header         schemas.SchemaHeader
 	Specifications ResourceSpecification
 	Configurations ResourceConfiguration
 }
 
 func (e ResourceBaseStruct) GetHeader() schemas.SchemaHeader {
-	return schemas.SchemaHeader{
-		Type: e.Header.Type,
-		Kind: string(e.Header.Kind),
-		Name: e.Header.Name,
-	}
+	return e.Header
 }
 
-func NewResourceBaseStruct(header resource.Header, specifications ResourceSpecification, configurations ResourceConfiguration) ResourceBaseStruct {
+func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, configurations ResourceConfiguration) ResourceBaseStruct {
 	return ResourceBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -38,15 +33,13 @@ func (e ResourceBaseStruct) Validate() error {
 }
 
 func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		resource.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
@@ -74,5 +67,5 @@ func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 }
 
 func (s *ResourceBaseStruct) GetFullInformation() string {
-	return fmt.Sprintf("%v (%v)", s.Name, s.Specifications.Set)
+	return fmt.Sprintf("%v (%v)", s.Header.Name, s.Specifications.Set)
 }

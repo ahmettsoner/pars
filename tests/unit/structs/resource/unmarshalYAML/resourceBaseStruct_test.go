@@ -3,7 +3,6 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 	"parsdevkit.net/structs/resource"
@@ -53,11 +52,11 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			string(resource.ResourceKinds.Object),
 			"Pars.CMD",
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

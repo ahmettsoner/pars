@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/group"
 
 	"parsdevkit.net/core/utils"
@@ -175,10 +174,11 @@ func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *group.Grou
 func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			name,
-			structs.Metadata{
+			"",
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -194,10 +194,11 @@ func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 
 	group := group.NewGroupBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 	"parsdevkit.net/structs/resource"
@@ -179,11 +178,11 @@ func CreateNewSampleResourceWithSet(name, set string) (*entities.Resource, *obje
 func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			resource.ResourceKinds.Object.String(),
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -232,11 +231,11 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStruct {
 
 	resource := objectresource.NewResourceBaseStruct(
-		resource.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.StructKinds.Object,
+			resource.ResourceKinds.Object.String(),
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

@@ -3,7 +3,6 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/operation/services"
@@ -61,7 +60,7 @@ func (suite *WorkspaceServiceTestSuite) Test_CreateWorkspace() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(workspace.Name, true, true)
+			suite.service.Remove(workspace.Header.Name, true, true)
 		}
 	})
 }
@@ -82,7 +81,7 @@ func (suite *WorkspaceServiceTestSuite) Test_GetByName() {
 
 	suite.T().Cleanup(func() {
 		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.service.Remove(workspace.Name, true, true)
+			suite.service.Remove(workspace.Header.Name, true, true)
 		}
 	})
 }
@@ -94,10 +93,11 @@ func TestWorkspaceServiceTestSuite(t *testing.T) {
 func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -112,10 +112,11 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 func BasicWorkspace_WithSpecification(specifications workspace.WorkspaceSpecification) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			specifications.Name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
@@ -127,10 +128,11 @@ func BasicWorkspace_WithSpecification(specifications workspace.WorkspaceSpecific
 func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStruct {
 
 	workspace := workspace.NewWorkspaceBaseStruct(
-		structs.NewHeader(
+		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
+			"",
 			name,
-			structs.Metadata{
+			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),

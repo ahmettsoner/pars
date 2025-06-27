@@ -70,9 +70,9 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 	}
 
 	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Name, template.Specifications.Workspace)
+		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Name, err)
+			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
 		}
 
 		if ok {
@@ -80,7 +80,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 			if err != nil {
 				return err
 			}
-			structHash, err := templateService.GetHash(template.Name)
+			structHash, err := templateService.GetHash(template.Header.Name)
 			if err != nil {
 				return err
 			}
@@ -99,11 +99,11 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
 	for _, template := range templatesReadyToCreate {
 
-		fmt.Printf("Creating %v Template\n", template.Name)
+		fmt.Printf("Creating %v Template\n", template.Header.Name)
 		if _, err := templateService.Save(template); err != nil {
 			return err
 		}
-		fmt.Printf("%v Template created\n", template.Name)
+		fmt.Printf("%v Template created\n", template.Header.Name)
 	}
 
 	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
@@ -113,7 +113,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 			return err
 		}
 
-		fmt.Printf("%v Template updated\n", template.Name)
+		fmt.Printf("%v Template updated\n", template.Header.Name)
 	}
 	return nil
 }
@@ -123,9 +123,9 @@ func (s SharedTemplateEngine) removeTemplates(templates []sharedtemplateStruct.T
 	templateService := services.NewSharedTemplateService(utils.GetEnvironment())
 	templatesReadyToDelete := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Name, template.Specifications.Workspace)
+		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Name, err)
+			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
 		}
 		if ok {
 			templatesReadyToDelete = append(templatesReadyToDelete, template)
@@ -134,11 +134,11 @@ func (s SharedTemplateEngine) removeTemplates(templates []sharedtemplateStruct.T
 
 	for _, template := range templatesReadyToDelete {
 
-		if _, err := templateService.Remove(template.Name, template.Specifications.Workspace, permanent); err != nil {
+		if _, err := templateService.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Template deleted\n", template.Name)
+		fmt.Printf("%v Template deleted\n", template.Header.Name)
 
 	}
 

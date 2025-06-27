@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/structs"
 
 	"parsdevkit.net/core/errors"
 
@@ -13,17 +12,14 @@ import (
 )
 
 type GroupBaseStruct struct {
-	structs.Header
+	Header         schemas.SchemaHeader
 	Specifications GroupSpecification
 }
 
 func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
-	return schemas.SchemaHeader{
-		Type: e.Header.Type,
-		Name: e.Header.Name,
-	}
+	return e.Header
 }
-func NewGroupBaseStruct(header structs.Header, specifications GroupSpecification) GroupBaseStruct {
+func NewGroupBaseStruct(header schemas.SchemaHeader, specifications GroupSpecification) GroupBaseStruct {
 	return GroupBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -40,14 +36,12 @@ func (e GroupBaseStruct) Validate() error {
 }
 
 func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		structs.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return fmt.Errorf("xxx: Group Header Çözümlenemedi\n%w", err)
 	} else {
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı

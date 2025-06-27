@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/operation/services"
@@ -87,7 +86,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(structs.NewHeader(schemas.StructTypes.Workspace, commandOptions.Name, structs.Metadata{}), workspace.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
+	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), workspace.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
 	if err != nil {
 		return fmt.Errorf("Failed to initialize workspace '%s'\n%w", commandOptions.Name, err)
 	}

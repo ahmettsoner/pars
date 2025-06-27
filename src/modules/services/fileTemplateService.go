@@ -151,7 +151,7 @@ func (s FileTemplateService) Remove(name, workspace string, permanent bool) (*fi
 		return nil, err
 	}
 
-	err = s.generationHistoryRespository.DeleteBySetAndTemplate(template.Specifications.Set, template.Name)
+	err = s.generationHistoryRespository.DeleteBySetAndTemplate(template.Specifications.Set, template.Header.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +192,7 @@ func (s FileTemplateService) saveTemplateInformation(templateModel filetemplate.
 	}
 
 	templateEntity := entities.Template{
-		Name:     templateModel.Name,
+		Name:     templateModel.Header.Name,
 		Document: string(jsonData),
 	}
 

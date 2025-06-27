@@ -122,8 +122,8 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Name) && strings.HasPrefix(workspace.Name, toComplete) {
-			suggestions = append(suggestions, workspace.Name)
+		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}
 	return suggestions

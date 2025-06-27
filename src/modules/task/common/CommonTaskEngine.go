@@ -71,16 +71,16 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 	}
 
 	for _, task := range tasks {
-		ok, err := taskService.IsExists(task.Name, task.Specifications.Workspace)
+		ok, err := taskService.IsExists(task.Header.Name, task.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Common task ('%s') kontrolünde hata oluştu\n%w", task.Name, err)
+			return fmt.Errorf("xxx: Common task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
 		}
 		if ok {
 			newMommonlHash, err := utils.CalculateHashFromObject(task)
 			if err != nil {
 				return err
 			}
-			structHash, err := taskService.GetHash(task.Name)
+			structHash, err := taskService.GetHash(task.Header.Name)
 			if err != nil {
 				return err
 			}
@@ -107,7 +107,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 			return err
 		}
 
-		fmt.Printf("%v Task created\n", task.Name)
+		fmt.Printf("%v Task created\n", task.Header.Name)
 	}
 
 	logrus.Debugf("updating %v tasks ", len(tasksForUpdate))
@@ -121,7 +121,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 			return err
 		}
 
-		fmt.Printf("%v Task updated\n", task.Name)
+		fmt.Printf("%v Task updated\n", task.Header.Name)
 	}
 
 	return nil
@@ -131,9 +131,9 @@ func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, p
 	taskService := services.NewCommonTaskService(utils.GetEnvironment())
 	tasksReadyToDelete := make([]commontaskStruct.TaskBaseStruct, 0)
 	for _, task := range tasks {
-		ok, err := taskService.IsExists(task.Name, task.Specifications.Workspace)
+		ok, err := taskService.IsExists(task.Header.Name, task.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Code task ('%s') kontrolünde hata oluştu\n%w", task.Name, err)
+			return fmt.Errorf("xxx: Code task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
 		}
 		if ok {
 			tasksReadyToDelete = append(tasksReadyToDelete, task)
@@ -142,11 +142,11 @@ func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, p
 
 	for _, task := range tasksReadyToDelete {
 
-		if _, err := taskService.Remove(task.Name, task.Specifications.Workspace, permanent); err != nil {
+		if _, err := taskService.Remove(task.Header.Name, task.Specifications.Workspace, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Task deleted\n", task.Name)
+		fmt.Printf("%v Task deleted\n", task.Header.Name)
 
 	}
 
@@ -156,7 +156,7 @@ func (s CommonTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commo
 
 	taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
-	result, err := taskService.GetByName(model.Name)
+	result, err := taskService.GetByName(model.Header.Name)
 	if err != nil {
 		return nil, err
 	}

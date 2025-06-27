@@ -3,27 +3,21 @@ package sharedtemplate
 import (
 	"fmt"
 
-	"parsdevkit.net/structs/template"
-
 	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/schemas"
 )
 
 type TemplateBaseStruct struct {
-	template.Header
+	Header         schemas.SchemaHeader
 	Specifications TemplateSpecification
 	Configurations TemplateConfiguration
 }
 
 func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
-	return schemas.SchemaHeader{
-		Type: e.Header.Type,
-		Kind: string(e.Header.Kind),
-		Name: e.Header.Name,
-	}
+	return e.Header
 }
 
-func NewTemplateBaseStruct(header template.Header, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
+func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
 	return TemplateBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -37,15 +31,13 @@ func (e TemplateBaseStruct) Validate() error {
 }
 
 func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	var tempHeaderObject struct {
-		template.Header
-	}
+	var tempHeaderObject schemas.SchemaHeader
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
 		return err
 	} else {
 
-		s.Header = tempHeaderObject.Header
+		s.Header = tempHeaderObject
 	}
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
@@ -69,5 +61,5 @@ func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 }
 
 func (s *TemplateBaseStruct) GetFullInformation() string {
-	return fmt.Sprintf("%v", s.Name)
+	return fmt.Sprintf("%v", s.Header.Name)
 }

@@ -3,11 +3,10 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/structs/project"
 )
 
 func Test_UnMarshall_Header_Basic(t *testing.T) {
@@ -23,13 +22,14 @@ Metadata:
 
 	// Act
 
-	var data structs.Header
+	var data schemas.SchemaHeader
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := structs.Header{
+	expected := schemas.SchemaHeader{
 		Type:     schemas.StructTypes.Project,
+		Kind:     string(project.ProjectKinds.Application),
 		Name:     "CMD",
-		Metadata: structs.Metadata{},
+		Metadata: schemas.Metadata{},
 	}
 
 	// Assert
@@ -53,13 +53,14 @@ Metadata:
 
 	// Act
 
-	var data structs.Header
+	var data schemas.SchemaHeader
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := structs.Header{
+	expected := schemas.SchemaHeader{
 		Type: schemas.StructTypes.Project,
+		Kind: string(project.ProjectKinds.Application),
 		Name: "CMD",
-		Metadata: structs.Metadata{
+		Metadata: schemas.Metadata{
 			Tags: []string{"foo", "bar"},
 		},
 	}

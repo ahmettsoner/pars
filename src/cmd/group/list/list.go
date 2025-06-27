@@ -38,7 +38,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("(%d) group available\n\n", len(*groupList))
 	for _, group := range *groupList {
-		fmt.Printf("- %v\n", group.Name)
+		fmt.Printf("- %v\n", group.Header.Name)
 	}
 
 	return nil
