@@ -11,10 +11,10 @@ import (
 
 type Header struct {
 	structs.Header
-	Kind StructKind
+	Kind TemplateKind
 }
 
-func NewHeader(_type schemas.StructType, kind StructKind, name string, metadata structs.Metadata) Header {
+func NewHeader(_type schemas.StructType, kind TemplateKind, name string, metadata structs.Metadata) Header {
 	return Header{
 		Header: structs.NewHeader(_type, name, metadata),
 		Kind:   kind,
@@ -34,7 +34,7 @@ func (s *Header) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	var tempProjectHeaderObject struct {
-		Kind StructKind `yaml:"Kind"`
+		Kind TemplateKind `yaml:"Kind"`
 	}
 
 	if err := unmarshal(&tempProjectHeaderObject); err != nil {

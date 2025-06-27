@@ -58,7 +58,7 @@ func (s CommonTaskService) Save(model commontask.TaskBaseStruct) (*commontask.Ta
 
 func (s CommonTaskService) List() (*([]commontask.TaskBaseStruct), error) {
 
-	entityList, err := s.taskRespository.ListByKind(string(task.StructKinds.Common))
+	entityList, err := s.taskRespository.ListByKind(string(task.TaskKinds.Common))
 	if err != nil {
 		return nil, err
 	}

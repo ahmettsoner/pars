@@ -101,7 +101,7 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Dependencies = tempObject.Dependencies
 		for _, ref := range tempObject.References {
 			projSpec := NewProjectBaseStruct(
-				project.NewHeader(schemas.StructTypes.Project, project.StructKinds.Application, ref.Name, structs.Metadata{}),
+				project.NewHeader(schemas.StructTypes.Project, project.ProjectKinds.Application, ref.Name, structs.Metadata{}),
 				NewProjectSpecification(
 					0,
 					"",

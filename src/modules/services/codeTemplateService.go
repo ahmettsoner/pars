@@ -58,7 +58,7 @@ func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codet
 
 func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.StructKinds.Code))
+	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.Code))
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error
 
 func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]codetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.StructKinds.Code))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.Code))
 	if err != nil {
 		return nil, err
 	}

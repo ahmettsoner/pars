@@ -1,8 +1,7 @@
 package services
 
 import (
-	"parsdevkit.net/models"
-	platformsCommon "parsdevkit.net/platforms/common"
+	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -18,12 +17,12 @@ import (
 )
 
 type ObjectResourceService struct {
-	platformType models.PlatformType
+	manager core.ManagerInterface
 }
 
-func NewObjectResourceService(platformType models.PlatformType) ObjectResourceService {
+func NewObjectResourceService(manager core.ManagerInterface) ObjectResourceService {
 	return ObjectResourceService{
-		platformType: platformType,
+		manager: manager,
 	}
 }
 
@@ -61,11 +60,6 @@ func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, 
 }
 
 func (s *ObjectResourceService) ResourceToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template codetemplate.TemplateSpecification) objectResources.ObjectResource {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -76,10 +70,10 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 	for _, attribute := range resource.Attributes {
 		var dataAttribute = objectResources.ObjectResourceAttribute{
 			Name:         attribute.Name,
-			Type:         manager.PrintDataType(attribute.Type),
+			Type:         s.manager.PrintDataType(attribute.Type),
 			TypePackage:  attribute.Type.Name,
 			TypeCategory: string(attribute.Type.Category),
-			Visibility:   manager.PrintVisibility(attribute.Visibility),
+			Visibility:   s.manager.PrintVisibility(attribute.Visibility),
 			Labels:       s.LabelListToModel(attribute.Labels...),
 			Options:      s.OptionListToModel(attribute.Options...),
 			Common:       attribute.Common,
@@ -95,7 +89,7 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 		for _, methodParameter := range method.Parameters {
 			var dataMethodParameter = objectResources.ObjectResourceMethodParameter{
 				Name: methodParameter.Name,
-				Type: manager.PrintDataType(methodParameter.Type),
+				Type: s.manager.PrintDataType(methodParameter.Type),
 			}
 
 			dataMethodParameters = append(dataMethodParameters, dataMethodParameter)
@@ -104,14 +98,14 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 
 		var dataMethodReturnTypes = make([]string, 0)
 		for _, methodReturnType := range method.ReturnTypes {
-			var dataMethodReturnType = manager.PrintDataType(methodReturnType)
+			var dataMethodReturnType = s.manager.PrintDataType(methodReturnType)
 
 			dataMethodReturnTypes = append(dataMethodReturnTypes, dataMethodReturnType)
 			importsMap = s.DataTypeToImport(methodReturnType, importsMap)
 		}
 		var dataMethod = objectResources.ObjectResourceMethod{
 			Name:        method.Name,
-			Visibility:  manager.PrintVisibility(method.Visibility),
+			Visibility:  s.manager.PrintVisibility(method.Visibility),
 			Parameters:  dataMethodParameters,
 			ReturnTypes: dataMethodReturnTypes,
 			Labels:      s.LabelListToModel(method.Labels...),
@@ -134,7 +128,7 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 
 	return objectResources.ObjectResource{
 		Name:       resource.Name,
-		Package:    manager.PrintPackage(packages),
+		Package:    s.manager.PrintPackage(packages),
 		Labels:     s.LabelListToModel(resource.Labels...),
 		Layers:     s.LayerListToModel(resource, project, template, resource.Layers...),
 		Dictionary: s.DictionaryListToModel(resource.Dictionary...),
@@ -146,11 +140,6 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 }
 
 func (s *ObjectResourceService) DataResourceToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template filetemplate.TemplateSpecification) objectResources.DataResource {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -167,7 +156,7 @@ func (s *ObjectResourceService) DataResourceToModel(resource dataresource.Resour
 
 	return objectResources.DataResource{
 		Name:    resource.Name,
-		Package: manager.PrintPackage(packages),
+		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(resource.Labels...),
 		Layers:  s.DataLayerListToModel(resource, project, template, resource.Layers...),
 		// Dictionary: s.DictionaryListToModel(resource.Dictionary...),
@@ -177,11 +166,6 @@ func (s *ObjectResourceService) DataResourceToModel(resource dataresource.Resour
 }
 
 func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template codetemplate.TemplateSpecification, section objectresource.Section) objectResources.ObjectSection {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -194,10 +178,10 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 			if attribute.Name == sectionAttribute {
 				var dataAttribute = objectResources.ObjectResourceAttribute{
 					Name:         attribute.Name,
-					Type:         manager.PrintDataType(attribute.Type),
+					Type:         s.manager.PrintDataType(attribute.Type),
 					TypePackage:  attribute.Type.Name,
 					TypeCategory: string(attribute.Type.Category),
-					Visibility:   manager.PrintVisibility(attribute.Visibility),
+					Visibility:   s.manager.PrintVisibility(attribute.Visibility),
 					Labels:       s.LabelListToModel(attribute.Labels...),
 					Options:      s.OptionListToModel(attribute.Options...),
 					Common:       attribute.Common,
@@ -217,7 +201,7 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 				for _, methodParameter := range method.Parameters {
 					var dataMethodParameter = objectResources.ObjectResourceMethodParameter{
 						Name: methodParameter.Name,
-						Type: manager.PrintDataType(methodParameter.Type),
+						Type: s.manager.PrintDataType(methodParameter.Type),
 					}
 
 					dataMethodParameters = append(dataMethodParameters, dataMethodParameter)
@@ -226,14 +210,14 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 
 				var dataMethodReturnTypes = make([]string, 0)
 				for _, methodReturnType := range method.ReturnTypes {
-					var dataMethodReturnType = manager.PrintDataType(methodReturnType)
+					var dataMethodReturnType = s.manager.PrintDataType(methodReturnType)
 
 					dataMethodReturnTypes = append(dataMethodReturnTypes, dataMethodReturnType)
 					importsMap = s.DataTypeToImport(methodReturnType, importsMap)
 				}
 				var dataMethod = objectResources.ObjectResourceMethod{
 					Name:        method.Name,
-					Visibility:  manager.PrintVisibility(method.Visibility),
+					Visibility:  s.manager.PrintVisibility(method.Visibility),
 					Parameters:  dataMethodParameters,
 					ReturnTypes: dataMethodReturnTypes,
 					Labels:      s.LabelListToModel(method.Labels...),
@@ -259,7 +243,7 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 
 	return objectResources.ObjectSection{
 		Name:       section.Name,
-		Package:    manager.PrintPackage(packages),
+		Package:    s.manager.PrintPackage(packages),
 		Classes:    section.Classes,
 		Labels:     s.LabelListToModel(section.Labels...),
 		Options:    s.OptionListToModel(section.Options...),
@@ -270,11 +254,6 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 }
 
 func (s *ObjectResourceService) DataSectionToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template filetemplate.TemplateSpecification, section dataresource.Section) objectResources.DataSection {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -291,7 +270,7 @@ func (s *ObjectResourceService) DataSectionToModel(resource dataresource.Resourc
 
 	return objectResources.DataSection{
 		Name:    section.Name,
-		Package: manager.PrintPackage(packages),
+		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(section.Labels...),
 		Options: s.OptionListToModel(section.Options...),
 	}
@@ -424,16 +403,11 @@ func (s *ObjectResourceService) WorkspaceToModel(workspace workspace.WorkspaceBa
 }
 
 func (s *ObjectResourceService) ApplicationProjectToModel(project applicationproject.ProjectBaseStruct) objectResources.ApplicationProject {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	packages := project.Specifications.GetAllPackage()
 
 	var result objectResources.ApplicationProject = objectResources.ApplicationProject{
 		Name:    project.Name,
-		Package: manager.PrintPackage(packages),
+		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(project.Specifications.Labels...),
 	}
 
@@ -441,16 +415,11 @@ func (s *ObjectResourceService) ApplicationProjectToModel(project applicationpro
 }
 
 func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.TemplateBaseStruct) objectResources.FileTemplate {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	packages := template.Specifications.Package
 
 	var result objectResources.FileTemplate = objectResources.FileTemplate{
 		Name:    template.Name,
-		Package: manager.PrintPackage(packages),
+		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
 
@@ -458,16 +427,11 @@ func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.Templa
 }
 
 func (s *ObjectResourceService) CodeTemplateToModel(template codetemplate.TemplateBaseStruct) objectResources.CodeTemplate {
-	manager, err := platformsCommon.ManagerFactory(s.platformType)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
-
 	packages := template.Specifications.Package
 
 	var result objectResources.CodeTemplate = objectResources.CodeTemplate{
 		Name:    template.Name,
-		Package: manager.PrintPackage(packages),
+		Package: s.manager.PrintPackage(packages),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
 

@@ -46,11 +46,11 @@ replace parsdevkit.net/core/utils => ../utils
 
 replace parsdevkit.net/context => ../context
 
-replace parsdevkit.net/persistence/entities => ../data/entities
+replace parsdevkit.net/persistence/entities => ../../data/entities
 
-replace parsdevkit.net/persistence/repositories => ../data/repositories
+replace parsdevkit.net/persistence/repositories => ../../data/repositories
 
-replace parsdevkit.net/persistence/contexts => ../data/contexts
+replace parsdevkit.net/persistence/contexts => ../../data/contexts
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 

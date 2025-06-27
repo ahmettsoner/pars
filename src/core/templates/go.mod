@@ -2,19 +2,19 @@ module parsdevkit.net/templates
 
 go 1.22
 
-replace parsdevkit.net/platforms/core => ../platforms/core
+replace parsdevkit.net/platforms/core => ../../platforms/core
 
-replace parsdevkit.net/platforms/common => ../platforms/common
+replace parsdevkit.net/platforms/common => ../../platforms/common
 
-replace parsdevkit.net/platforms/angular => ../platforms/angular
+replace parsdevkit.net/platforms/angular => ../../platforms/angular
 
-replace parsdevkit.net/platforms/nodejs => ../platforms/nodejs
+replace parsdevkit.net/platforms/nodejs => ../../platforms/nodejs
 
-replace parsdevkit.net/platforms/dotnet => ../platforms/dotnet
+replace parsdevkit.net/platforms/dotnet => ../../platforms/dotnet
 
-replace parsdevkit.net/platforms/pars => ../platforms/pars
+replace parsdevkit.net/platforms/pars => ../../platforms/pars
 
-replace parsdevkit.net/platforms/go => ../platforms/go
+replace parsdevkit.net/platforms/go => ../../platforms/go
 
 replace parsdevkit.net/models => ../models
 
@@ -28,11 +28,11 @@ replace parsdevkit.net/providers => ../providers
 
 replace parsdevkit.net/context => ../context
 
-replace parsdevkit.net/persistence/repositories => ../../modules/data/repositories
+replace parsdevkit.net/persistence/repositories => ../../data/repositories
 
-replace parsdevkit.net/persistence/entities => ../../modules/data/entities
+replace parsdevkit.net/persistence/entities => ../../data/entities
 
-replace parsdevkit.net/persistence/contexts => ../../modules/data/contexts
+replace parsdevkit.net/persistence/contexts => ../../data/contexts
 
 require (
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000

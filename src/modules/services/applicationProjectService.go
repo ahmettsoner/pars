@@ -350,7 +350,7 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 // OK!
 func (s *ApplicationProjectService) List() (*([]applicationproject.ProjectBaseStruct), error) {
 
-	entityList, err := s.projectRespository.ListByKind(string(project.StructKinds.Application))
+	entityList, err := s.projectRespository.ListByKind(string(project.ProjectKinds.Application))
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}

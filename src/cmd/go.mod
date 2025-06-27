@@ -82,21 +82,21 @@ replace parsdevkit.net/templates => ../core/templates
 
 replace parsdevkit.net/core/utils => ../modules/utils
 
-replace parsdevkit.net/providers => ../modules/providers
+replace parsdevkit.net/providers => ../components/providers
 
-replace parsdevkit.net/platforms/core => ../modules/platforms/core
+replace parsdevkit.net/platforms/core => ../platforms/core
 
-replace parsdevkit.net/platforms/common => ../modules/platforms/common
+replace parsdevkit.net/platforms/common => ../platforms/common
 
-replace parsdevkit.net/platforms/nodejs => ../modules/platforms/nodejs
+replace parsdevkit.net/platforms/nodejs => ../platforms/nodejs
 
-replace parsdevkit.net/platforms/angular => ../modules/platforms/angular
+replace parsdevkit.net/platforms/angular => ../platforms/angular
 
-replace parsdevkit.net/platforms/dotnet => ../modules/platforms/dotnet
+replace parsdevkit.net/platforms/dotnet => ../platforms/dotnet
 
-replace parsdevkit.net/platforms/go => ../modules/platforms/go
+replace parsdevkit.net/platforms/go => ../platforms/go
 
-replace parsdevkit.net/platforms/pars => ../modules/platforms/pars
+replace parsdevkit.net/platforms/pars => ../platforms/pars
 
 replace parsdevkit.net/structs => ../modules/structs
 

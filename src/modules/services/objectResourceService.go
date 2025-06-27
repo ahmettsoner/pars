@@ -57,7 +57,7 @@ func (s ObjectResourceService) Save(model objectresource.ResourceBaseStruct) (*o
 }
 func (s ObjectResourceService) List() (*([]objectresource.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByKind(string(resource.StructKinds.Object))
+	entityList, err := s.resourceRepository.ListByKind(string(resource.ResourceKinds.Object))
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (s ObjectResourceService) List() (*([]objectresource.ResourceBaseStruct), e
 }
 func (s ObjectResourceService) ListByWorkspace(workspace string) (*([]objectresource.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, string(resource.StructKinds.Object))
+	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, string(resource.ResourceKinds.Object))
 	if err != nil {
 		return nil, err
 	}

@@ -57,9 +57,9 @@ require (
 
 replace parsdevkit.net/operation/services => ../services
 
-replace parsdevkit.net/persistence/entities => ../data/entities
+replace parsdevkit.net/persistence/entities => ../../data/entities
 
-replace parsdevkit.net/persistence/repositories => ../data/repositories
+replace parsdevkit.net/persistence/repositories => ../../data/repositories
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 
@@ -101,7 +101,7 @@ replace parsdevkit.net/models => ../models
 
 replace parsdevkit.net/core => ../../core
 
-replace parsdevkit.net/persistence/contexts => ../data/contexts
+replace parsdevkit.net/persistence/contexts => ../../data/contexts
 
 replace parsdevkit.net/context => ../context
 

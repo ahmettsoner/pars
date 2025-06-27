@@ -1,6 +1,7 @@
 package models
 
 import (
+	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
@@ -20,7 +21,11 @@ type CodeTemplateDataContext struct {
 }
 
 func NewCodeTemplateDataContext(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
-	templateService := objectResourceService.NewObjectResourceService(project.Specifications.Platform.Type)
+	manager, err := platformsCommon.ManagerFactory(project.Specifications.Platform.Type)
+	if err != nil {
+		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
+	}
+	templateService := objectResourceService.NewObjectResourceService(manager)
 
 	return &CodeTemplateDataContext{
 		Workspace: objectResources.WorkspaceComposite{

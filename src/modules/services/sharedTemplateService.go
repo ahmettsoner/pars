@@ -58,7 +58,7 @@ func (s SharedTemplateService) Save(model sharedtemplate.TemplateBaseStruct) (*s
 
 func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.StructKinds.Shared))
+	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.Shared))
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), e
 }
 func (s SharedTemplateService) ListByWorkspace(workspace string) (*([]sharedtemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.StructKinds.Shared))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.Shared))
 	if err != nil {
 		return nil, err
 	}

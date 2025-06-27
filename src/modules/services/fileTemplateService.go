@@ -58,7 +58,7 @@ func (s FileTemplateService) Save(model filetemplate.TemplateBaseStruct) (*filet
 
 func (s FileTemplateService) List() (*([]filetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.StructKinds.File))
+	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.File))
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (s FileTemplateService) List() (*([]filetemplate.TemplateBaseStruct), error
 }
 func (s FileTemplateService) ListByWorkspace(workspace string) (*([]filetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.StructKinds.File))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.File))
 	if err != nil {
 		return nil, err
 	}
