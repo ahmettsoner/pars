@@ -1,6 +1,6 @@
 module parsdevkit.net/cmd
 
-go 1.22
+go 1.23.7
 
 require (
 	github.com/sirupsen/logrus v1.9.3
@@ -26,6 +26,7 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.10.0 // indirect
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -55,7 +56,7 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/common v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
@@ -70,8 +71,6 @@ replace parsdevkit.net/engines => ../modules/engines
 replace parsdevkit.net/core => ../core
 
 replace parsdevkit.net/context => ../modules/context
-
-replace parsdevkit.net/common => ../modules/common
 
 replace parsdevkit.net/persistence/entities => ../modules/data/entities
 
@@ -104,3 +103,5 @@ replace parsdevkit.net/structs => ../modules/structs
 replace parsdevkit.net/models => ../modules/models
 
 replace parsdevkit.net/operation/services => ../modules/services
+
+replace parsdevkit.net/application => ../application

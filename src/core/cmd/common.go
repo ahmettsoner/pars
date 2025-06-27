@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/core/utils"
 )
 
-func GetActiveWorkspaceNameV2(ctx *core.Context, workspaceName string) (string, error) {
+func GetActiveWorkspaceNameV2(ctx *core.ApplicationContext, workspaceName string) (string, error) {
 	if !utils.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		ok, err := workspaceService.IsExists(workspaceName)
@@ -32,7 +32,7 @@ func GetActiveWorkspaceNameV2(ctx *core.Context, workspaceName string) (string, 
 	return name, nil
 }
 
-func GetActiveWorkspaceName(ctx *core.Context, workspaceName string) string {
+func GetActiveWorkspaceName(ctx *core.ApplicationContext, workspaceName string) string {
 
 	if !utils.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
@@ -54,7 +54,7 @@ func GetActiveWorkspaceName(ctx *core.Context, workspaceName string) string {
 	return workspaceName
 }
 
-func GetActiveWorkspacePath(ctx *core.Context, workspaceName string) string {
+func GetActiveWorkspacePath(ctx *core.ApplicationContext, workspaceName string) string {
 
 	if utils.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name

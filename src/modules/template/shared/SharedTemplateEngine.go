@@ -27,7 +27,7 @@ func (s SharedTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s SharedTemplateEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s SharedTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -41,7 +41,7 @@ func (s SharedTemplateEngine) Process(ctx *core.Context, data []schemas.Schema) 
 
 	return s.createTemplates(sharedtemplates, true)
 }
-func (s SharedTemplateEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s SharedTemplateEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

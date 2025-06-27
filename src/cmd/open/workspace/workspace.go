@@ -11,7 +11,7 @@ import (
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/engines"
+	"parsdevkit.net/application"
 )
 
 type WorkspaceOptions struct {
@@ -52,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	path := parsCMDCommon.GetActiveWorkspacePath(engines.GetContext(), commandOptions.Name)
+	path := parsCMDCommon.GetActiveWorkspacePath(application.GetContext(), commandOptions.Name)
 
 	providers.VSCodeExecute("", path)
 

@@ -11,8 +11,8 @@ import (
 
 	"parsdevkit.net/providers"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/engines"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -57,7 +57,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(engines.GetContext(), "")
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), "")
 	}
 
 	return nil

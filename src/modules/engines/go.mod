@@ -42,7 +42,6 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
@@ -57,8 +56,6 @@ require (
 )
 
 replace parsdevkit.net/operation/services => ../services
-
-replace parsdevkit.net/common => ../common
 
 replace parsdevkit.net/persistence/entities => ../data/entities
 

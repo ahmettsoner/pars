@@ -2,12 +2,9 @@ module parsdevkit.net/operation/services
 
 go 1.22
 
-replace parsdevkit.net/common => ../common
 
 require (
 	github.com/sirupsen/logrus v1.9.3
-	parsdevkit.net/common v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000

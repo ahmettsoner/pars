@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"parsdevkit.net/core/utils/json"
-	engines "parsdevkit.net/engines/v2/engines"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
 	"parsdevkit.net/core"
@@ -28,7 +27,7 @@ func (s CommonTaskEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CommonTaskEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s CommonTaskEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +42,7 @@ func (s CommonTaskEngine) Process(ctx *core.Context, data []schemas.Schema) erro
 	return s.createTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s CommonTaskEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -164,12 +163,6 @@ func (s CommonTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commo
 
 	if result == nil {
 		return nil, nil
-	}
-
-	taskEngine := engines.NewCommonTaskOperations(utils.GetEnvironment())
-	err = taskEngine.GenerateByTask(model)
-	if err != nil {
-		return nil, err
 	}
 
 	return result, nil

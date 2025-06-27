@@ -2,6 +2,6 @@ package core
 
 import "parsdevkit.net/core/schemas"
 
-type Context struct {
+type ApplicationContext struct {
 	CurrentWorkspace schemas.SchemaHeader
 }

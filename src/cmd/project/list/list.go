@@ -9,8 +9,8 @@ import (
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/engines"
 
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
 	if utils.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(engines.GetContext(), "")
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), "")
 	}
 	return nil
 }

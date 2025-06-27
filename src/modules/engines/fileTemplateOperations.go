@@ -1,4 +1,4 @@
-package v2
+package engines
 
 import (
 	"parsdevkit.net/context/models"
@@ -10,7 +10,6 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/engines"
 	templateEngine "parsdevkit.net/templates/engines"
 
 	"parsdevkit.net/persistence/repositories"
@@ -55,7 +54,6 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 				return err
 			}
 
-			// templateService := dataResourceService.NewDataResourceService(setProject.Specifications.Platform.Type)
 			for _, setTemplate := range *setTemplates {
 				err := s.GenerateContent(*projectWorkspace, setProject, model, setTemplate, layer.LayerIdentifier)
 				if err != nil {
@@ -86,6 +84,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 			return err
 		}
 
+		//TODO: selector işlemleri bu noktada gerçekleştirilebilir?
 		for _, setProject := range *setProjects {
 			projectWorkspace, err := workspaceService.GetByName(setProject.Specifications.Workspace)
 			if err != nil {
@@ -93,7 +92,6 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 			}
 
 			for _, setResource := range *setResources {
-
 				err := s.GenerateContent(*projectWorkspace, setProject, setResource, model, modelLayer.LayerIdentifier)
 				if err != nil {
 					return err
@@ -141,7 +139,7 @@ func (s FileTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 			return err
 		}
 
-		templateContentStr = engines.AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
+		templateContentStr = AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
 
 		_, err = projectService.AddFileToLayer(project, layer.Name, []string{resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
 		if err != nil {

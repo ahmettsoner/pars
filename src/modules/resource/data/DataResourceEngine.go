@@ -11,7 +11,7 @@ import (
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/core/utils/json"
-	engines "parsdevkit.net/engines/v2/engines"
+	"parsdevkit.net/engines"
 
 	"github.com/sirupsen/logrus"
 )
@@ -28,7 +28,7 @@ func (s DataResourceEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s DataResourceEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s DataResourceEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +42,7 @@ func (s DataResourceEngine) Process(ctx *core.Context, data []schemas.Schema) er
 
 	return s.createResources(dataresourceStructs, true)
 }
-func (s DataResourceEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s DataResourceEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {

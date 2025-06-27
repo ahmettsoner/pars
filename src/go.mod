@@ -22,7 +22,6 @@ replace parsdevkit.net/modules/resource/object => ./modules/resource/object
 
 replace parsdevkit.net/operation/services => ./modules/services
 
-replace parsdevkit.net/common => ./modules/common
 
 replace parsdevkit.net/persistence/entities => ./modules/data/entities
 
@@ -104,7 +103,7 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/common v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
@@ -134,3 +133,5 @@ require (
 )
 
 replace parsdevkit.net/core => ./core
+
+replace parsdevkit.net/application => ./application

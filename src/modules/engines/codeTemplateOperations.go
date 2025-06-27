@@ -1,10 +1,9 @@
-package v2
+package engines
 
 import (
 	"strings"
 
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/engines"
 	"parsdevkit.net/operation/services"
 	layerPkg "parsdevkit.net/structs/layer"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -160,7 +159,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 										}
 										template.Specifications.Package = tempPackages
 
-										templateContentStr = engines.AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
+										templateContentStr = AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
 
 										_, err = projectService.AddFileToLayer(project, layer.Name, []string{resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
 										if err != nil {
@@ -212,7 +211,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 			}
 			template.Specifications.Package = tempPackages
 
-			templateContentStr = engines.AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
+			templateContentStr = AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
 
 			_, err = projectService.AddFileToLayer(project, layer.Name, []string{resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
 			if err != nil {

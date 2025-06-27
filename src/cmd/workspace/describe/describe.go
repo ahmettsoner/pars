@@ -6,12 +6,11 @@ import (
 	"sort"
 	"strings"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/engines"
 
 	"github.com/spf13/cobra"
 )
@@ -54,7 +53,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	appContext := engines.GetContext()
+	appContext := application.GetContext()
 
 	if &appContext.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")

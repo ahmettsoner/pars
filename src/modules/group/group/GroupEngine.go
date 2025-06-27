@@ -24,7 +24,7 @@ func (s GroupEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s GroupEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s GroupEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	groups := make([]groupStruct.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -37,7 +37,7 @@ func (s GroupEngine) Process(ctx *core.Context, data []schemas.Schema) error {
 
 	return s.createGroups(groups, false)
 }
-func (s GroupEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s GroupEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	groups := make([]groupStruct.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {

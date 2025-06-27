@@ -13,7 +13,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	engines "parsdevkit.net/engines/v2/engines"
+	"parsdevkit.net/engines"
 )
 
 type CodeTemplateEngine struct{}
@@ -28,7 +28,7 @@ func (s CodeTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CodeTemplateEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +42,7 @@ func (s CodeTemplateEngine) Process(ctx *core.Context, data []schemas.Schema) er
 
 	return s.createTemplates(codetemplates, true)
 }
-func (s CodeTemplateEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

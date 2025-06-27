@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/engines"
+	"parsdevkit.net/application"
 )
 
 type ListOptions struct {
@@ -99,7 +99,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	fmt.Println("*** Workspace Specific Templates ***")
 	fmt.Println()
 
-	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(engines.GetContext(), commandOptions.Workspace)
+	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), commandOptions.Workspace)
 
 	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {

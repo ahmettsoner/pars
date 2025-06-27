@@ -17,13 +17,12 @@ import (
 
 	"parsdevkit.net/persistence/entities"
 
-	"parsdevkit.net/common"
-
 	"github.com/sirupsen/logrus"
 )
 
 const (
 	DEFAULT_WORKSPACE_PATH string = "workspace"
+	CURRENT_WORKSPACE_ID   string = "current_workspace_id"
 )
 
 type WorkspaceService struct {
@@ -91,12 +90,12 @@ func (s WorkspaceService) saveWorkspaceInformation(workspaceModel workspace.Work
 		return nil, err
 	}
 
-	value, err := s.settignsRespository.GetValue(common.CURRENT_WORKSPACE_ID)
+	value, err := s.settignsRespository.GetValue(CURRENT_WORKSPACE_ID)
 	if err != nil {
 		return nil, err
 	}
 	if utils.IsEmpty(value) {
-		err := s.settignsRespository.SetValue(common.CURRENT_WORKSPACE_ID, strconv.Itoa(workspaceEntity.ID))
+		err := s.settignsRespository.SetValue(CURRENT_WORKSPACE_ID, strconv.Itoa(workspaceEntity.ID))
 		if err != nil {
 			return nil, err
 		}
@@ -278,12 +277,12 @@ func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.
 // 		return nil, err
 // 	}
 
-// 	value, err := s.settignsRespository.GetValue(common.CURRENT_WORKSPACE_ID)
+// 	value, err := s.settignsRespository.GetValue(CURRENT_WORKSPACE_ID)
 // 	if err != nil {
 // 		return nil, err
 // 	}
 // 	if utils.IsEmpty(value) {
-// 		err := s.settignsRespository.SetValue(common.CURRENT_WORKSPACE_ID, strconv.Itoa(newWorkspace.ID))
+// 		err := s.settignsRespository.SetValue(CURRENT_WORKSPACE_ID, strconv.Itoa(newWorkspace.ID))
 // 		if err != nil {
 // 			return nil, err
 // 		}
@@ -355,7 +354,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 		return nil, err
 	}
 
-	value, err := s.settignsRespository.Get(common.CURRENT_WORKSPACE_ID)
+	value, err := s.settignsRespository.Get(CURRENT_WORKSPACE_ID)
 	if err != nil {
 		return nil, err
 	}
@@ -397,7 +396,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 // 		return nil, err
 // 	}
 
-// 	value, err := s.settignsRespository.Get(common.CURRENT_WORKSPACE_ID)
+// 	value, err := s.settignsRespository.Get(CURRENT_WORKSPACE_ID)
 // 	if err != nil {
 // 		return nil, err
 // 	}
@@ -464,7 +463,7 @@ func (s *WorkspaceService) IsDirectoryReserved(path string) (*workspace.Workspac
 }
 
 func (s *WorkspaceService) GetSelectedWorkspace() (*workspace.WorkspaceBaseStruct, error) {
-	value, err := s.settignsRespository.GetValue(common.CURRENT_WORKSPACE_ID)
+	value, err := s.settignsRespository.GetValue(CURRENT_WORKSPACE_ID)
 	if err != nil {
 		return nil, err
 	}
@@ -502,7 +501,7 @@ func (s *WorkspaceService) ChangeCurrentWorkspace(name string) (*workspace.Works
 		return nil, errors.New("Workspace name (" + name + ") is not correct")
 	}
 
-	err = s.settignsRespository.SetValue(common.CURRENT_WORKSPACE_ID, strconv.Itoa(workspaceEntity.ID))
+	err = s.settignsRespository.SetValue(CURRENT_WORKSPACE_ID, strconv.Itoa(workspaceEntity.ID))
 	if err != nil {
 		return nil, err
 	}

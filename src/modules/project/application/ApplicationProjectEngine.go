@@ -31,7 +31,7 @@ func (s ApplicationProjectEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s ApplicationProjectEngine) Process(ctx *core.Context, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -48,7 +48,7 @@ func (s ApplicationProjectEngine) Process(ctx *core.Context, data []schemas.Sche
 
 	return s.createProjects(applicationprojects, true)
 }
-func (s ApplicationProjectEngine) Destroy(ctx *core.Context, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -386,7 +386,7 @@ func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectSt
 	return nil
 }
 
-func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Context, project *applicationprojectStruct.ProjectBaseStruct) error {
+func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.ApplicationContext, project *applicationprojectStruct.ProjectBaseStruct) error {
 
 	logrus.Debugf("filling project (%v) information", project.Name)
 
@@ -420,7 +420,7 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Context, 
 	return nil
 }
 
-func (s ApplicationProjectEngine) getWorkspace(ctx *core.Context, project applicationprojectStruct.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s ApplicationProjectEngine) getWorkspace(ctx *core.ApplicationContext, project applicationprojectStruct.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
 	//TODO: Bu şekilde interface'ten tip dönüşümü tamamlanamadı, yapı buna dönüştürülmeli
 	// if projectStruct, ok := project.(project.ProjectBaseStruct); !ok {
 	// 	return nil, fmt.Errorf("incompatible model type: expected %T, got %T", project, projectStruct)

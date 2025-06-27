@@ -7,11 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"parsdevkit.net/application"
 	parsCMDCommon "parsdevkit.net/core/cmd"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/core/utils/json"
-	"parsdevkit.net/engines"
-	v2 "parsdevkit.net/engines/v2"
 	"parsdevkit.net/operation/services"
 
 	"github.com/spf13/cobra"
@@ -58,7 +57,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(engines.GetContext(), commandOptions.Workspace)
+		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(application.GetContext(), commandOptions.Workspace)
 		if err != nil {
 			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 		}
@@ -72,7 +71,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
-		result, err := v2.GetAllManifestFilesInPath(commandOptions.FilePaths...)
+		result, err := application.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
 			log.Printf("❌ Error: %v", err)
@@ -87,7 +86,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 			}
 
-			err = v2.DispatchEngineProcess(engines.GetContext(), result)
+			err = application.DispatchEngineProcess(application.GetContext(), result)
 			if err != nil {
 				log.Fatalf("Engine processing failed: %v", err)
 			}

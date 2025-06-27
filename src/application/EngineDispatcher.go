@@ -1,9 +1,10 @@
-package v2
+package application
 
 import (
 	"fmt"
 
 	"parsdevkit.net/core"
+	"parsdevkit.net/core/engines"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 	group "parsdevkit.net/modules/group/group"
@@ -16,7 +17,7 @@ import (
 	templateShared "parsdevkit.net/modules/template/shared"
 )
 
-var engineRegistry = map[string]Engine{
+var engineRegistry = map[string]engines.Engine{
 	"Group":               group.GroupEngine{},
 	"Project.Application": projectApplication.ApplicationProjectEngine{},
 	"Resource.Data":       resourceData.DataResourceEngine{},
@@ -37,7 +38,7 @@ var orderedKeys = []string{
 	"Task.Common",
 }
 
-func DispatchEngineProcess(ctx *core.Context, t []schemas.Schema) error {
+func DispatchEngineProcess(ctx *core.ApplicationContext, t []schemas.Schema) error {
 
 	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {
@@ -69,7 +70,7 @@ func DispatchEngineProcess(ctx *core.Context, t []schemas.Schema) error {
 	}
 	return nil
 }
-func DispatchEngineDestroy(ctx *core.Context, t []schemas.Schema) error {
+func DispatchEngineDestroy(ctx *core.ApplicationContext, t []schemas.Schema) error {
 
 	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {

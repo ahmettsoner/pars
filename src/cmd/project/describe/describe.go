@@ -12,7 +12,7 @@ import (
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/engines"
+	"parsdevkit.net/application"
 )
 
 type DescribeOptions struct {
@@ -52,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(engines.GetContext(), "")
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), "")
 	}
 	return nil
 }
