@@ -20,7 +20,7 @@ replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
 
 replace parsdevkit.net/operation/services => ../src/modules/services
 
-replace parsdevkit.net/common => ../src/modules/common
+replace parsdevkit.net/application => ../src/application
 
 replace parsdevkit.net/persistence/entities => ../src/modules/data/entities
 
@@ -82,6 +82,7 @@ require (
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
+	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
@@ -128,7 +129,6 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect; indirec
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
