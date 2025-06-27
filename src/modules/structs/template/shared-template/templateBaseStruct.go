@@ -3,13 +3,10 @@ package sharedtemplate
 import (
 	"fmt"
 
+	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/template"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type TemplateBaseStruct struct {
@@ -18,12 +15,25 @@ type TemplateBaseStruct struct {
 	Configurations TemplateConfiguration
 }
 
+func (e TemplateBaseStruct) GetHeader() structs.SchemaHeader {
+	return structs.SchemaHeader{
+		Type: e.Header.Type,
+		Kind: string(e.Header.Kind),
+		Name: e.Header.Name,
+	}
+}
+
 func NewTemplateBaseStruct(header template.Header, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
 	return TemplateBaseStruct{
 		Header:         header,
 		Specifications: specifications,
 		Configurations: configurations,
 	}
+}
+func (e TemplateBaseStruct) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Name, v.Required),
+	)
 }
 
 func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -45,16 +55,14 @@ func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
 		s.Configurations = tempSpecificationObject.Configurations
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

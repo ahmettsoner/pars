@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -28,6 +29,11 @@ func NewPackage_Basic(name string) Package {
 		Name: name,
 	}
 }
+func (e Package) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 
 func (s *Package) GetFullName() string {
 	fullName := s.Name
@@ -48,9 +54,10 @@ func (s *Package) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
 			} else {
 				s.Name = tempObject.Name
 				s.Version = tempObject.Version

@@ -31,6 +31,7 @@ var DescribeCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
@@ -60,7 +61,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	projectList, err := projectService.ListByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to describe project '%s'\n%w", commandOptions.Name, err)
 	}
 
 	for _, e := range *projectList {
@@ -78,6 +79,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		fmt.Println(layers)
 	}
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = DescribeOptions{}
 }
 
 func init() {

@@ -37,9 +37,11 @@ func (s *EncapsulationSetter) UnmarshalYAML(unmarshal func(interface{}) error) e
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 				s.Visibility = tempObject.Visibility

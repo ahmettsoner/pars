@@ -171,7 +171,7 @@ func strToInt64(str string) (int64, error) {
 		var fv float64
 		fv, err = strconv.ParseFloat(str, 64)
 		if err != nil {
-			return 0, fmt.Errorf("could not convert %q to int64: %w", str, err)
+			return 0, fmt.Errorf("could not convert %q to int64\n%w", str, err)
 		}
 
 		return ToInt64(fv)
@@ -193,7 +193,7 @@ func strToFloat64(str string) (float64, error) {
 		var fv float64
 		fv, err = strconv.ParseFloat(str, 64)
 		if err != nil {
-			return 0, fmt.Errorf("could not convert %q to float64: %w", str, err)
+			return 0, fmt.Errorf("could not convert %q to float64\n%w", str, err)
 		}
 
 		return fv, nil

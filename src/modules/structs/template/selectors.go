@@ -1,9 +1,5 @@
 package template
 
-import (
-	"gopkg.in/yaml.v3"
-)
-
 type Selectors struct {
 	Project  Project
 	Resource Resource
@@ -23,9 +19,11 @@ func (s *Selectors) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Resource = tempObject.Resource
 		s.Project = tempObject.Project

@@ -3,6 +3,7 @@ package project
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"parsdevkit.net/structs/project"
 
@@ -36,6 +37,7 @@ var ProjectCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -82,7 +84,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if utils.IsEmpty(projectName) && groupId > 0 {
 		projectEntities, err := projectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", projectGroup), commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to open project '%s'\n%w", commandOptions.Name, err)
 		}
 
 		if len(*projectEntities) > 0 {
@@ -91,7 +93,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	} else {
 		project, err := projectService.GetByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to open project '%s'\n%w", commandOptions.Name, err)
 		}
 
 		if groupId == 0 {
@@ -101,8 +103,12 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	fmt.Fprintf(os.Stdout, "✔ Project '%v' opened successfully\n", commandOptions.Name)
 	return nil
 
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ProjectOptions{}
 }
 
 func init() {

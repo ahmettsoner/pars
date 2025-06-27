@@ -5,8 +5,6 @@ import (
 
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -229,24 +227,4 @@ Generics:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_DataType_WithoutType(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Category: reference
-`
-
-	// Act
-
-	var data objectresource.DataType
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("DataType.Name", fieldRequiredErr.FieldName)
 }

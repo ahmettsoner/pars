@@ -1,10 +1,7 @@
 package actions
 
 import (
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -35,6 +32,11 @@ func NewAction(name string) Action {
 		SubTasks: make(map[string]ActionInterface),
 	}
 }
+func (e Action) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 
 func (a Action) GetName() string                         { return a.Name }
 func (a Action) GetType() string                         { return a.Type }
@@ -52,9 +54,11 @@ func (s *Action) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 			}
@@ -65,10 +69,6 @@ func (s *Action) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	} else {
 		s.Name = value
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

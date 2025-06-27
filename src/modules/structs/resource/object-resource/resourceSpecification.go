@@ -4,14 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type ResourceSpecification struct {
@@ -42,6 +39,12 @@ func NewResourceSpecification(id int, name, workspace, path, set string, _packag
 	}
 }
 
+func (e ResourceSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+		v.Field(&e.Set, v.Required),
+	)
+}
 func (s *ResourceSpecification) GetPackageString() string {
 	return strings.Join(s.Package, "/")
 }
@@ -80,9 +83,11 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Path = tempObject.Path
 		s.Set = tempObject.Set
@@ -101,14 +106,6 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 			}
 		}
 
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Resource.Name"}
-	}
-
-	if utils.IsEmpty(s.Set) {
-		return &errors.ErrFieldRequired{FieldName: "Resource.Set"}
 	}
 
 	return nil

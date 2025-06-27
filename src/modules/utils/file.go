@@ -175,3 +175,23 @@ func WalkDir(paths ...string) ([]string, error) {
 	}
 	return files, nil
 }
+func GetAllFilesInPath(path ...string) ([]string, error) {
+
+	allPaths, err := WalkDir(path...)
+	if err != nil {
+		return nil, fmt.Errorf("Error finding file paths: %v", allPaths)
+	}
+
+	allFiles := make([]string, 0)
+	for _, path := range allPaths {
+		if !IsEmpty(path) {
+			files, err := GetFilesInPath(path)
+			if err != nil {
+				return nil, err
+			}
+
+			allFiles = append(allFiles, files...)
+		}
+	}
+	return allFiles, nil
+}

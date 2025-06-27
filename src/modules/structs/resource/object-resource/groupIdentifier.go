@@ -1,9 +1,8 @@
 package objectresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -16,6 +15,11 @@ func NewGroupIdentifier(name string) GroupIdentifier {
 	return GroupIdentifier{
 		Name: name,
 	}
+}
+func (e GroupIdentifier) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
 }
 
 func (s *GroupIdentifier) IsNameExists() bool {
@@ -42,10 +46,6 @@ func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error
 
 	} else {
 		s.Name = value
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Group.Name"}
 	}
 
 	return nil

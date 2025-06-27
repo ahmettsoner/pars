@@ -3,11 +3,8 @@ package workspace
 import (
 	"path/filepath"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 const (
@@ -26,6 +23,12 @@ func NewWorkspaceSpecification(id int, name, path string) WorkspaceSpecification
 		WorkspaceIdentifier: NewWorkspaceIdentifier(id, name),
 		Path:                path,
 	}
+}
+func (e WorkspaceSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.WorkspaceIdentifier.Name, v.Required),
+		v.Field(&e.Path, v.Required),
+	)
 }
 
 func (s *WorkspaceSpecification) IsPathExists() bool {
@@ -66,19 +69,13 @@ func (s *WorkspaceSpecification) UnmarshalYAML(unmarshal func(interface{}) error
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Path = tempObject.Path
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
-
-	if utils.IsEmpty(s.Path) {
-		return &errors.ErrFieldRequired{FieldName: "Path"}
 	}
 
 	return nil

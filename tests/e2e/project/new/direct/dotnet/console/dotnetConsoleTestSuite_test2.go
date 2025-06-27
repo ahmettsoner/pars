@@ -108,7 +108,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupProject() {
 	projectName := suite.faker.Project.Name()
 	fullName := fmt.Sprintf("%v/%v", projectGroup, projectName)
 
-	common.SubmitGroup(suite.T(), projectGroup, suite.environment)
+	common.NewGroupsuite.T(), projectGroup, suite.environment)
 
 	commands := []string{
 		"project",
@@ -152,7 +152,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupLayeredProject() {
 	projectName := suite.faker.Project.Name()
 	fullName := fmt.Sprintf("%v/%v", projectGroup, projectName)
 
-	common.SubmitGroup(suite.T(), projectGroup, suite.environment)
+	common.NewGroup(suite.T(), projectGroup, suite.environment)
 
 	commands := []string{
 		"project",
@@ -199,7 +199,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupNTierProject() {
 	projectName := suite.faker.Project.Name()
 	fullName := fmt.Sprintf("%v/%v", projectGroup, projectName)
 
-	common.SubmitGroup(suite.T(), projectGroup, suite.environment)
+	common.NewGroup(suite.T(), projectGroup, suite.environment)
 
 	commands := []string{
 		"project",

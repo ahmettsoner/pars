@@ -2,7 +2,7 @@ package install
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"parsdevkit.net/operation/services"
 
@@ -29,6 +29,7 @@ var InstallCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -54,14 +55,17 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
-	project, err := projectService.Install(commandOptions.Name, commandOptions.Workspace)
+	_, err := projectService.Install(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to install project '%s' packages\n%w", commandOptions.Name, err)
 	}
 
-	fmt.Println("Project (" + project.Name + ") packages installed")
+	fmt.Fprintf(os.Stdout, "✔ Project '%v' packages installed successfully\n", commandOptions.Name)
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = InstallOptions{}
 }
 
 func init() {

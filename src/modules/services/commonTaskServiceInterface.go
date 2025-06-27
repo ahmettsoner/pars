@@ -10,6 +10,6 @@ type CommonTaskServiceInterface interface {
 	ListBySetAndLayers(set string, layers ...string) (*([]commontask.TaskBaseStruct), error)
 	ListByWorkspaceSetAndLayers(workspace, set string, layers ...string) (*([]commontask.TaskBaseStruct), error)
 	Remove(name, workspace string, permanent bool) (*commontask.TaskBaseStruct, error)
-	IsExists(name, workspace string) bool
-	GetHash(name string) string
+	IsExists(name, workspace string) (bool, error)
+	GetHash(name string) (string, error)
 }

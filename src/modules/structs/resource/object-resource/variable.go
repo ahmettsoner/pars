@@ -3,6 +3,7 @@ package objectresource
 import (
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 
@@ -38,6 +39,12 @@ func NewVariable(name string, _type DataType, order int, hint Message, descripti
 		Annotations: annotations,
 	}
 }
+
+func (e Variable) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err != nil {
@@ -55,9 +62,11 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 				s.Type = tempObject.Type
@@ -88,10 +97,6 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return &errors.InvalidFormatForPackageError{Value: value}
 		}
-	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "Variable.Name"}
 	}
 
 	if utils.IsEmpty(string(s.Type.Name)) {

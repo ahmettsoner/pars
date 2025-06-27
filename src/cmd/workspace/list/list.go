@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -23,6 +22,7 @@ var ListCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -41,19 +41,19 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 	workspaceList, err := workspaceService.List()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to retrieve workspace\n%w", err)
 	}
 
 	fmt.Printf("(%d) workspace available\n", len(*workspaceList))
 
 	activeWorkspace, err := workspaceService.GetActiveWorkspace()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to find Active Workspace\n%w", err)
 	}
 
 	selectedWorkspace, err := workspaceService.GetSelectedWorkspace()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to find Selected Workspace\n%w", err)
 	}
 
 	fmt.Println()
@@ -78,4 +78,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
 }

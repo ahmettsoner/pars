@@ -5,8 +5,6 @@ import (
 
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -106,24 +104,4 @@ Version: bar
 	a.NoError(err)
 	a.Equal(expected, data)
 	a.Equal(expected.GetFullName(), "foo@bar")
-}
-
-func Test_UnMarshall_Package_WithoutName(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Version: bar
-`
-
-	// Act
-
-	var data applicationproject.Package
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Name", fieldRequiredErr.FieldName)
 }

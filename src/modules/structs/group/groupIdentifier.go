@@ -34,12 +34,12 @@ func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error
 
 			err := unmarshal(&tempObject)
 			if err != nil {
-				return fmt.Errorf("xxx: Group Identifier Çözümlenemedi %w", err)
+				return fmt.Errorf("xxx: Group Identifier Çözümlenemedi\n%w", err)
 			}
 
 			s.Name = tempObject.Name
 		} else {
-			return fmt.Errorf("xxx: Group Identifier dönüştürme hatası oluştu %w", err)
+			return fmt.Errorf("xxx: Group Identifier dönüştürme hatası oluştu\n%w", err)
 		}
 	} else {
 		s.Name = value

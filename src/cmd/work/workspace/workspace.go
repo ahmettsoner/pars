@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"fmt"
+	"os"
 
 	"parsdevkit.net/providers"
 
@@ -27,6 +28,7 @@ var WorkspaceCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -52,7 +54,12 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	path := parsCMDCommon.GetActiveWorkspacePath(commandOptions.Name)
 	providers.ExecuteQuick("cd", path)
 
+	fmt.Fprintf(os.Stdout, "✔ Changed Working Dir to '%v' successfully\n", commandOptions.Name)
+
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = CleanOptions{}
 }
 
 func init() {

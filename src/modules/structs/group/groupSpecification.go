@@ -55,7 +55,7 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {
-		return fmt.Errorf("xxx: Group Specification Çözümlenemedi %w", err)
+		return fmt.Errorf("xxx: Group Specification Çözümlenemedi\n%w", err)
 	} else {
 		s.GroupIdentifier = tempIdentifierObject.GroupIdentifier
 	}
@@ -67,7 +67,7 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	if err := unmarshal(&tempObject); err != nil {
 		if _, ok := err.(*yaml.TypeError); !ok {
-			return fmt.Errorf("xxx: Group Specification Path ve Package dönüştürme hatası oluştu %w", err)
+			return fmt.Errorf("xxx: Group Specification Path ve Package dönüştürme hatası oluştu\n%w", err)
 		}
 	} else {
 		s.Path = tempObject.Path
@@ -80,10 +80,6 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 				s.AppendPackage(fmt.Sprint(_package))
 			}
 		}
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return fmt.Errorf("xxx: Group Specification Name alanı tanımlı değil")
 	}
 
 	if len(s.Package) == 0 {

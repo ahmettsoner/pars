@@ -38,5 +38,3 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	fmt.Printf(textFormat, "Config Directory", utils.GetConfigLocation())
 	fmt.Printf(textFormat, "Data Directory", utils.GetDataLocation())
 }
-
-

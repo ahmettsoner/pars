@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"parsdevkit.net/structs/task"
 	commontask "parsdevkit.net/structs/task/common-task"
@@ -116,29 +117,29 @@ func (s CommonTaskService) Remove(name, workspace string, permanent bool) (*comm
 	return &task, nil
 }
 
-func (s CommonTaskService) IsExists(name, workspace string) bool {
+func (s CommonTaskService) IsExists(name, workspace string) (bool, error) {
 
 	taskTaskEntity, err := s.taskRespository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Task getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if taskTaskEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
-func (s CommonTaskService) GetHash(name string) string {
+func (s CommonTaskService) GetHash(name string) (string, error) {
 
 	entity, err := s.taskRespository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Task getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Task tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }
 
 func (s CommonTaskService) saveTaskInformation(taskMommonl commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {

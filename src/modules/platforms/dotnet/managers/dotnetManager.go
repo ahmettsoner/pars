@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"parsdevkit.net/models"
@@ -323,11 +324,11 @@ func (s DotnetManager) RemoveFromGroup(project applicationproject.ProjectSpecifi
 	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "sln", s.GetGroupFileRelativePath(project), "remove", s.GetProjectFileRelativePath(project))
 }
 
-func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
+func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
 		if utils.IsEmpty(path) {
-			return
+			return nil
 		}
 
 		projectFile := filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
@@ -348,12 +349,14 @@ func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.P
 			log.Fatal(err)
 		}
 	}
+
+	return nil
 }
-func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
+func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
 		if utils.IsEmpty(path) {
-			return
+			return nil
 		}
 
 		projectFile := filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
@@ -374,6 +377,8 @@ func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproj
 			log.Fatal(err)
 		}
 	}
+
+	return nil
 }
 
 func addFolderToItemProperty(xmlContent []byte, folderPath string) ([]byte, error) {
@@ -736,7 +741,15 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 			}
 
 			pathWithProjectName := filepath.Join(relativeToReference, s.GetProjectFileName(projectReference.Specifications))
-			if string(match[0]) == pathWithProjectName {
+
+			unifiedPath := string(match[0])
+			if runtime.GOOS != "windows" {
+				unifiedPath = strings.ReplaceAll(unifiedPath, `\`, `/`)
+			}
+
+			// OS'ye uygun hale getir (slashes normalize edilir)
+			normalizedPath := filepath.Clean(unifiedPath)
+			if normalizedPath == pathWithProjectName {
 				references = append(references, projectReference.Specifications)
 				break
 			}

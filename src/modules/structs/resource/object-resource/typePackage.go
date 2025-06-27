@@ -1,10 +1,7 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/utils"
-
-	parsErrors "parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -26,6 +23,11 @@ func NewTypePackageOnly(name string) TypePackage {
 	}
 }
 
+func (e TypePackage) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 func (s *TypePackage) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err == nil {
@@ -38,9 +40,11 @@ func (s *TypePackage) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 				s.Alias = tempObject.Alias
@@ -48,10 +52,6 @@ func (s *TypePackage) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return err
 		}
-	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &parsErrors.ErrFieldRequired{FieldName: "TypePackage.Name"}
 	}
 
 	return nil

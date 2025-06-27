@@ -1,7 +1,6 @@
 package filetemplate
 
 import (
-	"gopkg.in/yaml.v3"
 	layerPkg "parsdevkit.net/structs/layer"
 	"parsdevkit.net/structs/template"
 )
@@ -35,9 +34,11 @@ func (s *Layer) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Sections = tempObject.Sections
 	}

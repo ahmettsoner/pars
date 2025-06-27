@@ -317,7 +317,8 @@ func (s AngularManager) AddReferenceToProject(project applicationproject.Project
 			return err
 		}
 
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "link", relativePath)
+		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "link", relativePath)
+		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "install", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -335,7 +336,8 @@ func (s AngularManager) RemoveReferenceFromProject(project applicationproject.Pr
 			return err
 		}
 
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "unlink", relativePath)
+		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "unlink", relativePath)
+		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -429,11 +431,11 @@ func (s AngularManager) RemoveDefaultFiles(project applicationproject.ProjectSpe
 	return s.FileRemover(paths...)
 }
 
-func (s AngularManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
-
+func (s AngularManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+	return nil
 }
-func (s AngularManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
-
+func (s AngularManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+	return nil
 }
 
 func (s AngularManager) GetProjectFileRelativePath(project applicationproject.ProjectSpecification) string {
@@ -468,7 +470,7 @@ func (s AngularManager) ListReferencesFromProject(projectSpecification applicati
 		return nil, err
 	}
 
-	pattern := regexp.MustCompile("([`└+]--|──)\\s+(.*?)@(.*?)extraneous\\s*->\\s*(.*?)\\n")
+	pattern := regexp.MustCompile("([`└+]--|──)\\s+(.*?)@(.*?)\\s*->\\s*(.*?)\\n")
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 

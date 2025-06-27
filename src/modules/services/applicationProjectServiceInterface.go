@@ -24,5 +24,6 @@ type ApplicationProjectServiceInterface interface {
 	ValidateProjectStructure(model applicationproject.ProjectSpecification) (bool, error)
 	ValidateProjectDependencies(model applicationproject.ProjectSpecification) (bool, error)
 	ValidateProjectReferences(model applicationproject.ProjectSpecification) (bool, error)
-	GetHash(name string, workspaceName string) string
+	IsExists(name string, workspaceName string) (bool, error)
+	GetHash(name string, workspaceName string) (string, error)
 }

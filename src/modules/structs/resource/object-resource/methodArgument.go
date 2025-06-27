@@ -3,8 +3,7 @@ package objectresource
 import (
 	"strings"
 
-	"parsdevkit.net/core/utils"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
@@ -21,6 +20,12 @@ func NewMethodArgument(name, value string) MethodArgument {
 		Value: value,
 	}
 }
+func (e MethodArgument) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+		v.Field(&e.Value, v.Required),
+	)
+}
 
 func (s *MethodArgument) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
@@ -32,9 +37,11 @@ func (s *MethodArgument) UnmarshalYAML(unmarshal func(interface{}) error) error 
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 				s.Value = tempObject.Value
@@ -53,17 +60,10 @@ func (s *MethodArgument) UnmarshalYAML(unmarshal func(interface{}) error) error 
 
 			s.Name = name
 
-			if utils.IsEmpty(s.Name) {
-				return &errors.InvalidLanguageError{Value: name}
-			}
 			s.Value = _value
 		} else {
 			return &errors.InvalidFormatForLanguageError{Value: value}
 		}
-	}
-
-	if utils.IsEmpty(s.Value) {
-		return &errors.ErrFieldRequired{FieldName: "MethodArgument.Value"}
 	}
 
 	return nil

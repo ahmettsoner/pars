@@ -3,6 +3,7 @@ package objectresource
 import (
 	"reflect"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -21,6 +22,11 @@ func NewMessage(text string, dictionary DictionaryIdentifier) Message {
 		Dictionary: dictionary,
 	}
 }
+func (e Message) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Text, v.Required),
+	)
+}
 
 func (s *Message) IsTextExists() bool {
 	return !utils.IsEmpty(s.Text)
@@ -36,9 +42,11 @@ func (s *Message) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Text = tempObject.Text
 				s.Dictionary = tempObject.Dictionary
@@ -51,7 +59,7 @@ func (s *Message) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Text = value
 	}
 
-	if utils.IsEmpty(s.Text) && reflect.DeepEqual(s.Dictionary, Dictionary{}) {
+	if reflect.DeepEqual(s.Dictionary, Dictionary{}) {
 		return &errors.ErrFieldRequired{FieldName: "Text|Dictionary"}
 	}
 

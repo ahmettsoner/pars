@@ -52,7 +52,7 @@ func (s GroupSerializer) GetGroupStructsFromFile(files ...string) ([]group.Group
 		}
 		groupStructs, err := s.GetGroupStructsFromString(string(data))
 		if err != nil {
-			return nil, fmt.Errorf("❌ Failed to serializing: %v\n", err)
+			return nil, fmt.Errorf("Failed to serializing: %v\n", err)
 		}
 		groups = append(groups, groupStructs...)
 

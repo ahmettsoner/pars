@@ -1,8 +1,10 @@
 package applicationproject
 
 import (
+	"fmt"
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/core/utils"
@@ -30,6 +32,20 @@ func NewRuntime_Basic(_type models.RuntimeType) Runtime {
 	}
 }
 
+func (s Runtime) Validate() error {
+	return v.ValidateStruct(&s,
+		v.Field(&s.Type,
+			v.Required,
+			v.By(func(value interface{}) error {
+				if str, ok := value.(fmt.Stringer); ok && str.String() == "Unknown" {
+					return v.NewError("validation_type", "type cannot be Unknown")
+				}
+				return nil
+			}),
+		),
+	)
+}
+
 func (s *Runtime) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err != nil {
@@ -40,9 +56,10 @@ func (s *Runtime) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
 			} else {
 
 				s.Type = tempObject.Type
@@ -79,10 +96,6 @@ func (s *Runtime) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return &errors.InvalidFormatForRuntimeError{Value: value}
 		}
-	}
-
-	if utils.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
-		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 
 	return nil

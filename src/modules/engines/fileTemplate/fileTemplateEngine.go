@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utils/json"
 
 	"github.com/sirupsen/logrus"
 )
@@ -116,12 +117,26 @@ func (s FileTemplateEngine) CreateTemplates(templates []filetemplate.TemplateBas
 	templateService := services.NewFileTemplateService(utils.GetEnvironment())
 
 	for _, template := range templates {
-		if ok := templateService.IsExists(template.Name, template.Specifications.Workspace); ok {
+		if err := template.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(template)
+			return fmt.Errorf("template invalid data: '%s'\n%w", jsonObject, err)
+		}
+	}
+
+	for _, template := range templates {
+		ok, err := templateService.IsExists(template.Name, template.Specifications.Workspace)
+		if err != nil {
+			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Name, err)
+		}
+		if ok {
 			newModelHash, err := utils.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}
-			structHash := templateService.GetHash(template.Name)
+			structHash, err := templateService.GetHash(template.Name)
+			if err != nil {
+				return err
+			}
 
 			if newModelHash != structHash {
 				templatesForUpdate = append(templatesForUpdate, template)
@@ -170,7 +185,11 @@ func (s FileTemplateEngine) RemoveTemplates(templates []filetemplate.TemplateBas
 	templateService := services.NewFileTemplateService(utils.GetEnvironment())
 	templatesReadyToDelete := make([]filetemplate.TemplateBaseStruct, 0)
 	for _, template := range templates {
-		if ok := templateService.IsExists(template.Name, template.Specifications.Workspace); ok {
+		ok, err := templateService.IsExists(template.Name, template.Specifications.Workspace)
+		if err != nil {
+			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Name, err)
+		}
+		if ok {
 			templatesReadyToDelete = append(templatesReadyToDelete, template)
 		}
 	}

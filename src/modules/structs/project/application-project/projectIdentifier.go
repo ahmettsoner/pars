@@ -3,10 +3,7 @@ package applicationproject
 import (
 	"encoding/json"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -24,6 +21,11 @@ func NewProjectIdentifier(id int, name string, group string, workspace string) P
 		Group:     group,
 		Workspace: workspace,
 	}
+}
+func (e ProjectIdentifier) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
 }
 
 func (s *ProjectIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -52,10 +54,6 @@ func (s *ProjectIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) err
 		s.Name = value
 	}
 
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
-
 	return nil
 }
 
@@ -77,10 +75,6 @@ func (s *ProjectIdentifier) UnmarshalJSON(data []byte) error {
 	s.Name = tempObject.Name
 	s.Group = tempObject.Group
 	s.Workspace = tempObject.Workspace
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
 
 	return nil
 }

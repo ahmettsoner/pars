@@ -1,6 +1,8 @@
 package manager
 
 import (
+	"fmt"
+
 	"parsdevkit.net/models"
 
 	angularManager "parsdevkit.net/platforms/angular/managers"
@@ -11,19 +13,19 @@ import (
 	parsManager "parsdevkit.net/platforms/pars/managers"
 )
 
-func ManagerFactory(platform models.PlatformType) core.ManagerInterface {
+func ManagerFactory(platform models.PlatformType) (core.ManagerInterface, error) {
 	switch platform {
 	case models.PlatformTypes.Pars:
-		return parsManager.NewParsManager()
+		return parsManager.NewParsManager(), nil
 	case models.PlatformTypes.Dotnet:
-		return dotnetManager.NewDotnetManager()
+		return dotnetManager.NewDotnetManager(), nil
 	case models.PlatformTypes.Angular:
-		return angularManager.NewAngularManager()
+		return angularManager.NewAngularManager(), nil
 	case models.PlatformTypes.NodeJS:
-		return nodejsManager.NewNodeJSManager()
+		return nodejsManager.NewNodeJSManager(), nil
 	case models.PlatformTypes.GO:
-		return goManager.NewGoManager()
+		return goManager.NewGoManager(), nil
 	default:
-		return nil
+		return nil, fmt.Errorf("xxx: Platorm '%s' tanımlı değil", platform)
 	}
 }

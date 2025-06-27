@@ -1,13 +1,10 @@
 package section
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/class"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
-
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,6 +25,11 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 	}
 }
 
+func (e Section) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.SectionIdentifier.Name, v.Required),
+	)
+}
 func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err != nil {
@@ -51,9 +53,11 @@ func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Labels = tempObject.Labels
 				s.Options = tempObject.Options
@@ -65,10 +69,6 @@ func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	} else {
 		s.Name = value
-	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
 	}
 
 	return nil

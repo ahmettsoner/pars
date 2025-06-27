@@ -2,8 +2,6 @@ package commontask
 
 import (
 	"parsdevkit.net/structs/task"
-
-	"gopkg.in/yaml.v3"
 )
 
 type TaskConfiguration struct {
@@ -23,9 +21,11 @@ func (s *TaskConfiguration) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Selectors = tempObject.Selectors
 

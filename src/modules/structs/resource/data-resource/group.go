@@ -1,13 +1,10 @@
 package dataresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/option"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Group struct {
@@ -26,6 +23,11 @@ func NewGroup(name string, title Message, order int, options []option.Option) Gr
 	}
 }
 
+func (e Group) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.GroupIdentifier.Name, v.Required),
+	)
+}
 func (s *Group) IsNameExists() bool {
 	return !utils.IsEmpty(s.Name)
 }
@@ -49,18 +51,16 @@ func (s *Group) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Title = tempObject.Title
 		s.Order = tempObject.Order
 		s.Options = tempObject.Options
 
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Group.Name"}
 	}
 
 	return nil

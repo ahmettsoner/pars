@@ -3,11 +3,7 @@ package sharedtemplate
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type Template struct {
@@ -20,6 +16,12 @@ func NewTemplate(source TemplateSourceType, content string) Template {
 		Source:  source,
 		Content: content,
 	}
+}
+func (e Template) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Source, v.Required),
+		v.Field(&e.Content, v.Required),
+	)
 }
 
 func (s *Template) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -47,23 +49,17 @@ func (s *Template) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	} else if len(rawTemplate) > 1 {
 		if err := unmarshal(&tempObject); err != nil {
-			if _, ok := err.(*yaml.TypeError); !ok {
-				return err
-			}
+			// if _, ok := err.(*yaml.TypeError); !ok {
+			// 	return err
+			// }
+			return err
+
 		} else {
 			s.Source = tempObject.Source
 			s.Content = tempObject.Content
 		}
 	} else {
 		return fmt.Errorf("invalid template format")
-	}
-
-	if utils.IsEmpty(s.Source.String()) {
-		return &errors.ErrFieldRequired{FieldName: "Source"}
-	}
-
-	if utils.IsEmpty(s.Content) {
-		return &errors.ErrFieldRequired{FieldName: "Content"}
 	}
 
 	return nil

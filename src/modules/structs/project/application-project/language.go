@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
+
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/core/utils"
@@ -30,6 +32,19 @@ func NewLanguage_LanguageOnly(_type models.LanguageType) Language {
 		Type: _type,
 	}
 }
+func (s Language) Validate() error {
+	return v.ValidateStruct(&s,
+		v.Field(&s.Type,
+			v.Required,
+			v.By(func(value interface{}) error {
+				if str, ok := value.(fmt.Stringer); ok && str.String() == "Unknown" {
+					return v.NewError("validation_type", "type cannot be Unknown")
+				}
+				return nil
+			}),
+		),
+	)
+}
 
 func (s *Language) GetFullName() string {
 	fullName := s.Type.String()
@@ -50,9 +65,10 @@ func (s *Language) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
 			} else {
 				s.Type = tempObject.Type
 				s.Version = tempObject.Version
@@ -89,10 +105,6 @@ func (s *Language) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return &errors.InvalidFormatForLanguageError{Value: value}
 		}
-	}
-
-	if utils.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
-		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 
 	return nil

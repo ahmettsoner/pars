@@ -1,10 +1,9 @@
 package sharedtemplate
 
 import (
-	"parsdevkit.net/core/errors"
 	"parsdevkit.net/structs/workspace"
 
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type TemplateSpecification struct {
@@ -19,6 +18,12 @@ func NewTemplateSpecification(id int, name, workspace string, template Template,
 		WorkspaceObject:    workspaceObject,
 		Template:           template,
 	}
+}
+func (e TemplateSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.TemplateIdentifier.Name, v.Required),
+		v.Field(&e.Template, v.Required),
+	)
 }
 
 func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -39,15 +44,13 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Template = tempObject.Template
-	}
-
-	if (s.Template == Template{}) {
-		return &errors.ErrFieldRequired{FieldName: "Template"}
 	}
 
 	return nil

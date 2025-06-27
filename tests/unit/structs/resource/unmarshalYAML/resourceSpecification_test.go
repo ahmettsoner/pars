@@ -8,8 +8,6 @@ import (
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -380,43 +378,4 @@ Methods:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_ResourceSpecification_WithoutName(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Set: bar
-`
-
-	// Act
-
-	var data objectresource.ResourceSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Name", fieldRequiredErr.FieldName)
-}
-func Test_UnMarshall_ResourceSpecification_WithoutSet(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Name: foo
-`
-
-	// Act
-
-	var data objectresource.ResourceSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Resource.Set", fieldRequiredErr.FieldName)
 }

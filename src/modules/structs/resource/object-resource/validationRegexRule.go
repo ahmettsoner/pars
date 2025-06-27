@@ -1,8 +1,7 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/utils"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/errors"
 )
 
@@ -16,6 +15,11 @@ func NewValidationRegexRule(name, pattern string, message Message) ValidationReg
 		ValidationRule: NewValidationRule("Regex", name, message),
 		Pattern:        pattern,
 	}
+}
+func (e ValidationRegexRule) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Pattern, v.Required),
+	)
 }
 
 func (s *ValidationRegexRule) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -59,10 +63,6 @@ func (s *ValidationRegexRule) UnmarshalYAML(unmarshal func(interface{}) error) e
 			}
 		}
 
-	}
-
-	if utils.IsEmpty(s.Pattern) {
-		return &errors.ErrFieldRequired{FieldName: "ValidationRegexRule.Pattern"}
 	}
 
 	return nil

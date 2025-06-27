@@ -18,6 +18,7 @@ var ProjectCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -30,6 +31,9 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ProjectOptions{}
 }
 
 func init() {

@@ -5,8 +5,6 @@ import (
 
 	"parsdevkit.net/structs/group"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -110,26 +108,6 @@ Package:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_GroupSpecification_WithoutName(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Path: CMD
-`
-
-	// Act
-
-	var data group.GroupSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Name", fieldRequiredErr.FieldName)
 }
 
 func Test_UnMarshall_GroupSpecification_ID_ShouldBeZero(t *testing.T) {

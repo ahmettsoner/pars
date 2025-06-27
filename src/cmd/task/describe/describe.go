@@ -2,7 +2,6 @@ package describe
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -28,6 +27,7 @@ var DescribeCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -52,7 +52,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to describe task '%s'\n%w", commandOptions.Name, err)
 	}
 
 	name := fmt.Sprintf("%v", group.Name)
@@ -61,7 +61,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	projectList, err := projectService.ListByGroupName(group.Name)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to retrieve group tasks '%s'\n%w", commandOptions.Name, err)
 	}
 
 	fmt.Printf("\tProjects:\n")
@@ -71,6 +71,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = DescribeOptions{}
 }
 
 func init() {

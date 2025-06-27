@@ -7,7 +7,9 @@ import (
 	"strings"
 	"testing"
 
+	"parsdevkit.net/models"
 	"parsdevkit.net/operation/services"
+	angularModels "parsdevkit.net/platforms/angular/models"
 
 	"parsdevkit.net/core/utils"
 
@@ -78,13 +80,13 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 		Type     string
 	}{
 		Name:     projectName,
-		Platform: "angular",
-		Type:     "library",
+		Platform: string(models.PlatformTypes.Angular),
+		Type:     string(angularModels.AngularProjectTypes.Library),
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
@@ -103,7 +105,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -121,14 +123,14 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnl
 		Layers   []string
 	}{
 		Name:     projectName,
-		Platform: "angular",
-		Type:     "library",
+		Platform: string(models.PlatformTypes.Angular),
+		Type:     string(angularModels.AngularProjectTypes.Library),
 		Layers:   []string{"foo", "bar"},
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
@@ -147,7 +149,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnl
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -165,12 +167,12 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 		References []string
 	}{
 		Name:     projectName1,
-		Platform: "angular",
-		Type:     "library",
+		Platform: string(models.PlatformTypes.Angular),
+		Type:     string(angularModels.AngularProjectTypes.Library),
 	}
 
 	templateFile1 := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData1)
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile1, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile1, suite.environment)
 
 	projectName := suite.faker.Project.Name()
 	var structData = struct {
@@ -180,13 +182,13 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 		References []string
 	}{
 		Name:       projectName,
-		Platform:   "angular",
-		Type:       "library",
+		Platform:   string(models.PlatformTypes.Angular),
+		Type:       string(angularModels.AngularProjectTypes.Library),
 		References: []string{projectName1},
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
@@ -205,9 +207,9 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile1, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile1, suite.environment)
 		os.Remove(templateFile1)
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -228,14 +230,13 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 	}{
 		Name:     NormalizeText(projectName),
 		Group:    groupName,
-		Platform: "angular",
-		Type:     "library",
+		Platform: string(models.PlatformTypes.Angular),
+		Type:     string(angularModels.AngularProjectTypes.Library),
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
@@ -254,8 +255,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
-		common.RemoveGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -277,15 +277,14 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject_WithLayer_NameOnl
 	}{
 		Name:     NormalizeText(projectName),
 		Group:    groupName,
-		Platform: "angular",
-		Type:     "library",
+		Platform: string(models.PlatformTypes.Angular),
+		Type:     string(angularModels.AngularProjectTypes.Library),
 		Layers:   []string{"foo", "bar"},
 	}
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
-	common.SubmitProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
@@ -304,8 +303,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject_WithLayer_NameOnl
 	assert.Equal(suite.T(), true, projectPackages)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
-		common.RemoveGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})

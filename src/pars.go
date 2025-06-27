@@ -14,13 +14,14 @@ var version string
 
 func main() {
 
-
 	if len(os.Args) > 1 && (os.Args[1] == "-i" || os.Args[1] == "--interactive") {
 		runInteractiveMode()
 	} else {
 		if err := cmd.RootCmd.Execute(); err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println("❌ Error:", err)
 			os.Exit(1)
+		} else {
+			fmt.Println("✅ Success: Operation completed.")
 		}
 	}
 	// logLevel := utils.GetLogLevel()
@@ -60,6 +61,8 @@ func runInteractiveMode() {
 
 		if err := cmd.RootCmd.Execute(); err != nil {
 			fmt.Println("❌ Error:", err)
+		} else {
+			fmt.Println("✅ Success: Operation completed.")
 		}
 	}
 }

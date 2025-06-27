@@ -1,9 +1,5 @@
 package sharedtemplate
 
-import (
-	"gopkg.in/yaml.v3"
-)
-
 type TemplateConfiguration struct {
 }
 
@@ -17,9 +13,11 @@ func (s *TemplateConfiguration) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 	}
 

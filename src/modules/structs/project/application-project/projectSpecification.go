@@ -13,8 +13,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/sirupsen/logrus"
 )
 
@@ -49,6 +48,20 @@ func NewProjectSpecification(id int, name, group, workspace string, projectType 
 		Schema:            schema,
 		Configuration:     configuration,
 	}
+}
+func (s ProjectSpecification) Validate() error {
+	return v.ValidateStruct(&s,
+		v.Field(&s.ProjectIdentifier.Name, v.Required),
+		v.Field(&s.ProjectType,
+			v.Required,
+			v.By(func(value interface{}) error {
+				if str, ok := value.(fmt.Stringer); ok && str.String() == "Unknown" {
+					return v.NewError("validation_type", "type cannot be Unknown")
+				}
+				return nil
+			}),
+		),
+	)
 }
 func (s *ProjectSpecification) GetAllPackage() []string {
 
@@ -250,20 +263,12 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	s.Schema = tempObject.Schema
 	s.Configuration = tempObject.Configuration
 
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
-
-	if len(s.Package) == 0 {
+	if len(s.Package) == 0 && !utils.IsEmpty(s.Name) {
 		s.AppendPackage(s.Name)
 	}
 
 	if len(s.Path) == 0 {
 		s.Path = utils.PathToArray(tempObject.Name)
-	}
-
-	if s.ProjectType.String() == "Unknown" {
-		return &errors.ErrFieldRequired{FieldName: "ProjectType"}
 	}
 
 	return nil
@@ -314,14 +319,6 @@ func (s *ProjectSpecification) UnmarshalJSON(data []byte) error {
 	s.Language = tempObject.Language
 	s.Schema = tempObject.Schema
 	s.Configuration = tempObject.Configuration
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
-
-	if s.ProjectType.String() == "Unknown" {
-		return &errors.ErrFieldRequired{FieldName: "ProjectType"}
-	}
 
 	return nil
 }

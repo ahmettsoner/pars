@@ -5,8 +5,6 @@ import (
 
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -109,28 +107,4 @@ Arguments:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_Annotation_WithoutType(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Arguments:
-  - Name: param1
-    Value: foo
-  - Name: param2
-    Value: bar
-`
-
-	// Act
-
-	var data objectresource.Annotation
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Annotation.Type", fieldRequiredErr.FieldName)
 }

@@ -4,13 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/project"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type ProjectBaseStruct struct {
@@ -18,11 +16,24 @@ type ProjectBaseStruct struct {
 	Specifications ProjectSpecification
 }
 
+func (e ProjectBaseStruct) GetHeader() structs.SchemaHeader {
+	return structs.SchemaHeader{
+		Type: e.Header.Type,
+		Kind: string(e.Header.Kind),
+		Name: e.Header.Name,
+	}
+}
+
 func NewProjectBaseStruct(header project.Header, specifications ProjectSpecification) ProjectBaseStruct {
 	return ProjectBaseStruct{
 		Header:         header,
 		Specifications: specifications,
 	}
+}
+func (e ProjectBaseStruct) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Name, v.Required),
+	)
 }
 
 func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -43,15 +54,12 @@ func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil
@@ -78,10 +86,6 @@ func (s *ProjectBaseStruct) UnmarshalJSON(data []byte) error {
 		return err
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

@@ -8,6 +8,6 @@ type SharedTemplateServiceInterface interface {
 	List() (*([]sharedTemplate.TemplateBaseStruct), error)
 	ListByWorkspace(workspace string) (*([]sharedTemplate.TemplateBaseStruct), error)
 	Remove(name, workspace string, permanent bool) (*sharedTemplate.TemplateBaseStruct, error)
-	IsExists(name, workspace string) bool
-	GetHash(name string) string
+	IsExists(name, workspace string) (bool, error)
+	GetHash(name string) (string, error)
 }

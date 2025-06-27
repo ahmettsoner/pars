@@ -2,7 +2,7 @@ package services
 
 import (
 	"encoding/json"
-	"errors"
+	"fmt"
 
 	"parsdevkit.net/structs/group"
 
@@ -31,10 +31,13 @@ func (s GroupService) GetByName(name string) (*group.GroupBaseStruct, error) {
 
 	entity, err := s.groupRespository.GetByName(name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity != nil {
 		err = json.Unmarshal([]byte(entity.Document), &group)
+		if err != nil {
+			return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
+		}
 	} else {
 		group = nil
 	}
@@ -46,7 +49,7 @@ func (s GroupService) Save(model group.GroupBaseStruct) (*group.GroupBaseStruct,
 
 	result, err := s.saveGroupInformation(model)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group kaydedilemedi %+v \n%w", model, err)
 	}
 
 	return result, nil
@@ -56,7 +59,7 @@ func (s GroupService) List() (*([]group.GroupBaseStruct), error) {
 
 	entityList, err := s.groupRespository.List()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}
 
 	groupList := make([]group.GroupBaseStruct, 0)
@@ -64,6 +67,9 @@ func (s GroupService) List() (*([]group.GroupBaseStruct), error) {
 	for _, entity := range *entityList {
 		var group group.GroupBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &group)
+		if err != nil {
+			return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
+		}
 
 		groupList = append(groupList, group)
 	}
@@ -75,29 +81,32 @@ func (s GroupService) Remove(name string, permanent bool) (*group.GroupBaseStruc
 
 	groupGroupEntity, err := s.groupRespository.GetByName(name)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if groupGroupEntity == nil {
-		return nil, errors.New("invalid group group")
+		return nil, fmt.Errorf("xxx: Group tanımlı değil '%s'", name)
 	}
 
 	projectsBelongsToGroup, err := s.projectRespository.ListByGroup(groupGroupEntity.ID)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group '%s' e ait proje listesi getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
 	if len(*projectsBelongsToGroup) > 0 {
-		return nil, errors.New("group has related projects")
+		return nil, fmt.Errorf("xxx: Group '%s' bağlı projeler mevcut %+v", name, projectsBelongsToGroup)
 	}
 
 	logrus.Debugf("group %v deleting...", groupGroupEntity.Name)
 
 	err = s.groupRespository.Delete(groupGroupEntity)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Group silme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
+	}
 
 	var group group.GroupBaseStruct
 	err = json.Unmarshal([]byte(groupGroupEntity.Document), &group)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", groupGroupEntity.Document, err)
 	}
 
 	// if !utils.IsEmpty(group.Specifications.Path) {
@@ -113,36 +122,36 @@ func (s GroupService) Remove(name string, permanent bool) (*group.GroupBaseStruc
 	return &group, nil
 }
 
-func (s *GroupService) IsExists(name string) bool {
+func (s *GroupService) IsExists(name string) (bool, error) {
 
 	groupGroupEntity, err := s.groupRespository.GetByName(name)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Group varlığı sorgulama aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if groupGroupEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
-func (s GroupService) GetHash(name string) string {
+func (s GroupService) GetHash(name string) (string, error) {
 
 	entity, err := s.groupRespository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Group getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Group tanımlı değil '%s' Hash bilgisi alınamıyor", name)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }
 
 func (s GroupService) saveGroupInformation(groupModel group.GroupBaseStruct) (*group.GroupBaseStruct, error) {
 
 	jsonData, err := json.Marshal(groupModel)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group json'a dönüştürülemedi %+v\n%w", groupModel, err)
 	}
 
 	groupEntity := entities.Group{
@@ -152,7 +161,7 @@ func (s GroupService) saveGroupInformation(groupModel group.GroupBaseStruct) (*g
 
 	err = s.groupRespository.Save(&groupEntity)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("xxx: Group kayıt aşamasında beklenmeyen hata oluştu %+v\n%w", groupEntity, err)
 	}
 
 	return &groupModel, nil

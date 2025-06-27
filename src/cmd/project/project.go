@@ -6,7 +6,6 @@ import (
 
 	// "parsdevkit.net/cmd/project/new"
 	"parsdevkit.net/cmd/project/remove"
-	"parsdevkit.net/cmd/project/submit"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +28,6 @@ func init() {
 
 func addSubCommands() {
 	// ProjectCmd.AddCommand(new.NewCmd)
-	ProjectCmd.AddCommand(submit.SubmitCmd)
 	ProjectCmd.AddCommand(remove.RemoveCmd)
 	ProjectCmd.AddCommand(describe.DescribeCmd)
 	ProjectCmd.AddCommand(list.ListCmd)

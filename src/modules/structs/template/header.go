@@ -6,8 +6,6 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Header struct {
@@ -39,9 +37,11 @@ func (s *Header) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempProjectHeaderObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Kind = tempProjectHeaderObject.Kind
 	}

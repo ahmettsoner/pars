@@ -33,13 +33,11 @@ var DescribeCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
-	}
 	if len(args) > maxArgumentCount {
 		return fmt.Errorf("error: too many arguments. Only group name is expected.")
 	}
@@ -65,7 +63,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if appContext != nil {
 				commandOptions.Name = appContext.CurrentWorkspace.Name
 			} else {
-				log.Fatal("Workspace cannot be accessable")
+				return fmt.Errorf("Workspace cannot be accessable")
 			}
 		}
 	}
@@ -73,7 +71,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 	workspace, err := workspaceService.GetByName(commandOptions.Name)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to retrieve workspace '%s'\n%w", commandOptions.Name, err)
 	}
 
 	if workspace == nil {
@@ -82,7 +80,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 		projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", commandOptions.Name, err)
 		}
 
 		if commandOptions.PathOnly {
@@ -132,6 +130,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = DescribeOptions{}
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {

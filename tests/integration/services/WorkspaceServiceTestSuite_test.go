@@ -34,7 +34,7 @@ func (suite *WorkspaceServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = *services.NewWorkspaceService(suite.environment)
+	suite.service = services.NewWorkspaceService(suite.environment)
 
 	suite.T().Log("Workspace creation completed")
 }

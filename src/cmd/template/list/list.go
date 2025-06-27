@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -27,6 +26,7 @@ var ListCmd = &cobra.Command{
 	Long:    `List template(s)`,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -55,7 +55,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to list global shared templates\n%w", err)
 		}
 
 		fmt.Printf("(%d) shared template available\n\n", len(*sharedTemplateList))
@@ -69,7 +69,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to list global code templates\n%w", err)
 		}
 
 		fmt.Printf("(%d) code template available\n\n", len(*codeTemplateList))
@@ -83,7 +83,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to list global file templates\n%w", err)
 		}
 
 		fmt.Printf("(%d) file template available\n\n", len(*fileTemplateList))
@@ -102,7 +102,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace Shared templates\n%w", err)
 	}
 
 	fmt.Printf("(%d) shared template available\n\n", len(*sharedTemplateList))
@@ -116,7 +116,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace Code templates\n%w", err)
 	}
 
 	fmt.Printf("(%d) code template available\n\n", len(*codeTemplateList))
@@ -130,7 +130,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace File templates\n%w", err)
 	}
 
 	fmt.Printf("(%d) file template available\n\n", len(*fileTemplateList))
@@ -139,4 +139,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ListOptions{}
 }

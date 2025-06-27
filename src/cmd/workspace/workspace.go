@@ -3,6 +3,7 @@ package workspace
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"parsdevkit.net/operation/services"
 
@@ -25,22 +26,40 @@ var WorkspaceCmd = &cobra.Command{
 	Aliases: []string{"w"},
 	Short:   "Workspace information",
 	Long:    `Workspace information`,
-	Run:     executeFunc,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
-func executeFunc(cmd *cobra.Command, args []string) {
+func validateArgs(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func prepareFunc(cmd *cobra.Command, args []string) error {
+
+	return nil
+}
+
+func executeFunc(cmd *cobra.Command, args []string) error {
 	if !utils.IsEmpty(commandOptions.SwitchTo) {
 
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-		workspace, err := workspaceService.ChangeCurrentWorkspace(commandOptions.SwitchTo)
+		_, err := workspaceService.ChangeCurrentWorkspace(commandOptions.SwitchTo)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to switch '%s'\n%w", commandOptions.SwitchTo, err)
 		}
 
-		fmt.Println("Swithched to: " + workspace.Name)
+		fmt.Fprintf(os.Stdout, "✔ Swithched to: '%v' removed successfully\n", commandOptions.SwitchTo)
 	} else {
 		cmd.Help()
 	}
+
+	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = WorkspaceOptions{}
 }
 
 func init() {

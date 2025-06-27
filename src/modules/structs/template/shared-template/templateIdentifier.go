@@ -1,10 +1,7 @@
 package sharedtemplate
 
 import (
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -18,6 +15,11 @@ func NewTemplateIdentifier(name string, workspace string) TemplateIdentifier {
 		Name:      name,
 		Workspace: workspace,
 	}
+}
+func (e TemplateIdentifier) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
 }
 
 func (s *TemplateIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -42,10 +44,6 @@ func (s *TemplateIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	} else {
 		s.Name = value
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

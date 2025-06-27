@@ -8,8 +8,6 @@ import (
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -141,24 +139,4 @@ Version: Net8
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_Runtime_WithoutType(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Version: Net8
-`
-
-	// Act
-
-	var data applicationproject.Runtime
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Type", fieldRequiredErr.FieldName)
 }

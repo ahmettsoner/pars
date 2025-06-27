@@ -29,6 +29,7 @@ var ExecuteCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -48,7 +49,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(commandOptions.Workspace)
 	if err != nil {
-		return fmt.Errorf("failed to find active workspace '%s': %w", commandOptions.Name, err)
+		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 	}
 	commandOptions.Workspace = workspaceName
 
@@ -60,12 +61,15 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	project, err := projectService.Clean(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
-		return fmt.Errorf("failed to execute project '%s': %w", commandOptions.Name, err)
+		return fmt.Errorf("Failed to execute project '%s'\n%w", commandOptions.Name, err)
 	}
 
 	fmt.Fprintf(os.Stdout, "✔ Project '%s' executed successfully\n", project.Name)
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ExecuteOptions{}
 }
 
 func init() {

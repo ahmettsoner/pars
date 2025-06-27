@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"parsdevkit.net/core/utils"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,6 +21,11 @@ func NewAnnotation(_type string, arguments []MethodArgument) Annotation {
 		Type:      _type,
 		Arguments: arguments,
 	}
+}
+func (e Annotation) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Type, v.Required),
+	)
 }
 
 func (s *Annotation) IsTypeExists() bool {
@@ -53,9 +58,11 @@ func (s *Annotation) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Type = tempObject.Type
 
@@ -90,10 +97,6 @@ func (s *Annotation) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return err
 		}
-	}
-
-	if utils.IsEmpty(s.Type) {
-		return &errors.ErrFieldRequired{FieldName: "Annotation.Type"}
 	}
 
 	return nil

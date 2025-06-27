@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"parsdevkit.net/structs/template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
@@ -115,29 +116,29 @@ func (s SharedTemplateService) Remove(name, workspace string, permanent bool) (*
 	return &template, nil
 }
 
-func (s SharedTemplateService) IsExists(name, workspace string) bool {
+func (s SharedTemplateService) IsExists(name, workspace string) (bool, error) {
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Shared Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if templateTemplateEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
-func (s SharedTemplateService) GetHash(name string) string {
+func (s SharedTemplateService) GetHash(name string) (string, error) {
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Shared Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Shared Template tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }
 
 func (s SharedTemplateService) saveTemplateInformation(templateModel sharedtemplate.TemplateBaseStruct) (*sharedtemplate.TemplateBaseStruct, error) {

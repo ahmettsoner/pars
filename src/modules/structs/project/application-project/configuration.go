@@ -8,8 +8,6 @@ import (
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/project"
 	"parsdevkit.net/structs/workspace"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Configuration struct {
@@ -91,9 +89,11 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 
 		s.Layers = tempObject.Layers

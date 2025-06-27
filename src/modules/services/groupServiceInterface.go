@@ -9,5 +9,6 @@ type GroupServiceInterface interface {
 	Save(model group.GroupBaseStruct) (*group.GroupBaseStruct, error)
 	List() (*([]group.GroupBaseStruct), error)
 	Remove(name string, permanent bool) (*group.GroupBaseStruct, error)
-	GetHash(name string) string
+	IsExists(name string) (bool, error)
+	GetHash(name string) (string, error)
 }

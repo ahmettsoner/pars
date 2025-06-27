@@ -5,12 +5,14 @@ import (
 	"log"
 	"os"
 
+	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utils/json"
+	v2 "parsdevkit.net/engines/v2"
+
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/engines"
 
 	"github.com/spf13/cobra"
 )
@@ -122,10 +124,28 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	engine := engines.Engine{}
-	if err := engine.CreateProjectsFromTemplate(!noInit, structData, templateFilePath); err != nil {
-		log.Fatal(err)
+	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+
+	if err != nil {
+		log.Printf("❌ Error: %v", err)
+	} else {
+		for _, data := range result {
+
+			if err := data.Validate(); err != nil {
+				jsonObject, _ := json.ToJson(data)
+				return fmt.Errorf("group invalid data: '%s'\n%w", jsonObject, err)
+			}
+
+			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
+		}
+
+		err = v2.DispatchEngineProcess(result)
+		if err != nil {
+			log.Fatalf("Engine processing failed: %v", err)
+		}
 	}
+
+	fmt.Fprintf(os.Stdout, "✔ Schema(s) '%v' applied successfully\n", commandOptions.FilePaths)
 }
 
 func init() {

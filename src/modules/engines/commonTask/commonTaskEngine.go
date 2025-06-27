@@ -10,6 +10,7 @@ import (
 
 	commontask "parsdevkit.net/structs/task/common-task"
 
+	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
@@ -116,12 +117,22 @@ func (s CommonTaskEngine) CreateTasks(tasks []commontask.TaskBaseStruct, init bo
 	taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
 	for _, task := range tasks {
+		if err := task.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(task)
+			return fmt.Errorf("task invalid data: '%s'\n%w", jsonObject, err)
+		}
+	}
+
+	for _, task := range tasks {
 		if ok := taskService.IsExists(task.Name, task.Specifications.Workspace); ok {
 			newMommonlHash, err := utils.CalculateHashFromObject(task)
 			if err != nil {
 				return err
 			}
-			structHash := taskService.GetHash(task.Name)
+			structHash, err := taskService.GetHash(task.Name)
+			if err != nil {
+				return err
+			}
 
 			if newMommonlHash != structHash {
 				tasksForUpdate = append(tasksForUpdate, task)

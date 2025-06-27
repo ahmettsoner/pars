@@ -3,9 +3,8 @@ package objectresource
 import (
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
-
-	parsErrors "parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -26,6 +25,11 @@ func NewDataType(name string, _package TypePackage, category DataTypeCategory, m
 		Modifier: modifier,
 		Generics: generics,
 	}
+}
+func (e DataType) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
 }
 
 func New_Int() DataType {
@@ -54,9 +58,11 @@ func (s *DataType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Package = tempObject.Package
 				s.Category = tempObject.Category
@@ -89,10 +95,6 @@ func (s *DataType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			s.Name = value
 			s.Category = DataTypeCategories.Resource
 		}
-	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &parsErrors.ErrFieldRequired{FieldName: "DataType.Name"}
 	}
 
 	if utils.IsEmpty(string(s.Category)) {

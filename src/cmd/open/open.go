@@ -2,6 +2,7 @@ package open
 
 import (
 	"fmt"
+	"os"
 
 	"parsdevkit.net/providers"
 
@@ -30,6 +31,7 @@ var OpenCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -55,7 +57,12 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	path := parsCMDCommon.GetActiveWorkspacePath(commandOptions.Name)
 
 	providers.VSCodeExecute("", path)
+
+	fmt.Fprintf(os.Stdout, "✔ Project '%v' opend successfully\n", commandOptions.Name)
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = OpenOptions{}
 }
 
 func init() {

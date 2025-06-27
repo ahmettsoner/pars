@@ -320,7 +320,8 @@ func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectS
 			return err
 		}
 
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "link", relativePath)
+		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "link", relativePath)
+		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "install", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -338,7 +339,8 @@ func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.Pro
 			return err
 		}
 
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "unlink", relativePath)
+		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "unlink", relativePath)
+		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -432,11 +434,11 @@ func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectSpec
 	return s.FileRemover(paths...)
 }
 
-func (s NodeJSManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
-
+func (s NodeJSManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+	return nil
 }
-func (s NodeJSManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) {
-
+func (s NodeJSManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+	return nil
 }
 
 func (s NodeJSManager) GetProjectFileRelativePath(project applicationproject.ProjectSpecification) string {
@@ -471,7 +473,7 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 		return nil, err
 	}
 
-	pattern := regexp.MustCompile("([`└+]--|──)\\s+(.*?)@(.*?)extraneous\\s*->\\s*(.*?)\\n")
+	pattern := regexp.MustCompile("([`└+]--|──)\\s+(.*?)@(.*?)\\s*->\\s*(.*?)\\n")
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 

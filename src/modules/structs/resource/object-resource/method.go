@@ -1,12 +1,11 @@
 package objectresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -41,6 +40,11 @@ func NewMethod(name string, visibility VisibilityType, parameters []MethodParame
 	}
 }
 
+func (e Method) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err != nil {
@@ -62,9 +66,11 @@ func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Name = tempObject.Name
 				s.Visibility = tempObject.Visibility
@@ -85,10 +91,6 @@ func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	} else {
 		s.Name = value
 		s.Common = true
-	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "Method.Name"}
 	}
 
 	if utils.IsEmpty(string(s.Visibility)) {

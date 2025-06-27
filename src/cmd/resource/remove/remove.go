@@ -3,12 +3,8 @@ package remove
 import (
 	"fmt"
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 
-	"parsdevkit.net/engines/dataResource"
-	"parsdevkit.net/engines/objectResource"
 	"parsdevkit.net/operation/services"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
@@ -22,7 +18,6 @@ type RemoveOptions struct {
 	Names     []string
 	Workspace string
 	Force     string
-	FilePaths []string
 }
 
 var commandOptions RemoveOptions
@@ -35,12 +30,13 @@ var RemoveCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: resource name is required.")
 	}
 
 	return nil
@@ -67,18 +63,26 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if checkGlobals {
 				commandOptions.Workspace = "None"
 
-				if objectResourceService.IsExists(name, commandOptions.Workspace) {
+				ok, err := objectResourceService.IsExists(name, commandOptions.Workspace)
+				if err != nil {
+					return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
+				}
+				if ok {
 					objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", commandOptions.Names, err)
 					}
 					fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
 				}
 
-				if dataResourceService.IsExists(name, commandOptions.Workspace) {
+				ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
+				if err != nil {
+					return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
+				}
+				if ok {
 					dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", name, err)
 					}
 					fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
 				}
@@ -88,38 +92,36 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-			if objectResourceService.IsExists(name, commandOptions.Workspace) {
+			ok, err := objectResourceService.IsExists(name, commandOptions.Workspace)
+			if err != nil {
+				return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
+			}
+			if ok {
 				objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", commandOptions.Names, err)
 				}
 				fmt.Println("Resource (" + objectResource.Name + ") deleted permanently")
 			}
 
-			if dataResourceService.IsExists(name, commandOptions.Workspace) {
+			ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
+			if err != nil {
+				return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
+			}
+			if ok {
 				dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", name, err)
 				}
 				fmt.Println("Resource (" + dataResource.Name + ") deleted permanently")
 			}
 		}
-	} else if len(commandOptions.FilePaths) > 0 {
-		objectResourceService := objectResource.ObjectResourceEngine{}
-		if err := objectResourceService.RemoveResourcesFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-
-		dataResourceService := dataResource.DataResourceEngine{}
-		if err := dataResourceService.RemoveResourcesFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		fmt.Println("Please provide a name for the resource")
-		os.Exit(1)
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = RemoveOptions{}
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -138,8 +140,6 @@ func init() {
 
 func addSubCommands() {
 
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
-	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 
 func listResourceNameSuggestions(args []string, toComplete string) []string {
@@ -171,15 +171,4 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 		}
 	}
 	return suggestions
-}
-
-func fileFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	files, _ := filepath.Glob(filepath.Join(toComplete, "*"))
-	completions := []string{}
-	for _, file := range files {
-		if info, err := os.Stat(file); err == nil && !info.IsDir() {
-			completions = append(completions, file)
-		}
-	}
-	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveDefault
 }

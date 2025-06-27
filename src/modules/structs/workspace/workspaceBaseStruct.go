@@ -3,11 +3,7 @@ package workspace
 import (
 	"parsdevkit.net/structs"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type WorkspaceBaseStruct struct {
@@ -20,6 +16,11 @@ func NewWorkspaceBaseStruct(header structs.Header, specifications WorkspaceSpeci
 		Header:         header,
 		Specifications: specifications,
 	}
+}
+func (e WorkspaceBaseStruct) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Name, v.Required),
+	)
 }
 
 func (s *WorkspaceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -40,15 +41,13 @@ func (s *WorkspaceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) e
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

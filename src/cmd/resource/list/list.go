@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -28,6 +27,7 @@ var ListCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -56,7 +56,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		objectResourceList, err := objectResourceService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to retrieve global Object resources\n%w", err)
 		}
 
 		fmt.Printf("(%d) object resource available\n\n", len(*objectResourceList))
@@ -70,7 +70,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		dataResourceList, err := dataResourceService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to list global Data resources\n%w", err)
 		}
 
 		fmt.Printf("(%d) data resource available\n\n", len(*dataResourceList))
@@ -89,7 +89,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	objectResourceList, err := objectResourceService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace Object resources\n%w", err)
 	}
 
 	fmt.Printf("(%d) object resource available\n\n", len(*objectResourceList))
@@ -103,7 +103,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	dataResourceList, err := dataResourceService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace Data resources\n%w", err)
 	}
 
 	fmt.Printf("(%d) data resource available\n\n", len(*dataResourceList))
@@ -112,4 +112,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ListOptions{}
 }

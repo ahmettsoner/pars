@@ -68,6 +68,7 @@ func (suite *InitTestSuite) TearDownTest() {
 // 	service := services.NewWorkspaceService(suite.environment)
 // 	workspace, err := service.GetByName(name)
 // 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
+// require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
 
 // 	require.Equal(suite.T(), workspace.Specifications.GetAbsolutePath(), filepath.Join(dirInTestArea, name), "Workspace path is not valid")
 
@@ -94,6 +95,7 @@ func (suite *InitTestSuite) TearDownTest() {
 // 	service := services.NewWorkspaceService(suite.environment)
 // 	workspace, err := service.GetByName(name)
 // 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
+// require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
 
 // 	require.Equal(suite.T(), workspace.Specifications.GetAbsolutePath(), filepath.Join(dirInTestArea, name), "Workspace path is not valid")
 
@@ -121,6 +123,7 @@ func (suite *InitTestSuite) TearDownTest() {
 // 	service := services.NewWorkspaceService(suite.environment)
 // 	workspace, err := service.GetByName(name)
 // 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
+// require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
 
 // 	require.Equal(suite.T(), workspace.Specifications.GetAbsolutePath(), filepath.Join(dirInTestArea), "Workspace path is not valid")
 
@@ -151,6 +154,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnRelativePath() {
 	service := services.NewWorkspaceService(suite.environment)
 	workspace, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
+	require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
 
 	require.Equal(suite.T(), workspace.Specifications.GetAbsolutePath(), dirInTestArea, "Workspace path is not valid")
 
@@ -180,6 +184,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnAbsolutePath() {
 	service := services.NewWorkspaceService(suite.environment)
 	workspace, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
+	require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
 
 	require.Equal(suite.T(), workspace.Specifications.GetAbsolutePath(), absolutePath, "Workspace path is not valid")
 

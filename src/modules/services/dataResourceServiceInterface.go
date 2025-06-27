@@ -14,6 +14,6 @@ type DataResourceServiceInterface interface {
 	ListBySetAndLayers(set string, layers ...string) (*([]dataresource.ResourceBaseStruct), error)
 	ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]dataresource.ResourceBaseStruct), error)
 	Remove(name, workspace string, force, permanent bool) (*dataresource.ResourceBaseStruct, error)
-	IsExists(name, workspace string) bool
+	IsExists(name, workspace string) (bool, error)
 	GetHash(name string) string
 }

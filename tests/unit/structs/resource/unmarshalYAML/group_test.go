@@ -6,8 +6,6 @@ import (
 	"parsdevkit.net/structs/option"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -169,26 +167,4 @@ Options:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_Group_WithoutName(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Title:
-  RefMessage: groups_patient_filter
-Order: 3
-`
-
-	// Act
-
-	var data objectresource.Group
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Group.Name", fieldRequiredErr.FieldName)
 }

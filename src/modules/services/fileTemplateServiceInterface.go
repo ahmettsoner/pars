@@ -8,6 +8,6 @@ type FileTemplateServiceInterface interface {
 	List() (*([]filetemplate.TemplateBaseStruct), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]filetemplate.TemplateBaseStruct), error)
 	Remove(name, workspace string, permanent bool) (*filetemplate.TemplateBaseStruct, error)
-	IsExists(name, workspace string) bool
-	GetHash(name string) string
+	IsExists(name, workspace string) (bool, error)
+	GetHash(name string) (string, error)
 }

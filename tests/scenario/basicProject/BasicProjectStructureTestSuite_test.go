@@ -105,22 +105,22 @@ func (suite *BasicProjectStructureTestSuite) fTestCreateBasicResource() {
 	declarationFile := utils.GetTestFileFromCurrentLocation("resources.yaml")
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitResourceFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	suite.T().Cleanup(func() {
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), projectTemplateFile1, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), projectTemplateFile1, suite.environment)
 		os.Remove(projectTemplateFile1)
 
-		common.RemoveProjectFromFile(common.CommanderTypes.GO, suite.T(), projectTemplateFile2, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), projectTemplateFile2, suite.environment)
 		os.Remove(projectTemplateFile2)
 
-		common.RemoveTemplateFromFile(suite.T(), templateServiceInterfaceTemplateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateServiceInterfaceTemplateFile, suite.environment)
 		os.Remove(templateServiceInterfaceTemplateFile)
 
-		common.RemoveTemplateFromFile(suite.T(), templateServiceTemplateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateServiceTemplateFile, suite.environment)
 		os.Remove(templateServiceTemplateFile)
 
-		common.RemoveResourceFromFile(suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
@@ -154,7 +154,7 @@ func CreateNewProjectFromTemplateFile(commander common.CommanderType, t *testing
 
 	templateFile := common.CreateTempFileFromTemplate(t, declarationFile, testArea, structData)
 
-	common.SubmitProjectFromFile(commander, t, templateFile, environment)
+	common.Apply(commander, t, templateFile, environment)
 
 	return templateFile
 }
@@ -208,7 +208,7 @@ func CreateNewServiceTemplateFromTemplateFile(t *testing.T, environment, testAre
 
 	templateFile := common.CreateTempFileFromTemplate(t, declarationFile, testArea, structData)
 
-	common.SubmitTemplateFromFile(common.CommanderTypes.GO, t, templateFile, environment)
+	common.Apply(common.CommanderTypes.GO, t, templateFile, environment)
 
 	return templateFile
 }
@@ -253,7 +253,7 @@ func CreateNewServiceInterfaceTemplateFromTemplateFile(t *testing.T, environment
 
 	templateFile := common.CreateTempFileFromTemplate(t, declarationFile, testArea, structData)
 
-	common.SubmitTemplateFromFile(common.CommanderTypes.GO, t, templateFile, environment)
+	common.Apply(common.CommanderTypes.GO, t, templateFile, environment)
 
 	return templateFile
 }

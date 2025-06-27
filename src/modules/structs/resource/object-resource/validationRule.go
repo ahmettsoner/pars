@@ -1,10 +1,7 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -25,6 +22,11 @@ func NewValidationRule(_type, name string, message Message) ValidationRule {
 		Message: message,
 	}
 }
+func (e ValidationRule) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Type, v.Required),
+	)
+}
 
 func (s *ValidationRule) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
@@ -37,9 +39,11 @@ func (s *ValidationRule) UnmarshalYAML(unmarshal func(interface{}) error) error 
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Type = tempObject.Type
 				s.Name = tempObject.Name
@@ -49,10 +53,6 @@ func (s *ValidationRule) UnmarshalYAML(unmarshal func(interface{}) error) error 
 		}
 	} else {
 		s.Type = value
-	}
-
-	if utils.IsEmpty(s.Type) {
-		return &errors.ErrFieldRequired{FieldName: "ValidationRule.Type"}
 	}
 
 	return nil

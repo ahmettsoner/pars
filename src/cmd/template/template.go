@@ -3,7 +3,6 @@ package template
 import (
 	"parsdevkit.net/cmd/template/list"
 	"parsdevkit.net/cmd/template/remove"
-	"parsdevkit.net/cmd/template/submit"
 
 	"github.com/spf13/cobra"
 )
@@ -25,7 +24,6 @@ func init() {
 }
 
 func addSubCommands() {
-	TemplateCmd.AddCommand(submit.SubmitCmd)
 	TemplateCmd.AddCommand(remove.RemoveCmd)
 	TemplateCmd.AddCommand(list.ListCmd)
 }

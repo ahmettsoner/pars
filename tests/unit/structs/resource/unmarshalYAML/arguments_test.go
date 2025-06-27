@@ -5,8 +5,6 @@ import (
 
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -127,26 +125,6 @@ Arguments:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-func Test_UnMarshall_Arguments_Arguments_WithoutValue(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Arguments:
-  - Name: foo
-`
-
-	// Act
-
-	var data objectresource.Arguments
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("MethodArgument.Value", fieldRequiredErr.FieldName)
 }
 
 func Test_UnMarshall_Arguments_Reference(t *testing.T) {

@@ -1,12 +1,10 @@
 package objectresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/utils"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
-
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -29,6 +27,11 @@ func NewAttribute(name string, visibility VisibilityType, _type DataType, order 
 		Properties:    properties,
 		Common:        common,
 	}
+}
+func (e Attribute) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Variable.Name, v.Required),
+	)
 }
 
 func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -57,9 +60,11 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&value); err != nil {
 		if _, ok := err.(*yaml.TypeError); ok {
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Visibility = tempObject.Visibility
 				s.Encapsulation = tempObject.Encapsulation
@@ -75,9 +80,11 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 					}
 
 					if err := unmarshal(&tempGroupObject); err != nil {
-						if _, ok := err.(*yaml.TypeError); !ok {
-							return err
-						}
+						// if _, ok := err.(*yaml.TypeError); !ok {
+						// 	return err
+						// }
+						return err
+
 					}
 					s.Group = tempGroupObject.Group
 				}
@@ -86,9 +93,6 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	} else {
 		s.Common = true
-	}
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "Attribute.Name"}
 	}
 
 	if utils.IsEmpty(string(s.Visibility)) {

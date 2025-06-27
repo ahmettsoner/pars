@@ -24,7 +24,7 @@ func FindAll(expression string, n int, input string) ([]string, error) {
 func Match(expression, input string) (bool, error) {
 	re, err := regexp.Compile(expression)
 	if err != nil {
-		return false, fmt.Errorf("error compiling expression: %w", err)
+		return false, fmt.Errorf("error compiling expression\n%w", err)
 	}
 
 	return re.MatchString(input), nil
@@ -37,7 +37,7 @@ func QuoteMeta(input string) string {
 func Replace(expression, replacement, input string) (string, error) {
 	re, err := regexp.Compile(expression)
 	if err != nil {
-		return "", fmt.Errorf("error compiling expression: %w", err)
+		return "", fmt.Errorf("error compiling expression\n%w", err)
 	}
 
 	return re.ReplaceAllString(input, replacement), nil
@@ -46,7 +46,7 @@ func Replace(expression, replacement, input string) (string, error) {
 func ReplaceLiteral(expression, replacement, input string) (string, error) {
 	re, err := regexp.Compile(expression)
 	if err != nil {
-		return "", fmt.Errorf("error compiling expression: %w", err)
+		return "", fmt.Errorf("error compiling expression\n%w", err)
 	}
 	return re.ReplaceAllLiteralString(input, replacement), nil
 }
@@ -54,7 +54,7 @@ func ReplaceLiteral(expression, replacement, input string) (string, error) {
 func Split(expression string, n int, input string) ([]string, error) {
 	re, err := regexp.Compile(expression)
 	if err != nil {
-		return nil, fmt.Errorf("error compiling expression: %w", err)
+		return nil, fmt.Errorf("error compiling expression\n%w", err)
 	}
 
 	return re.Split(input, n), nil

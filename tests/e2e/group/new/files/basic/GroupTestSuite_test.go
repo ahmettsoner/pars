@@ -20,6 +20,7 @@ type GroupTestSuite struct {
 	suite.Suite
 	testArea      string
 	environment   string
+	workspace     string
 	faker         *faker.Faker
 	noCleanOnFail bool
 }
@@ -33,11 +34,18 @@ func (suite *GroupTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
+	suite.workspace = suite.faker.Workspace.Name()
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
 	require.NoError(suite.T(), err, "Create temporary directory failed")
 	suite.testArea = tempWorkingDir
 	suite.T().Logf("Creating test location at (%v)", suite.testArea)
+
+	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
+	common.InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+
+	suite.T().Logf("Switching to workspace (%v)...", suite.workspace)
+	common.SwitchToWorkspace(suite.T(), suite.workspace, suite.environment)
 
 	suite.T().Log("Test suite setup completed")
 }
@@ -67,14 +75,14 @@ func (suite *GroupTestSuite) TestCreateBasicGroup() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewGroupService(suite.environment)
 	_, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get group by name.")
 
 	suite.T().Cleanup(func() {
-		common.RemoveGroupFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		os.Remove(templateFile)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})

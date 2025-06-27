@@ -101,7 +101,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicTemplate() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitTemplateFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewCodeTemplateService(suite.environment)
 	template, err := service.GetByName(structData.Name)
@@ -109,7 +109,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicTemplate() {
 	assert.Equal(suite.T(), structData.Name, template.Header.Name)
 
 	suite.T().Cleanup(func() {
-		common.RemoveTemplateFromFile(suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
 }

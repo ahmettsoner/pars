@@ -8,8 +8,6 @@ import (
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -348,94 +346,6 @@ Template:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_TemplateSpecification_WithoutSet(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Name: CMD
-Output: filename.ext
-Template:
-  File: path
-`
-
-	// Act
-
-	var data codetemplate.TemplateSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Set", fieldRequiredErr.FieldName)
-}
-func Test_UnMarshall_TemplateSpecification_WithoutTemplate(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Name: CMD
-Set: Set
-Output: filename.ext
-`
-
-	// Act
-
-	var data codetemplate.TemplateSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Template", fieldRequiredErr.FieldName)
-}
-func Test_UnMarshall_TemplateSpecification_WithoutName(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Path: CMD
-Set: Set
-Output: filename.ext
-`
-
-	// Act
-
-	var data codetemplate.TemplateSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Name", fieldRequiredErr.FieldName)
-}
-func Test_UnMarshall_TemplateSpecification_WithoutOutput(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Name: CMD
-Set: Set
-Path: CMD
-`
-
-	// Act
-
-	var data codetemplate.TemplateSpecification
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Output", fieldRequiredErr.FieldName)
 }
 
 func Test_UnMarshall_TemplateSpecification_ID_ShouldBeZero(t *testing.T) {

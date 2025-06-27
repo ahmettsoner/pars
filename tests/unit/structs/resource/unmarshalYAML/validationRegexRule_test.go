@@ -5,8 +5,6 @@ import (
 
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -163,48 +161,4 @@ Message:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_ValidationRegexRule_WithoutType(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Pattern: CMD
-Message:
-  RefMessage: validationRegexRules_patient_filter
-`
-
-	// Act
-
-	var data objectresource.ValidationRegexRule
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("ValidationRule.Type", fieldRequiredErr.FieldName)
-}
-
-func Test_UnMarshall_ValidationRegexRule_WithoutPattern(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Type: Regex
-Message:
-  RefMessage: validationRegexRules_patient_filter
-`
-
-	// Act
-
-	var data objectresource.ValidationRegexRule
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("ValidationRegexRule.Pattern", fieldRequiredErr.FieldName)
 }

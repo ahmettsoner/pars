@@ -364,27 +364,3 @@ Annotations:
 	a.NoError(err)
 	a.Equal(expected, data)
 }
-
-// func Test_UnMarshall_Variable_WithoutName(t *testing.T) {
-
-// 	// Arrange
-// 	a := assert.New(t)
-// 	yamlData := `
-// Arguments:
-//   - Name: param1
-//     Value: foo
-//   - Name: param2
-//     Value: bar
-// `
-
-// 	// Act
-
-// 	var data objectresource.Variable
-// 	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-// 	// Assert
-// 	a.Error(err)
-// 	var fieldRequiredErr *errors.ErrFieldRequired
-// 	a.ErrorAs(err, &fieldRequiredErr)
-// 	a.Equal("Variable.Name", fieldRequiredErr.FieldName)
-// }

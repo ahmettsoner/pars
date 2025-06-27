@@ -2,7 +2,6 @@ package remove
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
@@ -19,7 +18,6 @@ type RemoveOptions struct {
 	Names     []string
 	Workspace string
 	Force     string
-	FilePaths []string
 }
 
 var commandOptions RemoveOptions
@@ -32,11 +30,13 @@ var RemoveCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+
+	if len(commandOptions.Names) == 0 && len(args) == 0 &&  {
+		return fmt.Errorf("error: task name is required.")
 	}
 
 	return nil
@@ -51,22 +51,6 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	if len(commandOptions.FilePaths) > 0 {
-		taskService := commonTask.CommonTaskEngine{}
-		if err := taskService.RemoveTasksFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-
-		if len(commandOptions.Names) == 0 {
-			if len(args) == 0 {
-				fmt.Println("Please provide a name for the remove the remove")
-				os.Exit(1)
-			} else if len(args) > 0 {
-				commandOptions.Names = args
-			}
-		}
-
 		checkGlobals := utils.IsEmpty(commandOptions.Workspace)
 		taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
@@ -77,7 +61,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				if taskService.IsExists(name, commandOptions.Workspace) {
 					task, err := taskService.Remove(name, commandOptions.Workspace, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove task(s) '%s'\n%w", commandOptions.Names[], err)
 					}
 					fmt.Println("Task (" + task.Name + ") deleted permanently")
 				}
@@ -90,14 +74,17 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if taskService.IsExists(name, commandOptions.Workspace) {
 				task, err := taskService.Remove(name, commandOptions.Workspace, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove task(s) '%s'\n%w", name, err)
 				}
 				fmt.Println("Task (" + task.Name + ") deleted permanently")
 			}
 		}
-	}
+		fmt.Fprintf(os.Stdout, "✔ task(s) '%v' removed successfully\n", commandOptions.Names)
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = RemoveOptions{}
 }
 
 func init() {
@@ -106,6 +93,4 @@ func init() {
 
 func addSubCommands() {
 	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "name", "n", nil, "Template names")
-
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "files", "f", nil, "Comma-separated list of declaration files")
 }

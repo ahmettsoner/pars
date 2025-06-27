@@ -21,6 +21,7 @@ var ListCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -35,7 +36,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	environmentService := services.NewEnvironmentService()
 	environmentlist, err := environmentService.List()
 	if err != nil {
-		return fmt.Errorf("failed list environments: %w", err)
+		return fmt.Errorf("Failed list environments\n%w", err)
 	}
 
 	fmt.Printf("(%d) environment available\n", (len(environmentlist) + 1))
@@ -44,4 +45,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		fmt.Printf("- %v\n", e)
 	}
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = EnvironmentListOptions{}
 }

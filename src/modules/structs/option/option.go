@@ -7,6 +7,7 @@ import (
 
 	"parsdevkit.net/core/errors"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -20,6 +21,11 @@ func NewOption(key string, value interface{}) Option {
 		Key:   key,
 		Value: value,
 	}
+}
+func (e Option) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Key, v.Required),
+	)
 }
 
 func (s *Option) IsKeyExists() bool {
@@ -36,9 +42,10 @@ func (s *Option) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
 			} else {
 				s.Key = tempObject.Key
 				s.Value = tempObject.Value
@@ -64,10 +71,6 @@ func (s *Option) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		} else {
 			return &errors.InvalidFormatForLanguageError{Value: value}
 		}
-	}
-
-	if utils.IsEmpty(s.Key) {
-		return &errors.ErrFieldRequired{FieldName: "Option.Key"}
 	}
 
 	return nil

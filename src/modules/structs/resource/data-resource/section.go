@@ -1,17 +1,12 @@
 package dataresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/class"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
 	"parsdevkit.net/structs/section"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Section struct {
@@ -22,6 +17,11 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 	return Section{
 		Section: section.NewSection(name, labels, options, classes),
 	}
+}
+func (e Section) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Section.Name, v.Required),
+	)
 }
 
 func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -40,14 +40,12 @@ func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
-	} else {
-	}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
 
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
+	} else {
 	}
 
 	return nil

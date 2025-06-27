@@ -1,12 +1,9 @@
 package objectresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
-
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
 )
 
 type MethodParameter struct {
@@ -19,6 +16,11 @@ func NewMethodParameter(name string, _type DataType, order int, hint Message, de
 	}
 }
 
+func (e MethodParameter) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 func (s *MethodParameter) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempVariableObject struct {
@@ -30,10 +32,5 @@ func (s *MethodParameter) UnmarshalYAML(unmarshal func(interface{}) error) error
 	} else {
 		s.Variable = tempVariableObject.Variable
 	}
-
-	if utils.IsEmpty(string(s.Name)) {
-		return &errors.ErrFieldRequired{FieldName: "MethodParameter.Name"}
-	}
-
 	return nil
 }

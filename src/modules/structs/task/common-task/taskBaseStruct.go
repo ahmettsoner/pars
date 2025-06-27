@@ -3,13 +3,9 @@ package commontask
 import (
 	"fmt"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/structs"
 	"parsdevkit.net/structs/task"
-
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type TaskBaseStruct struct {
@@ -18,6 +14,13 @@ type TaskBaseStruct struct {
 	Configurations TaskConfiguration
 }
 
+func (e TaskBaseStruct) GetHeader() structs.SchemaHeader {
+	return structs.SchemaHeader{
+		Type: e.Header.Type,
+		Kind: string(e.Header.Kind),
+		Name: e.Header.Name,
+	}
+}
 func NewTaskBaseStruct(header task.Header, specifications TaskSpecification, configurations TaskConfiguration) TaskBaseStruct {
 	return TaskBaseStruct{
 		Header:         header,
@@ -26,6 +29,11 @@ func NewTaskBaseStruct(header task.Header, specifications TaskSpecification, con
 	}
 }
 
+func (e TaskBaseStruct) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Name, v.Required),
+	)
+}
 func (s *TaskBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var tempHeaderObject struct {
 		task.Header
@@ -45,16 +53,14 @@ func (s *TaskBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error 
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
 		s.Configurations = tempSpecificationObject.Configurations
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

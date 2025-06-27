@@ -35,13 +35,6 @@ func RemoveProjectWithWorkspace(commander CommanderType, t *testing.T, project, 
 	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }
 
-func SubmitProjectFromFile(commander CommanderType, t *testing.T, declarationFile, environment string) {
-	commands := []string{"project", "submit", "-f", declarationFile}
-
-	_, err := ExecuteCommandWithSelector(commander, t, environment, commands...)
-	require.NoErrorf(t, err, "Failed to execute command %v", commands)
-}
-
 func CreateTempFileFromTemplate(t *testing.T, declarationFile string, testArea string, data any) string {
 	filename := filepath.Base(declarationFile)
 	name := filename[:len(filename)-len(filepath.Ext(filename))]
@@ -84,11 +77,4 @@ func CreateTempFileFromTemplate(t *testing.T, declarationFile string, testArea s
 	logrus.Infof("Temp File created at: %v", tmpfile.Name())
 
 	return tmpfile.Name()
-}
-
-func RemoveProjectFromFile(commander CommanderType, t *testing.T, declarationFile, environment string) {
-	commands := []string{"project", "remove", "-f", declarationFile}
-
-	_, err := ExecuteCommandWithSelector(commander, t, environment, commands...)
-	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }

@@ -5,8 +5,6 @@ import (
 
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -56,26 +54,4 @@ Translates:
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-func Test_UnMarshall_Dictionary_Key(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Translates:
-  tr: Turkish
-  en: English
-  de: Deutsche
-`
-
-	// Act
-
-	var data objectresource.Dictionary
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Dictionary.Key", fieldRequiredErr.FieldName)
 }

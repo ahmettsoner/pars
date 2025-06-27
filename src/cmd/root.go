@@ -8,7 +8,10 @@ import (
 
 	"parsdevkit.net/core"
 
+	cmdApply "parsdevkit.net/cmd/apply"
 	cmdBrowse "parsdevkit.net/cmd/browse"
+	cmdDestroy "parsdevkit.net/cmd/destroy"
+
 	// cmdBuild "parsdevkit.net/cmd/build"
 	cmdClean "parsdevkit.net/cmd/clean"
 	cmdEnvironment "parsdevkit.net/cmd/environment"
@@ -106,6 +109,8 @@ func init() {
 }
 
 func addSubCommands() {
+	RootCmd.AddCommand(cmdApply.ApplyCmd)
+	RootCmd.AddCommand(cmdDestroy.DestroyCmd)
 	RootCmd.AddCommand(cmdInfo.InfoCmd)
 	RootCmd.AddCommand(cmdInit.InitCmd)
 	RootCmd.AddCommand(cmdGroup.GroupCmd)

@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
@@ -159,29 +160,29 @@ func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*co
 	return &template, nil
 }
 
-func (s CodeTemplateService) IsExists(name, workspace string) bool {
+func (s CodeTemplateService) IsExists(name, workspace string) (bool, error) {
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Code Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if templateTemplateEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
-func (s CodeTemplateService) GetHash(name string) string {
+func (s CodeTemplateService) GetHash(name string) (string, error) {
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Template tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }
 
 func (s CodeTemplateService) saveTemplateInformation(templateModel codetemplate.TemplateBaseStruct) (*codetemplate.TemplateBaseStruct, error) {

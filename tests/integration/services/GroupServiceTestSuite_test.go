@@ -31,7 +31,7 @@ func (suite *GroupServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = *services.NewGroupService(suite.environment)
+	suite.service = services.NewGroupService(suite.environment)
 
 	suite.T().Log("Group creation completed")
 }

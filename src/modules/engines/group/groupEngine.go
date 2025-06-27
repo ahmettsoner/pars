@@ -71,12 +71,12 @@ func (s GroupEngine) CreateGroupsFromFile(init bool, files ...string) error {
 		groupSerializer := GroupSerializer{}
 		groupsFromFile, err := groupSerializer.GetGroupStructsFromFile(allFiles...)
 		if err != nil {
-			return fmt.Errorf("❌ Failed to serializing: %v\n", err)
+			return fmt.Errorf("Failed to serializing\n%w", err)
 		}
 
 		logrus.Debugf("found %v group", len(groupsFromFile))
 		if err := s.CreateGroups(groupsFromFile, init); err != nil {
-			return fmt.Errorf("❌ Failed to creating groups \n\t%v", err)
+			return fmt.Errorf("Failed to creating groups \n%w", err)
 		}
 	}
 	return nil
@@ -119,19 +119,24 @@ func (s GroupEngine) CreateGroups(groups []groupStruct.GroupBaseStruct, init boo
 	for _, group := range groups {
 		if err := group.Validate(); err != nil {
 			jsonObject, _ := json.ToJson(group)
-			return fmt.Errorf("group invalid: %v instance: %s", err, jsonObject)
+			return fmt.Errorf("group invalid data: '%s'\n%w", jsonObject, err)
 		}
 	}
 
 	for _, group := range groups {
-
-		return fmt.Errorf("type must be StructType")
-		if ok := GroupEngine.IsExists(group.Name); ok {
+		ok, err := GroupEngine.IsExists(group.Name)
+		if err != nil {
+			return err
+		}
+		if ok {
 			newModelHash, err := utils.CalculateHashFromObject(group)
 			if err != nil {
 				return err
 			}
-			structHash := GroupEngine.GetHash(group.Name)
+			structHash, err := GroupEngine.GetHash(group.Name)
+			if err != nil {
+				return err
+			}
 
 			if newModelHash != structHash {
 				groupsForUpdate = append(groupsForUpdate, group)
@@ -172,7 +177,11 @@ func (s GroupEngine) RemoveGroups(groups []groupStruct.GroupBaseStruct, permanen
 	GroupEngine := services.NewGroupService(utils.GetEnvironment())
 	groupsReadyToDelete := make([]groupStruct.GroupBaseStruct, 0)
 	for _, group := range groups {
-		if ok := GroupEngine.IsExists(group.Name); ok {
+		ok, err := GroupEngine.IsExists(group.Name)
+		if err != nil {
+			return err
+		}
+		if ok {
 			groupsReadyToDelete = append(groupsReadyToDelete, group)
 		}
 	}

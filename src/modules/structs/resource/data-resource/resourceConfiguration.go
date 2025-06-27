@@ -2,8 +2,6 @@ package dataresource
 
 import (
 	"parsdevkit.net/core/utils"
-
-	"gopkg.in/yaml.v3"
 )
 
 type ResourceConfiguration struct {
@@ -23,9 +21,11 @@ func (s *ResourceConfiguration) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Generate = tempObject.Generate
 

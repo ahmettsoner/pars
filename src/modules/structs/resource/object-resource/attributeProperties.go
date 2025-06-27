@@ -38,9 +38,11 @@ func (s *AttributeProperties) UnmarshalYAML(unmarshal func(interface{}) error) e
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Key = tempObject.Key
 				s.Required = tempObject.Required

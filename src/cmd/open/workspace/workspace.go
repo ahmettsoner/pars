@@ -2,6 +2,7 @@ package workspace
 
 import (
 	"fmt"
+	"os"
 
 	"parsdevkit.net/providers"
 
@@ -27,6 +28,7 @@ var WorkspaceCommand = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -53,7 +55,11 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	providers.VSCodeExecute("", path)
 
+	fmt.Fprintf(os.Stdout, "✔ Workspace(s) '%v' applied successfully\n", commandOptions.Name)
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = WorkspaceOptions{}
 }
 
 func init() {

@@ -1,13 +1,8 @@
 package task
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs"
-
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Header struct {
@@ -20,6 +15,13 @@ func NewHeader(_type structs.StructType, kind StructKind, name string, metadata 
 		Header: structs.NewHeader(_type, name, metadata),
 		Kind:   kind,
 	}
+}
+func (e Header) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Header.Type, v.Required),
+		v.Field(&e.Kind, v.Required),
+		v.Field(&e.Header.Name, v.Required),
+	)
 }
 
 func (s *Header) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -39,21 +41,14 @@ func (s *Header) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempProjectHeaderObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Kind = tempProjectHeaderObject.Kind
 	}
 
-	if utils.IsEmpty(string(s.Type)) {
-		return &errors.ErrFieldRequired{FieldName: "Type"}
-	}
-	if utils.IsEmpty(string(s.Kind)) {
-		return &errors.ErrFieldRequired{FieldName: "Kind"}
-	}
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
 	return nil
 }

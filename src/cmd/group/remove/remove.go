@@ -4,10 +4,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
-	"parsdevkit.net/engines/group"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
@@ -19,27 +17,26 @@ type RemoveOptions struct {
 	Names     []string
 	Workspace string
 	Force     string
-	FilePaths []string
 }
 
 var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:               "remove name [name]...",
+	Use:               "remove [name]...",
 	Aliases:           []string{"r"},
 	Short:             "Group Information",
 	Long:              `Group Information`,
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: group name(s) is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: group name is required.")
 	}
-
 	return nil
 }
 
@@ -56,22 +53,17 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		groupService := services.NewGroupService(utils.GetEnvironment())
 		for _, name := range commandOptions.Names {
-			group, err := groupService.Remove(name, true)
+			_, err := groupService.Remove(name, true)
 			if err != nil {
-				return fmt.Errorf("failed to remove group '%s': %w", name, err)
+				return fmt.Errorf("Failed to remove group(s) '%s'\n%w", name, err)
 			}
-
-			fmt.Println("Group (" + group.Name + ") deleted permanently")
 		}
-	} else if len(commandOptions.FilePaths) > 0 {
-		groupService := group.GroupEngine{}
-		if err := groupService.RemoveGroupsFromFile(true, commandOptions.FilePaths...); err != nil {
-			return fmt.Errorf("failed to remove group(s): %w", err)
-		}
-	} else {
-		return fmt.Errorf("Please provide names or file paths to remove group(s)")
+		fmt.Fprintf(os.Stdout, "✔ Group(s) '%v' removed successfully\n", commandOptions.Names)
 	}
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = RemoveOptions{}
 }
 
 func init() {
@@ -79,11 +71,9 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "name", "n", nil, "Comma-separated list of names")
+	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "names", "n", nil, "Comma-separated list of names")
 	// RemoveCmd.RegisterFlagCompletionFunc("name", nameFlagCompletion)
 
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
-	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -129,15 +119,4 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 		}
 	}
 	return suggestions
-}
-
-func fileFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	files, _ := filepath.Glob(filepath.Join(toComplete, "*"))
-	completions := []string{}
-	for _, file := range files {
-		if info, err := os.Stat(file); err == nil && !info.IsDir() {
-			completions = append(completions, file)
-		}
-	}
-	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveDefault
 }

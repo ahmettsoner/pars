@@ -87,7 +87,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicResource() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.SubmitResourceFromFile(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := services.NewObjectResourceService(suite.environment)
 	resource, err := service.GetByName(structData.Name)
@@ -95,7 +95,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicResource() {
 	assert.Equal(suite.T(), structData.Name, resource.Header.Name)
 
 	suite.T().Cleanup(func() {
-		common.RemoveResourceFromFile(suite.T(), templateFile, suite.environment)
+		common.Destroy(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
 	})
 }

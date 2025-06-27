@@ -6,8 +6,6 @@ import (
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
-	"parsdevkit.net/core/errors"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 )
@@ -140,24 +138,4 @@ Version: V8
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
-}
-
-func Test_UnMarshall_Language_WithoutType(t *testing.T) {
-
-	// Arrange
-	a := assert.New(t)
-	yamlData := `
-Version: V8
-`
-
-	// Act
-
-	var data applicationproject.Language
-	err := yaml.Unmarshal([]byte(yamlData), &data)
-
-	// Assert
-	a.Error(err)
-	var fieldRequiredErr *errors.ErrFieldRequired
-	a.ErrorAs(err, &fieldRequiredErr)
-	a.Equal("Type", fieldRequiredErr.FieldName)
 }

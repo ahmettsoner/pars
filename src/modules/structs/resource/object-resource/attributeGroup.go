@@ -1,12 +1,10 @@
 package objectresource
 
 import (
-	"reflect"
 	"strconv"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/option"
-
-	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -24,6 +22,11 @@ func NewAttributeGroup(group GroupIdentifier, order int, options []option.Option
 		Options: options,
 	}
 }
+func (e AttributeGroup) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Group.Name, v.Required),
+	)
+}
 
 func (s *AttributeGroup) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
@@ -36,9 +39,11 @@ func (s *AttributeGroup) UnmarshalYAML(unmarshal func(interface{}) error) error 
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.Group = tempObject.Group
 				s.Order = tempObject.Order
@@ -51,10 +56,6 @@ func (s *AttributeGroup) UnmarshalYAML(unmarshal func(interface{}) error) error 
 				s.Order = intValue
 			}
 		}
-	}
-
-	if reflect.DeepEqual(s.Group, GroupIdentifier{}) {
-		return &errors.ErrFieldRequired{FieldName: "Group"}
 	}
 
 	return nil

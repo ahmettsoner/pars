@@ -14,6 +14,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utils/json"
 
 	"github.com/sirupsen/logrus"
 )
@@ -117,12 +118,26 @@ func (s DataResourceEngine) CreateResources(resources []dataresource.ResourceBas
 	resourceService := services.NewDataResourceService(utils.GetEnvironment())
 
 	for _, resource := range resources {
-		if ok := resourceService.IsExists(resource.Name, resource.Specifications.Workspace); ok {
+		if err := resource.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(resource)
+			return fmt.Errorf("resource invalid data: '%s'\n%w", jsonObject, err)
+		}
+	}
+
+	for _, resource := range resources {
+		ok, err := resourceService.IsExists(resource.Name, resource.Specifications.Workspace)
+		if err != nil {
+			return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", resource.Name, err)
+		}
+		if ok {
 			newModelHash, err := utils.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}
-			structHash := resourceService.GetHash(resource.Name)
+			structHash, err := resourceService.GetHash(resource.Name)
+			if err != nil {
+				return err
+			}
 
 			if newModelHash != structHash {
 				resourcesForUpdate = append(resourcesForUpdate, resource)
@@ -167,7 +182,11 @@ func (s DataResourceEngine) RemoveResources(resources []dataresource.ResourceBas
 	resourceService := services.NewDataResourceService(utils.GetEnvironment())
 	resourcesReadyToDelete := make([]dataresource.ResourceBaseStruct, 0)
 	for _, resource := range resources {
-		if ok := resourceService.IsExists(resource.Name, resource.Specifications.Workspace); ok {
+		ok, err := resourceService.IsExists(resource.Name, resource.Specifications.Workspace)
+		if err != nil {
+			return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", resource.Name, err)
+		}
+		if ok {
 			resourcesReadyToDelete = append(resourcesReadyToDelete, resource)
 		}
 	}

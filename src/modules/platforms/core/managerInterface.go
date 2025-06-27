@@ -35,8 +35,8 @@ type ManagerInterface interface {
 	IsProjectFolderExists(project applicationproject.ProjectSpecification) (bool, error)
 	GetProjectFileName(project applicationproject.ProjectSpecification) string
 	IsProjectFileExists(project applicationproject.ProjectSpecification) (bool, error)
-	AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string)
-	RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string)
+	AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error
+	RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error
 	ListFoldersFromProjectDefinition(project applicationproject.ProjectSpecification) ([]string, error)
 
 	CreateLayerFolder(project applicationproject.ProjectSpecification, layers ...applicationproject.Layer) error

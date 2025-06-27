@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -198,29 +199,30 @@ func (s ObjectResourceService) Remove(name, workspace string, force, permanent b
 	return &resource, nil
 }
 
-func (s ObjectResourceService) IsExists(name, workspace string) bool {
+func (s ObjectResourceService) IsExists(name, workspace string) (bool, error) {
 
 	resourceResourceEntity, err := s.resourceRepository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Data Resource getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if resourceResourceEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
-func (s ObjectResourceService) GetHash(name string) string {
+
+func (s ObjectResourceService) GetHash(name string) (string, error) {
 
 	entity, err := s.resourceRepository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Object Resource getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Object Resource tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }
 
 func (s ObjectResourceService) saveResourceInformation(resourceModel objectresource.ResourceBaseStruct) (*objectresource.ResourceBaseStruct, error) {

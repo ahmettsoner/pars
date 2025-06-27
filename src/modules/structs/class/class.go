@@ -3,6 +3,7 @@ package class
 import (
 	"strings"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -26,6 +27,11 @@ func NewClass_KeyOnly(key string) Class {
 	return Class{
 		Key: key,
 	}
+}
+func (e Class) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Key, v.Required),
+	)
 }
 
 func (s *Class) IsKeyExists() bool {
@@ -70,9 +76,10 @@ func (s *Class) UnmarshalYAML(unmarshal func(interface{}) error) error {
 					}
 
 					if err := unmarshal(&tempObject); err != nil {
-						if _, ok := err.(*yaml.TypeError); !ok {
-							return err
-						}
+						// if _, ok := err.(*yaml.TypeError); !ok {
+						// 	return err
+						// }
+						return err
 					} else {
 						s.Key = tempObject.Key
 						s.Value = tempObject.Value
@@ -83,10 +90,5 @@ func (s *Class) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			return err
 		}
 	}
-
-	if utils.IsEmpty(s.Key) {
-		return &errors.ErrFieldRequired{FieldName: "Key"}
-	}
-
 	return nil
 }

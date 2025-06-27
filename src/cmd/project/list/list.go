@@ -29,6 +29,7 @@ var ListCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
@@ -51,13 +52,13 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	applicationProjectList, err := applicationProjectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to listing projects\n%w", err)
 	}
 	fmt.Printf("(%d) application project available\n", len(*applicationProjectList))
 
 	applicationProjectListBasic, err := applicationProjectService.ListIndividualByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Workspace Application projects\n%w", err)
 	}
 
 	if len(*applicationProjectListBasic) > 0 {
@@ -70,14 +71,14 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list projects groups\n%w", err)
 	}
 
 	for _, group := range *groupList {
 
 		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Name), commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to list Group '%s' projects\n%w", group.Name, err)
 		}
 
 		if len(*applicationProjectList) > 0 {
@@ -91,6 +92,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ListOptions{}
 }
 
 func init() {

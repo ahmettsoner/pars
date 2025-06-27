@@ -1,14 +1,11 @@
 package dataresource
 
 import (
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type ResourceSpecification struct {
@@ -33,6 +30,12 @@ func NewResourceSpecification(id int, name, workspace, path, set string, labels 
 		Layers:             layers,
 		Data:               data,
 	}
+}
+func (e ResourceSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+		v.Field(&e.Set, v.Required),
+	)
 }
 
 func (s *ResourceSpecification) IsPathExists() bool {
@@ -61,9 +64,11 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Path = tempObject.Path
 		s.Set = tempObject.Set
@@ -77,9 +82,11 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 				var value Layer
 
 				if err := unmarshal(&value); err != nil {
-					if _, ok := err.(*yaml.TypeError); !ok {
-						return err
-					}
+					// if _, ok := err.(*yaml.TypeError); !ok {
+					// 	return err
+					// }
+					return err
+
 				}
 				s.Layers = append(s.Layers, value)
 
@@ -87,14 +94,6 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		}
 
 		s.Data = tempObject.Data
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Resource.Name"}
-	}
-
-	if utils.IsEmpty(s.Set) {
-		return &errors.ErrFieldRequired{FieldName: "Resource.Set"}
 	}
 
 	return nil

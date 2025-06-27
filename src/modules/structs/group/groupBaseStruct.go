@@ -3,10 +3,10 @@ package group
 import (
 	"fmt"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/utils"
 	"parsdevkit.net/structs"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -16,6 +16,12 @@ type GroupBaseStruct struct {
 	Specifications GroupSpecification
 }
 
+func (e GroupBaseStruct) GetHeader() structs.SchemaHeader {
+	return structs.SchemaHeader{
+		Type: e.Header.Type,
+		Name: e.Header.Name,
+	}
+}
 func NewGroupBaseStruct(header structs.Header, specifications GroupSpecification) GroupBaseStruct {
 	return GroupBaseStruct{
 		Header:         header,
@@ -23,10 +29,13 @@ func NewGroupBaseStruct(header structs.Header, specifications GroupSpecification
 	}
 }
 func (e GroupBaseStruct) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Header.Name, v.Required),
-		v.Field(&e.Specifications.GroupIdentifier.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Header.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	if utils.IsEmpty(e.Specifications.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Specifications.Name"}
+	}
+	return nil
 }
 
 func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -35,7 +44,7 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 	}
 
 	if err := unmarshal(&tempHeaderObject); err != nil {
-		return fmt.Errorf("xxx: Group Header Çözümlenemedi %w", err)
+		return fmt.Errorf("xxx: Group Header Çözümlenemedi\n%w", err)
 	} else {
 		s.Header = tempHeaderObject.Header
 	}
@@ -47,16 +56,11 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
 		if _, ok := err.(*yaml.TypeError); !ok {
-			return fmt.Errorf("xxx: Group Specification dönüştürme hatası oluştu %w", err)
+			return fmt.Errorf("xxx: Group Specification dönüştürme hatası oluştu\n%w", err)
 		}
-		return fmt.Errorf("xxx: Group Specification Çözümlenemedi %w", err)
+		return fmt.Errorf("xxx: Group Specification Çözümlenemedi\n%w", err)
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
 	}
-
-	if utils.IsEmpty(s.Name) {
-		return fmt.Errorf("xxx: Group Name alanı tanımlı değil")
-	}
-
 	return nil
 }

@@ -9,5 +9,6 @@ type WorkspaceServiceInterface interface {
 	Save(model workspace.WorkspaceBaseStruct) (*workspace.WorkspaceBaseStruct, error)
 	List() (*([]workspace.WorkspaceBaseStruct), error)
 	Remove(name string, force, permanent bool) (*workspace.WorkspaceBaseStruct, error)
-	GetHash(name string) string
+	IsExists(name string) (bool, error)
+	GetHash(name string) (string, error)
 }

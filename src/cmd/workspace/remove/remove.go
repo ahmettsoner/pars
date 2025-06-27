@@ -3,6 +3,7 @@ package remove
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"parsdevkit.net/operation/services"
@@ -27,6 +28,7 @@ var RemoveCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
@@ -51,13 +53,17 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	for _, name := range commandOptions.Names {
 		workspace, err := workspaceService.Remove(name, commandOptions.Force, true)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to remove workspace(s) '%s'\n%w", name, err)
 		}
 
 		fmt.Println("Workspace (" + workspace.Name + ") deleted permanently")
 	}
 
+	fmt.Fprintf(os.Stdout, "✔ workspace(s) '%v' removed successfully\n", commandOptions.Names)
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = RemoveOptions{}
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {

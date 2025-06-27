@@ -6,6 +6,18 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type Schema interface {
+	Validate() error
+	// PrintInfo()
+	GetHeader() SchemaHeader
+}
+
+type SchemaHeader struct {
+	Type StructType `yaml:"Type"`
+	Kind string     `yaml:"Kind"`
+	Name string     `yaml:"Name"`
+}
+
 type Header struct {
 	Type     StructType
 	Name     string

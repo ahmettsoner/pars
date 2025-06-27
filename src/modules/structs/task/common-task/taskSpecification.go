@@ -4,11 +4,7 @@ import (
 	actionBase "parsdevkit.net/structs/task/actions"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type TaskSpecification struct {
@@ -46,6 +42,11 @@ func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry
 	}
 }
 
+func (e TaskSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.Name, v.Required),
+	)
+}
 func (s *TaskSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
@@ -69,19 +70,17 @@ func (s *TaskSpecification) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Trigger = tempObject.Trigger
 		s.Retry = tempObject.Retry
 		s.Timeout = tempObject.Timeout
 		s.Concurrency = tempObject.Concurrency
 		s.Parameters = tempObject.Parameters
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
 	return nil

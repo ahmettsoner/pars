@@ -1,10 +1,7 @@
 package codetemplate
 
 import (
-	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -17,6 +14,11 @@ func NewOutput(file string) Output {
 		File: file,
 	}
 }
+func (e Output) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.File, v.Required),
+	)
+}
 
 func (s *Output) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
@@ -27,9 +29,11 @@ func (s *Output) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
-				if _, ok := err.(*yaml.TypeError); !ok {
-					return err
-				}
+				// if _, ok := err.(*yaml.TypeError); !ok {
+				// 	return err
+				// }
+				return err
+
 			} else {
 				s.File = tempObject.File
 			}
@@ -40,10 +44,6 @@ func (s *Output) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	} else {
 		s.File = value
-	}
-
-	if utils.IsEmpty(string(s.File)) {
-		return &errors.ErrFieldRequired{FieldName: "File"}
 	}
 
 	return nil

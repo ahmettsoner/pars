@@ -18,6 +18,7 @@ var ListCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -32,7 +33,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
-		return fmt.Errorf("failed to retrieve groups: %w", err)
+		return fmt.Errorf("Failed to retrieve groups\n%w", err)
 	}
 
 	fmt.Printf("(%d) group available\n\n", len(*groupList))
@@ -41,4 +42,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
 }

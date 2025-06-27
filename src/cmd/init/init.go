@@ -23,7 +23,7 @@ type InitOptions struct {
 
 var commandOptions InitOptions
 var maxArgumentCount int = 2
-var workspaceService = services.NewWorkspaceService(utils.GetEnvironment())
+var workspaceService *services.WorkspaceService
 
 var InitCmd = &cobra.Command{
 	Use:               "init [name] [path]",
@@ -33,6 +33,7 @@ var InitCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
@@ -45,6 +46,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
+	workspaceService = services.NewWorkspaceService(utils.GetEnvironment())
 
 	if len(args) > 0 {
 		commandOptions.Name = args[0]
@@ -86,12 +88,15 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(structs.NewHeader(structs.StructTypes.Workspace, commandOptions.Name, structs.Metadata{}), workspace.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to initialize workspace '%s'\n%w", commandOptions.Name, err)
 	}
 
-	fmt.Printf("New workspace (%v) created at: %v\n", workspace.Specifications.Name, workspace.Specifications.Path)
+	fmt.Fprintf(os.Stdout, "✔ New workspace (%v) created at: %v\n", workspace.Specifications.Name, workspace.Specifications.Path)
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = InitOptions{}
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {

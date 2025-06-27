@@ -122,14 +122,21 @@ func (s ApplicationProjectEngine) CreateProjects(projects []applicationproject.P
 	projectsForUpdate := make([]applicationproject.ProjectBaseStruct, 0)
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	// projectReferenceMap := make(map[string]map[string]applicationproject.ProjectSpecification)
-	for _, project := range projects {
-		if ok := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace); ok {
 
+	for _, project := range projects {
+		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		if err != nil {
+			return err
+		}
+		if ok {
 			newModelHash, err := utils.CalculateHashFromObject(project)
 			if err != nil {
 				return err
 			}
-			structHash := projectService.GetHash(project.GetFullName(), project.Specifications.Workspace)
+			structHash, err := projectService.GetHash(project.GetFullName(), project.Specifications.Workspace)
+			if err != nil {
+				return err
+			}
 
 			if newModelHash != structHash {
 				projectsForUpdate = append(projectsForUpdate, project)
@@ -404,7 +411,12 @@ func (s ApplicationProjectEngine) RemoveProjects(projects []applicationproject.P
 	projectsReadyToDelete := make([]applicationproject.ProjectBaseStruct, 0)
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	for _, project := range projects {
-		if ok := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace); ok {
+
+		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		if err != nil {
+			return err
+		}
+		if ok {
 			projectsReadyToDelete = append(projectsReadyToDelete, project)
 		}
 	}
@@ -448,7 +460,12 @@ func (s ApplicationProjectEngine) SortProjectsByReference(projects []application
 					if err != nil {
 						return nil, err
 					}
-					if ok := projectService.IsExists(referenceInformation.GetFullName(), referenceInformation.Specifications.Workspace); !ok {
+
+					ok, err := projectService.IsExists(referenceInformation.GetFullName(), referenceInformation.Specifications.Workspace)
+					if err != nil {
+						return nil, err
+					}
+					if !ok {
 						return nil, errors.New("Invalid Reference in Project '" + project.Name + "'. '" + reference.Name + "' not found.")
 					}
 				}
@@ -457,13 +474,16 @@ func (s ApplicationProjectEngine) SortProjectsByReference(projects []application
 	}
 
 	sortedProjectMap := make(map[string]applicationproject.ProjectBaseStruct)
-	var sortedProjects []applicationproject.ProjectBaseStruct = SortUnOrderedProjectsByReference(projects, sortedProjectMap)
+	sortedProjects, err := SortUnOrderedProjectsByReference(projects, sortedProjectMap)
+	if err != nil {
+		return nil, err
+	}
 
 	// PrintRefInfo(sortedProjects)
 
 	return sortedProjects, nil
 }
-func SortUnOrderedProjectsByReference(projects []applicationproject.ProjectBaseStruct, sortedProjectMap map[string]applicationproject.ProjectBaseStruct) []applicationproject.ProjectBaseStruct {
+func SortUnOrderedProjectsByReference(projects []applicationproject.ProjectBaseStruct, sortedProjectMap map[string]applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	var sortedProjects []applicationproject.ProjectBaseStruct = make([]applicationproject.ProjectBaseStruct, 0)
 	var unOrderedProjects []applicationproject.ProjectBaseStruct = make([]applicationproject.ProjectBaseStruct, 0)
@@ -485,7 +505,11 @@ func SortUnOrderedProjectsByReference(projects []applicationproject.ProjectBaseS
 					logrus.Debugf("validating reference (%v) for project (%v)", reference.Name, project.Name)
 					if reference.Specifications.ID == 0 {
 						if _, ok := sortedProjectMap[reference.GetUniqueKey()]; !ok {
-							if ok := projectService.IsExists(reference.GetFullName(), reference.Specifications.Workspace); !ok { //Bu kontrol buraya gelmeden, "SortProjectsByReference(projects []project.ProjectBaseStruct)" burda da yapılıyor, algoritma iyileştirilebilir
+							ok, err := projectService.IsExists(reference.GetFullName(), reference.Specifications.Workspace)
+							if err != nil {
+								return nil, err
+							}
+							if !ok { //Bu kontrol buraya gelmeden, "SortProjectsByReference(projects []project.ProjectBaseStruct)" burda da yapılıyor, algoritma iyileştirilebilir
 								allInMap = false
 								logrus.Debugf("reference (%v) for project (%v), is not in ordered list yet", reference.Name, project.Name)
 								break
@@ -509,9 +533,13 @@ func SortUnOrderedProjectsByReference(projects []applicationproject.ProjectBaseS
 	logrus.Debugf("'%d' project(s) are not ordered", len(unOrderedProjects))
 
 	if len(unOrderedProjects) > 0 {
-		var sortedChilds = SortUnOrderedProjectsByReference(unOrderedProjects, sortedProjectMap)
+		sortedChilds, err := SortUnOrderedProjectsByReference(unOrderedProjects, sortedProjectMap)
+		if err != nil {
+			return nil, err
+		}
+
 		sortedProjects = append(sortedProjects, sortedChilds...)
 	}
 
-	return sortedProjects
+	return sortedProjects, nil
 }

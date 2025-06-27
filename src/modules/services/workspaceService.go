@@ -170,7 +170,7 @@ func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.
 		return nil, err
 	}
 	if existingWorkspace != nil {
-		return nil, errors.New("Current directory reserved to (" + existingWorkspace.Name + ")")
+		return nil, errors.New("Workspace directory reserved to (" + existingWorkspace.Name + ")")
 	}
 
 	worskpaceExistingEntity, err := s.workspaceRespository.GetByName(workspaceName)
@@ -423,17 +423,17 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 // 	return &workspace, nil
 // }
 
-func (s *WorkspaceService) IsExists(name string) bool {
+func (s *WorkspaceService) IsExists(name string) (bool, error) {
 
 	workspaceWorkspaceEntity, err := s.workspaceRespository.GetByName(name)
 	if err != nil {
-		return false
+		return false, fmt.Errorf("xxx: Workspace getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if workspaceWorkspaceEntity == nil {
-		return false
+		return false, nil
 	}
 
-	return true
+	return true, nil
 }
 
 func (s *WorkspaceService) GetActiveWorkspace() (*workspace.WorkspaceBaseStruct, error) {
@@ -564,15 +564,15 @@ func (s *WorkspaceService) getDirectories(currentDir string) []string {
 	return directories
 }
 
-func (s WorkspaceService) GetHash(name string) string {
+func (s WorkspaceService) GetHash(name string) (string, error) {
 
 	entity, err := s.workspaceRespository.GetByName(name)
 	if err != nil {
-		return ""
+		return "", fmt.Errorf("xxx: Workspace getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return ""
+		return "", fmt.Errorf("xxx: Workspace tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
-	return entity.Hash
+	return entity.Hash, nil
 }

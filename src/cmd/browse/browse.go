@@ -26,6 +26,7 @@ var BrowseCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -49,11 +50,14 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 	err := openBrowser(commandOptions.URL)
 	if err != nil {
-		return fmt.Errorf("❌ Failed to open URL: %v\n", err)
+		return fmt.Errorf("Failed to open URL: %v\n", err)
 	}
 
 	fmt.Fprintf(os.Stdout, "✔ URL opened: %s\n", commandOptions.URL)
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = BrowseOptions{}
 }
 
 func init() {

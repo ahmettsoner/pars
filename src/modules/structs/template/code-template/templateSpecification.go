@@ -7,11 +7,8 @@ import (
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
+	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
 )
 
 type TemplateSpecification struct {
@@ -38,6 +35,14 @@ func NewTemplateSpecification(id int, name, workspace, set string, path string, 
 		Layers:             layers,
 		Template:           template,
 	}
+}
+func (e TemplateSpecification) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.TemplateIdentifier.Name, v.Required),
+		v.Field(&e.Set, v.Required),
+		v.Field(&e.Output, v.Required),
+		v.Field(&e.Template, v.Required),
+	)
 }
 
 func (s *TemplateSpecification) GetPackageString() string {
@@ -80,9 +85,11 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Set = tempObject.Set
 		s.Path = tempObject.Path
@@ -99,22 +106,6 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 				s.AppendPackage(fmt.Sprint(_package))
 			}
 		}
-	}
-
-	if utils.IsEmpty(s.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Name"}
-	}
-
-	if utils.IsEmpty(s.Set) {
-		return &errors.ErrFieldRequired{FieldName: "Set"}
-	}
-
-	if (s.Output == Output{}) {
-		return &errors.ErrFieldRequired{FieldName: "Output"}
-	}
-
-	if (s.Template == Template{}) {
-		return &errors.ErrFieldRequired{FieldName: "Template"}
 	}
 
 	return nil

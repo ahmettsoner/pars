@@ -14,7 +14,11 @@ import (
 func GetActiveWorkspaceNameV2(workspaceName string) (string, error) {
 	if !utils.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-		if !workspaceService.IsExists(workspaceName) {
+		ok, err := workspaceService.IsExists(workspaceName)
+		if err != nil {
+			return "", fmt.Errorf("xxx: workspace ('%s') kontrolünde hata oluştu\n%w", workspaceName, err)
+		}
+		if !ok {
 			return "", fmt.Errorf("workspace '%s' does not exist", workspaceName)
 		}
 		return workspaceName, nil

@@ -38,6 +38,7 @@ func (s *Layer) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if _, ok := err.(*yaml.TypeError); !ok {
 			return err
 		}
+
 	} else {
 		s.Sections = tempObject.Sections
 	}

@@ -5,11 +5,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"gopkg.in/yaml.v3"
 	layerPkg "parsdevkit.net/structs/layer"
 
 	"parsdevkit.net/core/utils"
-
-	"gopkg.in/yaml.v3"
 )
 
 type Layer struct {

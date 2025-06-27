@@ -3,9 +3,7 @@ package dataresource
 import (
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/errors"
-
-	"gopkg.in/yaml.v3"
+	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 // Dictionary global bi struct olarak ta tanımlanabilmeli, hem global hem  resource bağımlı şekilde tanımlanabilmeli
@@ -19,6 +17,11 @@ func NewDictionary(key string, translates map[string]string) Dictionary {
 		DictionaryIdentifier: NewDictionaryIdentifier(key),
 		Translates:           translates,
 	}
+}
+func (e Dictionary) Validate() error {
+	return v.ValidateStruct(&e,
+		v.Field(&e.DictionaryIdentifier.Key, v.Required),
+	)
 }
 
 func (s *Dictionary) IsKeyExists() bool {
@@ -41,16 +44,14 @@ func (s *Dictionary) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
-		if _, ok := err.(*yaml.TypeError); !ok {
-			return err
-		}
+		// if _, ok := err.(*yaml.TypeError); !ok {
+		// 	return err
+		// }
+		return err
+
 	} else {
 		s.Translates = tempObject.Translates
 
-	}
-
-	if utils.IsEmpty(s.Key) {
-		return &errors.ErrFieldRequired{FieldName: "Dictionary.Key"}
 	}
 
 	return nil

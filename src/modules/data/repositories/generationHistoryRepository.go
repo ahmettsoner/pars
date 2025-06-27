@@ -26,7 +26,7 @@ func (s *GenerationHistoryRepository) Get(id int) (*entities.GenerationHistory, 
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
-		return nil, fmt.Errorf("failed to get GenerationHistory with id %d: %w", id, result.Error)
+		return nil, fmt.Errorf("failed to get GenerationHistory with id %d\n%w", id, result.Error)
 	}
 	return entity, nil
 }

@@ -8,6 +8,6 @@ type CodeTemplateServiceInterface interface {
 	List() (*([]codetemplate.TemplateBaseStruct), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error)
 	Remove(name, workspace string, permanent bool) (*codetemplate.TemplateBaseStruct, error)
-	IsExists(name, workspace string) bool
-	GetHash(name string) string
+	IsExists(name, workspace string) (bool, error)
+	GetHash(name string) (string, error)
 }

@@ -4,13 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"strings"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
-	"parsdevkit.net/engines/codeTemplate"
-	"parsdevkit.net/engines/fileTemplate"
-	"parsdevkit.net/engines/sharedTemplate"
 
 	"parsdevkit.net/operation/services"
 
@@ -23,7 +19,6 @@ type RemoveOptions struct {
 	Names     []string
 	Workspace string
 	Force     string
-	FilePaths []string
 }
 
 var commandOptions RemoveOptions
@@ -36,12 +31,13 @@ var RemoveCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: template name is required.")
 	}
 
 	return nil
@@ -70,26 +66,38 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 				commandOptions.Workspace = "None"
 
-				if codeTemplateService.IsExists(name, commandOptions.Workspace) {
+				ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
+				if err != nil {
+					return fmt.Errorf("xxx: Code Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+				}
+				if ok {
 					codeTemplate, err := codeTemplateService.Remove(name, commandOptions.Workspace, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove Gblobal Code template(s) '%s'\n%w", name, err)
 					}
 					fmt.Println("Template (" + codeTemplate.Name + ") deleted permanently")
 				}
 
-				if fileTemplateService.IsExists(name, commandOptions.Workspace) {
+				ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
+				if err != nil {
+					return fmt.Errorf("xxx: File Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+				}
+				if ok {
 					fileTemplate, err := fileTemplateService.Remove(name, commandOptions.Workspace, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove Global File template(s) '%s'\n%w", name, err)
 					}
 					fmt.Println("Template (" + fileTemplate.Name + ") deleted permanently")
 				}
 
-				if sharedTemplateService.IsExists(name, commandOptions.Workspace) {
+				ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
+				if err != nil {
+					return fmt.Errorf("xxx: Shared Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+				}
+				if ok {
 					sharedTemplate, err := sharedTemplateService.Remove(name, commandOptions.Workspace, true)
 					if err != nil {
-						log.Fatal(err)
+						return fmt.Errorf("Failed to remove Global Shared template(s) '%s'\n%w", name, err)
 					}
 					fmt.Println("Template (" + sharedTemplate.Name + ") deleted permanently")
 				}
@@ -99,51 +107,49 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
 
-			if codeTemplateService.IsExists(name, commandOptions.Workspace) {
+			ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
+			if err != nil {
+				return fmt.Errorf("xxx: Code Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+			}
+			if ok {
 				codeTemplate, err := codeTemplateService.Remove(name, commandOptions.Workspace, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove Active Workspace Code template(s) '%s'\n%w", name, err)
 				}
 				fmt.Println("Template (" + codeTemplate.Name + ") deleted permanently")
 			}
 
-			if fileTemplateService.IsExists(name, commandOptions.Workspace) {
+			ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
+			if err != nil {
+				return fmt.Errorf("xxx: File Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+			}
+			if ok {
 				fileTemplate, err := fileTemplateService.Remove(name, commandOptions.Workspace, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove Active Workspace File template(s) '%s'\n%w", name, err)
 				}
 				fmt.Println("Template (" + fileTemplate.Name + ") deleted permanently")
 			}
 
-			if sharedTemplateService.IsExists(name, commandOptions.Workspace) {
+			ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
+			if err != nil {
+				return fmt.Errorf("xxx: Shared Template ('%s') kontrolünde hata oluştu\n%w", name, err)
+			}
+			if ok {
 				sharedTemplate, err := sharedTemplateService.Remove(name, commandOptions.Workspace, true)
 				if err != nil {
-					log.Fatal(err)
+					return fmt.Errorf("Failed to remove Active Workspace Shared template(s) '%s'\n%w", name, err)
 				}
 				fmt.Println("Template (" + sharedTemplate.Name + ") deleted permanently")
 			}
 		}
-	} else if len(commandOptions.FilePaths) > 0 {
-		sharedTemplateService := sharedTemplate.SharedTemplateEngine{}
-		if err := sharedTemplateService.RemoveTemplatesFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-
-		codeTemplateService := codeTemplate.CodeTemplateEngine{}
-		if err := codeTemplateService.RemoveTemplatesFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-
-		fileTemplateService := fileTemplate.FileTemplateEngine{}
-		if err := fileTemplateService.RemoveTemplatesFromFile(true, commandOptions.FilePaths...); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		fmt.Println("Please provide a name for the resource")
-		os.Exit(1)
+		fmt.Fprintf(os.Stdout, "✔ template(s) '%v' removed successfully\n", commandOptions.Names)
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = RemoveOptions{}
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -161,8 +167,6 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
-	RemoveCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
 }
 
 func listTemplateNameSuggestions(args []string, toComplete string) []string {
@@ -205,15 +209,4 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	return suggestions
-}
-
-func fileFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	files, _ := filepath.Glob(filepath.Join(toComplete, "*"))
-	completions := []string{}
-	for _, file := range files {
-		if info, err := os.Stat(file); err == nil && !info.IsDir() {
-			completions = append(completions, file)
-		}
-	}
-	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveDefault
 }

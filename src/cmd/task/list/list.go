@@ -2,7 +2,6 @@ package list
 
 import (
 	"fmt"
-	"log"
 
 	"parsdevkit.net/operation/services"
 
@@ -28,6 +27,7 @@ var ListCmd = &cobra.Command{
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -56,7 +56,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		taskList, err := taskService.ListByWorkspace(commandOptions.Workspace)
 		if err != nil {
-			log.Fatal(err)
+			return fmt.Errorf("Failed to retrieve global tasks\n%w", err)
 		}
 
 		fmt.Printf("(%d) task available\n\n", len(*taskList))
@@ -75,7 +75,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	taskList, err := taskService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("Failed to list Active Workspace tasks\n%w", err)
 	}
 
 	fmt.Printf("(%d) task available\n\n", len(*taskList))
@@ -84,4 +84,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = ListOptions{}
 }

@@ -29,6 +29,7 @@ var DescribeCmd = &cobra.Command{
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
+	PostRun:           afterFunc,
 	ValidArgsFunction: validArguments,
 }
 
@@ -54,7 +55,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	groupService := services.NewGroupService(utils.GetEnvironment())
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
-		return fmt.Errorf("failed to retrieve group '%s': %w", commandOptions.Name, err)
+		return fmt.Errorf("Failed to retrieve group '%s'\n%w", commandOptions.Name, err)
 	}
 
 	name := fmt.Sprintf("Group Name:\t%v", group.Name)
@@ -69,7 +70,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
 	projectList, err := projectService.ListByGroupName(group.Name)
 	if err != nil {
-		return fmt.Errorf("failed to retrieve group projects '%s': %w", commandOptions.Name, err)
+		return fmt.Errorf("Failed to retrieve group projects '%s'\n%w", commandOptions.Name, err)
 	}
 
 	fmt.Printf("Projects:\n")
@@ -92,6 +93,9 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 	}
 
 	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp
+}
+func afterFunc(cmd *cobra.Command, args []string) {
+	commandOptions = DescribeOptions{}
 }
 
 func init() {
