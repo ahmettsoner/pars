@@ -11,6 +11,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/test/faker"
@@ -120,8 +121,8 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
-			Layers: []applicationproject.Layer{
-				applicationproject.Layer{
+			Layers: []applicationProject.Layer{
+				applicationProject.Layer{
 					LayerIdentifier: layerPkg.LayerIdentifier{
 						Name: "layer-identifier",
 					},
@@ -157,8 +158,8 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
-			Layers: []applicationproject.Layer{
-				applicationproject.Layer{
+			Layers: []applicationProject.Layer{
+				applicationProject.Layer{
 					LayerIdentifier: layerPkg.LayerIdentifier{
 						Name: "layer-identifier",
 					},

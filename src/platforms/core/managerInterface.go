@@ -1,6 +1,7 @@
 package core
 
 import (
+	applicationProject "parsdevkit.net/application/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 )
@@ -39,17 +40,17 @@ type ManagerInterface interface {
 	RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error
 	ListFoldersFromProjectDefinition(project applicationproject.ProjectSpecification) ([]string, error)
 
-	CreateLayerFolder(project applicationproject.ProjectSpecification, layers ...applicationproject.Layer) error
-	ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.Layer, error)
+	CreateLayerFolder(project applicationproject.ProjectSpecification, layers ...applicationProject.Layer) error
+	ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error)
 	HasLayerOnProject(project applicationproject.ProjectSpecification, layer string) (bool, error)
 	IsLayerFolderExists(project applicationproject.ProjectSpecification, layer string) (bool, error)
 	IsLayerFoldersExists(project applicationproject.ProjectSpecification) (bool, error)
 
-	AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error
-	RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error
-	ListPackagesFromProject(project applicationproject.ProjectSpecification) ([]applicationproject.Package, error)
-	GetPackageFromProject(project applicationproject.ProjectSpecification, _package applicationproject.Package) error
-	HasPackageOnProject(project applicationproject.ProjectSpecification, _package applicationproject.Package) (bool, error)
+	AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error
+	RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error
+	ListPackagesFromProject(project applicationproject.ProjectSpecification) ([]applicationProject.Package, error)
+	GetPackageFromProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) error
+	HasPackageOnProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) (bool, error)
 
 	AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error
 	RemoveReferenceFromProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error

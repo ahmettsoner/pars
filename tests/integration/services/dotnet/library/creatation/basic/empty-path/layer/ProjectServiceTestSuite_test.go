@@ -8,6 +8,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
@@ -20,11 +21,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -73,8 +76,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithDe
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -84,7 +87,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithDe
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -100,8 +103,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnly(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -111,7 +114,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -127,8 +130,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Single
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -138,7 +141,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Single
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -154,8 +157,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Multip
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -165,7 +168,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Multip
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -181,9 +184,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
-		applicationproject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
+		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -193,7 +196,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -209,9 +212,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnly(suite.faker.Project.Layer()),
-		applicationproject.NewLayer_NameOnly(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
+		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -221,7 +224,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -237,9 +240,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Sin
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -249,7 +252,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Sin
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -265,9 +268,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Mul
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -277,7 +280,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Mul
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -293,11 +296,11 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Var
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnly(suite.faker.Project.Layer()),
-		applicationproject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
-		applicationproject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
+		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
+		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -307,7 +310,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Var
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -323,8 +326,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Defaul
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -334,7 +337,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Defaul
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -350,8 +353,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnly(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -361,7 +364,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -376,9 +379,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationproject.Layer{
-		applicationproject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
-		applicationproject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
+	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+		applicationProject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
+		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -388,7 +391,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)

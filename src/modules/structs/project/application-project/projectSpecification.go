@@ -177,7 +177,7 @@ func (s *ProjectSpecification) GetAbsoluteBaseProjectPath() string {
 	return absoluteFullPath
 }
 func (s *ProjectSpecification) GetRelativeProjectLayerPath(layer string) string {
-	var existingLayer *Layer = nil
+	var existingLayer *applicationProject.Layer = nil
 	for _, value := range s.Configuration.Layers {
 		if value.Name == layer {
 			existingLayer = &value
@@ -192,7 +192,7 @@ func (s *ProjectSpecification) GetRelativeProjectLayerPath(layer string) string 
 	return filepath.Join(s.GetRelativeProjectPath(), existingLayer.Path)
 }
 func (s *ProjectSpecification) GetAbsoluteProjectLayerPath(layer string) string {
-	var existingLayer *Layer = nil
+	var existingLayer *applicationProject.Layer = nil
 	for _, value := range s.Configuration.Layers {
 		if value.Name == layer {
 			existingLayer = &value

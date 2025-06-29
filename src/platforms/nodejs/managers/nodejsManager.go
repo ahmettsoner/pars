@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -281,7 +282,7 @@ func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectSpe
 	return foldePath, nil
 }
 
-func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 	for _, _package := range packages {
 
 		packageName := _package.Name
@@ -300,7 +301,7 @@ func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpe
 	return nil
 }
 
-func (s NodeJSManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s NodeJSManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 	for _, _package := range packages {
 
 		err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", _package.Name)
@@ -381,14 +382,14 @@ func (s NodeJSManager) GetGroupFileName(project applicationproject.ProjectSpecif
 	return "package.json"
 }
 
-func (s NodeJSManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.Layer, error) {
+func (s NodeJSManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error) {
 
 	folders, err := s.ListFoldersFromProjectDefinition(projectSpecification)
 	if err != nil {
 		return nil, err
 	}
 
-	layers := make([]applicationproject.Layer, 0)
+	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
 		for _, projectLayer := range projectSpecification.Configuration.Layers {
 

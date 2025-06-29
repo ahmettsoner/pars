@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
@@ -304,7 +305,7 @@ func (s GoManager) CreateProjectFolder(project applicationproject.ProjectSpecifi
 	return foldersRelativePath, nil
 }
 
-func (s GoManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s GoManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	for _, _package := range packages {
 		err := providers.GoExecute(project.GetAbsoluteProjectPath(), "get", _package.GetFullName())
@@ -316,7 +317,7 @@ func (s GoManager) AddPackageToProject(project applicationproject.ProjectSpecifi
 	return nil
 }
 
-func (s GoManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s GoManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 	fmt.Printf("remove package not implemented yet")
 	// for _, _package := range packages {
 	// }

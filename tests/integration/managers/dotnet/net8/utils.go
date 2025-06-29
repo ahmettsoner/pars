@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -66,7 +67,7 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 	return project
 }
 
-func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName string, layers []applicationproject.Layer) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName string, layers []project.Layer) applicationproject.ProjectSpecification {
 
 	project := applicationproject.NewProjectSpecification(
 		0,
@@ -123,7 +124,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, 
 	return project
 }
 
-func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, workspaceName, groupName, groupPath string, layers []applicationproject.Layer) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, workspaceName, groupName, groupPath string, layers []project.Layer) applicationproject.ProjectSpecification {
 
 	project := applicationproject.NewProjectSpecification(
 		0,
@@ -211,33 +212,33 @@ func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, worksp
 	return project
 }
 
-func GetPackages(index int, count int, withVersion bool) []applicationproject.Package {
-	packages := []applicationproject.Package{
-		applicationproject.NewPackage("Microsoft.Extensions.DependencyInjection", "8.0.0"),
-		applicationproject.NewPackage("Microsoft.Extensions.Logging", "8.0.0"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
-		applicationproject.NewPackage("Newtonsoft.Json", "13.0.1"),
-		applicationproject.NewPackage("AutoMapper", "11.0.0"),
-		applicationproject.NewPackage("FluentValidation", "11.1.0"),
-		applicationproject.NewPackage("Moq", "4.16.1"),
-		applicationproject.NewPackage("Hangfire", "1.7.22"),
-		applicationproject.NewPackage("Serilog", "2.10.0"),
+func GetPackages(index int, count int, withVersion bool) []project.Package {
+	packages := []project.Package{
+		project.NewPackage("Microsoft.Extensions.DependencyInjection", "8.0.0"),
+		project.NewPackage("Microsoft.Extensions.Logging", "8.0.0"),
+		project.NewPackage("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
+		project.NewPackage("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
+		project.NewPackage("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
+		project.NewPackage("Newtonsoft.Json", "13.0.1"),
+		project.NewPackage("AutoMapper", "11.0.0"),
+		project.NewPackage("FluentValidation", "11.1.0"),
+		project.NewPackage("Moq", "4.16.1"),
+		project.NewPackage("Hangfire", "1.7.22"),
+		project.NewPackage("Serilog", "2.10.0"),
 	}
 
 	if count <= 0 || count > len(packages) {
 		return nil
 	}
 
-	var selectedElements []applicationproject.Package
+	var selectedElements []project.Package
 	for _, _package := range packages[index : index+count] {
 		packageVersion := ""
 		if withVersion {
 			packageVersion = _package.Version
 		}
 
-		selectedPackage := applicationproject.NewPackage(_package.Name, packageVersion)
+		selectedPackage := project.NewPackage(_package.Name, packageVersion)
 		selectedElements = append(selectedElements, selectedPackage)
 	}
 

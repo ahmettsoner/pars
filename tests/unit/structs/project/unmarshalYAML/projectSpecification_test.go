@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/schemas"
 	goModels "parsdevkit.net/platforms/go/models"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/assert"
@@ -64,9 +65,9 @@ Configuration:
 		applicationproject.Runtime{},
 		applicationproject.NewSchema(),
 		applicationproject.NewConfiguration(
-			[]applicationproject.Layer(nil),
-			[]applicationproject.Package{
-				applicationproject.NewPackage("gopkg.in/yaml.v3", "v3.0.1"),
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Package{
+				applicationProject.NewPackage("gopkg.in/yaml.v3", "v3.0.1"),
 			},
 			[]applicationproject.ProjectBaseStruct{
 				applicationproject.NewProjectBaseStruct(

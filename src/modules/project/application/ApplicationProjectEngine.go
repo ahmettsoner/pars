@@ -6,6 +6,7 @@ import (
 
 	"fmt"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	groupStruct "parsdevkit.net/structs/group"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	workspaceStruct "parsdevkit.net/structs/workspace"
@@ -140,12 +141,12 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 		}
 
 		if !reflect.DeepEqual(project.Specifications.Configuration.Layers, existingProject.Specifications.Configuration.Layers) {
-			newItems := make([]applicationprojectStruct.Layer, 0)
+			newItems := make([]applicationProject.Layer, 0)
 			updatedItems := make([]struct {
-				Old applicationprojectStruct.Layer
-				New applicationprojectStruct.Layer
+				Old applicationProject.Layer
+				New applicationProject.Layer
 			}, 0)
-			deletedItems := make([]applicationprojectStruct.Layer, 0)
+			deletedItems := make([]applicationProject.Layer, 0)
 
 			for _, newLayer := range project.Specifications.Configuration.Layers {
 				found := false
@@ -154,8 +155,8 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 						found = true
 						if !reflect.DeepEqual(newLayer, existingLayer) {
 							updatedItems = append(updatedItems, struct {
-								Old applicationprojectStruct.Layer
-								New applicationprojectStruct.Layer
+								Old applicationProject.Layer
+								New applicationProject.Layer
 							}{
 								Old: existingLayer,
 								New: newLayer,
@@ -210,12 +211,12 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 		}
 
 		if !reflect.DeepEqual(project.Specifications.Configuration.Dependencies, existingProject.Specifications.Configuration.Dependencies) {
-			newItems := make([]applicationprojectStruct.Package, 0)
+			newItems := make([]applicationProject.Package, 0)
 			updatedItems := make([]struct {
-				Old applicationprojectStruct.Package
-				New applicationprojectStruct.Package
+				Old applicationProject.Package
+				New applicationProject.Package
 			}, 0)
-			deletedItems := make([]applicationprojectStruct.Package, 0)
+			deletedItems := make([]applicationProject.Package, 0)
 
 			for _, newItem := range project.Specifications.Configuration.Dependencies {
 				found := false
@@ -224,8 +225,8 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 						found = true
 						if !reflect.DeepEqual(newItem, existingItem) {
 							updatedItems = append(updatedItems, struct {
-								Old applicationprojectStruct.Package
-								New applicationprojectStruct.Package
+								Old applicationProject.Package
+								New applicationProject.Package
 							}{
 								Old: existingItem,
 								New: newItem,

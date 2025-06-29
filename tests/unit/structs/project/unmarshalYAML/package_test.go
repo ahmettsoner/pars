@@ -3,10 +3,9 @@ package unmarshalYAML
 import (
 	"testing"
 
-	applicationproject "parsdevkit.net/structs/project/application-project"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	applicationProject "parsdevkit.net/application/structs/project"
 )
 
 func Test_UnMarshall_Package_NameOnly(t *testing.T) {
@@ -18,10 +17,10 @@ Name: foo
 `
 
 	// Act
-	var data applicationproject.Package
+	var data applicationProject.Package
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPackage_Basic("foo")
+	expected := applicationProject.NewPackage_Basic("foo")
 
 	// Assert
 	a.NoError(err)
@@ -36,10 +35,10 @@ foo
 `
 
 	// Act
-	var data applicationproject.Package
+	var data applicationProject.Package
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPackage_Basic("foo")
+	expected := applicationProject.NewPackage_Basic("foo")
 
 	// Assert
 	a.NoError(err)
@@ -54,10 +53,10 @@ foo@bar
 `
 
 	// Act
-	var data applicationproject.Package
+	var data applicationProject.Package
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPackage("foo", "bar")
+	expected := applicationProject.NewPackage("foo", "bar")
 
 	// Assert
 	a.NoError(err)
@@ -75,10 +74,10 @@ Version: bar
 
 	// Act
 
-	var data applicationproject.Package
+	var data applicationProject.Package
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPackage("foo", "bar")
+	expected := applicationProject.NewPackage("foo", "bar")
 
 	// Assert
 	a.NoError(err)
@@ -95,10 +94,10 @@ Version: bar
 
 	// Act
 
-	var data applicationproject.Package
+	var data applicationProject.Package
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPackage("foo", "bar")
+	expected := applicationProject.NewPackage("foo", "bar")
 
 	// Assert
 	a.NoError(err)

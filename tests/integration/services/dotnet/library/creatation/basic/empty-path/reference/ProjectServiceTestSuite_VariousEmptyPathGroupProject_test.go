@@ -16,6 +16,8 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/test"
+
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/test/common"
 	"parsdevkit.net/core/test/faker"
 	"parsdevkit.net/core/test/objects"
@@ -27,7 +29,7 @@ import (
 
 type ProjectServiceVariousEmptyPathGroupProjectReferenceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -104,7 +106,7 @@ func (suite *ProjectServiceVariousEmptyPathGroupProjectReferenceTestSuite) Test_
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -151,7 +153,7 @@ func (suite *ProjectServiceVariousEmptyPathGroupProjectReferenceTestSuite) Test_
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -200,7 +202,7 @@ func (suite *ProjectServiceVariousEmptyPathGroupProjectReferenceTestSuite) Test_
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -249,7 +251,7 @@ func (suite *ProjectServiceVariousEmptyPathGroupProjectReferenceTestSuite) Test_
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)

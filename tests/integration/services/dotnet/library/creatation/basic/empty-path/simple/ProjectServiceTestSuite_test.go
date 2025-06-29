@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/operation/services"
@@ -19,11 +20,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -80,7 +82,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject() {
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to save project")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)

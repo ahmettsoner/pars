@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
@@ -79,9 +80,9 @@ Specifications:
 			applicationproject.NewRuntime("", ""),
 			applicationproject.NewSchema(),
 			applicationproject.NewConfiguration(
-				[]applicationproject.Layer(nil),
-				[]applicationproject.Package{
-					applicationproject.NewPackage("gopkg.in/yaml.v3", "v3.0.1"),
+				[]applicationProject.Layer(nil),
+				[]applicationProject.Package{
+					applicationProject.NewPackage("gopkg.in/yaml.v3", "v3.0.1"),
 				},
 				[]applicationproject.ProjectBaseStruct{
 					applicationproject.NewProjectBaseStruct(

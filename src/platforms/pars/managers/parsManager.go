@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	applicationProject "parsdevkit.net/application/structs/project"
+
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
@@ -156,12 +158,12 @@ func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectSpeci
 	return foldersRelativePath, nil
 }
 
-func (s ParsManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s ParsManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	return nil
 }
 
-func (s ParsManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s ParsManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	return nil
 }

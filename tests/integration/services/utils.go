@@ -11,6 +11,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/platforms/dotnet/managers"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
@@ -35,7 +36,7 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
-	workspaceService := *services.NewWorkspaceService(environment)
+	workspaceService := services.NewWorkspaceService(environment)
 	tempWorkspace, err := workspaceService.Save(workspace)
 	require.NoError(t, err, "Failed to save workspace")
 	assert.Equal(t, workspace, *tempWorkspace)
@@ -44,7 +45,7 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 }
 
 func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
-	workspaceService := *services.NewWorkspaceService(environment)
+	workspaceService := services.NewWorkspaceService(environment)
 	_, err := workspaceService.Remove(workspaceName, true, true)
 	require.NoError(t, err, "Failed to delete workspace")
 }
@@ -52,7 +53,7 @@ func CreateGroup(t *testing.T, groupName, path, environment string) group.GroupB
 
 	group := *BasicGroup_WithNamePath(groupName, path)
 
-	groupService := *services.NewGroupService(environment)
+	groupService := services.NewGroupService(environment)
 	tempGroup, err := groupService.Save(group)
 	require.NoError(t, err, "Failed to save group")
 	assert.Equal(t, group, *tempGroup)
@@ -60,7 +61,7 @@ func CreateGroup(t *testing.T, groupName, path, environment string) group.GroupB
 	return group
 }
 func RemoveGroup(t *testing.T, groupName, environment string) {
-	groupService := *services.NewGroupService(environment)
+	groupService := services.NewGroupService(environment)
 	_, err := groupService.Remove(groupName, true)
 	require.NoError(t, err, "Failed to delete group")
 }
@@ -91,7 +92,7 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 	return project
 }
 
-func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName string, layers []applicationproject.Layer) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName string, layers []applicationProject.Layer) applicationproject.ProjectSpecification {
 
 	project := applicationproject.NewProjectSpecification(
 		0,
@@ -143,7 +144,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 
 	return project
 }
-func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string, layers []applicationproject.Layer) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string, layers []applicationProject.Layer) applicationproject.ProjectSpecification {
 
 	project := applicationproject.NewProjectSpecification(
 		0,
@@ -197,33 +198,33 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 	return project
 }
 
-func GetPackages(index int, count int, withVersion bool) []applicationproject.Package {
-	packages := []applicationproject.Package{
-		applicationproject.NewPackage("Microsoft.Extensions.DependencyInjection", "8.0.0"),
-		applicationproject.NewPackage("Microsoft.Extensions.Logging", "8.0.0"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
-		applicationproject.NewPackage("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
-		applicationproject.NewPackage("Newtonsoft.Json", "13.0.1"),
-		applicationproject.NewPackage("AutoMapper", "11.0.0"),
-		applicationproject.NewPackage("FluentValidation", "11.1.0"),
-		applicationproject.NewPackage("Moq", "4.16.1"),
-		applicationproject.NewPackage("Hangfire", "1.7.22"),
-		applicationproject.NewPackage("Serilog", "2.10.0"),
+func GetPackages(index int, count int, withVersion bool) []applicationProject.Package {
+	packages := []applicationProject.Package{
+		applicationProject.NewPackage("Microsoft.Extensions.DependencyInjection", "8.0.0"),
+		applicationProject.NewPackage("Microsoft.Extensions.Logging", "8.0.0"),
+		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
+		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
+		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
+		applicationProject.NewPackage("Newtonsoft.Json", "13.0.1"),
+		applicationProject.NewPackage("AutoMapper", "11.0.0"),
+		applicationProject.NewPackage("FluentValidation", "11.1.0"),
+		applicationProject.NewPackage("Moq", "4.16.1"),
+		applicationProject.NewPackage("Hangfire", "1.7.22"),
+		applicationProject.NewPackage("Serilog", "2.10.0"),
 	}
 
 	if count <= 0 || count > len(packages) {
 		return nil
 	}
 
-	var selectedElements []applicationproject.Package
+	var selectedElements []applicationProject.Package
 	for _, _package := range packages[index : index+count] {
 		packageVersion := ""
 		if withVersion {
 			packageVersion = _package.Version
 		}
 
-		selectedPackage := applicationproject.NewPackage(_package.Name, packageVersion)
+		selectedPackage := applicationProject.NewPackage(_package.Name, packageVersion)
 		selectedElements = append(selectedElements, selectedPackage)
 	}
 

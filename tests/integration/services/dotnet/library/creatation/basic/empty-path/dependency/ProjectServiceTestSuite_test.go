@@ -4,7 +4,10 @@ import (
 	"os"
 	"testing"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
+
+	"parsdevkit.net/application/contracts"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
@@ -24,7 +27,7 @@ import (
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -74,8 +77,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack, _ := suite.faker.Dotnet.Package("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationproject.Package{
-		applicationproject.NewPackage_Basic(pack),
+	project.Specifications.Configuration.Dependencies = []applicationProject.Package{
+		applicationProject.NewPackage_Basic(pack),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -85,7 +88,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project)
 	require.NoError(suite.T(), err, "Failed to validate project dependencies")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -102,8 +105,8 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack, packVersion := suite.faker.Dotnet.Package("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationproject.Package{
-		applicationproject.NewPackage(pack, packVersion),
+	project.Specifications.Configuration.Dependencies = []applicationProject.Package{
+		applicationProject.NewPackage(pack, packVersion),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -113,7 +116,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project)
 	require.NoError(suite.T(), err, "Failed to validate project dependencies")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -131,9 +134,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, _ := suite.faker.Dotnet.Package("Net8")
 	pack2, _ := suite.faker.Dotnet.Package("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationproject.Package{
-		applicationproject.NewPackage_Basic(pack1),
-		applicationproject.NewPackage_Basic(pack2),
+	project.Specifications.Configuration.Dependencies = []applicationProject.Package{
+		applicationProject.NewPackage_Basic(pack1),
+		applicationProject.NewPackage_Basic(pack2),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -143,7 +146,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project)
 	require.NoError(suite.T(), err, "Failed to validate project dependencies")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -161,9 +164,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, packVersion1 := suite.faker.Dotnet.Package("Net8")
 	pack2, packVersion2 := suite.faker.Dotnet.Package("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationproject.Package{
-		applicationproject.NewPackage(pack1, packVersion1),
-		applicationproject.NewPackage(pack2, packVersion2),
+	project.Specifications.Configuration.Dependencies = []applicationProject.Package{
+		applicationProject.NewPackage(pack1, packVersion1),
+		applicationProject.NewPackage(pack2, packVersion2),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -173,7 +176,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project)
 	require.NoError(suite.T(), err, "Failed to validate project dependencies")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -191,9 +194,9 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, packVersion1 := suite.faker.Dotnet.Package("Net8")
 	pack2, _ := suite.faker.Dotnet.Package("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationproject.Package{
-		applicationproject.NewPackage(pack1, packVersion1),
-		applicationproject.NewPackage_Basic(pack2),
+	project.Specifications.Configuration.Dependencies = []applicationProject.Package{
+		applicationProject.NewPackage(pack1, packVersion1),
+		applicationProject.NewPackage_Basic(pack2),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -203,7 +206,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectDependencies(project)
 	require.NoError(suite.T(), err, "Failed to validate project dependencies")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)

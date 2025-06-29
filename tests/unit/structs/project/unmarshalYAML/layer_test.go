@@ -3,10 +3,9 @@ package unmarshalYAML
 import (
 	"testing"
 
-	applicationproject "parsdevkit.net/structs/project/application-project"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	applicationProject "parsdevkit.net/application/structs/project"
 )
 
 func Test_UnMarshall_Layer_NameOnly(t *testing.T) {
@@ -19,10 +18,10 @@ Name: Persistence:Data:Repository
 
 	// Act
 
-	var data applicationproject.Layer
+	var data applicationProject.Layer
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLayer(0, "Persistence:Data:Repository", "Persistence/Data/Repository", []string{"Persistence:Data:Repository"}, "")
+	expected := applicationProject.NewLayer(0, "Persistence:Data:Repository", "Persistence/Data/Repository", []string{"Persistence:Data:Repository"}, "")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +37,10 @@ Persistence:Data:Repository
 
 	// Act
 
-	var data applicationproject.Layer
+	var data applicationProject.Layer
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLayer(0, "Persistence:Data:Repository", "Persistence/Data/Repository", []string{"Persistence:Data:Repository"}, "")
+	expected := applicationProject.NewLayer(0, "Persistence:Data:Repository", "Persistence/Data/Repository", []string{"Persistence:Data:Repository"}, "")
 
 	// Assert
 	a.NoError(err)
@@ -58,10 +57,10 @@ Path: parsdevkit.net/cmd
 
 	// Act
 
-	var data applicationproject.Layer
+	var data applicationProject.Layer
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLayer(0, "CMD", "parsdevkit.net/cmd", []string{"CMD"}, "")
+	expected := applicationProject.NewLayer(0, "CMD", "parsdevkit.net/cmd", []string{"CMD"}, "")
 
 	// Assert
 	a.NoError(err)
@@ -78,10 +77,10 @@ Package: pars/cmd
 
 	// Act
 
-	var data applicationproject.Layer
+	var data applicationProject.Layer
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLayer(0, "CMD", "CMD", []string{"pars", "cmd"}, "")
+	expected := applicationProject.NewLayer(0, "CMD", "CMD", []string{"pars", "cmd"}, "")
 
 	// Assert
 	a.NoError(err)
@@ -100,10 +99,10 @@ Package:
 
 	// Act
 
-	var data applicationproject.Layer
+	var data applicationProject.Layer
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLayer(0, "CMD", "CMD", []string{"pars", "cmd"}, "")
+	expected := applicationProject.NewLayer(0, "CMD", "CMD", []string{"pars", "cmd"}, "")
 
 	// Assert
 	a.NoError(err)

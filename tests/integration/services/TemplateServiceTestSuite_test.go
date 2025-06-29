@@ -20,11 +20,12 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 )
 
 type TemplateServiceTestSuite struct {
 	suite.Suite
-	service       services.CodeTemplateServiceInterface
+	service       contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool
@@ -38,7 +39,7 @@ func (suite *TemplateServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = *services.NewCodeTemplateService(suite.environment)
+	suite.service = services.NewCodeTemplateService(suite.environment)
 
 	suite.T().Log("Template creation completed")
 }

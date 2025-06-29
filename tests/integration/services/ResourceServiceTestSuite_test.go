@@ -3,6 +3,7 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/structs/resource"
@@ -24,7 +25,7 @@ import (
 
 type ResourceServiceTestSuite struct {
 	suite.Suite
-	service       services.ObjectResourceServiceInterface
+	service       contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool
@@ -38,7 +39,7 @@ func (suite *ResourceServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = *services.NewObjectResourceService(suite.environment)
+	suite.service = services.NewObjectResourceService(suite.environment)
 
 	suite.T().Log("Resource creation completed")
 }

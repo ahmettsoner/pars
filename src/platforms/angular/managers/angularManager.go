@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strings"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
@@ -276,7 +277,7 @@ func (s AngularManager) CreateProjectFolder(project applicationproject.ProjectSp
 	return foldePath, nil
 }
 
-func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 	for _, _package := range packages {
 
 		packageName := _package.Name
@@ -295,7 +296,7 @@ func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSp
 	return nil
 }
 
-func (s AngularManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s AngularManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	for _, _package := range packages {
 
@@ -378,14 +379,14 @@ func (s AngularManager) GetGroupFileName(project applicationproject.ProjectSpeci
 	return fmt.Sprintf("package.json")
 }
 
-func (s AngularManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.Layer, error) {
+func (s AngularManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error) {
 
 	folders, err := s.ListFoldersFromProjectDefinition(projectSpecification)
 	if err != nil {
 		return nil, err
 	}
 
-	layers := make([]applicationproject.Layer, 0)
+	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
 		for _, projectLayer := range projectSpecification.Configuration.Layers {
 

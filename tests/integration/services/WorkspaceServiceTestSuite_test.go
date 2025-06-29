@@ -15,12 +15,13 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/schemas"
 )
 
 type WorkspaceServiceTestSuite struct {
 	suite.Suite
-	service       services.WorkspaceServiceInterface
+	service       contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool

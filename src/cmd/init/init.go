@@ -14,6 +14,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/application/contracts"
 )
 
 type InitOptions struct {
@@ -23,7 +24,7 @@ type InitOptions struct {
 
 var commandOptions InitOptions
 var maxArgumentCount int = 2
-var workspaceService *services.WorkspaceService
+var workspaceService contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]
 
 var InitCmd = &cobra.Command{
 	Use:               "init [name] [path]",

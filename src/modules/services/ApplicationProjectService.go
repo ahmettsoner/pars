@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
@@ -22,18 +23,18 @@ import (
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
+	applicationProject "parsdevkit.net/application/structs/project"
 )
 
 type ApplicationProjectService struct {
-	ApplicationProjectServiceInterface
-	// services.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	// contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	workspaceRespository *repositories.WorkspaceRepository
 	groupRespository     *repositories.GroupRepository
 	projectRespository   *repositories.ProjectRepository
 	settingsRespository  *repositories.SettingsRepository
 }
 
-func NewApplicationProjectService(environment string) *ApplicationProjectService {
+func NewApplicationProjectService(environment string) contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
 	dbContext := contexts.NewDbContext(environment)
 	return &ApplicationProjectService{
 		workspaceRespository: repositories.NewWorkspaceRepository(dbContext),
@@ -156,7 +157,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 
 	return result, nil
 }
-func (s ApplicationProjectService) AddPackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationproject.Package) error {
+func (s ApplicationProjectService) AddPackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationProject.Package) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
@@ -169,7 +170,7 @@ func (s ApplicationProjectService) AddPackageToProject(model applicationproject.
 	return nil
 
 }
-func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationproject.Package) error {
+func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationProject.Package) error {
 	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
@@ -263,7 +264,7 @@ func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.
 	return foldersRelativePath, nil
 }
 
-func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationproject.Layer) error {
+func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationProject.Layer) error {
 	for _, layer := range layers {
 		_, err := s.CreateProjectFolder(project, layer.Path)
 		if err != nil {
@@ -273,7 +274,7 @@ func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.
 
 	return nil
 }
-func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationproject.Layer) error {
+func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationProject.Layer) error {
 	for _, layer := range layers {
 		_, err := s.DeleteProjectFolder(project, layer.Path)
 		if err != nil {
@@ -300,7 +301,7 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 
 	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Header.Name, layer)
 
-	var projectLayer *applicationproject.Layer = nil
+	var projectLayer *applicationProject.Layer = nil
 	for _, layerItem := range model.Specifications.Configuration.Layers {
 		if layerItem.Name == layer {
 			projectLayer = &layerItem
@@ -642,50 +643,50 @@ func (s *ApplicationProjectService) CheckIfWorkingOnProject() (*applicationproje
 }
 
 // OK!
-func (s *ApplicationProjectService) ValidateProjectStructure(model applicationproject.ProjectSpecification) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectStructure(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := platformsCommon.ManagerFactory(model.Platform.Type)
+	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project File Structure Validasyon, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project File Structure Validasyon, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	if !utils.IsEmpty(model.Group) {
-		state, err := projectManager.IsGroupFolderExists(model)
+	if !utils.IsEmpty(model.Specifications.Group) {
+		state, err := projectManager.IsGroupFolderExists(model.Specifications)
 		if err != nil {
-			return false, fmt.Errorf("xxx: Application Project File Structure Validasyon sırasında Group dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+			return false, fmt.Errorf("xxx: Application Project File Structure Validasyon sırasında Group dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 		}
 		if !state {
 			return false, nil
 		}
 
-		state, err = projectManager.IsGroupFileExists(model)
+		state, err = projectManager.IsGroupFileExists(model.Specifications)
 		if err != nil {
-			return false, fmt.Errorf("xxx: Application ProjeProject File Structure ct Validasyon sırasında Group dosya(lar/s)ı varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+			return false, fmt.Errorf("xxx: Application ProjeProject File Structure ct Validasyon sırasında Group dosya(lar/s)ı varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 		}
 		if !state {
 			return false, nil
 		}
 	}
 
-	state, err := projectManager.IsProjectFolderExists(model)
+	state, err := projectManager.IsProjectFolderExists(model.Specifications)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 	if !state {
 		return false, nil
 	}
 
-	state, err = projectManager.IsProjectFileExists(model)
+	state, err = projectManager.IsProjectFileExists(model.Specifications)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında dosya(lar/s)ı varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında dosya(lar/s)ı varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 	if !state {
 		return false, nil
 	}
 
-	state, err = projectManager.IsLayerFoldersExists(model)
+	state, err = projectManager.IsLayerFoldersExists(model.Specifications)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında Layer dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project File Structure  Validasyon sırasında Layer dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 	if !state {
 		return false, nil
@@ -693,16 +694,16 @@ func (s *ApplicationProjectService) ValidateProjectStructure(model applicationpr
 
 	return true, nil
 }
-func (s *ApplicationProjectService) ValidateProjectDependency(model applicationproject.ProjectSpecification, _package applicationproject.Package) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectDependency(model applicationproject.ProjectBaseStruct, _package applicationProject.Package) (bool, error) {
 
-	projectManager, err := platformsCommon.ManagerFactory(model.Platform.Type)
+	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	packages, err := projectManager.ListPackagesFromProject(model)
+	packages, err := projectManager.ListPackagesFromProject(model.Specifications)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken hata oluştu: '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 
 	for _, projectPackage := range packages {
@@ -714,17 +715,17 @@ func (s *ApplicationProjectService) ValidateProjectDependency(model applicationp
 	return false, nil
 }
 
-func (s *ApplicationProjectService) ValidateProjectDependencies(model applicationproject.ProjectSpecification) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectDependencies(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := platformsCommon.ManagerFactory(model.Platform.Type)
+	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	for _, _package := range model.Configuration.Dependencies {
-		isValid, err := projectManager.HasPackageOnProject(model, _package)
+	for _, _package := range model.Specifications.Configuration.Dependencies {
+		isValid, err := projectManager.HasPackageOnProject(model.Specifications, _package)
 		if err != nil {
-			return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+			return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 		}
 		if !isValid {
 			return false, nil
@@ -734,17 +735,17 @@ func (s *ApplicationProjectService) ValidateProjectDependencies(model applicatio
 	return true, nil
 }
 
-func (s *ApplicationProjectService) ValidateProjectReferences(model applicationproject.ProjectSpecification) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectReferences(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := platformsCommon.ManagerFactory(model.Platform.Type)
+	projectManager, err := platformsCommon.ManagerFactory(model.Specifications.Platform.Type)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Name, err)
+		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	for _, reference := range model.Configuration.References {
-		isValid, err := projectManager.HasReferenceOnProject(model, reference.Specifications)
+	for _, reference := range model.Specifications.Configuration.References {
+		isValid, err := projectManager.HasReferenceOnProject(model.Specifications, reference.Specifications)
 		if err != nil {
-			return false, fmt.Errorf("xxx: Application Project Reference Validasyon sırasında projede referans kontrol edilirken hata oluştu: '%s'\n%w", model.Name, err)
+			return false, fmt.Errorf("xxx: Application Project Reference Validasyon sırasında projede referans kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 		}
 		if !isValid {
 			return false, nil
@@ -799,7 +800,7 @@ func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicati
 	}
 }
 
-func (s *ApplicationProjectService) Remove(name string, workspaceName string, force bool, permanent bool) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Remove(name string, workspaceName string, force bool, permanent bool) (*applicationproject.ProjectBaseStruct, error) {
 	logrus.Debugf("project(s) will be %v removing", name)
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
@@ -834,7 +835,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -933,7 +934,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			}
 		}
 
-		return &project.Specifications, nil
+		return &project, nil
 	}
 }
 
@@ -997,7 +998,7 @@ func (s ApplicationProjectService) GetHash(name string, workspaceName string) (s
 	return entity.Hash, nil
 }
 
-func (s *ApplicationProjectService) Build(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Build(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
@@ -1031,7 +1032,7 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1070,10 +1071,10 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project Build aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1107,7 +1108,7 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1148,10 +1149,10 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Application Project Clean aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1185,7 +1186,7 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1226,10 +1227,10 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 		return nil, fmt.Errorf("xxx: Application Project Clean aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) Install(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Install(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1263,7 +1264,7 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1304,10 +1305,10 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Application Project Install aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) Test(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Test(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1340,7 +1341,7 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1381,10 +1382,10 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 		return nil, fmt.Errorf("xxx: Application Project Test aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) Release(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Release(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1418,7 +1419,7 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1459,10 +1460,10 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Application Project Release aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
-func (s *ApplicationProjectService) Run(name string, workspaceName string) (*applicationproject.ProjectSpecification, error) {
+func (s *ApplicationProjectService) Run(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1496,7 +1497,7 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectSpecification
+		var latestValue *applicationproject.ProjectBaseStruct
 		for _, entity := range *projectEntities {
 			var project applicationproject.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
@@ -1537,7 +1538,7 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 		return nil, fmt.Errorf("xxx: Application Project Run aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	return &project.Specifications, nil
+	return &project, nil
 }
 
 func (s *ApplicationProjectService) getDirectories(currentDir string) []string {

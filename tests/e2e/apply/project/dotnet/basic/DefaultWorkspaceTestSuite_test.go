@@ -90,15 +90,15 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
-	projectStructure, err := service.ValidateProjectStructure(project.Specifications)
+	projectStructure, err := service.ValidateProjectStructure(*project)
 	require.NoError(suite.T(), err, "Validation of the project structure in a group failed.")
 	assert.Equal(suite.T(), true, projectStructure)
 
-	projectReference, err := service.ValidateProjectReferences(project.Specifications)
+	projectReference, err := service.ValidateProjectReferences(*project)
 	require.NoError(suite.T(), err, "Validation of the project references failed.")
 	assert.Equal(suite.T(), true, projectReference)
 
-	projectPackages, err := service.ValidateProjectDependencies(project.Specifications)
+	projectPackages, err := service.ValidateProjectDependencies(*project)
 	require.NoError(suite.T(), err, "Validation of the project packages failed.")
 	assert.Equal(suite.T(), true, projectPackages)
 
@@ -134,15 +134,15 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnl
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
-	projectStructure, err := service.ValidateProjectStructure(project.Specifications)
+	projectStructure, err := service.ValidateProjectStructure(*project)
 	require.NoError(suite.T(), err, "Validation of the project structure in a group failed.")
 	assert.Equal(suite.T(), true, projectStructure)
 
-	projectReference, err := service.ValidateProjectReferences(project.Specifications)
+	projectReference, err := service.ValidateProjectReferences(*project)
 	require.NoError(suite.T(), err, "Validation of the project references failed.")
 	assert.Equal(suite.T(), true, projectReference)
 
-	projectPackages, err := service.ValidateProjectDependencies(project.Specifications)
+	projectPackages, err := service.ValidateProjectDependencies(*project)
 	require.NoError(suite.T(), err, "Validation of the project packages failed.")
 	assert.Equal(suite.T(), true, projectPackages)
 
@@ -192,15 +192,15 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
-	projectStructure, err := service.ValidateProjectStructure(project.Specifications)
+	projectStructure, err := service.ValidateProjectStructure(*project)
 	require.NoError(suite.T(), err, "Validation of the project structure in a group failed.")
 	assert.Equal(suite.T(), true, projectStructure)
 
-	projectReference, err := service.ValidateProjectReferences(project.Specifications)
+	projectReference, err := service.ValidateProjectReferences(*project)
 	require.NoError(suite.T(), err, "Validation of the project references failed.")
 	assert.Equal(suite.T(), true, projectReference)
 
-	projectPackages, err := service.ValidateProjectDependencies(project.Specifications)
+	projectPackages, err := service.ValidateProjectDependencies(*project)
 	require.NoError(suite.T(), err, "Validation of the project packages failed.")
 	assert.Equal(suite.T(), true, projectPackages)
 
@@ -240,15 +240,15 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
-	projectStructure, err := service.ValidateProjectStructure(project.Specifications)
+	projectStructure, err := service.ValidateProjectStructure(*project)
 	require.NoError(suite.T(), err, "Validation of the project structure in a group failed.")
 	assert.Equal(suite.T(), true, projectStructure)
 
-	projectReference, err := service.ValidateProjectReferences(project.Specifications)
+	projectReference, err := service.ValidateProjectReferences(*project)
 	require.NoError(suite.T(), err, "Validation of the project references failed.")
 	assert.Equal(suite.T(), true, projectReference)
 
-	projectPackages, err := service.ValidateProjectDependencies(project.Specifications)
+	projectPackages, err := service.ValidateProjectDependencies(*project)
 	require.NoError(suite.T(), err, "Validation of the project packages failed.")
 	assert.Equal(suite.T(), true, projectPackages)
 
@@ -288,15 +288,15 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject_WithLayer_NameOnl
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
-	projectStructure, err := service.ValidateProjectStructure(project.Specifications)
+	projectStructure, err := service.ValidateProjectStructure(*project)
 	require.NoError(suite.T(), err, "Validation of the project structure in a group failed.")
 	assert.Equal(suite.T(), true, projectStructure)
 
-	projectReference, err := service.ValidateProjectReferences(project.Specifications)
+	projectReference, err := service.ValidateProjectReferences(*project)
 	require.NoError(suite.T(), err, "Validation of the project references failed.")
 	assert.Equal(suite.T(), true, projectReference)
 
-	projectPackages, err := service.ValidateProjectDependencies(project.Specifications)
+	projectPackages, err := service.ValidateProjectDependencies(*project)
 	require.NoError(suite.T(), err, "Validation of the project packages failed.")
 	assert.Equal(suite.T(), true, projectPackages)
 

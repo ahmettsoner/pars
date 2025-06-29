@@ -23,11 +23,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -96,7 +97,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -139,7 +140,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -178,7 +179,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -223,7 +224,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -262,7 +263,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -310,7 +311,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -350,7 +351,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)
@@ -394,7 +395,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project.Specifications)
+	validateProjectDependencies, err := suite.service.ValidateProjectReferences(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validateProjectDependencies)

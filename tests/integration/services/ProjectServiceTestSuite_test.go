@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
@@ -21,11 +22,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -78,10 +80,10 @@ func (suite *ProjectServiceTestSuite) Test_ListProjects_BySetAndLayer_SingleLaye
 
 	project1 := *objects.BasicProject_WithName(projectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project1.Specifications.Set = projectSet
-	project1.Specifications.Configuration.Layers = append(project1.Specifications.Configuration.Layers, applicationproject.NewLayer_NameOnly("sample:layer"))
+	project1.Specifications.Configuration.Layers = append(project1.Specifications.Configuration.Layers, applicationProject.NewLayer_NameOnly("sample:layer"))
 	project2 := *objects.BasicProject_WithName(projectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project2.Specifications.Set = projectSet
-	project2.Specifications.Configuration.Layers = append(project2.Specifications.Configuration.Layers, applicationproject.NewLayer_NameOnly("sample:layer"))
+	project2.Specifications.Configuration.Layers = append(project2.Specifications.Configuration.Layers, applicationProject.NewLayer_NameOnly("sample:layer"))
 
 	temp1, err := suite.service.Create(project1, false)
 	require.NoError(suite.T(), err, "Failed to save project")
@@ -115,16 +117,16 @@ func (suite *ProjectServiceTestSuite) Test_ListProjects_BySetAndLayer_MultipleLa
 	project1 := *objects.BasicProject_WithName(projectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project1.Specifications.Set = projectSet
 	project1.Specifications.Configuration.Layers = append(project1.Specifications.Configuration.Layers,
-		applicationproject.NewLayer_NameOnly("sample:layer"),
-		applicationproject.NewLayer_NameOnly("sample:layer2"),
-		applicationproject.NewLayer_NameOnly("sample:layer3"),
+		applicationProject.NewLayer_NameOnly("sample:layer"),
+		applicationProject.NewLayer_NameOnly("sample:layer2"),
+		applicationProject.NewLayer_NameOnly("sample:layer3"),
 	)
 	project2 := *objects.BasicProject_WithName(projectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project2.Specifications.Set = projectSet
 	project2.Specifications.Configuration.Layers = append(project2.Specifications.Configuration.Layers,
-		applicationproject.NewLayer_NameOnly("sample:layer"),
-		applicationproject.NewLayer_NameOnly("sample:layer2"),
-		applicationproject.NewLayer_NameOnly("sample:layer3"),
+		applicationProject.NewLayer_NameOnly("sample:layer"),
+		applicationProject.NewLayer_NameOnly("sample:layer2"),
+		applicationProject.NewLayer_NameOnly("sample:layer3"),
 	)
 
 	temp1, err := suite.service.Create(project1, false)

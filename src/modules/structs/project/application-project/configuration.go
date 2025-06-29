@@ -11,8 +11,8 @@ import (
 )
 
 type Configuration struct {
-	Layers       []Layer
-	Dependencies []Package
+	Layers       []applicationProject.Layer
+	Dependencies []applicationProject.Package
 	References   []ProjectBaseStruct
 	Options      []string
 	Modules      []string
@@ -20,7 +20,7 @@ type Configuration struct {
 	Patterns     []string
 }
 
-func NewConfiguration(layers []Layer, dependencies []Package, references []ProjectBaseStruct, options, modules, components, patterns []string) Configuration {
+func NewConfiguration(layers []applicationProject.Layer, dependencies []applicationProject.Package, references []ProjectBaseStruct, options, modules, components, patterns []string) Configuration {
 	return Configuration{
 		Layers:       layers,
 		Dependencies: dependencies,
@@ -34,8 +34,8 @@ func NewConfiguration(layers []Layer, dependencies []Package, references []Proje
 
 func NewConfiguration_Empty() Configuration {
 	return Configuration{
-		Layers:       []Layer(nil),
-		Dependencies: []Package(nil),
+		Layers:       []applicationProject.Layer(nil),
+		Dependencies: []applicationProject.Package(nil),
 		References:   []ProjectBaseStruct(nil),
 		Options:      []string(nil),
 		Modules:      []string(nil),
@@ -51,8 +51,8 @@ func (s *Configuration) AppendReferences(references ...ProjectBaseStruct) {
 func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempObject struct {
-		Layers       []Layer                                `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
-		Dependencies []Package                              `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
+		Layers       []applicationProject.Layer             `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
+		Dependencies []applicationProject.Package           `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
 		References   []applicationProject.ProjectIdentifier `yaml:"References"`   //Burda inline defination eklenmeli, Workspace::Group/Name formatında "pars::core/utils, pars::service/project" gibi
 		Options      []string                               `yaml:"Options"`
 		Modules      []string                               `yaml:"Modules"`

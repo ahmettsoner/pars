@@ -2,6 +2,7 @@ package objects
 
 import (
 	"parsdevkit.net/application/models/label"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
@@ -36,8 +37,8 @@ func BasicProject_WithName(name string, projectType models.ProjectType, platform
 			applicationproject.NewRuntime_Basic(runtime),
 			applicationproject.NewSchema(),
 			applicationproject.NewConfiguration(
-				[]applicationproject.Layer(nil),
-				[]applicationproject.Package(nil),
+				[]applicationProject.Layer(nil),
+				[]applicationProject.Package(nil),
 				[]applicationproject.ProjectBaseStruct(nil),
 				[]string(nil),
 				[]string(nil),

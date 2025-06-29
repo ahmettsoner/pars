@@ -18,12 +18,15 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	applicationproject "parsdevkit.net/structs/project/application-project"
+
 	"github.com/stretchr/testify/suite"
+	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string
@@ -80,7 +83,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_WithoutPackage() {
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -105,7 +108,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SinglePackage() {
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)
@@ -130,7 +133,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultiplePackage() 
 	require.NoError(suite.T(), err, "Failed to retrieve project")
 	assert.Equal(suite.T(), project, *existingProject)
 
-	validProjectStructure, err := suite.service.ValidateProjectStructure(project.Specifications)
+	validProjectStructure, err := suite.service.ValidateProjectStructure(project)
 	require.NoError(suite.T(), err, "Failed to validate project structure")
 	assert.Equal(suite.T(), project, *temp)
 	assert.True(suite.T(), validProjectStructure)

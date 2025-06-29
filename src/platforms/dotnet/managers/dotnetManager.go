@@ -507,7 +507,7 @@ func removeFolderFromItemProperty(xmlContent []byte, folderPath string) ([]byte,
 	return m.XmlIndent("", "    ")
 }
 
-func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	for _, _package := range packages {
 
@@ -527,7 +527,7 @@ func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpe
 	return nil
 }
 
-func (s DotnetManager) ListPackagesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.Package, error) {
+func (s DotnetManager) ListPackagesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Package, error) {
 
 	commandArgs := []string{"list", s.GetProjectFileRelativePath(projectSpecification), "package"}
 
@@ -540,15 +540,15 @@ func (s DotnetManager) ListPackagesFromProject(projectSpecification applicationp
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	packages := make([]applicationproject.Package, 0)
+	packages := make([]applicationProject.Package, 0)
 	for _, match := range matches {
-		packages = append(packages, applicationproject.NewPackage(string(match[1]), string(match[2])))
+		packages = append(packages, applicationProject.NewPackage(string(match[1]), string(match[2])))
 	}
 
 	return packages, nil
 }
 
-func (s DotnetManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationproject.Package) error {
+func (s DotnetManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
 
 	for _, _package := range packages {
 		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "package", _package.Name)
@@ -637,7 +637,7 @@ func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectSpeci
 func (s DotnetManager) GetGroupFileName(project applicationproject.ProjectSpecification) string {
 	return fmt.Sprintf("%v.sln", project.GroupObject.Name)
 }
-func (s DotnetManager) HasPackageOnProject(project applicationproject.ProjectSpecification, _package applicationproject.Package) (bool, error) {
+func (s DotnetManager) HasPackageOnProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) (bool, error) {
 
 	packages, err := s.ListPackagesFromProject(project)
 	if err != nil {
@@ -782,14 +782,14 @@ func (s DotnetManager) ListFoldersFromProjectDefinition(proj applicationproject.
 	return folders, nil
 }
 
-func (s DotnetManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.Layer, error) {
+func (s DotnetManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error) {
 
 	folders, err := s.ListFoldersFromProjectDefinition(projectSpecification)
 	if err != nil {
 		return nil, err
 	}
 
-	layers := make([]applicationproject.Layer, 0)
+	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
 		for _, projectLayer := range projectSpecification.Configuration.Layers {
 

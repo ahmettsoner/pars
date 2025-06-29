@@ -16,6 +16,9 @@ import (
 	"parsdevkit.net/core/test/faker"
 	"parsdevkit.net/core/test/objects"
 
+	"parsdevkit.net/application/contracts"
+	applicationproject "parsdevkit.net/structs/project/application-project"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -23,7 +26,7 @@ import (
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       services.ApplicationProjectServiceInterface
+	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	environment   string
 	testArea      string
 	workspaceName string

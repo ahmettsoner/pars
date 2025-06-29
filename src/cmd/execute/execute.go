@@ -69,7 +69,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Failed to execute project '%s'\n%w", commandOptions.Name, err)
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Project '%s' executed successfully\n", project.Name)
+	fmt.Fprintf(os.Stdout, "✔ Project '%s' executed successfully\n", project.Header.Name)
 
 	return nil
 }
