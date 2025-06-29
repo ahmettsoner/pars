@@ -2,6 +2,7 @@ package dataresource
 
 import (
 	"parsdevkit.net/application/models/label"
+	applicationResource "parsdevkit.net/application/structs/resource"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"
@@ -10,7 +11,7 @@ import (
 )
 
 type ResourceSpecification struct {
-	ResourceIdentifier
+	applicationResource.ResourceIdentifier
 	Path            string
 	Set             string
 	WorkspaceObject workspace.WorkspaceSpecification
@@ -23,7 +24,7 @@ type ResourceSpecification struct {
 
 func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, data any, workspaceObject workspace.WorkspaceSpecification) ResourceSpecification {
 	return ResourceSpecification{
-		ResourceIdentifier: NewResourceIdentifier(id, name, workspace),
+		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
 		Path:               path,
 		Set:                set,
@@ -49,7 +50,7 @@ func (s *ResourceSpecification) IsPathExists() bool {
 func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		ResourceIdentifier
+		applicationResource.ResourceIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

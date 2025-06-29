@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/models/label"
+	applicationTemplate "parsdevkit.net/application/structs/template"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/errors"
@@ -12,7 +13,7 @@ import (
 )
 
 type TemplateSpecification struct {
-	TemplateIdentifier
+	applicationTemplate.TemplateIdentifier
 	Set             string
 	Path            string
 	Package         []string
@@ -25,7 +26,7 @@ type TemplateSpecification struct {
 
 func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []Layer, template Template, workspaceObject workspace.WorkspaceSpecification) TemplateSpecification {
 	return TemplateSpecification{
-		TemplateIdentifier: NewTemplateIdentifier(id, name, workspace),
+		TemplateIdentifier: applicationTemplate.NewTemplateIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
 		Set:                set,
 		Path:               path,
@@ -75,7 +76,7 @@ func (s *TemplateSpecification) IsPathExists() bool {
 func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		TemplateIdentifier
+		applicationTemplate.TemplateIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/group"
+	applicationGroup "parsdevkit.net/application/structs/group"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data group.GroupIdentifier
+	var data applicationGroup.GroupIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupIdentifier(0, "CMD")
+	expected := applicationGroup.NewGroupIdentifier(0, "CMD")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data group.GroupIdentifier
+	var data applicationGroup.GroupIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupIdentifier(0, "CMD")
+	expected := applicationGroup.NewGroupIdentifier(0, "CMD")
 
 	// Assert
 	a.NoError(err)

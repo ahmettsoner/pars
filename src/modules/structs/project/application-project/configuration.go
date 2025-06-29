@@ -2,6 +2,7 @@ package applicationproject
 
 import (
 	"parsdevkit.net/application/models/label"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/group"
 
@@ -50,13 +51,13 @@ func (s *Configuration) AppendReferences(references ...ProjectBaseStruct) {
 func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempObject struct {
-		Layers       []Layer             `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
-		Dependencies []Package           `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
-		References   []ProjectIdentifier `yaml:"References"`   //Burda inline defination eklenmeli, Workspace::Group/Name formatında "pars::core/utils, pars::service/project" gibi
-		Options      []string            `yaml:"Options"`
-		Modules      []string            `yaml:"Modules"`
-		Components   []string            `yaml:"Components"`
-		Patterns     []string            `yaml:"Patterns"`
+		Layers       []Layer                                `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
+		Dependencies []Package                              `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
+		References   []applicationProject.ProjectIdentifier `yaml:"References"`   //Burda inline defination eklenmeli, Workspace::Group/Name formatında "pars::core/utils, pars::service/project" gibi
+		Options      []string                               `yaml:"Options"`
+		Modules      []string                               `yaml:"Modules"`
+		Components   []string                               `yaml:"Components"`
+		Patterns     []string                               `yaml:"Patterns"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {

@@ -1,6 +1,7 @@
 package commontask
 
 import (
+	applicationTask "parsdevkit.net/application/structs/task"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 	actionBase "parsdevkit.net/structs/task/actions"
@@ -8,7 +9,7 @@ import (
 )
 
 type TaskSpecification struct {
-	TaskIdentifier
+	applicationTask.TaskIdentifier
 	WorkspaceObject workspace.WorkspaceSpecification
 	Trigger         Trigger
 	Retry           Retry
@@ -31,7 +32,7 @@ type TaskSpecification struct {
 
 func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry Retry, timeout int, concurrency int, parameters map[string]interface{}, tasks []actionBase.ActionInterface, workspaceObject workspace.WorkspaceSpecification) TaskSpecification {
 	return TaskSpecification{
-		TaskIdentifier:  NewTaskIdentifier(id, name, workspace),
+		TaskIdentifier:  applicationTask.NewTaskIdentifier(id, name, workspace),
 		WorkspaceObject: workspaceObject,
 		Trigger:         trigger,
 		Retry:           retry,
@@ -51,7 +52,7 @@ func (e TaskSpecification) Validate() error {
 func (s *TaskSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		TaskIdentifier
+		applicationTask.TaskIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

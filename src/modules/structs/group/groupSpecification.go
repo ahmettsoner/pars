@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"strings"
 
+	applicationGroup "parsdevkit.net/application/structs/group"
 	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
 )
 
 type GroupSpecification struct {
-	GroupIdentifier
+	applicationGroup.GroupIdentifier
 	Path    string
 	Package []string
 }
 
 func NewGroupSpecification(id int, name, path string, _package []string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: NewGroupIdentifier(id, name),
+		GroupIdentifier: applicationGroup.NewGroupIdentifier(id, name),
 		Path:            path,
 		Package:         _package,
 	}
@@ -25,7 +26,7 @@ func NewGroupSpecification(id int, name, path string, _package []string) GroupSp
 
 func NewGroupSpecification_Empty(name string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: NewGroupIdentifier(0, name),
+		GroupIdentifier: applicationGroup.NewGroupIdentifier(0, name),
 	}
 }
 
@@ -51,7 +52,7 @@ func (s *GroupSpecification) GetRelativeGroupPath() string {
 func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		GroupIdentifier
+		applicationGroup.GroupIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

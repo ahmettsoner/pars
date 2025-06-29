@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/workspace"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data workspace.WorkspaceIdentifier
+	var data applicationWorkspace.WorkspaceIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := workspace.NewWorkspaceIdentifier(0, "CMD")
+	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data workspace.WorkspaceIdentifier
+	var data applicationWorkspace.WorkspaceIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := workspace.NewWorkspaceIdentifier(0, "CMD")
+	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD")
 
 	// Assert
 	a.NoError(err)

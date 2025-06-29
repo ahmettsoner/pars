@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	commontask "parsdevkit.net/structs/task/common-task"
+	applicationTask "parsdevkit.net/application/structs/task"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data commontask.TaskIdentifier
+	var data applicationTask.TaskIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := commontask.NewTaskIdentifier(0, "CMD", "")
+	expected := applicationTask.NewTaskIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data commontask.TaskIdentifier
+	var data applicationTask.TaskIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := commontask.NewTaskIdentifier(0, "CMD", "")
+	expected := applicationTask.NewTaskIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/models/label"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/workspace"
@@ -17,7 +18,7 @@ import (
 )
 
 type ProjectSpecification struct {
-	ProjectIdentifier
+	applicationProject.ProjectIdentifier
 	Platform        Platform
 	ProjectType     models.ProjectType
 	Set             string
@@ -34,7 +35,7 @@ type ProjectSpecification struct {
 
 func NewProjectSpecification(id int, name, group, workspace string, projectType models.ProjectType, groupObject group.GroupSpecification, set string, _package []string, labels []label.Label, path []string, workspaceObject workspace.WorkspaceSpecification, platform Platform, runtime Runtime, schema Schema, configuration Configuration) ProjectSpecification {
 	return ProjectSpecification{
-		ProjectIdentifier: NewProjectIdentifier(id, name, group, workspace),
+		ProjectIdentifier: applicationProject.NewProjectIdentifier(id, name, group, workspace),
 		ProjectType:       projectType,
 		GroupObject:       groupObject,
 		Set:               set,
@@ -209,7 +210,7 @@ func (s *ProjectSpecification) GetAbsoluteProjectLayerPath(layer string) string 
 func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		ProjectIdentifier
+		applicationProject.ProjectIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

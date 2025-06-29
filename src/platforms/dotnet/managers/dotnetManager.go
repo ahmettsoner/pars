@@ -10,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -691,7 +692,7 @@ func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectSpec
 	projects := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		projects = append(projects, applicationproject.ProjectSpecification{
-			ProjectIdentifier: applicationproject.ProjectIdentifier{Name: string(match[2]), Group: proj.Group, Workspace: proj.Workspace},
+			ProjectIdentifier: applicationProject.ProjectIdentifier{Name: string(match[2]), Group: proj.Group, Workspace: proj.Workspace},
 			Path:              []string{filepath.Dir(string(match[3]))},
 		},
 		)

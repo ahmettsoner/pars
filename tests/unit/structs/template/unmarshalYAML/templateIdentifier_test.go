@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	codetemplate "parsdevkit.net/structs/template/code-template"
+	applicationTemplate "parsdevkit.net/application/structs/template"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data codetemplate.TemplateIdentifier
+	var data applicationTemplate.TemplateIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateIdentifier(0, "CMD", "")
+	expected := applicationTemplate.NewTemplateIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data codetemplate.TemplateIdentifier
+	var data applicationTemplate.TemplateIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateIdentifier(0, "CMD", "")
+	expected := applicationTemplate.NewTemplateIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)

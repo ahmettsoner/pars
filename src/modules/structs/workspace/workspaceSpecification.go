@@ -3,6 +3,7 @@ package workspace
 import (
 	"path/filepath"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
@@ -14,13 +15,13 @@ const (
 )
 
 type WorkspaceSpecification struct {
-	WorkspaceIdentifier
+	applicationWorkspace.WorkspaceIdentifier
 	Path string
 }
 
 func NewWorkspaceSpecification(id int, name, path string) WorkspaceSpecification {
 	return WorkspaceSpecification{
-		WorkspaceIdentifier: NewWorkspaceIdentifier(id, name),
+		WorkspaceIdentifier: applicationWorkspace.NewWorkspaceIdentifier(id, name),
 		Path:                path,
 	}
 }
@@ -57,7 +58,7 @@ func (s WorkspaceSpecification) GetResourcesFolder() string {
 func (s *WorkspaceSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		WorkspaceIdentifier
+		applicationWorkspace.WorkspaceIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {
