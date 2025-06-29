@@ -24,9 +24,11 @@ func GetContext() *core.ApplicationContext {
 		}
 	}
 
-	context := core.ApplicationContext{
-		CurrentWorkspace: currentWorkspace.GetHeader(),
+	if currentWorkspace != nil {
+		context := core.ApplicationContext{
+			CurrentWorkspace: currentWorkspace.GetHeader(),
+		}
+		return &context
 	}
-
-	return &context
+	return nil
 }

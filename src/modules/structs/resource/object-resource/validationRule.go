@@ -1,8 +1,9 @@
 package objectresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type ValidationRuleInterface interface {
@@ -23,9 +24,10 @@ func NewValidationRule(_type, name string, message Message) ValidationRule {
 	}
 }
 func (e ValidationRule) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Type, v.Required),
-	)
+	if utils.IsEmpty(e.Type) {
+		return &errors.ErrFieldRequired{FieldName: "Type"}
+	}
+	return nil
 }
 
 func (s *ValidationRule) UnmarshalYAML(unmarshal func(interface{}) error) error {

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
 
@@ -40,10 +40,13 @@ func NewResourceSpecification(id int, name, workspace, path, set string, _packag
 }
 
 func (e ResourceSpecification) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-		v.Field(&e.Set, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	if utils.IsEmpty(e.Set) {
+		return &errors.ErrFieldRequired{FieldName: "Set"}
+	}
+	return nil
 }
 func (s *ResourceSpecification) GetPackageString() string {
 	return strings.Join(s.Package, "/")

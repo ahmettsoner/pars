@@ -7,7 +7,6 @@ import (
 
 	"parsdevkit.net/core/errors"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,9 +22,10 @@ func NewOption(key string, value interface{}) Option {
 	}
 }
 func (e Option) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Key, v.Required),
-	)
+	if utils.IsEmpty(e.Key) {
+		return &errors.ErrFieldRequired{FieldName: "Key"}
+	}
+	return nil
 }
 
 func (s *Option) IsKeyExists() bool {

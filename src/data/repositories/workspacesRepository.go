@@ -16,8 +16,8 @@ type WorkspaceRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewWorkspaceRepository(environment string) *WorkspaceRepository {
-	return &WorkspaceRepository{DbContext: contexts.New(environment)}
+func NewWorkspaceRepository(dbCtx *contexts.DbContext) *WorkspaceRepository {
+	return &WorkspaceRepository{DbContext: dbCtx}
 }
 
 func (s *WorkspaceRepository) Get(id int) (*entities.Workspace, error) {
@@ -34,7 +34,7 @@ func (s *WorkspaceRepository) Get(id int) (*entities.Workspace, error) {
 }
 func (s *WorkspaceRepository) GetByName(name string) (*entities.Workspace, error) {
 	entity := new(entities.Workspace)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Name') = ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') = ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -45,7 +45,7 @@ func (s *WorkspaceRepository) GetByName(name string) (*entities.Workspace, error
 }
 func (s *WorkspaceRepository) ListByNameStartWith(name string) (*([]entities.Workspace), error) {
 	var entities = make(([]entities.Workspace), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Name') LIKE ?", name+"%").Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') LIKE ?", name+"%").Find(&entities)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil

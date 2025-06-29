@@ -102,7 +102,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 			if err := data.Validate(); err != nil {
 				jsonObject, _ := json.ToJson(data)
-				return fmt.Errorf("group invalid data: '%s'\n%w", jsonObject, err)
+				return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 			}
 
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)

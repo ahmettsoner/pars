@@ -1,8 +1,9 @@
 package codetemplate
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type TemplateIdentifier struct {
@@ -19,9 +20,10 @@ func NewTemplateIdentifier(id int, name string, workspace string) TemplateIdenti
 	}
 }
 func (e TemplateIdentifier) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (s *TemplateIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

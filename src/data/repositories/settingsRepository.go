@@ -14,8 +14,8 @@ type SettingsRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewSettingsRepository(environment string) *SettingsRepository {
-	return &SettingsRepository{DbContext: contexts.New(environment)}
+func NewSettingsRepository(dbCtx *contexts.DbContext) *SettingsRepository {
+	return &SettingsRepository{DbContext: dbCtx}
 }
 
 func (s *SettingsRepository) Get(key string) (*entities.Settings, error) {

@@ -8,6 +8,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/core/schemas"
@@ -37,7 +38,8 @@ func (suite *WorkspaceRepositoryTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.repository = *repositories.NewWorkspaceRepository(suite.environment)
+	dbContext := contexts.NewDbContext(suite.environment)
+	suite.repository = *repositories.NewWorkspaceRepository(dbContext)
 
 	suite.T().Log("Project creation completed")
 }

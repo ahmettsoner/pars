@@ -12,6 +12,7 @@ import (
 
 	templateEngine "parsdevkit.net/templates/engines"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -25,9 +26,10 @@ type FileTemplateOperations struct {
 }
 
 func NewFileTemplateOperations(environment string) FileTemplateOperations {
+	dbContext := contexts.NewDbContext(environment)
 	return FileTemplateOperations{
 		environment:                 environment,
-		generationHistoryRepository: repositories.NewGenerationHistoryRepository(environment),
+		generationHistoryRepository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

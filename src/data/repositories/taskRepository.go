@@ -16,8 +16,8 @@ type TaskRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewTaskRepository(environment string) *TaskRepository {
-	return &TaskRepository{DbContext: contexts.New(environment)}
+func NewTaskRepository(dbCtx *contexts.DbContext) *TaskRepository {
+	return &TaskRepository{DbContext: dbCtx}
 }
 
 func (s *TaskRepository) Get(id int) (*entities.Task, error) {
@@ -35,7 +35,7 @@ func (s *TaskRepository) Get(id int) (*entities.Task, error) {
 
 func (s *TaskRepository) GetByName(name string) (*entities.Task, error) {
 	entity := new(entities.Task)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name')= ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name')= ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -46,7 +46,7 @@ func (s *TaskRepository) GetByName(name string) (*entities.Task, error) {
 }
 func (s *TaskRepository) GetByNameAndWorkspace(name, workspace string) (*entities.Task, error) {
 	entity := new(entities.Task)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -62,7 +62,7 @@ func (s *TaskRepository) ListBySetAndLayers(set string, layers ...string) (*([]e
 	SELECT tasks.*
 	FROM tasks
 	JOIN json_each(tasks.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
+	WHERE json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -77,7 +77,7 @@ func (s *TaskRepository) ListByWorkspaceSetAndLayers(workspace, set string, laye
 	SELECT tasks.*
 	FROM tasks
 	JOIN json_each(tasks.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
+	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -106,7 +106,7 @@ func (s *TaskRepository) ListByWorkspace(workspace string) (*([]entities.Task), 
 
 func (s *TaskRepository) ListByKind(kind string) (*([]entities.Task), error) {
 	var entities = make(([]entities.Task), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Kind') = ?", kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Kind') = ?", kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -115,7 +115,7 @@ func (s *TaskRepository) ListByKind(kind string) (*([]entities.Task), error) {
 
 func (s *TaskRepository) ListByWorkspaceAndKind(workspace, kind string) (*([]entities.Task), error) {
 	var entities = make(([]entities.Task), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Kind') = ?", workspace, kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Header.Kind') = ?", workspace, kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}

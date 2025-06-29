@@ -1,10 +1,10 @@
 package dataresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
 )
 
 type GroupIdentifier struct {
@@ -17,9 +17,10 @@ func NewGroupIdentifier(name string) GroupIdentifier {
 	}
 }
 func (e GroupIdentifier) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (s *GroupIdentifier) IsNameExists() bool {

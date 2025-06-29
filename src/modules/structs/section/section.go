@@ -1,12 +1,13 @@
 package section
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/structs/class"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type Section struct {
@@ -26,9 +27,10 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 }
 
 func (e Section) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.SectionIdentifier.Name, v.Required),
-	)
+	if utils.IsEmpty(e.SectionIdentifier.Name) {
+		return &errors.ErrFieldRequired{FieldName: "SectionIdentifier.Name"}
+	}
+	return nil
 }
 func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string

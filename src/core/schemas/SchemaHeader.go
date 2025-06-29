@@ -1,6 +1,8 @@
 package schemas
 
-import "gopkg.in/yaml.v3"
+import (
+	"gopkg.in/yaml.v3"
+)
 
 type SchemaHeader struct {
 	Type     StructType `yaml:"Type"`
@@ -19,6 +21,13 @@ func NewSchemaHeader(_type StructType, kind string, name string, metadata Metada
 }
 
 func (e SchemaHeader) Validate() error {
+	// if utils.IsEmpty(e.Type) {
+	// 	return &errors.ErrFieldRequired{FieldName: "Type"}
+	// }
+	// if utils.IsEmpty(e.Name) {
+	// 	return &errors.ErrFieldRequired{FieldName: "Name"}
+	// }
+
 	return nil
 }
 

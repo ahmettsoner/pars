@@ -105,8 +105,12 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 				commandOptions.Workspace = ""
 			}
+			appCtx := application.GetContext()
+			if appCtx == nil {
+				return fmt.Errorf("xxx: Current workspace bulunamadı")
+			}
 
-			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), commandOptions.Workspace)
+			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
 			ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
 			if err != nil {

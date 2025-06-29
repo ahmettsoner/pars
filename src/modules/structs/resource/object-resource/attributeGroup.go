@@ -3,7 +3,9 @@ package objectresource
 import (
 	"strconv"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/structs/option"
 
 	"gopkg.in/yaml.v3"
@@ -23,9 +25,10 @@ func NewAttributeGroup(group GroupIdentifier, order int, options []option.Option
 	}
 }
 func (e AttributeGroup) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Group.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Group.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Group.Name"}
+	}
+	return nil
 }
 
 func (s *AttributeGroup) UnmarshalYAML(unmarshal func(interface{}) error) error {

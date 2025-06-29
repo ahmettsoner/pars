@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/structs/resource"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,10 +24,11 @@ type DataResourceService struct {
 }
 
 func NewDataResourceService(environment string) *DataResourceService {
+	dbContext := contexts.NewDbContext(environment)
 	return &DataResourceService{
 		environment:                  environment,
-		resourceRepository:           repositories.NewResourceRepository(environment),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(environment),
+		resourceRepository:           repositories.NewResourceRepository(dbContext),
+		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

@@ -1,7 +1,8 @@
 package objectresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
 )
@@ -17,9 +18,10 @@ func NewMethodParameter(name string, _type DataType, order int, hint Message, de
 }
 
 func (e MethodParameter) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 func (s *MethodParameter) UnmarshalYAML(unmarshal func(interface{}) error) error {
 

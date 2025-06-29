@@ -86,7 +86,11 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	fmt.Println("*** Workspace Specific Resources ***")
 	fmt.Println()
 
-	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), commandOptions.Workspace)
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
 	objectResourceList, err := objectResourceService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {

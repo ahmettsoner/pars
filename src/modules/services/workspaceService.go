@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -33,11 +34,12 @@ type WorkspaceService struct {
 }
 
 func NewWorkspaceService(environment string) *WorkspaceService {
+	dbContext := contexts.NewDbContext(environment)
 	return &WorkspaceService{
 		environment:          environment,
-		workspaceRespository: repositories.NewWorkspaceRepository(environment),
-		projectRespository:   repositories.NewProjectRepository(environment),
-		settignsRespository:  repositories.NewSettingsRepository(environment),
+		workspaceRespository: repositories.NewWorkspaceRepository(dbContext),
+		projectRespository:   repositories.NewProjectRepository(dbContext),
+		settignsRespository:  repositories.NewSettingsRepository(dbContext),
 	}
 }
 func (s *WorkspaceService) correctWorkspaceName(name string) string {

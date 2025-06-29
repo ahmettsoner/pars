@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -30,9 +29,10 @@ func NewPackage_Basic(name string) Package {
 	}
 }
 func (e Package) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (s *Package) GetFullName() string {

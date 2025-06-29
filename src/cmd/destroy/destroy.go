@@ -57,7 +57,11 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(application.GetContext(), commandOptions.Workspace)
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
 		if err != nil {
 			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 		}
@@ -80,13 +84,17 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 				if err := data.Validate(); err != nil {
 					jsonObject, _ := json.ToJson(data)
-					return fmt.Errorf("group invalid data: '%s'\n%w", jsonObject, err)
+					return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 				}
 
 				fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 			}
 
-			err = application.DispatchEngineDestroy(application.GetContext(), result)
+			appCtx := application.GetContext()
+			if appCtx == nil {
+				return fmt.Errorf("xxx: Current workspace bulunamadı")
+			}
+			err = application.DispatchEngineDestroy(appCtx, result)
 			if err != nil {
 				log.Fatalf("Engine processing failed: %v", err)
 			}

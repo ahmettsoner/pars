@@ -1,8 +1,9 @@
 package actions
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type ActionInterface interface {
@@ -33,9 +34,10 @@ func NewAction(name string) Action {
 	}
 }
 func (e Action) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (a Action) GetName() string                         { return a.Name }

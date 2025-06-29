@@ -1,10 +1,9 @@
 package applicationproject
 
 import (
-	"encoding/json"
-
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type ProjectIdentifier struct {
@@ -23,9 +22,10 @@ func NewProjectIdentifier(id int, name string, group string, workspace string) P
 	}
 }
 func (e ProjectIdentifier) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (s *ProjectIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -53,28 +53,6 @@ func (s *ProjectIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) err
 	} else {
 		s.Name = value
 	}
-
-	return nil
-}
-
-func (s *ProjectIdentifier) UnmarshalJSON(data []byte) error {
-
-	var tempObject struct {
-		ID        int
-		Name      string
-		Group     string
-		Workspace string
-	}
-
-	err := json.Unmarshal(data, &tempObject)
-	if err != nil {
-		return err
-	}
-
-	s.ID = tempObject.ID
-	s.Name = tempObject.Name
-	s.Group = tempObject.Group
-	s.Workspace = tempObject.Workspace
 
 	return nil
 }

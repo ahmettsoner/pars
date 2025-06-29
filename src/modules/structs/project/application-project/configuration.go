@@ -1,8 +1,6 @@
 package applicationproject
 
 import (
-	"encoding/json"
-
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/label"
@@ -46,34 +44,6 @@ func NewConfiguration_Empty() Configuration {
 
 func (s *Configuration) AppendReferences(references ...ProjectBaseStruct) {
 	s.References = append(s.References, references...)
-}
-
-func (s *Configuration) UnmarshalJSON(data []byte) error {
-
-	var tempObject struct {
-		Layers       []Layer
-		Dependencies []Package
-		References   []ProjectBaseStruct
-		Options      []string
-		Modules      []string
-		Components   []string
-		Patterns     []string
-	}
-
-	err := json.Unmarshal(data, &tempObject)
-	if err != nil {
-		return err
-	}
-
-	s.Layers = tempObject.Layers
-	s.Dependencies = tempObject.Dependencies
-	s.References = tempObject.References
-	s.Options = tempObject.Options
-	s.Modules = tempObject.Modules
-	s.Components = tempObject.Components
-	s.Patterns = tempObject.Patterns
-
-	return nil
 }
 
 func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {

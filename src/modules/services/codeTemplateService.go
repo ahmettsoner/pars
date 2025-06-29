@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,10 +24,11 @@ type CodeTemplateService struct {
 }
 
 func NewCodeTemplateService(environment string) *CodeTemplateService {
+	dbContext := contexts.NewDbContext(environment)
 	return &CodeTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(environment),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(environment),
+		templateRespository:          repositories.NewTemplateRepository(dbContext),
+		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

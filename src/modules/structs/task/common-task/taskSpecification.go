@@ -1,10 +1,10 @@
 package commontask
 
 import (
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 	actionBase "parsdevkit.net/structs/task/actions"
 	"parsdevkit.net/structs/workspace"
-
-	v "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 type TaskSpecification struct {
@@ -43,9 +43,10 @@ func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry
 }
 
 func (e TaskSpecification) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 func (s *TaskSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 

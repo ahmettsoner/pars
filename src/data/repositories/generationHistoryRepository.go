@@ -15,8 +15,8 @@ type GenerationHistoryRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewGenerationHistoryRepository(environment string) *GenerationHistoryRepository {
-	return &GenerationHistoryRepository{DbContext: contexts.New(environment)}
+func NewGenerationHistoryRepository(dbCtx *contexts.DbContext) *GenerationHistoryRepository {
+	return &GenerationHistoryRepository{DbContext: dbCtx}
 }
 
 func (s *GenerationHistoryRepository) Get(id int) (*entities.GenerationHistory, error) {

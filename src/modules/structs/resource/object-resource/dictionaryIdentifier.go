@@ -1,8 +1,9 @@
 package objectresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -17,9 +18,10 @@ func NewDictionaryIdentifier(key string) DictionaryIdentifier {
 	}
 }
 func (e DictionaryIdentifier) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Key, v.Required),
-	)
+	if utils.IsEmpty(e.Key) {
+		return &errors.ErrFieldRequired{FieldName: "Key"}
+	}
+	return nil
 }
 
 func (s *DictionaryIdentifier) IsKeyExists() bool {

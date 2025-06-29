@@ -53,14 +53,17 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	appContext := application.GetContext()
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
 
-	if &appContext.CurrentWorkspace == nil {
+	if &appCtx.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")
 	} else {
 		if utils.IsEmpty(commandOptions.Name) {
-			if appContext != nil {
-				commandOptions.Name = appContext.CurrentWorkspace.Name
+			if appCtx != nil {
+				commandOptions.Name = appCtx.CurrentWorkspace.Name
 			} else {
 				return fmt.Errorf("Workspace cannot be accessable")
 			}

@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/structs/template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,10 +24,11 @@ type SharedTemplateService struct {
 }
 
 func NewSharedTemplateService(environment string) *SharedTemplateService {
+	dbContext := contexts.NewDbContext(environment)
 	return &SharedTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(environment),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(environment),
+		templateRespository:          repositories.NewTemplateRepository(dbContext),
+		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

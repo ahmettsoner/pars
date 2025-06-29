@@ -14,7 +14,7 @@ type DbContext struct {
 	Database *gorm.DB
 }
 
-func New(environment string) *DbContext {
+func NewDbContext(environment string) *DbContext {
 	db := connectToDB(environment)
 	dbContext := &DbContext{Database: db}
 	dbContext.AutoMigrate()

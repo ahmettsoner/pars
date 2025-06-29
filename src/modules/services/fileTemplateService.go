@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/structs/template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,10 +24,11 @@ type FileTemplateService struct {
 }
 
 func NewFileTemplateService(environment string) *FileTemplateService {
+	dbContext := contexts.NewDbContext(environment)
 	return &FileTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(environment),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(environment),
+		templateRespository:          repositories.NewTemplateRepository(dbContext),
+		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

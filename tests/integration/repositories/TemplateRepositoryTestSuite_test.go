@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/persistence/repositories"
@@ -41,7 +42,8 @@ func (suite *TemplateRepositoryTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.repository = *repositories.NewTemplateRepository(suite.environment)
+	dbContext := contexts.NewDbContext(suite.environment)
+	suite.repository = *repositories.NewTemplateRepository(dbContext)
 
 	suite.T().Log("Template creation completed")
 }

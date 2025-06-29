@@ -9,6 +9,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/persistence/repositories"
@@ -37,7 +38,8 @@ func (suite *GroupRepositoryTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.repository = *repositories.NewGroupRepository(suite.environment)
+	dbContext := contexts.NewDbContext(suite.environment)
+	suite.repository = *repositories.NewGroupRepository(dbContext)
 
 	suite.T().Log("Group creation completed")
 }
@@ -176,8 +178,8 @@ func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 	group := group.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
-			name,
 			"",
+			name,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},

@@ -6,6 +6,7 @@ import (
 
 	"parsdevkit.net/structs/group"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -20,9 +21,10 @@ type GroupService struct {
 }
 
 func NewGroupService(environment string) *GroupService {
+	dbContext := contexts.NewDbContext(environment)
 	return &GroupService{
-		groupRespository:   repositories.NewGroupRepository(environment),
-		projectRespository: repositories.NewProjectRepository(environment),
+		groupRespository:   repositories.NewGroupRepository(dbContext),
+		projectRespository: repositories.NewProjectRepository(dbContext),
 	}
 }
 

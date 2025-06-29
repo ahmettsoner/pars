@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
-
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/core/utils"
@@ -33,17 +31,10 @@ func NewLanguage_LanguageOnly(_type models.LanguageType) Language {
 	}
 }
 func (s Language) Validate() error {
-	return v.ValidateStruct(&s,
-		v.Field(&s.Type,
-			v.Required,
-			v.By(func(value interface{}) error {
-				if str, ok := value.(fmt.Stringer); ok && str.String() == "Unknown" {
-					return v.NewError("validation_type", "type cannot be Unknown")
-				}
-				return nil
-			}),
-		),
-	)
+	if utils.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
+		return &errors.ErrFieldRequired{FieldName: "Type"}
+	}
+	return nil
 }
 
 func (s *Language) GetFullName() string {

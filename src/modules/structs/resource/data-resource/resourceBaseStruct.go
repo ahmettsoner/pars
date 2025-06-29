@@ -3,10 +3,11 @@ package dataresource
 import (
 	"fmt"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
-
 	"parsdevkit.net/core/schemas"
+
 	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 )
 
 type ResourceBaseStruct struct {
@@ -27,9 +28,10 @@ func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceS
 	}
 }
 func (e ResourceBaseStruct) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Header.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Header.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
+	}
+	return nil
 }
 
 func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {

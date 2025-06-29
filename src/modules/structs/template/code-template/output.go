@@ -1,8 +1,9 @@
 package codetemplate
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type Output struct {
@@ -15,9 +16,10 @@ func NewOutput(file string) Output {
 	}
 }
 func (e Output) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.File, v.Required),
-	)
+	if utils.IsEmpty(e.File) {
+		return &errors.ErrFieldRequired{FieldName: "File"}
+	}
+	return nil
 }
 
 func (s *Output) UnmarshalYAML(unmarshal func(interface{}) error) error {

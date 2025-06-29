@@ -1,8 +1,9 @@
 package objectresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 )
 
 // Dictionary global bi struct olarak ta tanımlanabilmeli, hem global hem  resource bağımlı şekilde tanımlanabilmeli
@@ -18,9 +19,10 @@ func NewDictionary(key string, translates map[string]string) Dictionary {
 	}
 }
 func (e Dictionary) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.DictionaryIdentifier.Key, v.Required),
-	)
+	if utils.IsEmpty(e.DictionaryIdentifier.Key) {
+		return &errors.ErrFieldRequired{FieldName: "DictionaryIdentifier.Key"}
+	}
+	return nil
 }
 
 func (s *Dictionary) IsKeyExists() bool {

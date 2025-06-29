@@ -14,6 +14,7 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
@@ -57,7 +58,11 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utils.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(application.GetContext(), "")
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, "")
 	}
 
 	return nil
@@ -67,7 +72,8 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectGroup, projectName, err := project.ParseProjectFullName(commandOptions.Name)
 
-	groupRespository := repositories.NewGroupRepository(utils.GetEnvironment())
+	dbContext := contexts.NewDbContext(utils.GetEnvironment())
+	groupRespository := repositories.NewGroupRepository(dbContext)
 	groupId := 0
 	projectGroupEntity, err := groupRespository.GetByName(projectGroup)
 	if err != nil {

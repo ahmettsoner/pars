@@ -16,8 +16,8 @@ type TemplateRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewTemplateRepository(environment string) *TemplateRepository {
-	return &TemplateRepository{DbContext: contexts.New(environment)}
+func NewTemplateRepository(dbCtx *contexts.DbContext) *TemplateRepository {
+	return &TemplateRepository{DbContext: dbCtx}
 }
 
 func (s *TemplateRepository) Get(id int) (*entities.Template, error) {
@@ -35,7 +35,7 @@ func (s *TemplateRepository) Get(id int) (*entities.Template, error) {
 
 func (s *TemplateRepository) GetByName(name string) (*entities.Template, error) {
 	entity := new(entities.Template)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name')= ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name')= ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -46,7 +46,7 @@ func (s *TemplateRepository) GetByName(name string) (*entities.Template, error) 
 }
 func (s *TemplateRepository) GetByNameAndWorkspace(name, workspace string) (*entities.Template, error) {
 	entity := new(entities.Template)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -77,7 +77,7 @@ func (s *TemplateRepository) ListByWorkspaceSetAndLayers(workspace, set string, 
 	SELECT templates.*
 	FROM templates
 	JOIN json_each(templates.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
+	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -106,7 +106,7 @@ func (s *TemplateRepository) ListByWorkspace(workspace string) (*([]entities.Tem
 
 func (s *TemplateRepository) ListByKind(kind string) (*([]entities.Template), error) {
 	var entities = make(([]entities.Template), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Kind') = ?", kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Kind') = ?", kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -115,7 +115,7 @@ func (s *TemplateRepository) ListByKind(kind string) (*([]entities.Template), er
 
 func (s *TemplateRepository) ListByWorkspaceAndKind(workspace, kind string) (*([]entities.Template), error) {
 	var entities = make(([]entities.Template), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Kind') = ?", workspace, kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Header.Kind') = ?", workspace, kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -15,8 +15,8 @@ type GroupRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewGroupRepository(environment string) *GroupRepository {
-	return &GroupRepository{DbContext: contexts.New(environment)}
+func NewGroupRepository(dbCtx *contexts.DbContext) *GroupRepository {
+	return &GroupRepository{DbContext: dbCtx}
 }
 
 func (s *GroupRepository) Get(id int) (*entities.Group, error) {
@@ -33,7 +33,7 @@ func (s *GroupRepository) Get(id int) (*entities.Group, error) {
 }
 func (s *GroupRepository) GetByName(name string) (*entities.Group, error) {
 	entity := new(entities.Group)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name')= ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name')= ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil

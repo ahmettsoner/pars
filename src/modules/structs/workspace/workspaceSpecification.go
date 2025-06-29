@@ -3,7 +3,7 @@ package workspace
 import (
 	"path/filepath"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
 
@@ -25,10 +25,13 @@ func NewWorkspaceSpecification(id int, name, path string) WorkspaceSpecification
 	}
 }
 func (e WorkspaceSpecification) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.WorkspaceIdentifier.Name, v.Required),
-		v.Field(&e.Path, v.Required),
-	)
+	if utils.IsEmpty(e.WorkspaceIdentifier.Name) {
+		return &errors.ErrFieldRequired{FieldName: "WorkspaceIdentifier.Name"}
+	}
+	if utils.IsEmpty(e.Path) {
+		return &errors.ErrFieldRequired{FieldName: "Path"}
+	}
+	return nil
 }
 
 func (s *WorkspaceSpecification) IsPathExists() bool {

@@ -16,8 +16,8 @@ type ProjectRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewProjectRepository(environment string) *ProjectRepository {
-	return &ProjectRepository{DbContext: contexts.New(environment)}
+func NewProjectRepository(dbCtx *contexts.DbContext) *ProjectRepository {
+	return &ProjectRepository{DbContext: dbCtx}
 }
 
 func (s *ProjectRepository) Get(id int) (*entities.Project, error) {
@@ -34,7 +34,7 @@ func (s *ProjectRepository) Get(id int) (*entities.Project, error) {
 }
 func (s *ProjectRepository) GetByName(name string) (*entities.Project, error) {
 	entity := new(entities.Project)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name')= ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name')= ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -120,7 +120,7 @@ func (s *ProjectRepository) GetIndividualByWorkspaceName(workspaceName string) (
 
 func (s *ProjectRepository) GetByNameGroupAndWorkspaceName(name string, groupName string, workspaceName string) (*entities.Project, error) {
 	entity := new(entities.Project)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name') = ? and json_extract(document, '$.Specifications.Group') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, groupName, workspaceName).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') = ? and json_extract(document, '$.Specifications.Group') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, groupName, workspaceName).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -149,7 +149,7 @@ func (s *ProjectRepository) ListBySet(set string) (*([]entities.Project), error)
 }
 func (s *ProjectRepository) ListByKind(kind string) (*([]entities.Project), error) {
 	var entities = make(([]entities.Project), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Kind') = ?", kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Kind') = ?", kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}

@@ -16,8 +16,8 @@ type ResourceRepository struct {
 	DbContext *contexts.DbContext
 }
 
-func NewResourceRepository(environment string) *ResourceRepository {
-	return &ResourceRepository{DbContext: contexts.New(environment)}
+func NewResourceRepository(dbCtx *contexts.DbContext) *ResourceRepository {
+	return &ResourceRepository{DbContext: dbCtx}
 }
 
 func (s *ResourceRepository) Get(id int) (*entities.Resource, error) {
@@ -35,7 +35,7 @@ func (s *ResourceRepository) Get(id int) (*entities.Resource, error) {
 
 func (s *ResourceRepository) GetByName(name string) (*entities.Resource, error) {
 	entity := new(entities.Resource)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name')= ?", name).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name')= ?", name).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -46,7 +46,7 @@ func (s *ResourceRepository) GetByName(name string) (*entities.Resource, error) 
 }
 func (s *ResourceRepository) GetByNameAndWorkspace(name, workspace string) (*entities.Resource, error) {
 	entity := new(entities.Resource)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Name') = ? and json_extract(document, '$.Specifications.Workspace') = ?", name, workspace).First(entity)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -78,7 +78,7 @@ func (s *ResourceRepository) ListBySetAndLayers(set string, layers ...string) (*
 	SELECT resources.*
 	FROM resources
 	JOIN json_each(resources.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
+	WHERE json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -93,7 +93,7 @@ func (s *ResourceRepository) ListByWorkspaceSetAndLayers(workspace, set string, 
 	SELECT resources.*
 	FROM resources
 	JOIN json_each(resources.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
+	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, workspace, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -122,7 +122,7 @@ func (s *ResourceRepository) ListWorkspace(workspace string) (*([]entities.Resou
 
 func (s *ResourceRepository) ListByKind(kind string) (*([]entities.Resource), error) {
 	var entities = make(([]entities.Resource), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Kind') = ?", kind).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Header.Kind') = ?", kind).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -131,7 +131,7 @@ func (s *ResourceRepository) ListByKind(kind string) (*([]entities.Resource), er
 
 func (s *ResourceRepository) ListByWorkspaceAndKind(workspace, kind string) (*([]entities.Resource), error) {
 	var entities = make(([]entities.Resource), 0)
-	query := s.DbContext.Database.Model(&entities).Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Kind') = ?", workspace, kind)
+	query := s.DbContext.Database.Model(&entities).Where("json_extract(document, '$.Specifications.Workspace') = ? and json_extract(document, '$.Header.Kind') = ?", workspace, kind)
 	result := query.Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error

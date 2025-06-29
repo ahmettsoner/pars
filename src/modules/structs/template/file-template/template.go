@@ -3,7 +3,8 @@ package filetemplate
 import (
 	"fmt"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type Template struct {
@@ -17,11 +18,15 @@ func NewTemplate(source TemplateSourceType, content string) Template {
 		Content: content,
 	}
 }
-func (e Template) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Source, v.Required),
-		v.Field(&e.Content, v.Required),
-	)
+func (s Template) Validate() error {
+	if utils.IsEmpty(s.Source.String()) {
+		return &errors.ErrFieldRequired{FieldName: "Source"}
+	}
+
+	if utils.IsEmpty(s.Content) {
+		return &errors.ErrFieldRequired{FieldName: "Content"}
+	}
+	return nil
 }
 
 func (s *Template) UnmarshalYAML(unmarshal func(interface{}) error) error {

@@ -3,7 +3,8 @@ package workspace
 import (
 	"parsdevkit.net/core/schemas"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type WorkspaceBaseStruct struct {
@@ -25,9 +26,10 @@ func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications Workspac
 	}
 }
 func (e WorkspaceBaseStruct) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Header.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Header.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
+	}
+	return nil
 }
 
 func (s *WorkspaceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {

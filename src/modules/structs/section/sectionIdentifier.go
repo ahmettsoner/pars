@@ -1,8 +1,9 @@
 package section
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 )
 
 type SectionIdentifier struct {
@@ -15,9 +16,10 @@ func NewSectionIdentifier(name string) SectionIdentifier {
 	}
 }
 func (e SectionIdentifier) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	return nil
 }
 
 func (s *SectionIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

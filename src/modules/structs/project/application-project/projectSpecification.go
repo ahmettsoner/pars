@@ -1,7 +1,6 @@
 package applicationproject
 
 import (
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -11,9 +10,9 @@ import (
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/sirupsen/logrus"
 )
 
@@ -50,18 +49,13 @@ func NewProjectSpecification(id int, name, group, workspace string, projectType 
 	}
 }
 func (s ProjectSpecification) Validate() error {
-	return v.ValidateStruct(&s,
-		v.Field(&s.ProjectIdentifier.Name, v.Required),
-		v.Field(&s.ProjectType,
-			v.Required,
-			v.By(func(value interface{}) error {
-				if str, ok := value.(fmt.Stringer); ok && str.String() == "Unknown" {
-					return v.NewError("validation_type", "type cannot be Unknown")
-				}
-				return nil
-			}),
-		),
-	)
+	if utils.IsEmpty(s.ProjectIdentifier.Name) {
+		return &errors.ErrFieldRequired{FieldName: "ProjectIdentifier.Name"}
+	}
+	if utils.IsEmpty(string(s.ProjectType)) || s.ProjectType.String() == "Unknown" {
+		return &errors.ErrFieldRequired{FieldName: "ProjectType"}
+	}
+	return nil
 }
 func (s *ProjectSpecification) GetAllPackage() []string {
 
@@ -270,55 +264,6 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	if len(s.Path) == 0 {
 		s.Path = utils.PathToArray(tempObject.Name)
 	}
-
-	return nil
-}
-
-func (s *ProjectSpecification) UnmarshalJSON(data []byte) error {
-
-	var tempIdentifierObject struct {
-		ProjectIdentifier
-	}
-
-	if err := json.Unmarshal(data, &tempIdentifierObject); err != nil {
-		return err
-	} else {
-
-		s.ProjectIdentifier = tempIdentifierObject.ProjectIdentifier
-	}
-
-	var tempObject struct {
-		Platform        Platform
-		ProjectType     models.ProjectType
-		Set             string
-		Package         []string
-		Labels          []label.Label
-		Path            []string
-		WorkspaceObject workspace.WorkspaceSpecification
-		GroupObject     group.GroupSpecification
-		Runtime         Runtime
-		Language        Language
-		Schema          Schema
-		Configuration   Configuration
-	}
-
-	err := json.Unmarshal(data, &tempObject)
-	if err != nil {
-		return err
-	}
-
-	s.Platform = tempObject.Platform
-	s.ProjectType = tempObject.ProjectType
-	s.Set = tempObject.Set
-	s.Path = tempObject.Path
-	s.WorkspaceObject = tempObject.WorkspaceObject
-	s.GroupObject = tempObject.GroupObject
-	s.Package = tempObject.Package
-	s.Labels = tempObject.Labels
-	s.Runtime = tempObject.Runtime
-	s.Language = tempObject.Language
-	s.Schema = tempObject.Schema
-	s.Configuration = tempObject.Configuration
 
 	return nil
 }

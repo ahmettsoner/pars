@@ -3,7 +3,6 @@ package label
 import (
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -29,9 +28,10 @@ func NewLabel_KeyOnly(key string) Label {
 	}
 }
 func (e Label) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Key, v.Required),
-	)
+	if utils.IsEmpty(e.Key) {
+		return &errors.ErrFieldRequired{FieldName: "Key"}
+	}
+	return nil
 }
 
 func (s *Label) IsKeyExists() bool {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
-
 	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -23,9 +23,10 @@ func NewAnnotation(_type string, arguments []MethodArgument) Annotation {
 	}
 }
 func (e Annotation) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Type, v.Required),
-	)
+	if utils.IsEmpty(e.Type) {
+		return &errors.ErrFieldRequired{FieldName: "Type"}
+	}
+	return nil
 }
 
 func (s *Annotation) IsTypeExists() bool {

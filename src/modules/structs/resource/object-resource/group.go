@@ -1,11 +1,12 @@
 package objectresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/structs/option"
 
 	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 )
 
 type Group struct {
@@ -24,9 +25,10 @@ func NewGroup(name string, title Message, order int, options []option.Option) Gr
 	}
 }
 func (e Group) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.GroupIdentifier.Name, v.Required),
-	)
+	if utils.IsEmpty(e.GroupIdentifier.Name) {
+		return &errors.ErrFieldRequired{FieldName: "GroupIdentifier.Name"}
+	}
+	return nil
 }
 
 func (s *Group) IsNameExists() bool {

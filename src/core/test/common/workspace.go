@@ -23,8 +23,8 @@ func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, envi
 	workspace := workspace.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
-			workspaceName,
 			"",
+			workspaceName,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},

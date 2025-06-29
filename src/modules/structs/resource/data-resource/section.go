@@ -1,7 +1,9 @@
 package dataresource
 
 import (
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/structs/class"
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/option"
@@ -19,9 +21,10 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 	}
 }
 func (e Section) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Section.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Section.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
+	}
+	return nil
 }
 
 func (s *Section) UnmarshalYAML(unmarshal func(interface{}) error) error {

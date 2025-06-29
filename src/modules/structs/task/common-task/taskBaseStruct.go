@@ -3,8 +3,9 @@ package commontask
 import (
 	"fmt"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utils"
 )
 
 type TaskBaseStruct struct {
@@ -25,9 +26,10 @@ func NewTaskBaseStruct(header schemas.SchemaHeader, specifications TaskSpecifica
 }
 
 func (e TaskBaseStruct) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Header.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Header.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
+	}
+	return nil
 }
 func (s *TaskBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var tempHeaderObject schemas.SchemaHeader

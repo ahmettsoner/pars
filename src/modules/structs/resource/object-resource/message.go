@@ -3,7 +3,6 @@ package objectresource
 import (
 	"reflect"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/errors"
@@ -23,9 +22,10 @@ func NewMessage(text string, dictionary DictionaryIdentifier) Message {
 	}
 }
 func (e Message) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Text, v.Required),
-	)
+	if utils.IsEmpty(e.Text) {
+		return &errors.ErrFieldRequired{FieldName: "Text"}
+	}
+	return nil
 }
 
 func (s *Message) IsTextExists() bool {

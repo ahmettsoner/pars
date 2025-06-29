@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
 
@@ -36,13 +36,24 @@ func NewTemplateSpecification(id int, name, workspace, set string, path string, 
 		Template:           template,
 	}
 }
-func (e TemplateSpecification) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.TemplateIdentifier.Name, v.Required),
-		v.Field(&e.Set, v.Required),
-		v.Field(&e.Output, v.Required),
-		v.Field(&e.Template, v.Required),
-	)
+func (s TemplateSpecification) Validate() error {
+
+	if utils.IsEmpty(s.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+
+	if utils.IsEmpty(s.Set) {
+		return &errors.ErrFieldRequired{FieldName: "Set"}
+	}
+
+	if (s.Output == Output{}) {
+		return &errors.ErrFieldRequired{FieldName: "Output"}
+	}
+
+	if (s.Template == Template{}) {
+		return &errors.ErrFieldRequired{FieldName: "Template"}
+	}
+	return nil
 }
 
 func (s *TemplateSpecification) GetPackageString() string {

@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/structs/task"
 	commontask "parsdevkit.net/structs/task/common-task"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,10 +24,11 @@ type CommonTaskService struct {
 }
 
 func NewCommonTaskService(environment string) *CommonTaskService {
+	dbContext := contexts.NewDbContext(environment)
 	return &CommonTaskService{
 		environment:                  environment,
-		taskRespository:              repositories.NewTaskRepository(environment),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(environment),
+		taskRespository:              repositories.NewTaskRepository(dbContext),
+		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
 	}
 }
 

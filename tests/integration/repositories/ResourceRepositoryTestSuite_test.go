@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
 	"parsdevkit.net/persistence/repositories"
@@ -41,7 +42,8 @@ func (suite *ResourceRepositoryTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.repository = *repositories.NewResourceRepository(suite.environment)
+	dbContext := contexts.NewDbContext(suite.environment)
+	suite.repository = *repositories.NewResourceRepository(dbContext)
 
 	suite.T().Log("Resource creation completed")
 }
@@ -180,7 +182,7 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 	resource := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.ResourceKinds.Object.String(),
+			string(resource.ResourceKinds.Object),
 			name,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -233,7 +235,7 @@ func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStr
 	resource := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			resource.ResourceKinds.Object.String(),
+			string(resource.ResourceKinds.Object),
 			name,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},

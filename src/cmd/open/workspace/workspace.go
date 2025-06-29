@@ -52,7 +52,11 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	path := parsCMDCommon.GetActiveWorkspacePath(application.GetContext(), commandOptions.Name)
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	path := parsCMDCommon.GetActiveWorkspacePath(appCtx, commandOptions.Name)
 
 	providers.VSCodeExecute("", path)
 

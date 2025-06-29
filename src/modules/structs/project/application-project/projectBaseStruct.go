@@ -1,11 +1,9 @@
 package applicationproject
 
 import (
-	"encoding/json"
 	"fmt"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
-
+	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 )
@@ -26,9 +24,10 @@ func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpe
 	}
 }
 func (e ProjectBaseStruct) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Header.Name, v.Required),
-	)
+	if utils.IsEmpty(e.Header.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
+	}
+	return nil
 }
 
 func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -50,30 +49,6 @@ func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) err
 		// if _, ok := err.(*yaml.TypeError); !ok {
 		// 	return err
 		// }
-		return err
-	} else {
-		s.Specifications = tempSpecificationObject.Specifications
-	}
-
-	return nil
-}
-
-func (s *ProjectBaseStruct) UnmarshalJSON(data []byte) error {
-	var tempHeaderObject schemas.SchemaHeader
-
-	if err := json.Unmarshal(data, &tempHeaderObject); err != nil {
-		return err
-	} else {
-
-		s.Header = tempHeaderObject
-	}
-
-	var tempSpecificationObject struct {
-		Specifications ProjectSpecification
-	}
-
-	// Unmarshal JSON into the temporary struct
-	if err := json.Unmarshal(data, &tempSpecificationObject); err != nil {
 		return err
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications

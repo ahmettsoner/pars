@@ -3,8 +3,8 @@ package objectresource
 import (
 	"strings"
 
-	v "github.com/go-ozzo/ozzo-validation/v4"
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,10 +21,13 @@ func NewMethodArgument(name, value string) MethodArgument {
 	}
 }
 func (e MethodArgument) Validate() error {
-	return v.ValidateStruct(&e,
-		v.Field(&e.Name, v.Required),
-		v.Field(&e.Value, v.Required),
-	)
+	if utils.IsEmpty(e.Name) {
+		return &errors.ErrFieldRequired{FieldName: "Name"}
+	}
+	if utils.IsEmpty(e.Value) {
+		return &errors.ErrFieldRequired{FieldName: "Value"}
+	}
+	return nil
 }
 
 func (s *MethodArgument) UnmarshalYAML(unmarshal func(interface{}) error) error {

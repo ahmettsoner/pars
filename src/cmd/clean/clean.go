@@ -48,7 +48,11 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Name = args[0]
 	}
 
-	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(application.GetContext(), commandOptions.Workspace)
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 	}
