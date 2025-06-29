@@ -2,7 +2,6 @@ package services
 
 import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 )
 
 type ApplicationProjectServiceInterface interface {
@@ -19,7 +18,6 @@ type ApplicationProjectServiceInterface interface {
 	IsDirectoryReserved(path string) (*applicationproject.ProjectBaseStruct, error)
 	Remove(name string, workspaceName string, force bool, permanent bool) (*applicationproject.ProjectSpecification, error)
 	Build(name string, workspaceName string) (*applicationproject.ProjectSpecification, error)
-	GetProjectWorkspace(workspaceName string) (*workspace.WorkspaceSpecification, error)
 
 	ValidateProjectStructure(model applicationproject.ProjectSpecification) (bool, error)
 	ValidateProjectDependencies(model applicationproject.ProjectSpecification) (bool, error)

@@ -1,0 +1,17 @@
+Type: Template
+Kind: Code
+Name: {{.Name}}
+Metadata:
+  Tags:
+Specifications:
+  Name: {{.Name}}
+  Path: {{.Path}}
+  Output: {{.Output}}
+  Set: {{.Output}}
+  Layers:
+  {{range .Layers}}- {{.}}
+  {{end}}
+  Template:
+    # file: 
+    Code: |
+      {{ .Code }}

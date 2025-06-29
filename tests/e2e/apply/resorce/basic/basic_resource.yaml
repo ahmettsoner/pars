@@ -1,0 +1,22 @@
+Type: Resource
+Kind: Object
+Name:  {{.Name}}
+Metadata:
+Specifications:
+  Name: {{.Name}}
+  Set: {{.Set}}
+  Path: {{.Path}}
+  Package: {{.Package}}
+  Layers:
+  {{range .Layers}}- {{.}}
+  {{end}}
+  Attributes:
+  - Name: yea
+    Visibility: private
+  - Name: hoo
+    Type: Int
+  Methods:
+  - Name: soe
+    Parameters:
+    - ID Int
+    - Name String

@@ -18,7 +18,6 @@ type ProjectServiceInterface[T schemas.SchemaHeader] interface {
 	IsDirectoryReserved(path string) (*T, error)
 	Remove(name string, workspaceName string, force bool, permanent bool) (*T, error)
 	Build(name string, workspaceName string) (*T, error)
-	GetProjectWorkspace(workspaceName string) (*T, error)
 
 	ValidateProjectStructure(model T) (bool, error)
 	ValidateProjectDependencies(model T) (bool, error)
