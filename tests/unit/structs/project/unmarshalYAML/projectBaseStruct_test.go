@@ -3,10 +3,10 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
-	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"

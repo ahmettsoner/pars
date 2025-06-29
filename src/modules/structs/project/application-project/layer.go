@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 
 	"parsdevkit.net/core/utils"
 )

@@ -3,7 +3,7 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/structs/label"
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"

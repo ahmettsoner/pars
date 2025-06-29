@@ -3,9 +3,9 @@ package objectresource
 import (
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
 
 	"gopkg.in/yaml.v3"
 )

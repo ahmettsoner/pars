@@ -3,12 +3,12 @@ package dataresource
 import (
 	"parsdevkit.net/core/utils"
 
+	"parsdevkit.net/application/models/class"
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/structs/class"
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
 
-	"parsdevkit.net/structs/section"
+	"parsdevkit.net/application/models/section"
 )
 
 type Section struct {

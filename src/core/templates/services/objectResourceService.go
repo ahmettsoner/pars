@@ -1,9 +1,9 @@
 package services
 
 import (
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/platforms/core"
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"

@@ -1,10 +1,10 @@
 package objectresource
 
 import (
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
 )
 
 type MethodParameter struct {

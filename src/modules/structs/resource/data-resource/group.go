@@ -1,8 +1,8 @@
 package dataresource
 
 import (
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/structs/option"
 
 	"parsdevkit.net/core/utils"
 )

@@ -5,9 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
-	"parsdevkit.net/structs/label"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/errors"

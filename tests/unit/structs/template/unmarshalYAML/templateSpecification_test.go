@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/label"
+	"parsdevkit.net/application/models/label"
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"parsdevkit.net/structs/label"
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/errors"

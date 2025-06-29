@@ -3,8 +3,8 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	"parsdevkit.net/structs/workspace"

@@ -1,8 +1,8 @@
 package template
 
 import (
-	"parsdevkit.net/structs/class"
-	"parsdevkit.net/structs/section"
+	"parsdevkit.net/application/models/class"
+	"parsdevkit.net/application/models/section"
 
 	"gopkg.in/yaml.v3"
 )

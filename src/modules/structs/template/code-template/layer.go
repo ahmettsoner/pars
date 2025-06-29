@@ -2,7 +2,7 @@ package codetemplate
 
 import (
 	"gopkg.in/yaml.v3"
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/structs/template"
 )
 

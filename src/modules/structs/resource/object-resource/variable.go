@@ -3,8 +3,8 @@ package objectresource
 import (
 	"strings"
 
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
 
 	"parsdevkit.net/core/utils"
 

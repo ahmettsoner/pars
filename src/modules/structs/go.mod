@@ -2,6 +2,7 @@ module parsdevkit.net/structs
 
 go 1.22
 
+replace parsdevkit.net/application => ../application
 replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/core => ../../core

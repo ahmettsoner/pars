@@ -3,9 +3,9 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
-	"parsdevkit.net/structs/label"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 

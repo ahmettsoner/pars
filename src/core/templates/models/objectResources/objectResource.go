@@ -1,7 +1,7 @@
 package objectResources
 
 import (
-	"parsdevkit.net/structs/class"
+	"parsdevkit.net/application/models/class"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"

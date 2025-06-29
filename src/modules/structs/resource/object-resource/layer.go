@@ -2,7 +2,7 @@ package objectresource
 
 import (
 	"gopkg.in/yaml.v3"
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 )
 
 type Layer struct {

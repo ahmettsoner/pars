@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/structs/group"
-	layerPkg "parsdevkit.net/structs/layer"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 

@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"

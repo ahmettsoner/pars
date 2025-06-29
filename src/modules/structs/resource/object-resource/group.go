@@ -2,7 +2,7 @@ package objectresource
 
 import (
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/structs/option"
+	"parsdevkit.net/application/models/option"
 
 	"parsdevkit.net/core/utils"
 

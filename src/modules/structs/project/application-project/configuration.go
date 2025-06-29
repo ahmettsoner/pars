@@ -1,9 +1,10 @@
 package applicationproject
 
 import (
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/group"
-	"parsdevkit.net/structs/label"
+
 	"parsdevkit.net/structs/project"
 	"parsdevkit.net/structs/workspace"
 )

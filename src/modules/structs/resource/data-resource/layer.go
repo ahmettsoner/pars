@@ -1,7 +1,7 @@
 package dataresource
 
 import (
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 )
 
 type Layer struct {

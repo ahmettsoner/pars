@@ -1,7 +1,7 @@
 package filetemplate
 
 import (
-	layerPkg "parsdevkit.net/structs/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/structs/template"
 )
 

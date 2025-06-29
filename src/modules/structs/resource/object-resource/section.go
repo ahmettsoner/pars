@@ -1,12 +1,12 @@
 package objectresource
 
 import (
+	"parsdevkit.net/application/models/class"
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/structs/class"
-	"parsdevkit.net/structs/label"
-	"parsdevkit.net/structs/option"
-	"parsdevkit.net/structs/section"
 )
 
 type Section struct {

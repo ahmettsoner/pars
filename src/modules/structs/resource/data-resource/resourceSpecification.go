@@ -1,7 +1,7 @@
 package dataresource
 
 import (
-	"parsdevkit.net/structs/label"
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"

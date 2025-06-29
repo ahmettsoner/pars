@@ -1,7 +1,7 @@
 package task
 
 import (
-	"parsdevkit.net/structs/label"
+	"parsdevkit.net/application/models/label"
 
 	"gopkg.in/yaml.v3"
 )
