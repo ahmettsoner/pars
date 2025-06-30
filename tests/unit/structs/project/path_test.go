@@ -51,9 +51,9 @@ func Test_Project_Absolute_Path(t *testing.T) {
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
-			WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
-				Path: fakeWorkspace,
-			},
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
+			Path: fakeWorkspace,
 		},
 	}
 	// Act
@@ -75,9 +75,9 @@ func Test_Project_WithGroup_Relative_Path(t *testing.T) {
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
-			GroupObject: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 	}
 	// Act
@@ -100,12 +100,12 @@ func Test_Project_WithGroup_Absolute_Path(t *testing.T) {
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
-			WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
-				Path: fakeWorkspace,
-			},
-			GroupObject: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
+			Path: fakeWorkspace,
+		},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 	}
 	// Act
@@ -128,9 +128,9 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
-			GroupObject: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{
@@ -164,12 +164,12 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
-			WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
-				Path: fakeWorkspace,
-			},
-			GroupObject: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
+			Path: fakeWorkspace,
+		},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{

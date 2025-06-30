@@ -14,6 +14,8 @@ replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/providers => ../../components/providers
 
+replace parsdevkit.net/modules/project/application => ../../modules/project/application
+
 require (
 	github.com/sirupsen/logrus v1.9.3
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
