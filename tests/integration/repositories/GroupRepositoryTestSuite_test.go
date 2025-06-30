@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/core/utils"
 

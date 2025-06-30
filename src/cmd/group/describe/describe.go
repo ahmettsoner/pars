@@ -10,6 +10,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	group "parsdevkit.net/modules/group/group"
 )
 
 type DescribeOptions struct {
@@ -52,7 +53,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := services.NewGroupService(utils.GetEnvironment())
+	groupService := group.NewGroupService(utils.GetEnvironment())
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group '%s'\n%w", commandOptions.Name, err)
@@ -111,7 +112,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := services.NewGroupService(utils.GetEnvironment())
+	groupService := group.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

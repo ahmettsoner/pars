@@ -3,8 +3,7 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/operation/services"
-	"parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/core/utils"
 
@@ -33,7 +32,7 @@ func (suite *GroupServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = services.NewGroupService(suite.environment)
+	suite.service = group.NewGroupService(suite.environment)
 
 	suite.T().Log("Group creation completed")
 }

@@ -1,10 +1,8 @@
-package services
+package group
 
 import (
 	"encoding/json"
 	"fmt"
-
-	"parsdevkit.net/structs/group"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
@@ -20,7 +18,7 @@ type GroupService struct {
 	projectRespository *repositories.ProjectRepository
 }
 
-func NewGroupService(environment string) contracts.GroupServiceInterface[group.GroupBaseStruct] {
+func NewGroupService(environment string) contracts.GroupServiceInterface[GroupBaseStruct] {
 	dbContext := contexts.NewDbContext(environment)
 	return &GroupService{
 		groupRespository:   repositories.NewGroupRepository(dbContext),
@@ -28,8 +26,8 @@ func NewGroupService(environment string) contracts.GroupServiceInterface[group.G
 	}
 }
 
-func (s GroupService) GetByName(name string) (*group.GroupBaseStruct, error) {
-	var group *group.GroupBaseStruct
+func (s GroupService) GetByName(name string) (*GroupBaseStruct, error) {
+	var group *GroupBaseStruct
 
 	entity, err := s.groupRespository.GetByName(name)
 	if err != nil {
@@ -47,7 +45,7 @@ func (s GroupService) GetByName(name string) (*group.GroupBaseStruct, error) {
 	return group, nil
 }
 
-func (s GroupService) Save(model group.GroupBaseStruct) (*group.GroupBaseStruct, error) {
+func (s GroupService) Save(model GroupBaseStruct) (*GroupBaseStruct, error) {
 
 	result, err := s.saveGroupInformation(model)
 	if err != nil {
@@ -57,17 +55,17 @@ func (s GroupService) Save(model group.GroupBaseStruct) (*group.GroupBaseStruct,
 	return result, nil
 }
 
-func (s GroupService) List() (*([]group.GroupBaseStruct), error) {
+func (s GroupService) List() (*([]GroupBaseStruct), error) {
 
 	entityList, err := s.groupRespository.List()
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Group listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}
 
-	groupList := make([]group.GroupBaseStruct, 0)
+	groupList := make([]GroupBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var group group.GroupBaseStruct
+		var group GroupBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &group)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -78,7 +76,7 @@ func (s GroupService) List() (*([]group.GroupBaseStruct), error) {
 
 	return &groupList, nil
 }
-func (s GroupService) Remove(name string, permanent bool) (*group.GroupBaseStruct, error) {
+func (s GroupService) Remove(name string, permanent bool) (*GroupBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	groupGroupEntity, err := s.groupRespository.GetByName(name)
@@ -105,14 +103,14 @@ func (s GroupService) Remove(name string, permanent bool) (*group.GroupBaseStruc
 		return nil, fmt.Errorf("xxx: Group silme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	var group group.GroupBaseStruct
+	var group GroupBaseStruct
 	err = json.Unmarshal([]byte(groupGroupEntity.Document), &group)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", groupGroupEntity.Document, err)
 	}
 
-	// if !utils.IsEmpty(group.Specifications.Path) {
-	// 	logrus.Debugf("project (%v) files/folders (%v) removing", name, group.Specifications.GetAbsoluteBaseProjectPath())
+	// if !utils.IsEmpty(Specifications.Path) {
+	// 	logrus.Debugf("project (%v) files/folders (%v) removing", name, Specifications.GetAbsoluteBaseProjectPath())
 	// 	if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseProjectPath()); err != nil {
 	// 		return nil, err
 	// 	}
@@ -149,7 +147,7 @@ func (s GroupService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s GroupService) saveGroupInformation(groupModel group.GroupBaseStruct) (*group.GroupBaseStruct, error) {
+func (s GroupService) saveGroupInformation(groupModel GroupBaseStruct) (*GroupBaseStruct, error) {
 
 	jsonData, err := json.Marshal(groupModel)
 	if err != nil {

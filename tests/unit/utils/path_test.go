@@ -4,10 +4,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/structs/group"
-
 	"github.com/stretchr/testify/assert"
+	applicationGroup "parsdevkit.net/application/structs/group"
+	group "parsdevkit.net/modules/group/group"
 )
 
 func Test_Group_Relative_Path(t *testing.T) {

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/core/utils"
 
@@ -77,7 +77,7 @@ func (suite *GroupTestSuite) TestCreateBasicGroup() {
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := services.NewGroupService(suite.environment)
+	service := group.NewGroupService(suite.environment)
 	_, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get group by name.")
 

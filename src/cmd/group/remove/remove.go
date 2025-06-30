@@ -9,6 +9,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
+	group "parsdevkit.net/modules/group/group"
 
 	"github.com/spf13/cobra"
 )
@@ -51,7 +52,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		groupService := services.NewGroupService(utils.GetEnvironment())
+		groupService := group.NewGroupService(utils.GetEnvironment())
 		for _, name := range commandOptions.Names {
 			_, err := groupService.Remove(name, true)
 			if err != nil {
@@ -91,7 +92,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := services.NewGroupService(utils.GetEnvironment())
+	groupService := group.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

@@ -13,8 +13,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
+	group "parsdevkit.net/modules/group/group"
 
-	groupStruct "parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectsource "parsdevkit.net/structs/resource/object-resource"
@@ -24,7 +24,7 @@ import (
 )
 
 var registry = map[string]func() schemas.Schema{
-	"Group":               func() schemas.Schema { return &groupStruct.GroupBaseStruct{} },
+	"Group":               func() schemas.Schema { return &group.GroupBaseStruct{} },
 	"Project.Application": func() schemas.Schema { return &applicationproject.ProjectBaseStruct{} },
 	"Resource.Data":       func() schemas.Schema { return &dataresource.ResourceBaseStruct{} },
 	"Resource.Object":     func() schemas.Schema { return &objectsource.ResourceBaseStruct{} },

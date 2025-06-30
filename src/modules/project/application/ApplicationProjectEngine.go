@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	applicationProject "parsdevkit.net/application/structs/project"
-	groupStruct "parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	workspaceStruct "parsdevkit.net/structs/workspace"
 
@@ -450,13 +450,13 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *core.ApplicationContext, pro
 
 	return result, nil
 }
-func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*groupStruct.GroupBaseStruct, error) {
-	result := groupStruct.GroupBaseStruct{}
+func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*group.GroupBaseStruct, error) {
+	result := group.GroupBaseStruct{}
 
 	groupName := project.Specifications.Group
 
 	if !utils.IsEmpty(groupName) {
-		groupService := services.NewGroupService(utils.GetEnvironment())
+		groupService := group.NewGroupService(utils.GetEnvironment())
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
 			return nil, err

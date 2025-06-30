@@ -7,7 +7,7 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
@@ -53,17 +53,17 @@ func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 }
 func CreateGroup(t *testing.T, groupName, path, environment string) group.GroupBaseStruct {
 
-	group := *BasicGroup_WithNamePath(groupName, path)
+	groupStruct := *BasicGroup_WithNamePath(groupName, path)
 
-	groupService := services.NewGroupService(environment)
-	tempGroup, err := groupService.Save(group)
+	groupService := group.NewGroupService(environment)
+	tempGroup, err := groupService.Save(groupStruct)
 	require.NoError(t, err, "Failed to save group")
-	assert.Equal(t, group, *tempGroup)
+	assert.Equal(t, groupStruct, *tempGroup)
 
-	return group
+	return groupStruct
 }
 func RemoveGroup(t *testing.T, groupName, environment string) {
-	groupService := services.NewGroupService(environment)
+	groupService := group.NewGroupService(environment)
 	_, err := groupService.Remove(groupName, true)
 	require.NoError(t, err, "Failed to delete group")
 }

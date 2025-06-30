@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"

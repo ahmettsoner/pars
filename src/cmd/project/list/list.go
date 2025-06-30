@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
+	group "parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utils"
@@ -73,7 +74,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	groupService := services.NewGroupService(utils.GetEnvironment())
+	groupService := group.NewGroupService(utils.GetEnvironment())
 	groupList, err := groupService.List()
 	if err != nil {
 		return fmt.Errorf("Failed to list projects groups\n%w", err)

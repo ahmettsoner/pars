@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/structs/group"
+	group "parsdevkit.net/modules/group/group"
 
 	"github.com/stretchr/testify/assert"
 )
