@@ -11,7 +11,6 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	layerPkg "parsdevkit.net/application/models/layer"
-	"parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	applicationProject "parsdevkit.net/application/structs/project"
@@ -77,10 +76,8 @@ func Test_Project_WithGroup_Relative_Path(t *testing.T) {
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
 		},
-		GroupObject: group.GroupSpecification{
-			GroupIdentifier: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 	}
 	// Act
@@ -107,10 +104,8 @@ func Test_Project_WithGroup_Absolute_Path(t *testing.T) {
 		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
 		},
-		GroupObject: group.GroupSpecification{
-			GroupIdentifier: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 	}
 	// Act
@@ -134,10 +129,8 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: utils.PathToArray(fakePath),
 		},
-		GroupObject: group.GroupSpecification{
-			GroupIdentifier: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{
@@ -175,10 +168,8 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
 		},
-		GroupObject: group.GroupSpecification{
-			GroupIdentifier: applicationGroup.GroupIdentifier{
-				Path: fakeGroup,
-			},
+		GroupObject: applicationGroup.GroupIdentifier{
+			Path: fakeGroup,
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{

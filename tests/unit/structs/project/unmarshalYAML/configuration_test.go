@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
@@ -49,7 +49,7 @@ References:
 					"Core",
 					"pars-project",
 					"",
-					group.GroupSpecification{},
+					applicationGroup.GroupIdentifier{},
 					"",
 					[]string(nil),
 					[]label.Label(nil),

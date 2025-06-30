@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
@@ -75,7 +76,7 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 		"",
 		workspaceName,
 		models.ProjectTypes.Library,
-		group.GroupSpecification{},
+		applicationGroup.GroupIdentifier{},
 		"",
 		[]string(nil),
 		[]label.Label(nil),
@@ -101,7 +102,7 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName str
 		"",
 		workspaceName,
 		models.ProjectTypes.Library,
-		group.GroupSpecification{},
+		applicationGroup.GroupIdentifier{},
 		"",
 		[]string(nil),
 		[]label.Label(nil),
@@ -128,7 +129,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 		"",
 		workspaceName,
 		models.ProjectTypes.Library,
-		group.NewGroupSpecification(0, groupName, groupPath, []string(nil)),
+		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
 		"",
 		[]string(nil),
 		[]label.Label(nil),
@@ -153,7 +154,7 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspac
 		groupName,
 		workspaceName,
 		models.ProjectTypes.Library,
-		group.NewGroupSpecification(0, groupName, groupPath, []string(nil)),
+		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
 		"",
 		[]string(nil),
 		[]label.Label(nil),
@@ -181,7 +182,7 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 		groupName,
 		workspaceName,
 		models.ProjectTypes.Library,
-		group.NewGroupSpecification(0, groupName, groupPath, []string(nil)),
+		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
 		"",
 		[]string(nil),
 		[]label.Label(nil),

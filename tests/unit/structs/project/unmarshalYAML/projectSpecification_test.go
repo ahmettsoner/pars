@@ -5,13 +5,13 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/core/schemas"
 	goModels "parsdevkit.net/platforms/go/models"
 
+	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/utils"
@@ -55,7 +55,7 @@ Configuration:
 		"Common",
 		"pars-project",
 		models.ProjectTypes.Library,
-		group.GroupSpecification{},
+		applicationGroup.GroupIdentifier{},
 		"Pars",
 		[]string{"pars"},
 		[]label.Label(nil),
@@ -78,7 +78,7 @@ Configuration:
 						"Core",
 						"pars-project",
 						"",
-						group.GroupSpecification{},
+						applicationGroup.GroupIdentifier{},
 						"",
 						[]string(nil),
 						[]label.Label(nil),

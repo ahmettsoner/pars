@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/group"
 	projectStruct "parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
@@ -21,6 +20,7 @@ import (
 	"parsdevkit.net/core/test/objects"
 
 	"parsdevkit.net/application/contracts"
+	applicationGroup "parsdevkit.net/application/structs/group"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -80,7 +80,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectGroupPath := suite.faker.Project.Path(3)
 	referenceProjectName := suite.faker.Project.Name()
 	referenceProject := *objects.BasicProject_WithName(referenceProjectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	referenceProject.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 
 	_, err := suite.service.Create(referenceProject, true)
@@ -117,14 +117,14 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectGroupPath := suite.faker.Project.Path(3)
 	referenceProjectName1 := suite.faker.Project.Name()
 	referenceProject1 := *objects.BasicProject_WithName(referenceProjectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	referenceProject1.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject1.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject1.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err := suite.service.Create(referenceProject1, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
 
 	referenceProjectName2 := suite.faker.Project.Name()
 	referenceProject2 := *objects.BasicProject_WithName(referenceProjectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	referenceProject2.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject2.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject2.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err = suite.service.Create(referenceProject2, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -164,7 +164,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectName := suite.faker.Project.Name()
 	referenceProject := *objects.BasicProject_WithName(referenceProjectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject.Specifications.Path = []string{referenceProjectName}
-	referenceProject.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 
 	_, err := suite.service.Create(referenceProject, true)
@@ -202,7 +202,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectName1 := suite.faker.Project.Name()
 	referenceProject1 := *objects.BasicProject_WithName(referenceProjectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject1.Specifications.Path = []string{referenceProjectName1}
-	referenceProject1.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject1.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject1.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err := suite.service.Create(referenceProject1, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -210,7 +210,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectName2 := suite.faker.Project.Name()
 	referenceProject2 := *objects.BasicProject_WithName(referenceProjectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject2.Specifications.Path = []string{referenceProjectName2}
-	referenceProject2.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject2.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject2.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err = suite.service.Create(referenceProject2, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -250,7 +250,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath := suite.faker.Project.Path(1)
 	referenceProject := *objects.BasicProject_WithName(referenceProjectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject.Specifications.Path = []string{referenceProjectPath}
-	referenceProject.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 
 	_, err := suite.service.Create(referenceProject, true)
@@ -290,7 +290,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath1 := suite.faker.Project.Path(1)
 	referenceProject1 := *objects.BasicProject_WithName(referenceProjectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject1.Specifications.Path = []string{referenceProjectPath1}
-	referenceProject1.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject1.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject1.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err := suite.service.Create(referenceProject1, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -299,7 +299,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath2 := suite.faker.Project.Path(1)
 	referenceProject2 := *objects.BasicProject_WithName(referenceProjectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject2.Specifications.Path = []string{referenceProjectPath2}
-	referenceProject2.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject2.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject2.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err = suite.service.Create(referenceProject2, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -340,7 +340,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath := suite.faker.Project.Path(3)
 	referenceProject := *objects.BasicProject_WithName(referenceProjectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject.Specifications.Path = []string{referenceProjectPath}
-	referenceProject.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 
 	_, err := suite.service.Create(referenceProject, true)
@@ -380,7 +380,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath1 := suite.faker.Project.Path(3)
 	referenceProject1 := *objects.BasicProject_WithName(referenceProjectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject1.Specifications.Path = []string{referenceProjectPath1}
-	referenceProject1.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject1.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject1.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err := suite.service.Create(referenceProject1, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
@@ -389,7 +389,7 @@ func (suite *ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite) Test_C
 	referenceProjectPath2 := suite.faker.Project.Path(3)
 	referenceProject2 := *objects.BasicProject_WithName(referenceProjectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	referenceProject2.Specifications.Path = []string{referenceProjectPath2}
-	referenceProject2.Specifications.GroupObject = group.NewGroupSpecification(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
+	referenceProject2.Specifications.GroupObject = applicationGroup.NewGroupIdentifier(0, referenceProjectGroupName, referenceProjectGroupPath, []string{})
 	referenceProject2.Specifications.ProjectIdentifier.Group = referenceProjectGroupName
 	_, err = suite.service.Create(referenceProject2, true)
 	require.NoError(suite.T(), err, "Failed to save reference project")
