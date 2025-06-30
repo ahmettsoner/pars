@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	platformsCommon "parsdevkit.net/platforms/common"
+
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/structs/workspace"
@@ -325,7 +327,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 		return nil, errors.New("invalid workspace workspace")
 	}
 
-	projectService := NewApplicationProjectService(s.environment)
+	projectService := NewApplicationProjectService(s.environment, platformsCommon.Registry)
 	projectsBelongsToWorkspace, err := projectService.ListByWorkspace(workspaceName)
 	if err != nil {
 		return nil, err

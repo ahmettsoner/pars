@@ -6,6 +6,7 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
+	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
@@ -47,7 +48,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 		}
 		logrus.Debugf("%d Template(s) found for layer '%v' on Resource %v\n", len(*setTemplates), layer.Name, model.Header.Name)
 
-		projectService := services.NewApplicationProjectService(s.environment)
+		projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err
@@ -83,7 +84,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 		}
 		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Header.Name)
 
-		projectService := services.NewApplicationProjectService(s.environment)
+		projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err
@@ -110,7 +111,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 }
 
 func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
-	projectService := services.NewApplicationProjectService(s.environment)
+	projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
 
 	resourceLayer := objectresource.Layer{}
 

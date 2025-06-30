@@ -12,6 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type CleanOptions struct {
@@ -62,7 +63,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 
 	project, err := projectService.CleanV2(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {

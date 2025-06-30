@@ -13,6 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type DescribeOptions struct {
@@ -63,7 +64,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	projectList, err := projectService.ListByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to describe project '%s'\n%w", commandOptions.Name, err)
@@ -103,7 +104,7 @@ func addSubCommands() {
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)

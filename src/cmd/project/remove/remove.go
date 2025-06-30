@@ -12,6 +12,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
+	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/spf13/cobra"
 )
@@ -65,7 +66,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
+		applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 		for _, name := range commandOptions.Names {
 			_, err := applicationProjectService.Remove(name, commandOptions.Workspace, false, true)
 			if err != nil {
@@ -103,7 +104,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)

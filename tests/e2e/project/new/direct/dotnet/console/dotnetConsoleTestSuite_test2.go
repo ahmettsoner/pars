@@ -13,6 +13,7 @@ import (
 
 	"parsdevkit.net/core/test/common"
 	"parsdevkit.net/core/test/faker"
+	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
@@ -79,7 +80,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateBasicProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := services.NewApplicationProjectService(suite.environment)
+	service := services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -122,7 +123,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := services.NewApplicationProjectService(suite.environment)
+	service := services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -168,7 +169,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupLayeredProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := services.NewApplicationProjectService(suite.environment)
+	service := services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -222,7 +223,7 @@ func (suite *DotnetConsoleTestSuite) TestCreateGroupNTierProject() {
 		fmt.Sprintf("%v", fullName),
 	}
 
-	service := services.NewApplicationProjectService(suite.environment)
+	service := services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 
 	for _, projectName := range projectNames {
 		project, err := service.GetByFullNameWorkspace(projectName, suite.workspace)

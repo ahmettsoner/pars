@@ -21,7 +21,7 @@ type CodeTemplateDataContext struct {
 }
 
 func NewCodeTemplateDataContext(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
-	manager, err := platformsCommon.ManagerFactory(project.Specifications.Platform.Type)
+	manager, err := platformsCommon.GetPlatformManager(project.Specifications.Platform.Type, platformsCommon.Registry)
 	if err != nil {
 		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
 	}

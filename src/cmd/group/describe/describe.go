@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 	group "parsdevkit.net/modules/group/group"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type DescribeOptions struct {
@@ -68,7 +69,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	packageName := fmt.Sprintf("Package:\t%v", group.Specifications.GetPackageString())
 	fmt.Println(packageName)
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	projectList, err := projectService.ListByGroupName(group.Header.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group projects '%s'\n%w", commandOptions.Name, err)

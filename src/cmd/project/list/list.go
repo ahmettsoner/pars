@@ -14,6 +14,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type ListOptions struct {
@@ -55,7 +56,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	applicationProjectList, err := applicationProjectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to listing projects\n%w", err)

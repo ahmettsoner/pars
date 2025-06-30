@@ -12,6 +12,7 @@ import (
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type ExecuteOptions struct {
@@ -63,7 +64,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	project, err := projectService.Clean(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to execute project '%s'\n%w", commandOptions.Name, err)

@@ -12,6 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type CleanOptions struct {
@@ -61,7 +62,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	_, err := projectService.Test(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to test project '%s'\n%w", commandOptions.Name, err)

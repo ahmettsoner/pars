@@ -11,6 +11,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
+	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/spf13/cobra"
 )
@@ -79,7 +80,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if workspace == nil {
 		fmt.Println("There are no workspace yet...")
 	} else {
-		projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+		projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 		projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
 		if err != nil {
 			return fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", commandOptions.Name, err)

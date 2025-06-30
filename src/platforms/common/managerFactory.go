@@ -13,19 +13,19 @@ import (
 	parsManager "parsdevkit.net/platforms/pars/managers"
 )
 
-func ManagerFactory(platform models.PlatformType) (core.ManagerInterface, error) {
-	switch platform {
-	case models.PlatformTypes.Pars:
-		return parsManager.NewParsManager(), nil
-	case models.PlatformTypes.Dotnet:
-		return dotnetManager.NewDotnetManager(), nil
-	case models.PlatformTypes.Angular:
-		return angularManager.NewAngularManager(), nil
-	case models.PlatformTypes.NodeJS:
-		return nodejsManager.NewNodeJSManager(), nil
-	case models.PlatformTypes.GO:
-		return goManager.NewGoManager(), nil
-	default:
-		return nil, fmt.Errorf("xxx: Platorm '%s' tanımlı değil", platform)
+func GetPlatformManager(platform models.PlatformType, platformRegistry map[models.PlatformType]func() core.ManagerInterface) (core.ManagerInterface, error) {
+	factory, ok := platformRegistry[platform]
+	if !ok {
+		return nil, fmt.Errorf("xxx: Platform Manager bulunamadı '%s'", platform)
 	}
+	manager := factory()
+	return manager, nil
+}
+
+var Registry = map[models.PlatformType]func() core.ManagerInterface{
+	models.PlatformTypes.Pars:    func() core.ManagerInterface { return parsManager.NewParsManager() },
+	models.PlatformTypes.Dotnet:  func() core.ManagerInterface { return dotnetManager.NewDotnetManager() },
+	models.PlatformTypes.Angular: func() core.ManagerInterface { return angularManager.NewAngularManager() },
+	models.PlatformTypes.NodeJS:  func() core.ManagerInterface { return nodejsManager.NewNodeJSManager() },
+	models.PlatformTypes.GO:      func() core.ManagerInterface { return goManager.NewGoManager() },
 }

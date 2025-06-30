@@ -16,6 +16,7 @@ import (
 	"parsdevkit.net/core/test/common"
 	"parsdevkit.net/core/test/faker"
 	"parsdevkit.net/core/test/objects"
+	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -43,7 +44,7 @@ func (suite *ProjectServiceTestSuite) SetupSuite() {
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
-	suite.service = services.NewApplicationProjectService(suite.environment)
+	suite.service = services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
 	require.NoError(suite.T(), err, "Create temporary directory failed")

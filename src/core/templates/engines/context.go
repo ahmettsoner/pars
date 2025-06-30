@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"strings"
 
+	platformsCommon "parsdevkit.net/platforms/common"
+
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
@@ -20,7 +22,7 @@ func (c ContextFuncs) GetContextByBaseForArray(base models.CodeTemplateDataConte
 }
 func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args ...string) models.CodeTemplateDataContext {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
 	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 
