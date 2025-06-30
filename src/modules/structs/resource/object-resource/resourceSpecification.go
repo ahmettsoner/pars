@@ -6,8 +6,8 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationResource "parsdevkit.net/application/structs/resource"
-	"parsdevkit.net/structs/workspace"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
@@ -17,7 +17,7 @@ type ResourceSpecification struct {
 	Path            string
 	Set             string
 	Package         []string
-	WorkspaceObject workspace.WorkspaceSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Labels          []label.Label
 	Layers          []Layer
 	Dictionary      []Dictionary
@@ -26,7 +26,7 @@ type ResourceSpecification struct {
 	Methods         []Method
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []Layer, attributes []Attribute, methods []Method, workspaceObject workspace.WorkspaceSpecification) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []Layer, attributes []Attribute, methods []Method, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,

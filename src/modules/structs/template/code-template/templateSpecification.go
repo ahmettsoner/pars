@@ -6,15 +6,15 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationTemplate "parsdevkit.net/application/structs/template"
-	"parsdevkit.net/structs/workspace"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
 
 type TemplateSpecification struct {
 	applicationTemplate.TemplateIdentifier
-	WorkspaceObject workspace.WorkspaceSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Set             string
 	Path            string
 	Package         []string
@@ -24,7 +24,7 @@ type TemplateSpecification struct {
 	Template        Template
 }
 
-func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []Layer, template Template, workspaceObject workspace.WorkspaceSpecification) TemplateSpecification {
+func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []Layer, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier) TemplateSpecification {
 	return TemplateSpecification{
 		TemplateIdentifier: applicationTemplate.NewTemplateIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,

@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/models/label"
+	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/group"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
@@ -23,25 +23,23 @@ type ProjectSpecification struct {
 	ProjectType     models.ProjectType
 	Set             string
 	Package         []string
-	Path            []string
 	Labels          []label.Label
-	WorkspaceObject workspace.WorkspaceSpecification
-	GroupObject     group.GroupSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
+	GroupObject     applicationGroup.GroupIdentifier
 	Runtime         Runtime
 	Language        Language
 	Schema          Schema
 	Configuration   Configuration
 }
 
-func NewProjectSpecification(id int, name, group, workspace string, projectType models.ProjectType, groupObject group.GroupSpecification, set string, _package []string, labels []label.Label, path []string, workspaceObject workspace.WorkspaceSpecification, platform Platform, runtime Runtime, schema Schema, configuration Configuration) ProjectSpecification {
+func NewProjectSpecification(id int, name, group, workspace string, projectType models.ProjectType, groupObject applicationGroup.GroupIdentifier, set string, _package []string, labels []label.Label, path []string, workspaceObject applicationWorkspace.WorkspaceIdentifier, platform Platform, runtime Runtime, schema Schema, configuration Configuration) ProjectSpecification {
 	return ProjectSpecification{
-		ProjectIdentifier: applicationProject.NewProjectIdentifier(id, name, group, workspace),
+		ProjectIdentifier: applicationProject.NewProjectIdentifier(id, name, path, group, workspace),
 		ProjectType:       projectType,
 		GroupObject:       groupObject,
 		Set:               set,
 		Package:           _package,
 		Labels:            labels,
-		Path:              path,
 		WorkspaceObject:   workspaceObject,
 		Platform:          platform,
 		Runtime:           runtime,
@@ -130,14 +128,7 @@ func (s *ProjectSpecification) GetAbsoluteBaseGroupPath() string {
 	}
 	return ""
 }
-func (s *ProjectSpecification) GetProjectPath() string {
 
-	folders := utils.CombinePaths(s.Path)
-
-	relativeFullPath := filepath.Join(folders...)
-
-	return relativeFullPath
-}
 func (s *ProjectSpecification) GetRelativeProjectPath() string {
 
 	folders := utils.CombinePaths([]string{s.GetRelativeGroupPath()}, s.Path)

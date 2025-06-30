@@ -692,8 +692,11 @@ func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectSpec
 	projects := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		projects = append(projects, applicationproject.ProjectSpecification{
-			ProjectIdentifier: applicationProject.ProjectIdentifier{Name: string(match[2]), Group: proj.Group, Workspace: proj.Workspace},
-			Path:              []string{filepath.Dir(string(match[3]))},
+			ProjectIdentifier: applicationProject.ProjectIdentifier{
+				Name:      string(match[2]),
+				Path:      []string{filepath.Dir(string(match[3]))},
+				Group:     proj.Group,
+				Workspace: proj.Workspace},
 		},
 		)
 	}

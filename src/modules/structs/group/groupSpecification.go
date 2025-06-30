@@ -2,7 +2,6 @@ package group
 
 import (
 	"fmt"
-	"strings"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
 	"parsdevkit.net/core/utils"
@@ -12,41 +11,18 @@ import (
 
 type GroupSpecification struct {
 	applicationGroup.GroupIdentifier
-	Path    string
-	Package []string
 }
 
 func NewGroupSpecification(id int, name, path string, _package []string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: applicationGroup.NewGroupIdentifier(id, name),
-		Path:            path,
-		Package:         _package,
+		GroupIdentifier: applicationGroup.NewGroupIdentifier(id, name, path, _package),
 	}
 }
 
 func NewGroupSpecification_Empty(name string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: applicationGroup.NewGroupIdentifier(0, name),
+		GroupIdentifier: applicationGroup.NewGroupIdentifier(0, name, name, []string{}),
 	}
-}
-
-func (s *GroupSpecification) GetPackageString() string {
-	return strings.Join(s.Package, "/")
-}
-func (s *GroupSpecification) SetPackageFromString(_package string) {
-	s.Package = strings.Split(_package, "/")
-}
-func (s *GroupSpecification) AppendPackage(_package ...string) {
-	s.Package = append(s.Package, _package...)
-}
-func (s *GroupSpecification) IsPackageExists() bool {
-	return len(s.Package) > 0
-}
-func (s *GroupSpecification) IsPathExists() bool {
-	return !utils.IsEmpty(s.Path)
-}
-func (s *GroupSpecification) GetRelativeGroupPath() string {
-	return s.Path
 }
 
 func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {

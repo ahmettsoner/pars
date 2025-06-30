@@ -1,20 +1,30 @@
 package workspace
 
 import (
+	"path/filepath"
+
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 )
 
+const (
+	CodeBasePath  = "codebase"
+	TemplatesPath = "templates"
+	ResourcesPath = "resources"
+)
+
 type WorkspaceIdentifier struct {
 	ID   int
 	Name string
+	Path string
 }
 
-func NewWorkspaceIdentifier(id int, name string) WorkspaceIdentifier {
+func NewWorkspaceIdentifier(id int, name, path string) WorkspaceIdentifier {
 	return WorkspaceIdentifier{
 		ID:   id,
 		Name: name,
+		Path: path,
 	}
 }
 func (e WorkspaceIdentifier) Validate() error {
@@ -22,6 +32,24 @@ func (e WorkspaceIdentifier) Validate() error {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
+}
+
+func (s *WorkspaceIdentifier) IsPathExists() bool {
+	return !utils.IsEmpty(s.Path)
+}
+func (s WorkspaceIdentifier) GetAbsolutePath() string {
+	return filepath.Join(s.Path)
+}
+func (s WorkspaceIdentifier) GetTemplatesFolder() string {
+	return filepath.Join(s.GetAbsolutePath(), TemplatesPath)
+}
+
+func (s WorkspaceIdentifier) GetCodeBaseFolder() string {
+	return filepath.Join(s.GetAbsolutePath(), CodeBasePath)
+}
+
+func (s WorkspaceIdentifier) GetResourcesFolder() string {
+	return filepath.Join(s.GetAbsolutePath(), ResourcesPath)
 }
 
 func (s *WorkspaceIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

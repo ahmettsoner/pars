@@ -2,15 +2,15 @@ package commontask
 
 import (
 	applicationTask "parsdevkit.net/application/structs/task"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
 	actionBase "parsdevkit.net/structs/task/actions"
-	"parsdevkit.net/structs/workspace"
 )
 
 type TaskSpecification struct {
 	applicationTask.TaskIdentifier
-	WorkspaceObject workspace.WorkspaceSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Trigger         Trigger
 	Retry           Retry
 	Timeout         int
@@ -30,7 +30,7 @@ type TaskSpecification struct {
 	//       category: 3f77edcb-db03-53f0-a15c-d42801e0b51e
 }
 
-func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry Retry, timeout int, concurrency int, parameters map[string]interface{}, tasks []actionBase.ActionInterface, workspaceObject workspace.WorkspaceSpecification) TaskSpecification {
+func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry Retry, timeout int, concurrency int, parameters map[string]interface{}, tasks []actionBase.ActionInterface, workspaceObject applicationWorkspace.WorkspaceIdentifier) TaskSpecification {
 	return TaskSpecification{
 		TaskIdentifier:  applicationTask.NewTaskIdentifier(id, name, workspace),
 		WorkspaceObject: workspaceObject,

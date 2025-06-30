@@ -2,17 +2,17 @@ package sharedtemplate
 
 import (
 	applicationTemplate "parsdevkit.net/application/structs/template"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/structs/workspace"
 )
 
 type TemplateSpecification struct {
 	applicationTemplate.TemplateIdentifier
 	Template        Template
-	WorkspaceObject workspace.WorkspaceSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 }
 
-func NewTemplateSpecification(id int, name, workspace string, template Template, workspaceObject workspace.WorkspaceSpecification) TemplateSpecification {
+func NewTemplateSpecification(id int, name, workspace string, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier) TemplateSpecification {
 	return TemplateSpecification{
 		TemplateIdentifier: applicationTemplate.NewTemplateIdentifier(0, name, workspace),
 		WorkspaceObject:    workspaceObject,

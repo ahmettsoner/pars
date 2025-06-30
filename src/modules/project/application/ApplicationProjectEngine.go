@@ -398,7 +398,7 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Applicati
 
 	//WARN: Doğru mu oldu?
 	project.Specifications.Workspace = activeWorkspace.Header.Name
-	project.Specifications.WorkspaceObject = activeWorkspace.Specifications
+	project.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, project.Header.Name)
 
 	group, err := s.getGroup(*project)
@@ -408,7 +408,7 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Applicati
 
 	//WARN: Doğru mu oldu?
 	project.Specifications.Group = group.Header.Name
-	project.Specifications.GroupObject = *&group.Specifications
+	project.Specifications.GroupObject = group.Specifications.GroupIdentifier
 	logrus.Debugf("group (%v) detected for (%v)", group.Header.Name, project.Header.Name)
 
 	projectReferences, err := s.getProjectReferences(*project)
@@ -514,7 +514,7 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 				return nil, err
 			}
 			reference.Specifications.Workspace = selectedWorkspace.Header.Name
-			reference.Specifications.WorkspaceObject = selectedWorkspace.Specifications
+			reference.Specifications.WorkspaceObject = selectedWorkspace.Specifications.WorkspaceIdentifier
 			logrus.Debugf("different workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 		}
 

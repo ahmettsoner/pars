@@ -3,7 +3,7 @@ package dataresource
 import (
 	"parsdevkit.net/application/models/label"
 	applicationResource "parsdevkit.net/application/structs/resource"
-	"parsdevkit.net/structs/workspace"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"parsdevkit.net/core/utils"
 
@@ -14,7 +14,7 @@ type ResourceSpecification struct {
 	applicationResource.ResourceIdentifier
 	Path            string
 	Set             string
-	WorkspaceObject workspace.WorkspaceSpecification
+	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Labels          []label.Label
 	Layers          []Layer
 	Dictionary      []Dictionary
@@ -22,7 +22,7 @@ type ResourceSpecification struct {
 	Data            any
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, data any, workspaceObject workspace.WorkspaceSpecification) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, data any, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,

@@ -1,6 +1,8 @@
 package project
 
 import (
+	"path/filepath"
+
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utils"
@@ -11,12 +13,14 @@ type ProjectIdentifier struct {
 	Name      string
 	Group     string
 	Workspace string
+	Path      []string
 }
 
-func NewProjectIdentifier(id int, name string, group string, workspace string) ProjectIdentifier {
+func NewProjectIdentifier(id int, name string, path []string, group string, workspace string) ProjectIdentifier {
 	return ProjectIdentifier{
 		ID:        id,
 		Name:      name,
+		Path:      path,
 		Group:     group,
 		Workspace: workspace,
 	}
@@ -28,6 +32,17 @@ func (e ProjectIdentifier) Validate() error {
 	return nil
 }
 
+func (s *ProjectIdentifier) IsPathExists() bool {
+	return len(s.Path) > 0
+}
+func (s *ProjectIdentifier) GetProjectPath() string {
+
+	folders := utils.CombinePaths(s.Path)
+
+	relativeFullPath := filepath.Join(folders...)
+
+	return relativeFullPath
+}
 func (s *ProjectIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	var value string
 	if err := unmarshal(&value); err != nil {

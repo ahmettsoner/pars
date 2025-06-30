@@ -2,12 +2,12 @@ package applicationproject
 
 import (
 	"parsdevkit.net/application/models/label"
+	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/structs/group"
 
 	"parsdevkit.net/structs/project"
-	"parsdevkit.net/structs/workspace"
 )
 
 type Configuration struct {
@@ -79,12 +79,12 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 					ref.Group,
 					ref.Workspace,
 					"",
-					group.GroupSpecification{},
+					applicationGroup.GroupIdentifier{},
 					"",
 					[]string(nil),
 					[]label.Label(nil),
 					[]string(nil),
-					workspace.WorkspaceSpecification{},
+					applicationWorkspace.WorkspaceIdentifier{},
 					Platform{},
 					Runtime{},
 					Schema{},
