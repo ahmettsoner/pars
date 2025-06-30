@@ -7,10 +7,10 @@ import (
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
 )
 
@@ -51,7 +51,7 @@ Specifications:
 			[]string{"pars", "cmd"},
 			[]label.Label(nil),
 			[]codetemplate.Layer(nil), codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
 	)

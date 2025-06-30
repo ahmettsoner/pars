@@ -8,12 +8,12 @@ import (
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/schemas"
 	goModels "parsdevkit.net/platforms/go/models"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/assert"
@@ -60,7 +60,7 @@ Configuration:
 		[]string{"pars"},
 		[]label.Label(nil),
 		utils.PathToArray("Utils"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 		applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 		applicationproject.Runtime{},
 		applicationproject.NewSchema(),
@@ -83,7 +83,7 @@ Configuration:
 						[]string(nil),
 						[]label.Label(nil),
 						[]string(nil),
-						workspace.WorkspaceSpecification{},
+						applicationWorkspace.WorkspaceIdentifier{},
 						applicationproject.Platform{},
 						applicationproject.Runtime{},
 						applicationproject.Schema{},

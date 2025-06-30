@@ -5,12 +5,12 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	goModels "parsdevkit.net/platforms/go/models"
 
@@ -75,7 +75,7 @@ Specifications:
 			[]string{"pars"},
 			[]label.Label(nil),
 			utils.PathToArray("Utils"),
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 			applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 			applicationproject.NewRuntime("", ""),
 			applicationproject.NewSchema(),
@@ -98,7 +98,7 @@ Specifications:
 							[]string(nil),
 							[]label.Label(nil),
 							[]string(nil),
-							workspace.WorkspaceSpecification{},
+							applicationWorkspace.WorkspaceIdentifier{},
 							applicationproject.Platform{},
 							applicationproject.Runtime{},
 							applicationproject.Schema{},

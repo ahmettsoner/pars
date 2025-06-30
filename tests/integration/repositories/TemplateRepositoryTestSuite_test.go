@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/structs/template"
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utils"
 
@@ -201,7 +201,7 @@ func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 				codetemplate.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
 			},
 			codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "test-code-content"),
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
 	)
@@ -232,7 +232,7 @@ func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruc
 				codetemplate.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
 			},
 			codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "test-code-content"),
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
 	)

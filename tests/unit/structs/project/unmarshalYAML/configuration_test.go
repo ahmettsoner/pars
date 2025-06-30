@@ -5,11 +5,11 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/group"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -54,7 +54,7 @@ References:
 					[]string(nil),
 					[]label.Label(nil),
 					[]string(nil),
-					workspace.WorkspaceSpecification{},
+					applicationWorkspace.WorkspaceIdentifier{},
 					applicationproject.Platform{},
 					applicationproject.Runtime{},
 					applicationproject.Schema{},

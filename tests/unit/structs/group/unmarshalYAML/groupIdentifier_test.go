@@ -22,7 +22,7 @@ Name: CMD
 	var data applicationGroup.GroupIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationGroup.NewGroupIdentifier(0, "CMD")
+	expected := applicationGroup.NewGroupIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)
@@ -41,7 +41,7 @@ CMD
 	var data applicationGroup.GroupIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationGroup.NewGroupIdentifier(0, "CMD")
+	expected := applicationGroup.NewGroupIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)

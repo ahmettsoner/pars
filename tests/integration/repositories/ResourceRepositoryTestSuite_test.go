@@ -8,8 +8,8 @@ import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
-	"parsdevkit.net/structs/workspace"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
@@ -222,7 +222,7 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 					true,
 				),
 			},
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		objectresource.NewResourceConfiguration(objectresource.ChangeTrackers.OnChange),
 	)
@@ -275,7 +275,7 @@ func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStr
 					true,
 				),
 			},
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		objectresource.NewResourceConfiguration(objectresource.ChangeTrackers.OnChange),
 	)

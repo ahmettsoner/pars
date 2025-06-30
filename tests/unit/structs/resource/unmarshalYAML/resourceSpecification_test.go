@@ -5,8 +5,8 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -36,7 +36,7 @@ Set: bar
 		[]objectresource.Layer(nil),
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -68,7 +68,7 @@ Path: /foo
 		[]objectresource.Layer(nil),
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -100,7 +100,7 @@ Package: pars/cmd
 		[]objectresource.Layer(nil),
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -134,7 +134,7 @@ Package:
 		[]objectresource.Layer(nil),
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -169,7 +169,7 @@ Labels:
 		[]objectresource.Layer(nil),
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -204,7 +204,7 @@ Layers:
 		[]objectresource.Layer{objectresource.NewLayer(0, "layer1", []objectresource.Section(nil)), objectresource.NewLayer(0, "layer2", []objectresource.Section(nil))},
 		[]objectresource.Attribute(nil),
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -248,7 +248,7 @@ Attributes:
 				0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true),
 		},
 		[]objectresource.Method(nil),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -299,7 +299,7 @@ Methods:
 				true,
 			),
 		},
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -372,7 +372,7 @@ Methods:
 				true,
 			),
 		},
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert

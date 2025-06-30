@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -79,7 +80,7 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 		[]string(nil),
 		[]label.Label(nil),
 		utils.PathToArray(name),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
 		applicationproject.Schema{},
@@ -105,7 +106,7 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName str
 		[]string(nil),
 		[]label.Label(nil),
 		utils.PathToArray(name),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
 		applicationproject.Schema{},
@@ -132,7 +133,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 		[]string(nil),
 		[]label.Label(nil),
 		utils.PathToArray(name),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
 		applicationproject.Schema{},
@@ -157,7 +158,7 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspac
 		[]string(nil),
 		[]label.Label(nil),
 		utils.PathToArray(name),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
 		applicationproject.Schema{},
@@ -185,7 +186,7 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 		[]string(nil),
 		[]label.Label(nil),
 		utils.PathToArray(path),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
 		applicationproject.Schema{},

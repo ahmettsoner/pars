@@ -22,7 +22,7 @@ Name: CMD
 	var data applicationWorkspace.WorkspaceIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD")
+	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)
@@ -41,7 +41,7 @@ CMD
 	var data applicationWorkspace.WorkspaceIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD")
+	expected := applicationWorkspace.NewWorkspaceIdentifier(0, "CMD", "")
 
 	// Assert
 	a.NoError(err)

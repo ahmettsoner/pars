@@ -5,9 +5,9 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -94,7 +94,7 @@ Specifications:
 					true,
 				),
 			},
-			workspace.WorkspaceSpecification{},
+			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		objectresource.NewResourceConfiguration(objectresource.ChangeTrackers.OnChange),
 	)

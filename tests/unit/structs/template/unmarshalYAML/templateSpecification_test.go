@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -40,7 +40,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -75,7 +75,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -111,7 +111,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "code_sample"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -147,7 +147,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -182,7 +182,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -219,7 +219,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -259,7 +259,7 @@ Template:
 			codetemplate.NewLayer(0, "layer2", []templateStruct.Section(nil)),
 		},
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -299,7 +299,7 @@ Template:
 		},
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -340,7 +340,7 @@ Template:
 		},
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert
@@ -376,7 +376,7 @@ Template:
 		[]label.Label(nil),
 		[]codetemplate.Layer(nil),
 		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
-		workspace.WorkspaceSpecification{},
+		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
 	// Assert

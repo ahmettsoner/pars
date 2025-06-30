@@ -6,10 +6,13 @@ import (
 	"strings"
 	"testing"
 
+	applicationGroup "parsdevkit.net/application/structs/group"
+
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
+
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/structs/group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utils"
@@ -26,7 +29,9 @@ func Test_Project_Relative_Path(t *testing.T) {
 	testFaker := faker.NewFaker()
 	fakePath := testFaker.Project.Path(1)
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
 	}
 	// Act
 	expected := filepath.Join(fakePath)
@@ -45,13 +50,15 @@ func Test_Project_Absolute_Path(t *testing.T) {
 	fakeWorkspace := testFaker.Workspace.Name()
 
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
-		WorkspaceObject: workspace.WorkspaceSpecification{
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
 		},
 	}
 	// Act
-	expected := filepath.Join(fakeWorkspace, workspace.CodeBasePath, fakePath)
+	expected := filepath.Join(fakeWorkspace, applicationWorkspace.CodeBasePath, fakePath)
 	expected = strings.TrimPrefix(expected, string(os.PathSeparator))
 
 	// Assert
@@ -67,9 +74,13 @@ func Test_Project_WithGroup_Relative_Path(t *testing.T) {
 	fakeGroup := testFaker.Project.Group()
 
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
 		GroupObject: group.GroupSpecification{
-			Path: fakeGroup,
+			GroupIdentifier: applicationGroup.GroupIdentifier{
+				Path: fakeGroup,
+			},
 		},
 	}
 	// Act
@@ -90,16 +101,20 @@ func Test_Project_WithGroup_Absolute_Path(t *testing.T) {
 	fakeWorkspace := testFaker.Workspace.Name()
 
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
-		WorkspaceObject: workspace.WorkspaceSpecification{
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
 		},
 		GroupObject: group.GroupSpecification{
-			Path: fakeGroup,
+			GroupIdentifier: applicationGroup.GroupIdentifier{
+				Path: fakeGroup,
+			},
 		},
 	}
 	// Act
-	expected := filepath.Join(fakeWorkspace, workspace.CodeBasePath, fakeGroup, fakePath)
+	expected := filepath.Join(fakeWorkspace, applicationWorkspace.CodeBasePath, fakeGroup, fakePath)
 	expected = strings.TrimPrefix(expected, string(os.PathSeparator))
 
 	// Assert
@@ -116,9 +131,13 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 	fakeLayerPath := testFaker.Project.Path(1)
 
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
 		GroupObject: group.GroupSpecification{
-			Path: fakeGroup,
+			GroupIdentifier: applicationGroup.GroupIdentifier{
+				Path: fakeGroup,
+			},
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{
@@ -150,12 +169,16 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 	fakeWorkspace := testFaker.Workspace.Name()
 
 	data := applicationproject.ProjectSpecification{
-		Path: utils.PathToArray(fakePath),
-		WorkspaceObject: workspace.WorkspaceSpecification{
+		ProjectIdentifier: applicationProject.ProjectIdentifier{
+			Path: utils.PathToArray(fakePath),
+		},
+		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
 		},
 		GroupObject: group.GroupSpecification{
-			Path: fakeGroup,
+			GroupIdentifier: applicationGroup.GroupIdentifier{
+				Path: fakeGroup,
+			},
 		},
 		Configuration: applicationproject.Configuration{
 			Layers: []applicationProject.Layer{
@@ -169,7 +192,7 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 		},
 	}
 	// Act
-	expected := filepath.Join(fakeWorkspace, workspace.CodeBasePath, fakeGroup, fakePath, fakeLayerPath)
+	expected := filepath.Join(fakeWorkspace, applicationWorkspace.CodeBasePath, fakeGroup, fakePath, fakeLayerPath)
 	expected = strings.TrimPrefix(expected, string(os.PathSeparator))
 
 	// Assert
