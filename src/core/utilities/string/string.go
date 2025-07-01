@@ -7,6 +7,10 @@ import (
 	"unicode"
 )
 
+// FirstIndex(str, subStr string) int
+// LastIndex(str, subStr string) int
+// Index(str, subStr string) int
+// Count(str, subStr string) int
 func StartsWith(str, prefix string) bool {
 	return strings.HasPrefix(str, prefix)
 }
@@ -295,4 +299,8 @@ func ArrayToStringSlice(arr []interface{}) []string {
 		}
 	}
 	return strSlice
+}
+func IsEmpty(text string) bool {
+	trimmedText := strings.TrimSpace(text)
+	return trimmedText == ""
 }

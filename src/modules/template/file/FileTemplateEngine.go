@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
@@ -77,7 +77,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(template)
+			newModelHash, err := encrypt.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}

@@ -13,7 +13,7 @@ import (
 	"parsdevkit.net/core/utilities/json"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 )
 
@@ -77,7 +77,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(resource)
+			newModelHash, err := encrypt.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}

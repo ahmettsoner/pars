@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"parsdevkit.net/core/utils"
 
@@ -71,7 +71,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	fmt.Println("*** Workspace Specific Tasks ***")
 	fmt.Println()
 
-	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
+	commandOptions.Workspace = workspace.GetActiveWorkspaceName(commandOptions.Workspace)
 
 	taskList, err := taskService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {

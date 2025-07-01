@@ -13,7 +13,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 )
 
 type SharedTemplateEngine struct{}
@@ -77,7 +77,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 		}
 
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(template)
+			newModelHash, err := encrypt.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}

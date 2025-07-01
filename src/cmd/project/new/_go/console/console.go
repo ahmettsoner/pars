@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/core/utils/json"
@@ -62,7 +62,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utilities.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName("")
 	}
 
 	return nil

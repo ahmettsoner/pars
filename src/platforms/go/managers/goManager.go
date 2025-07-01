@@ -9,6 +9,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
@@ -260,7 +261,7 @@ func (s GoManager) DeleteGroup(project applicationproject.ProjectSpecification) 
 
 func (s GoManager) AddToGroup(project applicationproject.ProjectSpecification) error {
 
-	relativeProjectPath, err := utilities.FindRelativePath(project.GetAbsoluteGroupPath(), project.GetAbsoluteProjectPath())
+	relativeProjectPath, err := file.FindRelativePath(project.GetAbsoluteGroupPath(), project.GetAbsoluteProjectPath())
 	if err != nil {
 		return err
 	}
@@ -328,7 +329,7 @@ func (s GoManager) AddReferenceToProject(project applicationproject.ProjectSpeci
 
 	for _, reference := range references {
 
-		relativeProjectPath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativeProjectPath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}

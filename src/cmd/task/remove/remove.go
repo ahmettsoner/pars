@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/engines/commonTask"
 
 	"parsdevkit.net/operation/services"
@@ -69,7 +69,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				commandOptions.Workspace = ""
 			}
 
-			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(commandOptions.Workspace)
+			commandOptions.Workspace = workspace.GetActiveWorkspaceName(commandOptions.Workspace)
 
 			if taskService.IsExists(name, commandOptions.Workspace) {
 				task, err := taskService.Remove(name, commandOptions.Workspace, true)

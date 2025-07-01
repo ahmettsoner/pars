@@ -9,9 +9,10 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/core/utilities"
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -57,7 +58,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
 		}
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, "")
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
 
 	return nil
@@ -112,7 +113,7 @@ func listProjectNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, project := range *projectList {
-		if !utilities.Contains(args, project.GetFullName()) && strings.HasPrefix(project.GetFullName(), toComplete) {
+		if !array.ContainsSlice(args, project.GetFullName()) && strings.HasPrefix(project.GetFullName(), toComplete) {
 			suggestions = append(suggestions, project.GetFullName())
 		}
 	}
@@ -128,7 +129,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

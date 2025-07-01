@@ -6,6 +6,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 )
 
 type ProjectIdentifier struct {
@@ -37,7 +38,7 @@ func (s *ProjectIdentifier) IsPathExists() bool {
 }
 func (s *ProjectIdentifier) GetProjectPath() string {
 
-	folders := utilities.CombinePaths(s.Path)
+	folders := file.CombinePaths(s.Path)
 
 	relativeFullPath := filepath.Join(folders...)
 

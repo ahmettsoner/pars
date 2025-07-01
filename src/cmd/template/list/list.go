@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"parsdevkit.net/core/utils"
 
@@ -104,7 +104,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
 	}
-	commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
+	commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
 	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {

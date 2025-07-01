@@ -17,7 +17,7 @@ import (
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
 	"github.com/stretchr/testify/require"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 )
 
 func InitializeNewWorkspace(t *testing.T, testPath, workspaceName, environment string) {
@@ -53,7 +53,7 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(name),
+		file.PathToArray(name),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
@@ -79,7 +79,7 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName s
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(name),
+		file.PathToArray(name),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
@@ -106,7 +106,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, 
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(name),
+		file.PathToArray(name),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
@@ -136,7 +136,7 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, worksp
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(name),
+		file.PathToArray(name),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
@@ -168,7 +168,7 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, wo
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(path),
+		file.PathToArray(path),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},
@@ -197,7 +197,7 @@ func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, worksp
 		"",
 		[]string(nil),
 		[]label.Label(nil),
-		utilities.PathToArray(path),
+		file.PathToArray(path),
 		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
 		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 		applicationproject.Runtime{},

@@ -1,10 +1,12 @@
-package utilities
+package file
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
+
+	utilsString "parsdevkit.net/core/utilities/string"
 )
 
 func GetOnlyFileName(file string) string {
@@ -184,7 +186,7 @@ func GetAllFilesInPath(path ...string) ([]string, error) {
 
 	allFiles := make([]string, 0)
 	for _, path := range allPaths {
-		if !IsEmpty(path) {
+		if !utilsString.IsEmpty(path) {
 			files, err := GetFilesInPath(path)
 			if err != nil {
 				return nil, err

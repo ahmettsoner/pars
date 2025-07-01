@@ -3,7 +3,7 @@ package remote
 import (
 	"fmt"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/cmd/open/workspace"
 
 	"github.com/spf13/cobra"
 )
@@ -43,7 +43,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if utilities.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName("")
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName("")
 	}
 
 	return nil

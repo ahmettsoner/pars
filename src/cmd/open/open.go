@@ -8,9 +8,9 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/cmd/open/project"
-	"parsdevkit.net/cmd/open/workspace"
+	workspaceCommand "parsdevkit.net/cmd/open/workspace"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/core/utilities"
 
 	"github.com/spf13/cobra"
@@ -58,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
 	}
-	path := parsCMDCommon.GetActiveWorkspacePath(appCtx, commandOptions.Name)
+	path := workspace.GetActiveWorkspacePath(appCtx, commandOptions.Name)
 
 	providers.VSCodeExecute("", path)
 
@@ -74,6 +74,6 @@ func init() {
 }
 
 func addSubCommands() {
-	OpenCmd.AddCommand(workspace.WorkspaceCommand)
+	OpenCmd.AddCommand(workspaceCommand.WorkspaceCommand)
 	OpenCmd.AddCommand(project.ProjectCmd)
 }

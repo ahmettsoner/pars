@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"parsdevkit.net/templates/engines/functions"
+	"parsdevkit.net/components/templates/engines/functions"
 
 	"parsdevkit.net/core/utils"
 

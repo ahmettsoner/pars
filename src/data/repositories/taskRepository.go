@@ -3,7 +3,7 @@ package repositories
 import (
 	"errors"
 
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/persistence/contexts"
 
 	"parsdevkit.net/persistence/entities"
@@ -128,7 +128,7 @@ func (s *TaskRepository) Save(entity *entities.Task) error {
 		return err
 	}
 
-	documentHash, err := utilities.CalculateHash(entity.Document)
+	documentHash, err := encrypt.CalculateHash(entity.Document)
 	if err != nil {
 		return err
 	}

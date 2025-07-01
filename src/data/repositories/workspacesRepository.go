@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/persistence/contexts"
 
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/persistence/entities"
 
 	"gorm.io/gorm"
@@ -69,7 +69,7 @@ func (s *WorkspaceRepository) Save(entity *entities.Workspace) error {
 		return err
 	}
 
-	documentHash, err := utilities.CalculateHash(entity.Document)
+	documentHash, err := encrypt.CalculateHash(entity.Document)
 	if err != nil {
 		return err
 	}

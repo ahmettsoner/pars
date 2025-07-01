@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
@@ -62,7 +62,7 @@ func (s GroupEngine) createGroups(groups []GroupBaseStruct, init bool) error {
 			return err
 		}
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(group)
+			newModelHash, err := encrypt.CalculateHashFromObject(group)
 			if err != nil {
 				return err
 			}

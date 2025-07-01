@@ -15,8 +15,6 @@ replace parsdevkit.net/persistence/repositories => ../data/repositories
 
 replace parsdevkit.net/persistence/contexts => ../data/contexts
 
-replace parsdevkit.net/templates => ../core/templates
-
 replace parsdevkit.net/core/utils => ../modules/utils
 
 replace parsdevkit.net/providers => ../providers
@@ -101,5 +99,4 @@ require (
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )

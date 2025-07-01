@@ -1,4 +1,4 @@
-package utilities
+package encrypt
 
 import (
 	"crypto/md5"

@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"os"
 
+	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/providers"
-
-	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -55,7 +54,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
 	}
-	path := parsCMDCommon.GetActiveWorkspacePath(appCtx, commandOptions.Name)
+	path := workspace.GetActiveWorkspacePath(appCtx, commandOptions.Name)
 
 	providers.VSCodeExecute("", path)
 

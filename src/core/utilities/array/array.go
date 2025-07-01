@@ -82,6 +82,15 @@ func Reverse(list interface{}) ([]interface{}, error) {
 	return l, nil
 }
 
+func ReverseG[T any](s []T) []T {
+	n := len(s)
+	reversed := make([]T, n)
+	for i := 0; i < n; i++ {
+		reversed[i] = s[n-1-i]
+	}
+	return reversed
+}
+
 // Sort a given array or slice. Uses natural sort order if possible. If a
 // non-empty key is given and the list elements are maps, this will attempt to
 // sort by the values of those entries.
@@ -280,6 +289,15 @@ func Contains(slice interface{}, key string, value interface{}) bool {
 			if item.CanInterface() && item.Interface() == value {
 				return true
 			}
+		}
+	}
+	return false
+}
+
+func ContainsSlice(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
 		}
 	}
 	return false

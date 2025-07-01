@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"parsdevkit.net/cmd/open/workspace"
 	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
 
@@ -51,7 +52,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		os.Exit(0)
 	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	if workspaceID == 0 {
 		log.Fatal("There are no active workspace, please initialize or switch to available workspace")

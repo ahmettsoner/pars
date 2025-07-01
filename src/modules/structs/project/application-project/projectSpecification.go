@@ -10,6 +10,7 @@ import (
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/core/errors"
@@ -94,7 +95,7 @@ func (s *ProjectSpecification) GetCodeBasePath() string {
 }
 func (s *ProjectSpecification) GetRelativeGroupPath() string {
 
-	folders := utilities.CombinePaths([]string{s.GroupObject.GetRelativeGroupPath()})
+	folders := file.CombinePaths([]string{s.GroupObject.GetRelativeGroupPath()})
 
 	relativeFullPath := filepath.Join(folders...)
 
@@ -105,8 +106,8 @@ func (s *ProjectSpecification) GetRelativeGroupPath() string {
 func (s *ProjectSpecification) GetRelativeBaseGroupPath() string {
 	if !utilities.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
 
-		paths := utilities.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
-		folders := utilities.CombinePaths(paths)
+		paths := file.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
+		folders := file.CombinePaths(paths)
 
 		relativeFullPath := filepath.Join(folders...)
 
@@ -121,7 +122,7 @@ func (s *ProjectSpecification) GetAbsoluteGroupPath() string {
 // TODO: Gerekli testler tamamlanmalı
 func (s *ProjectSpecification) GetAbsoluteBaseGroupPath() string {
 	if !utilities.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
-		paths := utilities.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
+		paths := file.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
 		absolutePath := filepath.Join(s.WorkspaceObject.GetCodeBaseFolder(), strings.Join(paths, "/"))
 
 		return absolutePath
@@ -131,7 +132,7 @@ func (s *ProjectSpecification) GetAbsoluteBaseGroupPath() string {
 
 func (s *ProjectSpecification) GetRelativeProjectPath() string {
 
-	folders := utilities.CombinePaths([]string{s.GetRelativeGroupPath()}, s.Path)
+	folders := file.CombinePaths([]string{s.GetRelativeGroupPath()}, s.Path)
 
 	relativeFullPath := filepath.Join(folders...)
 
@@ -141,14 +142,14 @@ func (s *ProjectSpecification) GetRelativeProjectPath() string {
 // TODO: Gerekli testler tamamlanmalı
 func (s *ProjectSpecification) GetRelativeBaseProjectPath() string {
 
-	folders := utilities.CombinePaths([]string{s.GetRelativeGroupPath()}, s.Path[:1])
+	folders := file.CombinePaths([]string{s.GetRelativeGroupPath()}, s.Path[:1])
 
 	relativeFullPath := filepath.Join(folders...)
 
 	return relativeFullPath
 }
 func (s *ProjectSpecification) GetAbsoluteProjectPath() string {
-	folders := utilities.CombinePaths([]string{s.GetAbsoluteGroupPath()}, s.Path)
+	folders := file.CombinePaths([]string{s.GetAbsoluteGroupPath()}, s.Path)
 
 	absoluteFullPath := filepath.Join(folders...)
 
@@ -159,7 +160,7 @@ func (s *ProjectSpecification) GetAbsoluteProjectPath() string {
 
 // TODO: Gerekli testler tamamlanmalı
 func (s *ProjectSpecification) GetAbsoluteBaseProjectPath() string {
-	folders := utilities.CombinePaths([]string{s.GetAbsoluteGroupPath()}, s.Path[:1])
+	folders := file.CombinePaths([]string{s.GetAbsoluteGroupPath()}, s.Path[:1])
 
 	absoluteFullPath := filepath.Join(folders...)
 
@@ -232,7 +233,7 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	s.Platform = tempObject.Platform
 	s.ProjectType = tempObject.ProjectType
 	s.Set = tempObject.Set
-	s.Path = utilities.PathToArray(tempObject.Path)
+	s.Path = file.PathToArray(tempObject.Path)
 
 	switch packages := tempObject.Package.(type) {
 	case string:
@@ -254,7 +255,7 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	}
 
 	if len(s.Path) == 0 {
-		s.Path = utilities.PathToArray(tempObject.Name)
+		s.Path = file.PathToArray(tempObject.Name)
 	}
 
 	return nil

@@ -20,6 +20,7 @@ import (
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 )
 
 type ApplicationProjectEngine struct{}
@@ -82,7 +83,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			return err
 		}
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(project)
+			newModelHash, err := encrypt.CalculateHashFromObject(project)
 			if err != nil {
 				return err
 			}

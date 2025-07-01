@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 )
 
 func GenerateEnvironment(t *testing.T, path string) string {
-	return strings.Join(utilities.PathToArray(path), "-")
+	return strings.Join(file.PathToArray(path), "-")
 }

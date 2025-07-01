@@ -11,8 +11,8 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/components/templates/models/objectResources"
 	"parsdevkit.net/core/utilities"
-	"parsdevkit.net/templates/models/objectResources"
 )
 
 type ObjectResourceService struct {

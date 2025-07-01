@@ -9,6 +9,7 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 )
 
 type Layer struct {
@@ -77,7 +78,7 @@ func (s *Layer) IsPathExists() bool {
 	return !utilities.IsEmpty(s.Path)
 }
 func (s *Layer) GetPathAsArray() []string {
-	return utilities.PathToArray(s.Path)
+	return file.PathToArray(s.Path)
 }
 
 func (s *Layer) GetPackageString() string {

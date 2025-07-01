@@ -6,9 +6,9 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/components/templates/models/objectResources"
+	objectResourceService "parsdevkit.net/components/templates/services"
 	platformsCommon "parsdevkit.net/platforms/common"
-	"parsdevkit.net/templates/models/objectResources"
-	objectResourceService "parsdevkit.net/templates/services"
 )
 
 type FileTemplateDataContext struct {

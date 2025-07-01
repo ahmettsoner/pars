@@ -9,6 +9,7 @@ import (
 
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -205,7 +206,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						if err != nil {
 							return models.CodeTemplateDataContext{}
 						}
-						templateObj.Specifications.Package = utilities.PathToArray(packageStr)
+						templateObj.Specifications.Package = file.PathToArray(packageStr)
 
 						selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objSection)
 						break
@@ -225,7 +226,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				if err != nil {
 					return models.CodeTemplateDataContext{}
 				}
-				templateObj.Specifications.Package = utilities.PathToArray(packageStr)
+				templateObj.Specifications.Package = file.PathToArray(packageStr)
 
 				selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objectresource.Section{})
 				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {

@@ -4,14 +4,15 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
+	templateEngine "parsdevkit.net/components/templates/engines"
 	platformsCommon "parsdevkit.net/platforms/common"
-	templateEngine "parsdevkit.net/templates/engines"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
@@ -167,17 +168,17 @@ func (s FileTemplateOperations) CheckGeneration(project applicationproject.Proje
 		return false, "", "", "", err
 	}
 
-	newResourceModelHash, err := utilities.CalculateHashFromObject(resource)
+	newResourceModelHash, err := encrypt.CalculateHashFromObject(resource)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newResourceSectionModelHash, err := utilities.CalculateHashFromObject(section)
+	newResourceSectionModelHash, err := encrypt.CalculateHashFromObject(section)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newTemplateModelHash, err := utilities.CalculateHashFromObject(template)
+	newTemplateModelHash, err := encrypt.CalculateHashFromObject(template)
 	if err != nil {
 		return false, "", "", "", err
 	}

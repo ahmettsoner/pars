@@ -5,6 +5,8 @@ import (
 
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/operation/services"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -12,7 +14,7 @@ import (
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"
 
-	templateEngine "parsdevkit.net/templates/engines"
+	templateEngine "parsdevkit.net/components/templates/engines"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
@@ -153,7 +155,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 										if err != nil {
 											return err
 										}
-										template.Specifications.Package = utilities.PathToArray(packageStr)
+										template.Specifications.Package = file.PathToArray(packageStr)
 
 										data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
 										templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
@@ -205,7 +207,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 			if err != nil {
 				return err
 			}
-			template.Specifications.Package = utilities.PathToArray(packageStr)
+			template.Specifications.Package = file.PathToArray(packageStr)
 
 			data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, objectresource.Section{})
 			templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
@@ -240,17 +242,17 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 		return false, "", "", "", err
 	}
 
-	newResourceModelHash, err := utilities.CalculateHashFromObject(resource)
+	newResourceModelHash, err := encrypt.CalculateHashFromObject(resource)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newLayerSectionModelHash, err := utilities.CalculateHashFromObject(section)
+	newLayerSectionModelHash, err := encrypt.CalculateHashFromObject(section)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newTemplateModelHash, err := utilities.CalculateHashFromObject(template)
+	newTemplateModelHash, err := encrypt.CalculateHashFromObject(template)
 	if err != nil {
 		return false, "", "", "", err
 	}

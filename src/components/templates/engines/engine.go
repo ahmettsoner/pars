@@ -18,6 +18,7 @@ func (t EngineFuncs) RenderContent(templateName string, data any) string {
 
 func (t EngineFuncs) GetContent(templateName string) string {
 	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
+
 	sharedTemplate, err := sharedTemplateService.GetByName(templateName)
 	if err != nil {
 		return ""

@@ -6,11 +6,12 @@ import (
 	"os"
 	"strings"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
@@ -111,7 +112,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("xxx: Current workspace bulunamadı")
 			}
 
-			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
+			commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
 			ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
 			if err != nil {
@@ -185,7 +186,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *sharedTemplateList {
-		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -197,7 +198,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *fileTemplateList {
-		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -209,7 +210,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *codeTemplateList {
-		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}

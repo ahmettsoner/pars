@@ -12,6 +12,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -72,7 +73,7 @@ func (s DotnetManager) CreateProject(project applicationproject.ProjectSpecifica
 	// 	}
 	// }
 
-	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Name, "--output", utilities.PathWithDot(project.GetRelativeProjectPath()))
+	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Name, "--output", file.PathWithDot(project.GetRelativeProjectPath()))
 	if err != nil {
 		return err
 	}
@@ -310,7 +311,7 @@ func (s DotnetManager) GetPlatformVersion(platform applicationproject.Platform) 
 }
 
 func (s DotnetManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "sln", "--name", project.GroupObject.Name, "--output", utilities.PathWithDot(project.GetRelativeGroupPath()))
+	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "sln", "--name", project.GroupObject.Name, "--output", file.PathWithDot(project.GetRelativeGroupPath()))
 }
 
 func (s DotnetManager) DeleteGroup(project applicationproject.ProjectSpecification) {
@@ -738,7 +739,7 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 	references := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := utilities.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+			relativeToReference, err := file.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}

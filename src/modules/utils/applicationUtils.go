@@ -12,6 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/utilities"
+	utilsFile "parsdevkit.net/core/utilities/file"
 )
 
 var (
@@ -323,7 +324,7 @@ func GetCodeBaseLocation() string {
 		if !ok {
 			fmt.Println("Error getting caller")
 		}
-		project_root, err := utilities.BaseDirFromFilePath(file, "src/modules/utils/applicationUtils.go")
+		project_root, err := utilsFile.BaseDirFromFilePath(file, "src/modules/utils/applicationUtils.go")
 		if err != nil {
 			fmt.Println("Error:", err)
 		}

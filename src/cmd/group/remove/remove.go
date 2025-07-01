@@ -8,11 +8,11 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 	group "parsdevkit.net/modules/group/group"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/core/utilities"
 )
 
 type RemoveOptions struct {
@@ -90,7 +90,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 
 func listGroupNameSuggestions(args []string, toComplete string) []string {
 
-	// workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
 	groupService := group.NewGroupService(utils.GetEnvironment())
@@ -100,7 +100,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, group := range *groupList {
-		if !utilities.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
 			suggestions = append(suggestions, group.Header.Name)
 		}
 	}
@@ -116,7 +116,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

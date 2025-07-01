@@ -7,13 +7,14 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/array"
 )
 
 type RemoveOptions struct {
@@ -96,7 +97,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if appCtx == nil {
 				return fmt.Errorf("xxx: Current workspace bulunamadı")
 			}
-			commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
+			commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
 			ok, err := objectResourceService.IsExists(name, commandOptions.Workspace)
 			if err != nil {
@@ -150,7 +151,7 @@ func addSubCommands() {
 
 func listResourceNameSuggestions(args []string, toComplete string) []string {
 
-	// workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
 	objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
@@ -160,7 +161,7 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *objectResourceList {
-		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -172,7 +173,7 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *dataResourceList {
-		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}

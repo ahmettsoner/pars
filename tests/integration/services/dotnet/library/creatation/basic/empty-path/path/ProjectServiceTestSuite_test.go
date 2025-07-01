@@ -4,6 +4,8 @@ import (
 	"os"
 	"testing"
 
+	"parsdevkit.net/core/utilities/file"
+
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
@@ -23,7 +25,6 @@ import (
 
 	"github.com/stretchr/testify/suite"
 	"parsdevkit.net/application/contracts"
-	"parsdevkit.net/core/utilities"
 )
 
 type ProjectServiceTestSuite struct {
@@ -127,7 +128,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SinglePath() {
 	projectName := suite.faker.Project.Name()
 	projectPath := suite.faker.Project.Path(1)
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Path = utilities.PathToArray(projectPath)
+	project.Specifications.Path = file.PathToArray(projectPath)
 
 	temp, err := suite.service.Create(project, true)
 	require.NoError(suite.T(), err, "Failed to save project")
@@ -153,7 +154,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultiplePath() {
 	projectName := suite.faker.Project.Name()
 	projectPath := suite.faker.Project.Path(3)
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Path = utilities.PathToArray(projectPath)
+	project.Specifications.Path = file.PathToArray(projectPath)
 
 	temp, err := suite.service.Create(project, true)
 	require.NoError(suite.T(), err, "Failed to save project")

@@ -13,7 +13,7 @@ import (
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +55,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		os.Exit(0)
 	}
 
-	workspaceName = parsCMDCommon.GetActiveWorkspaceName(workspaceName)
+	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	projectGroup, projectName, err := project.ParseProjectFullName(name)
 	if err != nil {

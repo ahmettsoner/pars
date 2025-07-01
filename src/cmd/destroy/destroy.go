@@ -8,8 +8,10 @@ import (
 	"strings"
 
 	"parsdevkit.net/application"
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components"
+	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
@@ -62,7 +64,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
 		}
-		var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
+		var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
 		if err != nil {
 			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 		}
@@ -95,7 +97,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if appCtx == nil {
 				return fmt.Errorf("xxx: Current workspace bulunamadı")
 			}
-			err = application.DispatchEngineDestroy(appCtx, result)
+			err = components.DispatchEngineDestroy(appCtx, result)
 			if err != nil {
 				log.Fatalf("Engine processing failed: %v", err)
 			}
@@ -180,7 +182,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

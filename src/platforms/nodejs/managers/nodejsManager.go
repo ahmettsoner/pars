@@ -20,6 +20,7 @@ import (
 	"parsdevkit.net/providers"
 
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 
 	"github.com/sirupsen/logrus"
 )
@@ -316,7 +317,7 @@ func (s NodeJSManager) RemovePackageFromProject(project applicationproject.Proje
 func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
 
 	for _, reference := range references {
-		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -335,7 +336,7 @@ func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.Pro
 
 	for _, reference := range references {
 
-		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -481,7 +482,7 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 	references := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := utilities.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+			relativeToReference, err := file.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}

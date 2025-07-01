@@ -10,6 +10,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -225,8 +226,8 @@ func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationp
 }
 
 func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
-	folders := utilities.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
-	foldersRelative := utilities.CombinePaths(paths)
+	folders := file.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
+	foldersRelative := file.CombinePaths(paths)
 
 	folderPath := filepath.Join(folders...)
 
@@ -249,8 +250,8 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 	return foldersRelativePath, nil
 }
 func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
-	folders := utilities.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
-	foldersRelative := utilities.CombinePaths(paths)
+	folders := file.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
+	foldersRelative := file.CombinePaths(paths)
 
 	folderPath := filepath.Join(folders...)
 

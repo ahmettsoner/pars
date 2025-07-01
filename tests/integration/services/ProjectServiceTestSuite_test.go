@@ -12,7 +12,8 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/core/utilities/object"
 	"parsdevkit.net/core/utils"
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -90,7 +91,7 @@ func (suite *ProjectServiceTestSuite) Test_ListProjects_BySetAndLayer_SingleLaye
 	temp1, err := suite.service.Create(project1, false)
 	require.NoError(suite.T(), err, "Failed to save project")
 
-	utilities.PrintFields2(temp1)
+	object.PrintFields2(temp1)
 
 	temp2, err := suite.service.Create(project2, false)
 	require.NoError(suite.T(), err, "Failed to save project")
@@ -190,11 +191,11 @@ func (suite *ProjectServiceTestSuite) Test_ListGroupProjects_ByOnlyGroupFullName
 	group := CreateGroup(suite.T(), groupName, groupPath, suite.environment)
 
 	project1 := *objects.BasicProject_WithName(projectName1, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project1.Specifications.Path = utilities.PathToArray(projectPath1)
+	project1.Specifications.Path = file.PathToArray(projectPath1)
 	project1.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project1.Specifications.GroupObject = group.Specifications.GroupIdentifier
 	project2 := *objects.BasicProject_WithName(projectName2, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project2.Specifications.Path = utilities.PathToArray(projectPath2)
+	project2.Specifications.Path = file.PathToArray(projectPath2)
 	project2.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project2.Specifications.GroupObject = group.Specifications.GroupIdentifier
 
@@ -227,7 +228,7 @@ func (suite *ProjectServiceTestSuite) Test_GetProject_ByFullNameAndWorkspace() {
 	group := CreateGroup(suite.T(), groupName, groupPath, suite.environment)
 
 	project1 := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project1.Specifications.Path = utilities.PathToArray(projectPath)
+	project1.Specifications.Path = file.PathToArray(projectPath)
 	project1.Specifications.ProjectIdentifier.Group = group.Header.Name
 	project1.Specifications.GroupObject = group.Specifications.GroupIdentifier
 

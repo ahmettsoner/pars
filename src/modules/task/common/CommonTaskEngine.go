@@ -11,7 +11,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 )
 
@@ -76,7 +76,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 			return fmt.Errorf("xxx: Common task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
 		}
 		if ok {
-			newMommonlHash, err := utilities.CalculateHashFromObject(task)
+			newMommonlHash, err := encrypt.CalculateHashFromObject(task)
 			if err != nil {
 				return err
 			}

@@ -54,9 +54,9 @@ replace parsdevkit.net/models => ../src/models
 
 replace parsdevkit.net/engines => ../src/modules/engines
 
-replace parsdevkit.net/templates => ../src/core/templates
-
 replace parsdevkit.net/cmd => ../src/cmd
+
+replace parsdevkit.net/components => ../src/components
 
 require (
 	github.com/magiconair/properties v1.8.7
@@ -83,6 +83,7 @@ require (
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
@@ -134,7 +135,6 @@ require (
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace parsdevkit.net/core => ../src/core

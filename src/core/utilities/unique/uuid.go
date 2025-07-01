@@ -1,4 +1,4 @@
-package utilities
+package unique
 
 import (
 	"crypto/rand"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func GenerateCustomGUID() string {
+func GenerateUUID() string {
 	timestamp := time.Now().UnixNano()
 	randomBytes := make([]byte, 16)
 	rand.Read(randomBytes)

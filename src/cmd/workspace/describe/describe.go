@@ -11,6 +11,7 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -181,7 +182,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

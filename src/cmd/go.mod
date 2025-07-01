@@ -63,8 +63,9 @@ require (
 	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/templates v0.0.0-00010101000000-000000000000 // indirect
 )
+
+replace parsdevkit.net/components => ../components
 
 replace parsdevkit.net/engines => ../modules/engines
 
@@ -77,8 +78,6 @@ replace parsdevkit.net/persistence/entities => ../modules/data/entities
 replace parsdevkit.net/persistence/repositories => ../modules/data/repositories
 
 replace parsdevkit.net/persistence/contexts => ../modules/data/contexts
-
-replace parsdevkit.net/templates => ../core/templates
 
 replace parsdevkit.net/core/utils => ../modules/utils
 

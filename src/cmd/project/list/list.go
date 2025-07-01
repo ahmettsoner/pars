@@ -7,11 +7,12 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 	group "parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
@@ -50,7 +51,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
 		}
-		commandOptions.Workspace = parsCMDCommon.GetActiveWorkspaceName(appCtx, "")
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
 	return nil
 }
@@ -129,7 +130,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

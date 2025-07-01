@@ -9,7 +9,6 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utilities"
 	goModels "parsdevkit.net/platforms/go/models"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
@@ -18,6 +17,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/utilities/file"
 )
 
 // TODO: Testler tamamlanmalı
@@ -59,7 +59,7 @@ Configuration:
 		"Pars",
 		[]string{"pars"},
 		[]label.Label(nil),
-		utilities.PathToArray("Utils"),
+		file.PathToArray("Utils"),
 		applicationWorkspace.WorkspaceIdentifier{},
 		applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 		applicationproject.Runtime{},

@@ -8,7 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 )
 
 type CleanOptions struct {
@@ -49,7 +49,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	path := parsCMDCommon.GetActiveWorkspacePath(commandOptions.Name)
+	path := workspace.GetActiveWorkspacePath(commandOptions.Name)
 	providers.ExecuteQuick("cd", path)
 
 	fmt.Fprintf(os.Stdout, "✔ Changed Working Dir to '%v' successfully\n", commandOptions.Name)

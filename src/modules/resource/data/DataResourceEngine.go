@@ -9,7 +9,7 @@ import (
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/engines"
@@ -77,7 +77,7 @@ func (s DataResourceEngine) createResources(resources []dataresourceStruct.Resou
 			return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utilities.CalculateHashFromObject(resource)
+			newModelHash, err := encrypt.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}

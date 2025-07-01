@@ -8,7 +8,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -54,7 +54,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
 	}
-	var workspaceName, err = parsCMDCommon.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
+	var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
 	}

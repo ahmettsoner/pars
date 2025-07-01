@@ -1,14 +1,14 @@
 package models
 
 import (
+	objectResourceService "parsdevkit.net/components/templates/services"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"
-	objectResourceService "parsdevkit.net/templates/services"
 
-	"parsdevkit.net/templates/models/objectResources"
+	"parsdevkit.net/components/templates/models/objectResources"
 )
 
 type CodeTemplateDataContext struct {
