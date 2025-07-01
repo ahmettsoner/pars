@@ -12,7 +12,7 @@ replace parsdevkit.net/structs => ../../modules/structs
 
 replace parsdevkit.net/models => ../../models
 
-replace parsdevkit.net/providers => ../../components/providers
+replace parsdevkit.net/providers => ../../providers
 
 require (
 	github.com/clbanning/mxj/v2 v2.7.0

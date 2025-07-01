@@ -12,7 +12,7 @@ replace parsdevkit.net/structs => ../../modules/structs
 
 replace parsdevkit.net/models => ../../models
 
-replace parsdevkit.net/providers => ../../components/providers
+replace parsdevkit.net/providers => ../../providers
 
 require (
 	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000

@@ -19,7 +19,7 @@ replace parsdevkit.net/templates => ../core/templates
 
 replace parsdevkit.net/core/utils => ../modules/utils
 
-replace parsdevkit.net/providers => ../components/providers
+replace parsdevkit.net/providers => ../providers
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 

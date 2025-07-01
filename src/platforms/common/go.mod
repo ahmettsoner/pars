@@ -22,7 +22,7 @@ replace parsdevkit.net/platforms/go => ../go
 
 replace parsdevkit.net/platforms/pars => ../pars
 
-replace parsdevkit.net/providers => ../../components/providers
+replace parsdevkit.net/providers => ../../providers
 
 require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000

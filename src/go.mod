@@ -48,7 +48,7 @@ replace parsdevkit.net/context => ./modules/context
 
 replace parsdevkit.net/core/utils => ./modules/utils
 
-replace parsdevkit.net/providers => ./components/providers
+replace parsdevkit.net/providers => ./providers
 
 replace parsdevkit.net/models => ./models
 
