@@ -2,9 +2,9 @@ package workspace
 
 import (
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
 )
 
 type WorkspaceBaseStruct struct {
@@ -26,7 +26,7 @@ func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications Workspac
 	}
 }
 func (e WorkspaceBaseStruct) Validate() error {
-	if utils.IsEmpty(e.Header.Name) {
+	if utilities.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
 	}
 	return nil

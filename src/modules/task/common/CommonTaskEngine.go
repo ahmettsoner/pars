@@ -3,16 +3,16 @@ package task
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/core/utilities/json"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utils"
-
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utils"
 )
 
 type CommonTaskEngine struct{}
@@ -76,7 +76,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 			return fmt.Errorf("xxx: Common task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
 		}
 		if ok {
-			newMommonlHash, err := utils.CalculateHashFromObject(task)
+			newMommonlHash, err := utilities.CalculateHashFromObject(task)
 			if err != nil {
 				return err
 			}

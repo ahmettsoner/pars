@@ -7,11 +7,12 @@ import (
 	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 )
 
 func GetActiveWorkspaceNameV2(ctx *core.ApplicationContext, workspaceName string) (string, error) {
-	if !utils.IsEmpty(workspaceName) {
+	if !utilities.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		ok, err := workspaceService.IsExists(workspaceName)
 		if err != nil {
@@ -25,7 +26,7 @@ func GetActiveWorkspaceNameV2(ctx *core.ApplicationContext, workspaceName string
 
 	name := ctx.CurrentWorkspace.Name
 
-	if utils.IsEmpty(name) {
+	if utilities.IsEmpty(name) {
 		return "", fmt.Errorf("no active workspace found; please initialize or switch to one")
 	}
 
@@ -34,7 +35,7 @@ func GetActiveWorkspaceNameV2(ctx *core.ApplicationContext, workspaceName string
 
 func GetActiveWorkspaceName(ctx *core.ApplicationContext, workspaceName string) string {
 
-	if !utils.IsEmpty(workspaceName) {
+	if !utilities.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
@@ -47,7 +48,7 @@ func GetActiveWorkspaceName(ctx *core.ApplicationContext, workspaceName string) 
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	if utils.IsEmpty(workspaceName) {
+	if utilities.IsEmpty(workspaceName) {
 		log.Fatal("There are no active workspace, please initialize or switch to available workspace")
 	}
 
@@ -56,7 +57,7 @@ func GetActiveWorkspaceName(ctx *core.ApplicationContext, workspaceName string) 
 
 func GetActiveWorkspacePath(ctx *core.ApplicationContext, workspaceName string) string {
 
-	if utils.IsEmpty(workspaceName) {
+	if utilities.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 

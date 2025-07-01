@@ -9,7 +9,7 @@ import (
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type ResourceSpecification struct {
@@ -41,10 +41,10 @@ func NewResourceSpecification(id int, name, workspace, path, set string, _packag
 }
 
 func (e ResourceSpecification) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
-	if utils.IsEmpty(e.Set) {
+	if utilities.IsEmpty(e.Set) {
 		return &errors.ErrFieldRequired{FieldName: "Set"}
 	}
 	return nil
@@ -62,7 +62,7 @@ func (s *ResourceSpecification) IsPackageExists() bool {
 	return len(s.Package) > 0
 }
 func (s *ResourceSpecification) IsPathExists() bool {
-	return !utils.IsEmpty(s.Path)
+	return !utilities.IsEmpty(s.Path)
 }
 
 func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {

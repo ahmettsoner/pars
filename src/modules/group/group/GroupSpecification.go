@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/core/utils"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/utilities"
 )
 
 type GroupSpecification struct {
@@ -62,7 +62,7 @@ func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) er
 	if len(s.Package) == 0 {
 		s.Package = []string{s.Name}
 	}
-	if utils.IsEmpty(s.Path) {
+	if utilities.IsEmpty(s.Path) {
 		s.Path = s.Name
 	}
 

@@ -6,7 +6,7 @@ import (
 
 	"parsdevkit.net/models"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -31,7 +31,7 @@ func NewPlatform_Basic(_type models.PlatformType) Platform {
 	}
 }
 func (s Platform) Validate() error {
-	if utils.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
+	if utilities.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil
@@ -39,7 +39,7 @@ func (s Platform) Validate() error {
 
 func (s *Platform) GetFullName() string {
 	fullName := s.Type.String()
-	if !utils.IsEmpty(s.Version) {
+	if !utilities.IsEmpty(s.Version) {
 		fullName = fmt.Sprintf("%v@%v", s.Type.String(), s.Version)
 	}
 
@@ -92,7 +92,7 @@ func (s *Platform) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 			s.Type = enum
 
-			if utils.IsEmpty(string(s.Type)) {
+			if utilities.IsEmpty(string(s.Type)) {
 				return &errors.InvalidPlatformError{Value: platformName}
 			}
 			s.Version = platformVersion

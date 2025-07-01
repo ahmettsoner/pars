@@ -10,6 +10,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/core/utilities"
 	group "parsdevkit.net/modules/group/group"
 	platformsCommon "parsdevkit.net/platforms/common"
 )
@@ -36,7 +37,7 @@ var DescribeCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) == 0 {
 		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -46,7 +47,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 	return nil
@@ -120,7 +121,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, group := range *groupList {
-		if !utils.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
+		if !utilities.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
 			suggestions = append(suggestions, group.Header.Name)
 		}
 	}
@@ -147,7 +148,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

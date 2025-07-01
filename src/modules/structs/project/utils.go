@@ -1,13 +1,13 @@
 package project
 
 import (
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 )
 
 func ParseProjectFullName(fullname string) (string, string, error) {
-	parts := utils.PathToArray(fullname)
+	parts := utilities.PathToArray(fullname)
 
 	switch len(parts) {
 	case 1:

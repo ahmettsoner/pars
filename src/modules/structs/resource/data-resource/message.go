@@ -3,11 +3,10 @@ package dataresource
 import (
 	"reflect"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/core/utilities"
 )
 
 type Message struct {
@@ -23,13 +22,13 @@ func NewMessage(text string, dictionary DictionaryIdentifier) Message {
 }
 
 func (e Message) Validate() error {
-	if utils.IsEmpty(e.Text) {
+	if utilities.IsEmpty(e.Text) {
 		return &errors.ErrFieldRequired{FieldName: "Text"}
 	}
 	return nil
 }
 func (s *Message) IsTextExists() bool {
-	return !utils.IsEmpty(s.Text)
+	return !utilities.IsEmpty(s.Text)
 }
 
 func (s *Message) UnmarshalYAML(unmarshal func(interface{}) error) error {

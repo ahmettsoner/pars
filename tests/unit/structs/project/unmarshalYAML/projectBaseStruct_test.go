@@ -12,9 +12,8 @@ import (
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
+	"parsdevkit.net/core/utilities"
 	goModels "parsdevkit.net/platforms/go/models"
-
-	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -74,7 +73,7 @@ Specifications:
 			"Pars",
 			[]string{"pars"},
 			[]label.Label(nil),
-			utils.PathToArray("Utils"),
+			utilities.PathToArray("Utils"),
 			applicationWorkspace.WorkspaceIdentifier{},
 			applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 			applicationproject.NewRuntime("", ""),

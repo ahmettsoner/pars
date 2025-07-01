@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/core/utilities"
 )
 
 type WorkspaceOptions struct {
@@ -43,7 +44,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	if !utils.IsEmpty(commandOptions.SwitchTo) {
+	if !utilities.IsEmpty(commandOptions.SwitchTo) {
 
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		_, err := workspaceService.ChangeCurrentWorkspace(commandOptions.SwitchTo)

@@ -109,7 +109,7 @@ func (s GroupService) Remove(name string, permanent bool) (*GroupBaseStruct, err
 		return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", groupGroupEntity.Document, err)
 	}
 
-	// if !utils.IsEmpty(Specifications.Path) {
+	// if !utilities.IsEmpty(Specifications.Path) {
 	// 	logrus.Debugf("project (%v) files/folders (%v) removing", name, Specifications.GetAbsoluteBaseProjectPath())
 	// 	if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseProjectPath()); err != nil {
 	// 		return nil, err

@@ -9,8 +9,9 @@ import (
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/engines"
 
 	"github.com/sirupsen/logrus"
@@ -76,7 +77,7 @@ func (s DataResourceEngine) createResources(resources []dataresourceStruct.Resou
 			return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(resource)
+			newModelHash, err := utilities.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}

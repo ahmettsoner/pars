@@ -1,4 +1,4 @@
-package utils
+package utilities
 
 func Reverse[T any](s []T) []T {
 	n := len(s)

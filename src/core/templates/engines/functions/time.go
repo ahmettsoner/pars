@@ -3,7 +3,7 @@ package functions
 import (
 	"time"
 
-	_time "parsdevkit.net/core/utils/time"
+	_time "parsdevkit.net/core/utilities/time"
 )
 
 type TimeFuncs struct{}

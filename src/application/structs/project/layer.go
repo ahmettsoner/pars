@@ -8,7 +8,7 @@ import (
 	"gopkg.in/yaml.v3"
 	layerPkg "parsdevkit.net/application/models/layer"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type Layer struct {
@@ -74,10 +74,10 @@ func (s *Layer) GetPathFromName() string {
 }
 
 func (s *Layer) IsPathExists() bool {
-	return !utils.IsEmpty(s.Path)
+	return !utilities.IsEmpty(s.Path)
 }
 func (s *Layer) GetPathAsArray() []string {
-	return utils.PathToArray(s.Path)
+	return utilities.PathToArray(s.Path)
 }
 
 func (s *Layer) GetPackageString() string {

@@ -3,7 +3,7 @@ package shared
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/core/utilities/json"
 	sharedtemplateStruct "parsdevkit.net/structs/template/shared-template"
 
 	"parsdevkit.net/operation/services"
@@ -13,6 +13,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
+	"parsdevkit.net/core/utilities"
 )
 
 type SharedTemplateEngine struct{}
@@ -76,7 +77,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 		}
 
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(template)
+			newModelHash, err := utilities.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}

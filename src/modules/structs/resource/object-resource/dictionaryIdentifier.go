@@ -1,7 +1,7 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -18,14 +18,14 @@ func NewDictionaryIdentifier(key string) DictionaryIdentifier {
 	}
 }
 func (e DictionaryIdentifier) Validate() error {
-	if utils.IsEmpty(e.Key) {
+	if utilities.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 	return nil
 }
 
 func (s *DictionaryIdentifier) IsKeyExists() bool {
-	return !utils.IsEmpty(s.Key)
+	return !utilities.IsEmpty(s.Key)
 }
 
 func (s *DictionaryIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

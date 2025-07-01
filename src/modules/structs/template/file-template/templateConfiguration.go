@@ -1,9 +1,8 @@
 package filetemplate
 
 import (
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/structs/template"
-
-	"parsdevkit.net/core/utils"
 )
 
 type TemplateConfiguration struct {
@@ -37,7 +36,7 @@ func (s *TemplateConfiguration) UnmarshalYAML(unmarshal func(interface{}) error)
 
 	}
 
-	if utils.IsEmpty(string(s.Generate)) {
+	if utilities.IsEmpty(string(s.Generate)) {
 		s.Generate = ChangeTrackers.OnChange
 	}
 

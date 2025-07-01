@@ -3,7 +3,7 @@ package task
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type TaskIdentifier struct {
@@ -21,7 +21,7 @@ func NewTaskIdentifier(id int, name string, workspace string) TaskIdentifier {
 }
 
 func (e TaskIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

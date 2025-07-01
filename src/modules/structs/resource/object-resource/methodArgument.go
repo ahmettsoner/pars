@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,10 +21,10 @@ func NewMethodArgument(name, value string) MethodArgument {
 	}
 }
 func (e MethodArgument) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
-	if utils.IsEmpty(e.Value) {
+	if utilities.IsEmpty(e.Value) {
 		return &errors.ErrFieldRequired{FieldName: "Value"}
 	}
 	return nil

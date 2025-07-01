@@ -5,7 +5,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type ProjectIdentifier struct {
@@ -26,7 +26,7 @@ func NewProjectIdentifier(id int, name string, path []string, group string, work
 	}
 }
 func (e ProjectIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -37,7 +37,7 @@ func (s *ProjectIdentifier) IsPathExists() bool {
 }
 func (s *ProjectIdentifier) GetProjectPath() string {
 
-	folders := utils.CombinePaths(s.Path)
+	folders := utilities.CombinePaths(s.Path)
 
 	relativeFullPath := filepath.Join(folders...)
 

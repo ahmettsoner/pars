@@ -44,7 +44,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	checkGlobals := utils.IsEmpty(commandOptions.Workspace)
+	checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
 	taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
 	if checkGlobals {

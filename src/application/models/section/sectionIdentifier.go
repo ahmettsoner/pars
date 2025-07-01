@@ -3,7 +3,7 @@ package section
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type SectionIdentifier struct {
@@ -16,7 +16,7 @@ func NewSectionIdentifier(name string) SectionIdentifier {
 	}
 }
 func (e SectionIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

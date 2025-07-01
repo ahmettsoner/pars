@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	layerPkg "parsdevkit.net/application/models/layer"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/operation/services"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -153,7 +153,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 										if err != nil {
 											return err
 										}
-										template.Specifications.Package = utils.PathToArray(packageStr)
+										template.Specifications.Package = utilities.PathToArray(packageStr)
 
 										data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
 										templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
@@ -205,7 +205,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBas
 			if err != nil {
 				return err
 			}
-			template.Specifications.Package = utils.PathToArray(packageStr)
+			template.Specifications.Package = utilities.PathToArray(packageStr)
 
 			data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, objectresource.Section{})
 			templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
@@ -240,17 +240,17 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 		return false, "", "", "", err
 	}
 
-	newResourceModelHash, err := utils.CalculateHashFromObject(resource)
+	newResourceModelHash, err := utilities.CalculateHashFromObject(resource)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newLayerSectionModelHash, err := utils.CalculateHashFromObject(section)
+	newLayerSectionModelHash, err := utilities.CalculateHashFromObject(section)
 	if err != nil {
 		return false, "", "", "", err
 	}
 
-	newTemplateModelHash, err := utils.CalculateHashFromObject(template)
+	newTemplateModelHash, err := utilities.CalculateHashFromObject(template)
 	if err != nil {
 		return false, "", "", "", err
 	}
@@ -276,7 +276,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utils.IsEmpty(template.Configurations.Selectors.Project.Name) {
+		if !utilities.IsEmpty(template.Configurations.Selectors.Project.Name) {
 			generate = false
 			if template.Configurations.Selectors.Project.Name == project.Header.Name {
 				generate = true
@@ -298,7 +298,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utils.IsEmpty(template.Configurations.Selectors.Resource.Name) {
+		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Name) {
 			generate = false
 			if template.Configurations.Selectors.Resource.Name == resource.Header.Name {
 				generate = true
@@ -320,7 +320,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utils.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
+		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
 			generate = false
 			for _, layerSection := range layer.Sections {
 				if template.Configurations.Selectors.Resource.Section.Name == layerSection.Name {

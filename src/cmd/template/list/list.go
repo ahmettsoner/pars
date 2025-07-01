@@ -11,6 +11,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	"parsdevkit.net/core/utilities"
 )
 
 type ListOptions struct {
@@ -43,7 +44,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	checkGlobals := utils.IsEmpty(commandOptions.Workspace)
+	checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
 	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
 	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 	fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())

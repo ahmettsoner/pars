@@ -11,6 +11,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
+	"parsdevkit.net/core/utilities"
 )
 
 var (
@@ -42,12 +43,12 @@ func getDefaultPlatformApplicationDir() string {
 		programFiles := os.Getenv("PROGRAMFILES")
 		return filepath.Join(programFiles, "Pars/bin")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snap, "bin")
 		}
 		return "/usr/bin"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snap, "bin")
 		}
 		return "/usr/bin"
@@ -71,12 +72,12 @@ func getDefaultPlatformLibraryDir() string {
 		programFiles := os.Getenv("PROGRAMFILES")
 		return filepath.Join(programFiles, "Pars/lib")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "lib")
 		}
 		return "/usr/lib/pars"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "lib")
 		}
 		return "/usr/lib/pars"
@@ -100,12 +101,12 @@ func getDefaultPlatformPluginDir() string {
 		programFiles := os.Getenv("PROGRAMFILES")
 		return filepath.Join(programFiles, "Pars/plugins")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "plugins")
 		}
 		return "/usr/share/pars/plugins"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "plugins")
 		}
 		return "/usr/share/pars/plugins"
@@ -129,12 +130,12 @@ func getDefaultPlatformDocumentDir() string {
 		programFiles := os.Getenv("PROGRAMFILES")
 		return filepath.Join(programFiles, "Pars/doc")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "doc")
 		}
 		return "/usr/share/doc/pars"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "doc")
 		}
 		return "/usr/share/doc/pars"
@@ -158,12 +159,12 @@ func getDefaultPlatformConfigDir() string {
 		programData := os.Getenv("PROGRAMDATA")
 		return filepath.Join(programData, "Pars/config")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "config")
 		}
 		return "/etc/pars"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "config")
 		}
 		return "/etc/pars"
@@ -187,12 +188,12 @@ func getDefaultPlatformDataDir() string {
 		programData := os.Getenv("PROGRAMDATA")
 		return filepath.Join(programData, "Pars/data")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "data")
 		}
 		return "/var/lib/pars/data"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "data")
 		}
 		return "/var/lib/pars/data"
@@ -216,12 +217,12 @@ func getDefaultPlatformLogDir() string {
 		programData := os.Getenv("PROGRAMDATA")
 		return filepath.Join(programData, "Pars/logs")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "logs")
 		}
 		return "/var/log/pars"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "logs")
 		}
 		return "/var/log/pars"
@@ -245,12 +246,12 @@ func getDefaultPlatformCacheDir() string {
 		programData := os.Getenv("PROGRAMDATA")
 		return filepath.Join(programData, "Pars/cache")
 	case "darwin":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "cache")
 		}
 		return "/var/cache/pars"
 	case "linux":
-		if !IsEmpty(snap) {
+		if !utilities.IsEmpty(snap) {
 			return filepath.Join(snapCommon, "cache")
 		}
 		return "/var/cache/pars"
@@ -273,7 +274,7 @@ func SetStage(stage string) {
 	stage = stage
 }
 func GetStage() string {
-	if IsEmpty(stage) {
+	if utilities.IsEmpty(stage) {
 		return string(StageTypes.None)
 	}
 	return stage
@@ -283,7 +284,7 @@ func SetVersion(version string) {
 	version = version
 }
 func GetVersion() string {
-	if IsEmpty(version) {
+	if utilities.IsEmpty(version) {
 		ver, _ := getWorkingVersion(filepath.Join(GetCodeBaseLocation(), "VERSION"))
 		return ver
 	}
@@ -300,7 +301,7 @@ func GetEnvironment() string {
 func GetPlatform() string {
 	snap := os.Getenv("SNAP")
 
-	if !IsEmpty(snap) {
+	if !utilities.IsEmpty(snap) {
 		return "snap"
 	} else if isRunningInDocker() {
 		return "docker"
@@ -322,7 +323,7 @@ func GetCodeBaseLocation() string {
 		if !ok {
 			fmt.Println("Error getting caller")
 		}
-		project_root, err := BaseDirFromFilePath(file, "src/modules/utils/applicationUtils.go")
+		project_root, err := utilities.BaseDirFromFilePath(file, "src/modules/utils/applicationUtils.go")
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
@@ -502,7 +503,7 @@ func PrepareDataLocation() error {
 func GetDBLocation(environment string) string {
 	dbName := "pars.db"
 
-	if !IsEmpty(environment) {
+	if !utilities.IsEmpty(environment) {
 		dbName = fmt.Sprintf("pars-%v.db", environment)
 	}
 

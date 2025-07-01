@@ -1,10 +1,9 @@
 package dataresource
 
 import (
-	"parsdevkit.net/core/utils"
-
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 )
 
 type GroupIdentifier struct {
@@ -17,14 +16,14 @@ func NewGroupIdentifier(name string) GroupIdentifier {
 	}
 }
 func (e GroupIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
 }
 
 func (s *GroupIdentifier) IsNameExists() bool {
-	return !utils.IsEmpty(s.Name)
+	return !utilities.IsEmpty(s.Name)
 }
 
 func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

@@ -14,9 +14,9 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	applicationProject "parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core/test/faker"
+	"parsdevkit.net/core/utilities"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -29,7 +29,7 @@ func Test_Project_Relative_Path(t *testing.T) {
 	fakePath := testFaker.Project.Path(1)
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 	}
 	// Act
@@ -50,7 +50,7 @@ func Test_Project_Absolute_Path(t *testing.T) {
 
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
@@ -74,7 +74,7 @@ func Test_Project_WithGroup_Relative_Path(t *testing.T) {
 
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 		GroupObject: applicationGroup.GroupIdentifier{
 			Path: fakeGroup,
@@ -99,7 +99,7 @@ func Test_Project_WithGroup_Absolute_Path(t *testing.T) {
 
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,
@@ -127,7 +127,7 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 		GroupObject: applicationGroup.GroupIdentifier{
 			Path: fakeGroup,
@@ -163,7 +163,7 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 
 	data := applicationproject.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
-			Path: utils.PathToArray(fakePath),
+			Path: utilities.PathToArray(fakePath),
 		},
 		WorkspaceObject: applicationWorkspace.WorkspaceIdentifier{
 			Path: fakeWorkspace,

@@ -12,6 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 	group "parsdevkit.net/modules/group/group"
 
@@ -62,7 +63,7 @@ func LoadTemplate(yamlData []byte) (schemas.Schema, error) {
 
 func GetAllManifestFilesInPath(path ...string) ([]schemas.Schema, error) {
 
-	allFiles, err := utils.GetAllFilesInPath(path...)
+	allFiles, err := utilities.GetAllFilesInPath(path...)
 	if err != nil {
 		return nil, fmt.Errorf("Error processing file paths: %v\n%w", allFiles, err)
 	}

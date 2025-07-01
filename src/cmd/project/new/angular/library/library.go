@@ -11,8 +11,6 @@ import (
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 
-	"parsdevkit.net/core/utils"
-
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
 	"github.com/spf13/cobra"
@@ -43,7 +41,7 @@ var LibraryCmd = &cobra.Command{
 }
 
 func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
+	if utilities.IsEmpty(name) {
 		if len(args) == 0 {
 			fmt.Println("Please provide a project name")
 			os.Exit(1)
@@ -52,7 +50,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if utils.IsEmpty(name) {
+	if utilities.IsEmpty(name) {
 		cmd.Help()
 		os.Exit(0)
 	}
@@ -123,7 +121,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if !utils.IsEmpty(projectGroup) {
+	if !utilities.IsEmpty(projectGroup) {
 		groupService := group.GroupEngine{}
 
 		var groupStructData = struct {

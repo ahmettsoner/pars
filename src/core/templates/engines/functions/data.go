@@ -1,7 +1,7 @@
 package functions
 
 import (
-	"parsdevkit.net/core/utils/data"
+	"parsdevkit.net/core/utilities/data"
 )
 
 type DataFuncs struct{}

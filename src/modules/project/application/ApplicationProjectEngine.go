@@ -19,6 +19,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
 )
 
 type ApplicationProjectEngine struct{}
@@ -81,7 +82,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			return err
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(project)
+			newModelHash, err := utilities.CalculateHashFromObject(project)
 			if err != nil {
 				return err
 			}
@@ -430,13 +431,13 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *core.ApplicationContext, pro
 	// }
 
 	workspaceName := project.Specifications.Workspace
-	if utils.IsEmpty(workspaceName) {
+	if utilities.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
 	var result *workspaceStruct.WorkspaceBaseStruct = nil
 
-	if !utils.IsEmpty(workspaceName) {
+	if !utilities.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
@@ -456,7 +457,7 @@ func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.Proj
 
 	groupName := project.Specifications.Group
 
-	if !utils.IsEmpty(groupName) {
+	if !utilities.IsEmpty(groupName) {
 		groupService := group.NewGroupService(utils.GetEnvironment())
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
@@ -506,7 +507,7 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 		logrus.Debugf("found new project defination for (%v) referenced by (%v)", reference.Header.Name, prj.Header.Name)
 
 		if reference.Specifications.WorkspaceObject.ID == 0 {
-			if utils.IsEmpty(reference.Specifications.Workspace) {
+			if utilities.IsEmpty(reference.Specifications.Workspace) {
 				reference.Specifications.Workspace = prj.Specifications.Workspace
 				logrus.Debugf("decided to using same workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 			}

@@ -8,14 +8,13 @@ import (
 	"path/filepath"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	"parsdevkit.net/core/utilities"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/go/models"
 
 	"parsdevkit.net/providers"
-
-	"parsdevkit.net/core/utils"
 )
 
 type GoManager struct {
@@ -28,7 +27,7 @@ func NewGoManager() GoManager {
 }
 
 func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) models.GoPlatformVersion {
-	if utils.IsEmpty(platform.Version) {
+	if utilities.IsEmpty(platform.Version) {
 		platformVersion := models.GoPlatformVersions.Go121
 
 		return platformVersion
@@ -46,7 +45,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -64,7 +63,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		err = s.AddToGroup(project)
 		if err != nil {
 			log.Fatal(err)
@@ -92,7 +91,7 @@ func (s GoManager) RemoveProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -112,7 +111,7 @@ func (s GoManager) BuildProject(project applicationproject.ProjectSpecification)
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -136,7 +135,7 @@ func (s GoManager) CleanProject(project applicationproject.ProjectSpecification)
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -160,7 +159,7 @@ func (s GoManager) InstallProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -184,7 +183,7 @@ func (s GoManager) TestProject(project applicationproject.ProjectSpecification) 
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -208,7 +207,7 @@ func (s GoManager) PackageProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -227,7 +226,7 @@ func (s GoManager) PackageProject(project applicationproject.ProjectSpecificatio
 }
 
 func (s GoManager) RunProject(project applicationproject.ProjectSpecification) error {
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -261,7 +260,7 @@ func (s GoManager) DeleteGroup(project applicationproject.ProjectSpecification) 
 
 func (s GoManager) AddToGroup(project applicationproject.ProjectSpecification) error {
 
-	relativeProjectPath, err := utils.FindRelativePath(project.GetAbsoluteGroupPath(), project.GetAbsoluteProjectPath())
+	relativeProjectPath, err := utilities.FindRelativePath(project.GetAbsoluteGroupPath(), project.GetAbsoluteProjectPath())
 	if err != nil {
 		return err
 	}
@@ -329,7 +328,7 @@ func (s GoManager) AddReferenceToProject(project applicationproject.ProjectSpeci
 
 	for _, reference := range references {
 
-		relativeProjectPath, err := utils.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativeProjectPath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}

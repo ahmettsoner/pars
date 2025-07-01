@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/convert"
+	"parsdevkit.net/core/utilities/convert"
 )
 
 type ConvertFuncs struct{}

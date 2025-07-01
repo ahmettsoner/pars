@@ -4,9 +4,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/models/option"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 )
 
 type Group struct {
@@ -25,14 +24,14 @@ func NewGroup(name string, title Message, order int, options []option.Option) Gr
 	}
 }
 func (e Group) Validate() error {
-	if utils.IsEmpty(e.GroupIdentifier.Name) {
+	if utilities.IsEmpty(e.GroupIdentifier.Name) {
 		return &errors.ErrFieldRequired{FieldName: "GroupIdentifier.Name"}
 	}
 	return nil
 }
 
 func (s *Group) IsNameExists() bool {
-	return !utils.IsEmpty(s.Name)
+	return !utilities.IsEmpty(s.Name)
 }
 
 func (s *Group) UnmarshalYAML(unmarshal func(interface{}) error) error {

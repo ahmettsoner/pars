@@ -1,11 +1,10 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -30,7 +29,7 @@ func NewAttribute(name string, visibility VisibilityType, _type DataType, order 
 	}
 }
 func (e Attribute) Validate() error {
-	if utils.IsEmpty(e.Variable.Name) {
+	if utilities.IsEmpty(e.Variable.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Variable.Name"}
 	}
 	return nil
@@ -97,7 +96,7 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Common = true
 	}
 
-	if utils.IsEmpty(string(s.Visibility)) {
+	if utilities.IsEmpty(string(s.Visibility)) {
 		s.Visibility = VisibilityTypeTypes.Public
 	}
 

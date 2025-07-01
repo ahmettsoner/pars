@@ -10,10 +10,11 @@ import (
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utils"
-	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/core/utilities/json"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utils"
 )
 
 type ObjectResourceEngine struct{}
@@ -76,7 +77,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 			return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", resource.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(resource)
+			newModelHash, err := utilities.CalculateHashFromObject(resource)
 			if err != nil {
 				return err
 			}

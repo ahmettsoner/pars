@@ -13,6 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	"parsdevkit.net/core/utilities"
 )
 
 type RemoveOptions struct {
@@ -55,7 +56,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		checkGlobals := utils.IsEmpty(commandOptions.Workspace)
+		checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
 
 		objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
 		dataResourceService := services.NewDataResourceService(utils.GetEnvironment())
@@ -159,7 +160,7 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *objectResourceList {
-		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -171,7 +172,7 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *dataResourceList {
-		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}

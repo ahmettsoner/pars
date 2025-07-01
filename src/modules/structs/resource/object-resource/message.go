@@ -3,9 +3,8 @@ package objectresource
 import (
 	"reflect"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -22,14 +21,14 @@ func NewMessage(text string, dictionary DictionaryIdentifier) Message {
 	}
 }
 func (e Message) Validate() error {
-	if utils.IsEmpty(e.Text) {
+	if utilities.IsEmpty(e.Text) {
 		return &errors.ErrFieldRequired{FieldName: "Text"}
 	}
 	return nil
 }
 
 func (s *Message) IsTextExists() bool {
-	return !utils.IsEmpty(s.Text)
+	return !utilities.IsEmpty(s.Text)
 }
 
 func (s *Message) UnmarshalYAML(unmarshal func(interface{}) error) error {

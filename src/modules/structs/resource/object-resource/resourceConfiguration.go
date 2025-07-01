@@ -1,8 +1,6 @@
 package objectresource
 
-import (
-	"parsdevkit.net/core/utils"
-)
+import "parsdevkit.net/core/utilities"
 
 type ResourceConfiguration struct {
 	Generate ChangeTracker
@@ -31,7 +29,7 @@ func (s *ResourceConfiguration) UnmarshalYAML(unmarshal func(interface{}) error)
 
 	}
 
-	if utils.IsEmpty(string(s.Generate)) {
+	if utilities.IsEmpty(string(s.Generate)) {
 		s.Generate = ChangeTrackers.OnChange
 	}
 

@@ -19,7 +19,7 @@ import (
 
 	"parsdevkit.net/providers"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"github.com/sirupsen/logrus"
 )
@@ -44,7 +44,7 @@ func ProjectTypeToNodeJSCLITypeString(c nodejsModels.NodeJSProjectType) (string,
 }
 
 func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) nodejsModels.NodeJSPlatformVersion {
-	if utils.IsEmpty(platform.Version) {
+	if utilities.IsEmpty(platform.Version) {
 		platformVersion := nodejsModels.NodeJSPlatformVersions.V17
 
 		return platformVersion
@@ -58,7 +58,7 @@ func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) 
 }
 
 func (s NodeJSManager) CreateProject(project applicationproject.ProjectSpecification) error {
-	if utils.IsEmpty(project.Group) {
+	if utilities.IsEmpty(project.Group) {
 		if len(project.Package) > 0 {
 			err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "init", "--scope", fmt.Sprintf("@%v", project.Package[len(project.Package)-1]), "--yes")
 			if err != nil {
@@ -93,7 +93,7 @@ func (s NodeJSManager) RemoveProject(project applicationproject.ProjectSpecifica
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -114,7 +114,7 @@ func (s NodeJSManager) BuildProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -142,7 +142,7 @@ func (s NodeJSManager) InstallProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -166,7 +166,7 @@ func (s NodeJSManager) TestProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -190,7 +190,7 @@ func (s NodeJSManager) PackageProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -214,7 +214,7 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -233,7 +233,7 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecificatio
 }
 
 func (s NodeJSManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if len(project.GroupObject.Package) > 0 {
 			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.GroupObject.Package[len(project.GroupObject.Package)-1]), "--yes")
 			if err != nil {
@@ -287,7 +287,7 @@ func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpe
 
 		packageName := _package.Name
 
-		if !utils.IsEmpty(_package.Version) {
+		if !utilities.IsEmpty(_package.Version) {
 			packageName = fmt.Sprintf("%s@%s", packageName, _package.Version)
 		}
 
@@ -316,7 +316,7 @@ func (s NodeJSManager) RemovePackageFromProject(project applicationproject.Proje
 func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
 
 	for _, reference := range references {
-		relativePath, err := utils.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -335,7 +335,7 @@ func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.Pro
 
 	for _, reference := range references {
 
-		relativePath, err := utils.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -481,7 +481,7 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 	references := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := utils.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+			relativeToReference, err := utilities.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}
@@ -572,13 +572,13 @@ func (s NodeJSManager) PrintDataType(dataType objectresource.DataType) string {
 			return "Unknown"
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Reference {
-		if !utils.IsEmpty(dataType.Package.Alias) {
+		if !utilities.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Resource {
-		if !utils.IsEmpty(dataType.Package.Alias) {
+		if !utilities.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name

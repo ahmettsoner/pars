@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type ProjectBaseStruct struct {
@@ -24,7 +24,7 @@ func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpe
 	}
 }
 func (e ProjectBaseStruct) Validate() error {
-	if utils.IsEmpty(e.Header.Name) {
+	if utilities.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
 	}
 	return nil
@@ -66,7 +66,7 @@ func (s *ProjectBaseStruct) GetInformation() string {
 }
 
 func (s *ProjectBaseStruct) GetFullName() string {
-	if !utils.IsEmpty(s.Specifications.Group) {
+	if !utilities.IsEmpty(s.Specifications.Group) {
 		return fmt.Sprintf("%v/%v", s.Specifications.Group, s.Header.Name)
 	} else {
 		return fmt.Sprintf("%v", s.Header.Name)
@@ -74,7 +74,7 @@ func (s *ProjectBaseStruct) GetFullName() string {
 }
 
 func (s *ProjectBaseStruct) GetFullInformation() string {
-	if !utils.IsEmpty(s.Specifications.Set) {
+	if !utilities.IsEmpty(s.Specifications.Set) {
 		return fmt.Sprintf("%v (%v)", s.GetFullName(), s.Specifications.Set)
 	}
 

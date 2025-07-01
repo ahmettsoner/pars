@@ -3,13 +3,14 @@ package file
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/core/utilities/json"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/engines"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
@@ -76,7 +77,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(template)
+			newModelHash, err := utilities.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}

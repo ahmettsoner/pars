@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type TemplateBaseStruct struct {
@@ -25,7 +25,7 @@ func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications TemplateS
 	}
 }
 func (e TemplateBaseStruct) Validate() error {
-	if utils.IsEmpty(e.Header.Name) {
+	if utilities.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
 	}
 	return nil
@@ -58,7 +58,7 @@ func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 		s.Configurations = tempSpecificationObject.Configurations
 	}
 
-	if utils.IsEmpty(string(s.Configurations.Generate)) {
+	if utilities.IsEmpty(string(s.Configurations.Generate)) {
 		s.Configurations.Generate = ChangeTrackers.OnChange
 	}
 

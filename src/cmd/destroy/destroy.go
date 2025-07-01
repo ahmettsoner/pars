@@ -9,8 +9,9 @@ import (
 
 	"parsdevkit.net/application"
 	parsCMDCommon "parsdevkit.net/core/cmd"
+	"parsdevkit.net/core/utilities"
+	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/operation/services"
 
 	"github.com/spf13/cobra"
@@ -52,11 +53,11 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(commandOptions.Workspace) {
+	if utilities.IsEmpty(commandOptions.Workspace) {
 		appCtx := application.GetContext()
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
@@ -179,7 +180,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

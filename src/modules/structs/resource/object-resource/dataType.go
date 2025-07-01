@@ -3,9 +3,8 @@ package objectresource
 import (
 	"strings"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,7 +27,7 @@ func NewDataType(name string, _package TypePackage, category DataTypeCategory, m
 	}
 }
 func (e DataType) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -99,11 +98,11 @@ func (s *DataType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
-	if utils.IsEmpty(string(s.Category)) {
+	if utilities.IsEmpty(string(s.Category)) {
 		s.Category = DetectDataTypeCategory(s.Name)
 	}
 
-	if utils.IsEmpty(string(s.Modifier)) {
+	if utilities.IsEmpty(string(s.Modifier)) {
 		s.Modifier = ModifierTypes.Object
 	}
 

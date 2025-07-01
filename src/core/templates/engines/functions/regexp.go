@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	regexp "parsdevkit.net/core/utils/regexp"
+	regexp "parsdevkit.net/core/utilities/regexp"
 )
 
 type RegexpFuncs struct{}

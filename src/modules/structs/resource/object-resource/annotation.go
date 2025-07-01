@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -23,14 +22,14 @@ func NewAnnotation(_type string, arguments []MethodArgument) Annotation {
 	}
 }
 func (e Annotation) Validate() error {
-	if utils.IsEmpty(e.Type) {
+	if utilities.IsEmpty(e.Type) {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil
 }
 
 func (s *Annotation) IsTypeExists() bool {
-	return !utils.IsEmpty(s.Type)
+	return !utilities.IsEmpty(s.Type)
 }
 
 func (s *Annotation) GetAllArguments() []MethodArgument {

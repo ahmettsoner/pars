@@ -12,6 +12,7 @@ import (
 	group "parsdevkit.net/modules/group/group"
 
 	"github.com/spf13/cobra"
+	"parsdevkit.net/core/utilities"
 )
 
 type RemoveOptions struct {
@@ -99,7 +100,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, group := range *groupList {
-		if !utils.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
+		if !utilities.Contains(args, group.Header.Name) && strings.HasPrefix(group.Header.Name, toComplete) {
 			suggestions = append(suggestions, group.Header.Name)
 		}
 	}
@@ -115,7 +116,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

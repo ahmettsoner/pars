@@ -3,7 +3,7 @@ package objectresource
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type TypePackage struct {
@@ -25,7 +25,7 @@ func NewTypePackageOnly(name string) TypePackage {
 }
 
 func (e TypePackage) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

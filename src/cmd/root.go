@@ -7,6 +7,7 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/core"
+	"parsdevkit.net/core/utilities"
 
 	cmdApply "parsdevkit.net/cmd/apply"
 	cmdBrowse "parsdevkit.net/cmd/browse"
@@ -58,7 +59,7 @@ var RootCmd = &cobra.Command{
 	Short: "Smart Software Development Process Automation",
 	Long:  `Smart Software Development Process Automation`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if !utils.IsEmpty(environment) {
+		if !utilities.IsEmpty(environment) {
 			utils.SetEnvironment(environment)
 		}
 
@@ -88,7 +89,7 @@ func Execute() {
 
 	utils.PrepareLocations()
 
-	if !utils.IsEmpty(utils.GetEnvironment()) {
+	if !utilities.IsEmpty(utils.GetEnvironment()) {
 		fmt.Printf("\nRunning on '%v' environment\n", utils.GetEnvironment())
 	}
 }
@@ -140,7 +141,7 @@ func addSubCommands() {
 }
 
 func initConfig() {
-	if !utils.IsEmpty(cfgFile) {
+	if !utilities.IsEmpty(cfgFile) {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		configDir := utils.GetConfigLocation()

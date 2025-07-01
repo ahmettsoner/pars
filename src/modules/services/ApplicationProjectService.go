@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -115,7 +116,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
-	if !utils.IsEmpty(model.Specifications.Group) {
+	if !utilities.IsEmpty(model.Specifications.Group) {
 		groupStatus, err := projectManager.IsGroupFileExists(model.Specifications)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project oluştururken, grup path kontrolü aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
@@ -136,7 +137,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 		return nil, fmt.Errorf("xxx: Application Project oluştururken hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
-	if !utils.IsEmpty(model.Specifications.Group) {
+	if !utilities.IsEmpty(model.Specifications.Group) {
 		err := projectManager.AddToGroup(model.Specifications)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project oluştururken, gruba ekleme işlemi sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
@@ -224,8 +225,8 @@ func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationp
 }
 
 func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
-	folders := utils.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
-	foldersRelative := utils.CombinePaths(paths)
+	folders := utilities.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
+	foldersRelative := utilities.CombinePaths(paths)
 
 	folderPath := filepath.Join(folders...)
 
@@ -248,8 +249,8 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 	return foldersRelativePath, nil
 }
 func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
-	folders := utils.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
-	foldersRelative := utils.CombinePaths(paths)
+	folders := utilities.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
+	foldersRelative := utilities.CombinePaths(paths)
 
 	folderPath := filepath.Join(folders...)
 
@@ -540,7 +541,7 @@ func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspa
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
@@ -604,7 +605,7 @@ func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspac
 		return nil, fmt.Errorf("xxx: Application Project Workspace tanımlı değil '%s'", workspaceName)
 	}
 
-	if !utils.IsEmpty(projectName) {
+	if !utilities.IsEmpty(projectName) {
 
 		groupId := 0
 		projectGroupEntity, err := s.groupRespository.GetByName(projectGroup)
@@ -660,7 +661,7 @@ func (s *ApplicationProjectService) ValidateProjectStructure(model applicationpr
 		return false, fmt.Errorf("xxx: Application Project File Structure Validasyon, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	if !utils.IsEmpty(model.Specifications.Group) {
+	if !utilities.IsEmpty(model.Specifications.Group) {
 		state, err := projectManager.IsGroupFolderExists(model.Specifications)
 		if err != nil {
 			return false, fmt.Errorf("xxx: Application Project File Structure Validasyon sırasında Group dizin(ler)i varlığı kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
@@ -838,7 +839,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 		logrus.Debugf("project (%v) in the group (%v)", projectName, projectGroup)
 	}
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		logrus.Debugf("all group projects %v removing", projectName)
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
@@ -894,7 +895,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			return nil, fmt.Errorf("xxx: Application Project grup dosyaları kontrolünde hata oluştu: '%s'\n%w", projectName, err)
 		}
 
-		if !utils.IsEmpty(project.Specifications.Group) {
+		if !utilities.IsEmpty(project.Specifications.Group) {
 			if !groupStatus {
 				return nil, errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 			} else {
@@ -907,7 +908,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 
 		logrus.Debugf("project (%v) content removed", projectName)
 
-		if !utils.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
+		if !utilities.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
 			logrus.Debugf("project (%v) files/folders (%v) removing", projectName, project.Specifications.GetAbsoluteBaseProjectPath())
 			if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseProjectPath()); err != nil {
 				return nil, fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", projectName, project.Specifications.GetAbsoluteBaseProjectPath(), err)
@@ -924,14 +925,14 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 		}
 		logrus.Debugf("project (%v) information removed", projectName)
 
-		if !utils.IsEmpty(project.Specifications.Group) {
+		if !utilities.IsEmpty(project.Specifications.Group) {
 			count, err := s.projectRespository.CountByWorkspaceIDAndGroup(workspaceName, projectGroup)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Grupta bulunan proje sayısı tespiti aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 			}
 
 			if count == 0 {
-				if !utils.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
+				if !utilities.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
 					logrus.Debugf("project group (%v) has no other project inside, all things removing belong to group", projectGroup)
 					logrus.Debugf("removing path %v \n project: %v, group: %v", project.Specifications.GetAbsoluteGroupPath(), project.Header.Name, project.Specifications.Group)
 					if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseGroupPath()); err != nil {
@@ -1036,7 +1037,7 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
@@ -1112,7 +1113,7 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1190,7 +1191,7 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1268,7 +1269,7 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1345,7 +1346,7 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 		logrus.Debugf("project (%v) in the group (%v)", projectName, projectGroup)
 	}
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1423,7 +1424,7 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1501,7 +1502,7 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 	}
 
 	//TODO: iyileştirilecek, kolay çözüm uygulandı
-	if utils.IsEmpty(projectName) && !utils.IsEmpty(projectGroup) {
+	if utilities.IsEmpty(projectName) && !utilities.IsEmpty(projectGroup) {
 		projectEntities, err := s.projectRespository.ListByWorkspaceNameAndGroup(workspaceName, projectGroup)
 		if err != nil {
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
@@ -1615,7 +1616,7 @@ func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*
 		return nil, fmt.Errorf("xxx: Workspace getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", workspaceName, err)
 	}
 
-	if !utils.IsEmpty(workspaceName) {
+	if !utilities.IsEmpty(workspaceName) {
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Workspace getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", workspaceName, err)

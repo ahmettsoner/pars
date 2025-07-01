@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/base64"
+	"parsdevkit.net/core/utilities/base64"
 )
 
 type Base64Funcs struct{}

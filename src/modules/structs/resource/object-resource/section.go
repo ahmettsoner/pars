@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type Section struct {
@@ -23,7 +23,7 @@ func NewSection(name string, attributes []string, methods []string, labels []lab
 	}
 }
 func (e Section) Validate() error {
-	if utils.IsEmpty(e.Section.Name) {
+	if utilities.IsEmpty(e.Section.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
 	}
 	return nil

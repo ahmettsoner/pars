@@ -10,6 +10,7 @@ import (
 	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -45,7 +46,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 
@@ -62,7 +63,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if &appCtx.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")
 	} else {
-		if utils.IsEmpty(commandOptions.Name) {
+		if utilities.IsEmpty(commandOptions.Name) {
 			if appCtx != nil {
 				commandOptions.Name = appCtx.CurrentWorkspace.Name
 			} else {
@@ -105,7 +106,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			for _, e := range *projectList {
 				name := e.GetInformation()
-				if !utils.IsEmpty(e.Specifications.GroupObject.Name) {
+				if !utilities.IsEmpty(e.Specifications.GroupObject.Name) {
 					groups[e.Specifications.Group] = append(groups[e.Specifications.Group], name)
 				} else {
 					groups[name] = []string{}
@@ -180,7 +181,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

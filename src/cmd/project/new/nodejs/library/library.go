@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/core/utils"
 	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/engines/group"
 	v2 "parsdevkit.net/engines/v2"
@@ -13,8 +12,6 @@ import (
 	"parsdevkit.net/structs/project"
 
 	nodejsModels "parsdevkit.net/platforms/nodejs/models"
-
-	"parsdevkit.net/core/utils"
 
 	parsCMDCommon "parsdevkit.net/core/cmd"
 
@@ -44,7 +41,7 @@ var LibraryCmd = &cobra.Command{
 }
 
 func executeFunc(cmd *cobra.Command, args []string) {
-	if utils.IsEmpty(name) {
+	if utilities.IsEmpty(name) {
 		if len(args) == 0 {
 			fmt.Println("Please provide a project name")
 			os.Exit(1)
@@ -53,7 +50,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if utils.IsEmpty(name) {
+	if utilities.IsEmpty(name) {
 		cmd.Help()
 		os.Exit(0)
 	}
@@ -124,7 +121,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if !utils.IsEmpty(projectGroup) {
+	if !utilities.IsEmpty(projectGroup) {
 		groupService := group.GroupEngine{}
 
 		var groupStructData = struct {

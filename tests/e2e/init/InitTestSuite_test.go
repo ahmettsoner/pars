@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
 
@@ -139,7 +140,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnRelativePath() {
 
 	name := suite.faker.Workspace.Name()
 	dirInTestArea := filepath.Join(suite.testArea, suite.faker.Project.Path(1))
-	relativePath, err := utils.FindRelativePath(utils.GetSourceLocation(), dirInTestArea)
+	relativePath, err := utilities.FindRelativePath(utils.GetSourceLocation(), dirInTestArea)
 	require.NoError(suite.T(), err, "failed find relative path")
 
 	commands := []string{

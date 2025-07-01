@@ -4,7 +4,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -40,7 +40,7 @@ func NewMethod(name string, visibility VisibilityType, parameters []MethodParame
 }
 
 func (e Method) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -93,7 +93,7 @@ func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Common = true
 	}
 
-	if utils.IsEmpty(string(s.Visibility)) {
+	if utilities.IsEmpty(string(s.Visibility)) {
 		s.Visibility = VisibilityTypeTypes.Public
 	}
 

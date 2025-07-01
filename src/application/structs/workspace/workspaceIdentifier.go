@@ -5,7 +5,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 const (
@@ -28,14 +28,14 @@ func NewWorkspaceIdentifier(id int, name, path string) WorkspaceIdentifier {
 	}
 }
 func (e WorkspaceIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
 }
 
 func (s *WorkspaceIdentifier) IsPathExists() bool {
-	return !utils.IsEmpty(s.Path)
+	return !utilities.IsEmpty(s.Path)
 }
 func (s WorkspaceIdentifier) GetAbsolutePath() string {
 	return filepath.Join(s.Path)

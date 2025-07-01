@@ -3,10 +3,9 @@ package repositories
 import (
 	"errors"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/persistence/contexts"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/persistence/entities"
 
 	"gorm.io/gorm"
@@ -70,7 +69,7 @@ func (s *WorkspaceRepository) Save(entity *entities.Workspace) error {
 		return err
 	}
 
-	documentHash, err := utils.CalculateHash(entity.Document)
+	documentHash, err := utilities.CalculateHash(entity.Document)
 	if err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 )
 
@@ -37,8 +38,8 @@ func (s *EnvironmentService) List() ([]string, error) {
 
 		matches := regexPattern.FindStringSubmatch(string(info.Name()))
 		if len(matches) > 0 {
-			envName := utils.GetOnlyFileName(matches[1])
-			if !utils.IsEmpty(envName) {
+			envName := utilities.GetOnlyFileName(matches[1])
+			if !utilities.IsEmpty(envName) {
 				result = append(result, envName)
 				// } else {
 				// 	result = append(result, "pars")

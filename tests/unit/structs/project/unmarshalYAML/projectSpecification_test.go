@@ -9,12 +9,12 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
 	goModels "parsdevkit.net/platforms/go/models"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -59,7 +59,7 @@ Configuration:
 		"Pars",
 		[]string{"pars"},
 		[]label.Label(nil),
-		utils.PathToArray("Utils"),
+		utilities.PathToArray("Utils"),
 		applicationWorkspace.WorkspaceIdentifier{},
 		applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 		applicationproject.Runtime{},

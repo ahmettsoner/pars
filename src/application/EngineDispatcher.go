@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/engines"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 	group "parsdevkit.net/modules/group/group"
 	projectApplication "parsdevkit.net/modules/project/application"
 	resourceData "parsdevkit.net/modules/resource/data"
@@ -86,7 +86,7 @@ func DispatchEngineDestroy(ctx *core.ApplicationContext, t []schemas.Schema) err
 		schemaGroups[key] = append(schemaGroups[key], data)
 	}
 
-	for _, key := range utils.Reverse(orderedKeys) {
+	for _, key := range utilities.Reverse(orderedKeys) {
 		if data, ok := schemaGroups[key]; ok {
 			engine, ok := engineRegistry[key]
 			if !ok {

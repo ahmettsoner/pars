@@ -8,6 +8,7 @@ import (
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/context/models"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -131,7 +132,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 	var projectObj *applicationproject.ProjectBaseStruct = nil
 	if layerObj != nil {
 		var projectList []applicationproject.ProjectBaseStruct = make([]applicationproject.ProjectBaseStruct, 0)
-		if utils.IsEmpty(project) {
+		if utilities.IsEmpty(project) {
 			projectListFromDb, err := applicationProjectService.ListBySetAndLayers(set, layer)
 			if err != nil {
 				return models.CodeTemplateDataContext{}
@@ -166,7 +167,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		var templateObj *codetemplate.TemplateBaseStruct = nil
 
 		var templatelist []codetemplate.TemplateBaseStruct = make([]codetemplate.TemplateBaseStruct, 0)
-		if utils.IsEmpty(template) {
+		if utilities.IsEmpty(template) {
 			templateListFromDb, err := codeTemplateService.ListBySetAndLayers(set, layer)
 			if err != nil {
 				return models.CodeTemplateDataContext{}
@@ -192,7 +193,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		}
 
 		if templateObj != nil {
-			if !utils.IsEmpty(section) {
+			if !utilities.IsEmpty(section) {
 				selectedContext := models.CodeTemplateDataContext{}
 				for _, objSection := range layerObj.Sections {
 					if objSection.Name == section {
@@ -204,7 +205,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						if err != nil {
 							return models.CodeTemplateDataContext{}
 						}
-						templateObj.Specifications.Package = utils.PathToArray(packageStr)
+						templateObj.Specifications.Package = utilities.PathToArray(packageStr)
 
 						selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objSection)
 						break
@@ -224,7 +225,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				if err != nil {
 					return models.CodeTemplateDataContext{}
 				}
-				templateObj.Specifications.Package = utils.PathToArray(packageStr)
+				templateObj.Specifications.Package = utilities.PathToArray(packageStr)
 
 				selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objectresource.Section{})
 				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {

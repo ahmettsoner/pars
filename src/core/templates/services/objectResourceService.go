@@ -11,8 +11,7 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utils"
-
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/templates/models/objectResources"
 )
 
@@ -28,7 +27,7 @@ func NewObjectResourceService(manager core.ManagerInterface) ObjectResourceServi
 
 func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, importsMap map[string][]string) map[string][]string {
 
-	if !utils.IsEmpty(_type.Package.Name) {
+	if !utilities.IsEmpty(_type.Package.Name) {
 		if _type.Category == objectresource.DataTypeCategories.Reference {
 			if aliases, exists := importsMap[_type.Package.Name]; exists {
 				isNew := true
@@ -42,7 +41,7 @@ func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, 
 					importsMap[_type.Package.Name] = append(aliases, _type.Package.Alias)
 				}
 			} else {
-				if !utils.IsEmpty(_type.Package.Alias) {
+				if !utilities.IsEmpty(_type.Package.Alias) {
 					importsMap[_type.Package.Name] = []string{_type.Package.Alias}
 				} else {
 					importsMap[_type.Package.Name] = []string{}

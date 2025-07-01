@@ -3,7 +3,7 @@ package resource
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type ResourceIdentifier struct {
@@ -20,7 +20,7 @@ func NewResourceIdentifier(id int, name string, workspace string) ResourceIdenti
 	}
 }
 func (e ResourceIdentifier) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

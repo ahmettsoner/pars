@@ -4,8 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/core/schemas"
-
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 )
@@ -28,7 +27,7 @@ func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceS
 	}
 }
 func (e ResourceBaseStruct) Validate() error {
-	if utils.IsEmpty(e.Header.Name) {
+	if utilities.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
 	}
 	return nil
@@ -61,7 +60,7 @@ func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 		s.Configurations = tempSpecificationObject.Configurations
 	}
 
-	if utils.IsEmpty(string(s.Configurations.Generate)) {
+	if utilities.IsEmpty(string(s.Configurations.Generate)) {
 		s.Configurations.Generate = ChangeTrackers.OnChange
 	}
 

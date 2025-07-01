@@ -3,7 +3,7 @@ package label
 import (
 	"strings"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -28,14 +28,14 @@ func NewLabel_KeyOnly(key string) Label {
 	}
 }
 func (e Label) Validate() error {
-	if utils.IsEmpty(e.Key) {
+	if utilities.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 	return nil
 }
 
 func (s *Label) IsKeyExists() bool {
-	return !utils.IsEmpty(s.Key)
+	return !utilities.IsEmpty(s.Key)
 }
 
 func (s *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -51,7 +51,7 @@ func (s *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 			s.Key = key
 
-			if utils.IsEmpty(s.Key) {
+			if utilities.IsEmpty(s.Key) {
 				return &errors.InvalidLanguageError{Value: key}
 			}
 			s.Value = _value

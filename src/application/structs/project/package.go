@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -29,7 +29,7 @@ func NewPackage_Basic(name string) Package {
 	}
 }
 func (e Package) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -37,7 +37,7 @@ func (e Package) Validate() error {
 
 func (s *Package) GetFullName() string {
 	fullName := s.Name
-	if !utils.IsEmpty(s.Version) {
+	if !utilities.IsEmpty(s.Version) {
 		fullName = fmt.Sprintf("%v@%v", s.Name, s.Version)
 	}
 
@@ -92,7 +92,7 @@ func (s *Package) UnmarshalYAML(unmarshal func(interface{}) error) error {
 				s.Name = packageName
 			}
 
-			if utils.IsEmpty(s.Name) {
+			if utilities.IsEmpty(s.Name) {
 				return &errors.InvalidPackageError{Value: packageName}
 			}
 			s.Version = packageVersion
@@ -101,7 +101,7 @@ func (s *Package) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
-	if utils.IsEmpty(string(s.Name)) {
+	if utilities.IsEmpty(string(s.Name)) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 

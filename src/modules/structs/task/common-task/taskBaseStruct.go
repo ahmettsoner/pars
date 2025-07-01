@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/core/errors"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 )
 
 type TaskBaseStruct struct {
@@ -26,7 +26,7 @@ func NewTaskBaseStruct(header schemas.SchemaHeader, specifications TaskSpecifica
 }
 
 func (e TaskBaseStruct) Validate() error {
-	if utils.IsEmpty(e.Header.Name) {
+	if utilities.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Header.Name"}
 	}
 	return nil

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -19,8 +20,6 @@ import (
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
 	"parsdevkit.net/providers"
-
-	"parsdevkit.net/core/utils"
 
 	mxj "github.com/clbanning/mxj/v2"
 )
@@ -73,7 +72,7 @@ func (s DotnetManager) CreateProject(project applicationproject.ProjectSpecifica
 	// 	}
 	// }
 
-	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Name, "--output", utils.PathWithDot(project.GetRelativeProjectPath()))
+	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Name, "--output", utilities.PathWithDot(project.GetRelativeProjectPath()))
 	if err != nil {
 		return err
 	}
@@ -92,7 +91,7 @@ func (s DotnetManager) BuildProject(project applicationproject.ProjectSpecificat
 
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
@@ -117,7 +116,7 @@ func (s DotnetManager) CleanProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -141,7 +140,7 @@ func (s DotnetManager) InstallProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -165,7 +164,7 @@ func (s DotnetManager) TestProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -189,7 +188,7 @@ func (s DotnetManager) PackageProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -214,7 +213,7 @@ func (s DotnetManager) RunProject(project applicationproject.ProjectSpecificatio
 
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
@@ -297,7 +296,7 @@ func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectSpecific
 }
 
 func (s DotnetManager) GetPlatformVersion(platform applicationproject.Platform) dotnetModels.DotnetPlatformVersion {
-	if utils.IsEmpty(platform.Version) {
+	if utilities.IsEmpty(platform.Version) {
 		platformVersion := dotnetModels.DotnetPlatformVersions.Net8
 
 		return platformVersion
@@ -311,7 +310,7 @@ func (s DotnetManager) GetPlatformVersion(platform applicationproject.Platform) 
 }
 
 func (s DotnetManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "sln", "--name", project.GroupObject.Name, "--output", utils.PathWithDot(project.GetRelativeGroupPath()))
+	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "sln", "--name", project.GroupObject.Name, "--output", utilities.PathWithDot(project.GetRelativeGroupPath()))
 }
 
 func (s DotnetManager) DeleteGroup(project applicationproject.ProjectSpecification) {
@@ -328,7 +327,7 @@ func (s DotnetManager) RemoveFromGroup(project applicationproject.ProjectSpecifi
 func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
-		if utils.IsEmpty(path) {
+		if utilities.IsEmpty(path) {
 			return nil
 		}
 
@@ -356,7 +355,7 @@ func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.P
 func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
-		if utils.IsEmpty(path) {
+		if utilities.IsEmpty(path) {
 			return nil
 		}
 
@@ -513,7 +512,7 @@ func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpe
 
 		commandArgs := []string{"add", s.GetProjectFileRelativePath(project), "package", _package.Name}
 
-		if !utils.IsEmpty(_package.Version) {
+		if !utilities.IsEmpty(_package.Version) {
 			commandArgs = append(commandArgs, []string{"--version", _package.Version}...)
 
 		}
@@ -647,7 +646,7 @@ func (s DotnetManager) HasPackageOnProject(project applicationproject.ProjectSpe
 	packageState := false
 
 	for _, projectPackage := range packages {
-		if projectPackage.Name == _package.Name && (utils.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
+		if projectPackage.Name == _package.Name && (utilities.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
 			packageState = true
 			break
 		}
@@ -739,7 +738,7 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 	references := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := utils.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+			relativeToReference, err := utilities.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}
@@ -875,13 +874,13 @@ func (s DotnetManager) PrintDataType(dataType objectresource.DataType) string {
 			return "Unknown"
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Reference {
-		if !utils.IsEmpty(dataType.Package.Alias) {
+		if !utilities.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Resource {
-		if !utils.IsEmpty(dataType.Package.Alias) {
+		if !utilities.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name

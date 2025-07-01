@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/models"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -31,7 +31,7 @@ func NewRuntime_Basic(_type models.RuntimeType) Runtime {
 }
 
 func (s Runtime) Validate() error {
-	if utils.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
+	if utilities.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil
@@ -80,7 +80,7 @@ func (s *Runtime) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 			s.Type = enum
 
-			if utils.IsEmpty(string(s.Type)) {
+			if utilities.IsEmpty(string(s.Type)) {
 				return &errors.InvalidRuntimeError{Value: runtimeName}
 			}
 			s.Version = runtimeVersion

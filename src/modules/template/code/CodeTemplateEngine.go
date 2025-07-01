@@ -3,13 +3,14 @@ package code
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utils/json"
+	"parsdevkit.net/core/utilities/json"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
@@ -76,7 +77,7 @@ func (s CodeTemplateEngine) createTemplates(templates []codetemplateStruct.Templ
 			return fmt.Errorf("xxx: Code template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(template)
+			newModelHash, err := utilities.CalculateHashFromObject(template)
 			if err != nil {
 				return err
 			}

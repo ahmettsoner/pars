@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
@@ -61,7 +62,7 @@ func (s GroupEngine) createGroups(groups []GroupBaseStruct, init bool) error {
 			return err
 		}
 		if ok {
-			newModelHash, err := utils.CalculateHashFromObject(group)
+			newModelHash, err := utilities.CalculateHashFromObject(group)
 			if err != nil {
 				return err
 			}

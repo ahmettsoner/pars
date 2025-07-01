@@ -13,6 +13,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	"parsdevkit.net/core/utilities"
 	platformsCommon "parsdevkit.net/platforms/common"
 )
 
@@ -38,7 +39,7 @@ var DescribeCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) == 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) == 0 {
 		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -48,11 +49,11 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utils.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 
-	if utils.IsEmpty(commandOptions.Workspace) {
+	if utilities.IsEmpty(commandOptions.Workspace) {
 		appCtx := application.GetContext()
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
@@ -111,7 +112,7 @@ func listProjectNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, project := range *projectList {
-		if !utils.Contains(args, project.GetFullName()) && strings.HasPrefix(project.GetFullName(), toComplete) {
+		if !utilities.Contains(args, project.GetFullName()) && strings.HasPrefix(project.GetFullName(), toComplete) {
 			suggestions = append(suggestions, project.GetFullName())
 		}
 	}
@@ -137,7 +138,7 @@ func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, workspace := range *workspaceList {
-		if !utils.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+		if !utilities.Contains(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
 			suggestions = append(suggestions, workspace.Header.Name)
 		}
 	}

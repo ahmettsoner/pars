@@ -6,9 +6,8 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -40,7 +39,7 @@ func NewVariable(name string, _type DataType, order int, hint Message, descripti
 }
 
 func (e Variable) Validate() error {
-	if utils.IsEmpty(e.Name) {
+	if utilities.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -99,7 +98,7 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
-	if utils.IsEmpty(string(s.Type.Name)) {
+	if utilities.IsEmpty(string(s.Type.Name)) {
 		s.Type = NewDataType(string(ValueTypes.String), TypePackage{}, DataTypeCategories.Value, ModifierTypes.Object, []DataType(nil))
 	}
 

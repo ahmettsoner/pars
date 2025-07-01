@@ -7,13 +7,12 @@ import (
 	"path/filepath"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	"parsdevkit.net/core/utilities"
 
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/pars/models"
-
-	"parsdevkit.net/core/utils"
 )
 
 type ParsManager struct {
@@ -27,7 +26,7 @@ func NewParsManager() ParsManager {
 }
 
 func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) models.ParsPlatformVersion {
-	if utils.IsEmpty(platform.Version) {
+	if utilities.IsEmpty(platform.Version) {
 		platformVersion := models.ParsPlatformVersions.BetaV1
 
 		return platformVersion
@@ -46,7 +45,7 @@ func (s ParsManager) CreateProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -72,7 +71,7 @@ func (s ParsManager) RemoveProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {

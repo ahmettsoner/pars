@@ -3,10 +3,9 @@ package objectresource
 import (
 	"strconv"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 )
@@ -25,7 +24,7 @@ func NewAttributeGroup(group GroupIdentifier, order int, options []option.Option
 	}
 }
 func (e AttributeGroup) Validate() error {
-	if utils.IsEmpty(e.Group.Name) {
+	if utilities.IsEmpty(e.Group.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Group.Name"}
 	}
 	return nil

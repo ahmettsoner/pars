@@ -1,7 +1,7 @@
 package functions
 
 import (
-	_string "parsdevkit.net/core/utils/string"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type StringFuncs struct{}

@@ -18,7 +18,7 @@ import (
 
 	"parsdevkit.net/providers"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/core/utilities"
 
 	"github.com/sirupsen/logrus"
 )
@@ -45,7 +45,7 @@ func ProjectTypeToAngularCLITypeString(c angularModels.AngularProjectType) (stri
 }
 
 func (s AngularManager) GetPlatformVersion(platform applicationproject.Platform) angularModels.AngularPlatformVersion {
-	if utils.IsEmpty(platform.Version) {
+	if utilities.IsEmpty(platform.Version) {
 		platformVersion := angularModels.AngularPlatformVersions.V17
 
 		return platformVersion
@@ -64,7 +64,7 @@ func (s AngularManager) CreateProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -97,7 +97,7 @@ func (s AngularManager) RemoveProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -118,7 +118,7 @@ func (s AngularManager) BuildProject(project applicationproject.ProjectSpecifica
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -146,7 +146,7 @@ func (s AngularManager) InstallProject(project applicationproject.ProjectSpecifi
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -170,7 +170,7 @@ func (s AngularManager) TestProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -194,7 +194,7 @@ func (s AngularManager) PackageProject(project applicationproject.ProjectSpecifi
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -218,7 +218,7 @@ func (s AngularManager) RunProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utils.IsEmpty(project.Group) {
+	if !utilities.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -282,7 +282,7 @@ func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSp
 
 		packageName := _package.Name
 
-		if !utils.IsEmpty(_package.Version) {
+		if !utilities.IsEmpty(_package.Version) {
 			packageName = fmt.Sprintf("%s@%s", packageName, _package.Version)
 		}
 
@@ -313,7 +313,7 @@ func (s AngularManager) RemovePackageFromProject(project applicationproject.Proj
 func (s AngularManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
 
 	for _, reference := range references {
-		relativePath, err := utils.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -332,7 +332,7 @@ func (s AngularManager) RemoveReferenceFromProject(project applicationproject.Pr
 
 	for _, reference := range references {
 
-		relativePath, err := utils.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := utilities.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
@@ -478,7 +478,7 @@ func (s AngularManager) ListReferencesFromProject(projectSpecification applicati
 	references := make([]applicationproject.ProjectSpecification, 0)
 	for _, match := range matches {
 		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := utils.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+			relativeToReference, err := utilities.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}

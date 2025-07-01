@@ -10,6 +10,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
@@ -56,7 +57,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		checkGlobals := utils.IsEmpty(commandOptions.Workspace)
+		checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
 		codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 		fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())
 		sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
@@ -184,7 +185,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *sharedTemplateList {
-		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -196,7 +197,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *fileTemplateList {
-		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}
@@ -208,7 +209,7 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 	}
 
 	for _, resource := range *codeTemplateList {
-		if !utils.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
+		if !utilities.Contains(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
 			suggestions = append(suggestions, resource.Header.Name)
 		}
 	}

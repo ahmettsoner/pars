@@ -1,12 +1,11 @@
 package dataresource
 
 import (
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/application/models/class"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
+	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/application/models/section"
 )
@@ -21,7 +20,7 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 	}
 }
 func (e Section) Validate() error {
-	if utils.IsEmpty(e.Section.Name) {
+	if utilities.IsEmpty(e.Section.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
 	}
 	return nil
