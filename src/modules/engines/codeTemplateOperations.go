@@ -14,7 +14,7 @@ import (
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"
 
-	templateEngine "parsdevkit.net/components/templates/engines"
+	templateEngine "parsdevkit.net/components/template/engines"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"

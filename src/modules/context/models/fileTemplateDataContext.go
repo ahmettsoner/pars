@@ -6,8 +6,8 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/components/templates/models/objectResources"
-	objectResourceService "parsdevkit.net/components/templates/services"
+	"parsdevkit.net/components/template/models/objectResources"
+	objectResourceService "parsdevkit.net/components/template/services"
 	platformsCommon "parsdevkit.net/platforms/common"
 )
 

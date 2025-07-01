@@ -12,7 +12,7 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/components/templates/models/objectResources"
+	"parsdevkit.net/components/template/models/objectResources"
 )
 
 type ObjectResourceService struct {

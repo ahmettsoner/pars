@@ -10,7 +10,7 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
-	templateEngine "parsdevkit.net/components/templates/engines"
+	templateEngine "parsdevkit.net/components/template/engines"
 	_string "parsdevkit.net/core/utilities/string"
 	platformsCommon "parsdevkit.net/platforms/common"
 
