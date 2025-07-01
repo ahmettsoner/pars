@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/array"
@@ -20,7 +19,7 @@ import (
 
 type DescribeOptions struct {
 	Name                  string
-	WorkspaceDescribeView core.WorkspaceDescribeViewTypeEnumFlag
+	WorkspaceDescribeView application.WorkspaceDescribeViewTypeEnumFlag
 	PathOnly              bool
 }
 
@@ -154,8 +153,8 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 }
 
 func init() {
-	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
-	commandOptions.WorkspaceDescribeView.Value = core.WorkspaceDescribeViewTypes.Hierarchical
+	workspaceDescribeViewTypeValues := application.WorkspaceDescribeViewTypeToArray()
+	commandOptions.WorkspaceDescribeView.Value = application.WorkspaceDescribeViewTypes.Hierarchical
 	DescribeCmd.Flags().VarP(&commandOptions.WorkspaceDescribeView, "view", "v", fmt.Sprintf("Select view type %v", workspaceDescribeViewTypeValues))
 	DescribeCmd.RegisterFlagCompletionFunc("view", viewTypeFlagCompletion)
 
@@ -164,7 +163,7 @@ func init() {
 func viewTypeFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 	var suggestions = make([]string, 0)
 
-	workspaceDescribeViewTypeValues := core.WorkspaceDescribeViewTypeToArray()
+	workspaceDescribeViewTypeValues := application.WorkspaceDescribeViewTypeToArray()
 
 	for _, _type := range workspaceDescribeViewTypeValues {
 		suggestions = append(suggestions, string(_type))
