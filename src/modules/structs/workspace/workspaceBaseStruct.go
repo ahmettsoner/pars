@@ -1,7 +1,7 @@
 package workspace
 
 import (
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 
 	"parsdevkit.net/core/errors"
 	_string "parsdevkit.net/core/utilities/string"

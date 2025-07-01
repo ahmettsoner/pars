@@ -19,7 +19,7 @@ import (
 	"pars/tests/internal/testenv/faker"
 	"pars/tests/internal/testenv/objects"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 
 	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"

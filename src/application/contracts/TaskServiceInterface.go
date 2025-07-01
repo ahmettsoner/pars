@@ -1,10 +1,6 @@
 package contracts
 
-import (
-	"parsdevkit.net/core/schemas"
-)
-
-type TaskServiceInterface[T schemas.Schema] interface {
+type TaskServiceInterface[T SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(mommonl T) (*T, error)
 	List() (*([]T), error)

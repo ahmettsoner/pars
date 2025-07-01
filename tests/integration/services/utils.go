@@ -21,7 +21,7 @@ import (
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 )
 
 func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {

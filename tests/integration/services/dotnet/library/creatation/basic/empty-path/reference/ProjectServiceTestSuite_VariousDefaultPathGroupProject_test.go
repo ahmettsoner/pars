@@ -12,7 +12,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/application/contracts"

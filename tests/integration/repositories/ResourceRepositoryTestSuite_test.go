@@ -9,8 +9,8 @@ import (
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
+	"parsdevkit.net/application/schemas"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/persistence/contexts"

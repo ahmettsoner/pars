@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"

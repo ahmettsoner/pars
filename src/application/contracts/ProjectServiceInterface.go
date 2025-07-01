@@ -2,10 +2,9 @@ package contracts
 
 import (
 	"parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/schemas"
 )
 
-type ProjectServiceInterface[T schemas.Schema] interface {
+type ProjectServiceInterface[T SchemaInterface] interface {
 	Create(model T, init bool) (*T, error)
 	GenerateProject(model T) (*T, error)
 	AddFileToLayer(model T, layer string, paths []string, filename string, content string) (*T, error)

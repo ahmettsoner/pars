@@ -3,8 +3,8 @@ package filetemplate
 import (
 	"fmt"
 
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/schemas"
 	_string "parsdevkit.net/core/utilities/string"
 )
 

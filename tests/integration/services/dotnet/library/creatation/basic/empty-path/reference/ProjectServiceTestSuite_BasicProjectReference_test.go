@@ -15,7 +15,7 @@ import (
 	"pars/tests/internal/testenv/faker"
 	"pars/tests/internal/testenv/objects"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 
 	projectStruct "parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"

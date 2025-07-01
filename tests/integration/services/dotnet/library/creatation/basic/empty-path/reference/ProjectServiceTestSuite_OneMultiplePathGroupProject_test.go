@@ -14,7 +14,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"

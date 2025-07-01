@@ -8,7 +8,7 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
@@ -19,7 +19,7 @@ import (
 
 type DataResourceEngine struct{}
 
-func (s DataResourceEngine) Validate(data []schemas.Schema) bool {
+func (s DataResourceEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*dataresourceStruct.ResourceBaseStruct)
 		if !ok {
@@ -29,7 +29,7 @@ func (s DataResourceEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createResources(dataresourceStructs, true)
 }
-func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {

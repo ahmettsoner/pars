@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
 

@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/engines"
 	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/json"
@@ -19,7 +19,7 @@ import (
 
 type ObjectResourceEngine struct{}
 
-func (s ObjectResourceEngine) Validate(data []schemas.Schema) bool {
+func (s ObjectResourceEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*objectresourceStruct.ResourceBaseStruct)
 		if !ok {
@@ -29,7 +29,7 @@ func (s ObjectResourceEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data 
 
 	return s.createResources(objectresourceStructs, true)
 }
-func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {

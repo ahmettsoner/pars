@@ -8,7 +8,7 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 

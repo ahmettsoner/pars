@@ -10,7 +10,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/array"
 	group "parsdevkit.net/modules/group/group"
 	projectApplication "parsdevkit.net/modules/project/application"
@@ -38,9 +38,9 @@ var orderedKeys = []string{
 	"Task.Common",
 }
 
-func DispatchEngineProcess(ctx *application.ApplicationContext, t []schemas.Schema) error {
+func DispatchEngineProcess(ctx *application.ApplicationContext, t []contracts.SchemaInterface) error {
 
-	schemaGroups := make(map[string][]schemas.Schema, 0)
+	schemaGroups := make(map[string][]contracts.SchemaInterface, 0)
 	for _, data := range t {
 		header := data.GetHeader()
 
@@ -70,9 +70,9 @@ func DispatchEngineProcess(ctx *application.ApplicationContext, t []schemas.Sche
 	}
 	return nil
 }
-func DispatchEngineDestroy(ctx *application.ApplicationContext, t []schemas.Schema) error {
+func DispatchEngineDestroy(ctx *application.ApplicationContext, t []contracts.SchemaInterface) error {
 
-	schemaGroups := make(map[string][]schemas.Schema, 0)
+	schemaGroups := make(map[string][]contracts.SchemaInterface, 0)
 	for _, data := range t {
 		header := data.GetHeader()
 

@@ -7,17 +7,17 @@ import (
 	"parsdevkit.net/core/utilities/json"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/operation/services"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 )
 
 type CommonTaskEngine struct{}
 
-func (s CommonTaskEngine) Validate(data []schemas.Schema) bool {
+func (s CommonTaskEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*commontaskStruct.TaskBaseStruct)
 		if !ok {
@@ -27,7 +27,7 @@ func (s CommonTaskEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +42,7 @@ func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []sc
 	return s.createTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {

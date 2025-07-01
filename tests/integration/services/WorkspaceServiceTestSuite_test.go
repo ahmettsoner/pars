@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 	"parsdevkit.net/application/contracts"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 )
 
 type WorkspaceServiceTestSuite struct {

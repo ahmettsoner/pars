@@ -2,12 +2,12 @@ package engines
 
 import (
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/contracts"
 )
 
 type Engine interface {
 	// Init(ctx *application.ApplicationContext) error
-	Validate(data []schemas.Schema) bool
-	Process(ctx *application.ApplicationContext, data []schemas.Schema) error
-	Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error
+	Validate(data []contracts.SchemaInterface) bool
+	Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error
+	Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error
 }

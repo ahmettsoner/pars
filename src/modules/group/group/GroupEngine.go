@@ -7,13 +7,13 @@ import (
 	"parsdevkit.net/core/utilities/encrypt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utils"
 )
 
 type GroupEngine struct{}
 
-func (s GroupEngine) Validate(data []schemas.Schema) bool {
+func (s GroupEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*GroupBaseStruct)
 		if !ok {
@@ -23,7 +23,7 @@ func (s GroupEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s GroupEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -36,7 +36,7 @@ func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas
 
 	return s.createGroups(groups, false)
 }
-func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {

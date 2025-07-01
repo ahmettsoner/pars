@@ -1,10 +1,6 @@
 package contracts
 
-import (
-	"parsdevkit.net/core/schemas"
-)
-
-type GroupServiceInterface[T schemas.Schema] interface {
+type GroupServiceInterface[T SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(model T) (*T, error)
 	List() (*([]T), error)

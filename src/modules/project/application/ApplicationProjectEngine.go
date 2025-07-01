@@ -17,16 +17,16 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 )
 
 type ApplicationProjectEngine struct{}
 
-func (s ApplicationProjectEngine) Validate(data []schemas.Schema) bool {
+func (s ApplicationProjectEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
 		if !ok {
@@ -36,7 +36,7 @@ func (s ApplicationProjectEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -53,7 +53,7 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 
 	return s.createProjects(applicationprojects, true)
 }
-func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {

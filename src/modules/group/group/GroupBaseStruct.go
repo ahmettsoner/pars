@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	_string "parsdevkit.net/core/utilities/string"
 )
 

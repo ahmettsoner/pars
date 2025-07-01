@@ -17,7 +17,7 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"

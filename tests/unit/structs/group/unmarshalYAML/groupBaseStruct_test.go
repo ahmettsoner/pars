@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 )
 
 func Test_UnMarshall_GroupBaseStruct_FullData(t *testing.T) {

@@ -7,9 +7,9 @@ import (
 	"parsdevkit.net/core/utilities/json"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
@@ -19,7 +19,7 @@ import (
 
 type CodeTemplateEngine struct{}
 
-func (s CodeTemplateEngine) Validate(data []schemas.Schema) bool {
+func (s CodeTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*codetemplateStruct.TemplateBaseStruct)
 		if !ok {
@@ -29,7 +29,7 @@ func (s CodeTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createTemplates(codetemplates, true)
 }
-func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

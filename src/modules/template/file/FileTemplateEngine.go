@@ -10,16 +10,16 @@ import (
 	"parsdevkit.net/engines"
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/schemas"
 )
 
 type FileTemplateEngine struct{}
 
-func (s FileTemplateEngine) Validate(data []schemas.Schema) bool {
+func (s FileTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*filetemplateStruct.TemplateBaseStruct)
 		if !ok {
@@ -29,7 +29,7 @@ func (s FileTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createTemplates(filetemplates, true)
 }
-func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
+func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

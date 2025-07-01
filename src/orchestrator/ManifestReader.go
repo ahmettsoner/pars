@@ -11,11 +11,12 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/core/utils"
 	group "parsdevkit.net/modules/group/group"
 
+	"parsdevkit.net/application/contracts"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectsource "parsdevkit.net/structs/resource/object-resource"
@@ -24,17 +25,17 @@ import (
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 )
 
-var registry = map[string]func() schemas.Schema{
-	"Group":               func() schemas.Schema { return &group.GroupBaseStruct{} },
-	"Project.Application": func() schemas.Schema { return &applicationproject.ProjectBaseStruct{} },
-	"Resource.Data":       func() schemas.Schema { return &dataresource.ResourceBaseStruct{} },
-	"Resource.Object":     func() schemas.Schema { return &objectsource.ResourceBaseStruct{} },
-	"Template.Code":       func() schemas.Schema { return &codetemplate.TemplateBaseStruct{} },
-	"Template.File":       func() schemas.Schema { return &filetemplate.TemplateBaseStruct{} },
-	"Template.Shared":     func() schemas.Schema { return &sharedtemplate.TemplateBaseStruct{} },
+var registry = map[string]func() contracts.SchemaInterface{
+	"Group":               func() contracts.SchemaInterface { return &group.GroupBaseStruct{} },
+	"Project.Application": func() contracts.SchemaInterface { return &applicationproject.ProjectBaseStruct{} },
+	"Resource.Data":       func() contracts.SchemaInterface { return &dataresource.ResourceBaseStruct{} },
+	"Resource.Object":     func() contracts.SchemaInterface { return &objectsource.ResourceBaseStruct{} },
+	"Template.Code":       func() contracts.SchemaInterface { return &codetemplate.TemplateBaseStruct{} },
+	"Template.File":       func() contracts.SchemaInterface { return &filetemplate.TemplateBaseStruct{} },
+	"Template.Shared":     func() contracts.SchemaInterface { return &sharedtemplate.TemplateBaseStruct{} },
 }
 
-func LoadTemplate(yamlData []byte) (schemas.Schema, error) {
+func LoadTemplate(yamlData []byte) (contracts.SchemaInterface, error) {
 	var header schemas.SchemaHeader
 	if err := yaml.Unmarshal(yamlData, &header); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal header: %w", err)
@@ -61,14 +62,14 @@ func LoadTemplate(yamlData []byte) (schemas.Schema, error) {
 	return target, nil
 }
 
-func GetAllManifestFilesInPath(path ...string) ([]schemas.Schema, error) {
+func GetAllManifestFilesInPath(path ...string) ([]contracts.SchemaInterface, error) {
 
 	allFiles, err := file.GetAllFilesInPath(path...)
 	if err != nil {
 		return nil, fmt.Errorf("Error processing file paths: %v\n%w", allFiles, err)
 	}
 
-	schemas := make([]schemas.Schema, 0)
+	schemas := make([]contracts.SchemaInterface, 0)
 	for _, file := range allFiles {
 
 		stringData, err := os.ReadFile(file)
@@ -93,9 +94,9 @@ func GetAllManifestFilesInPath(path ...string) ([]schemas.Schema, error) {
 	return schemas, nil
 }
 
-func GenerateManifestFilesFromTemplate(data any, templateFiles ...string) ([]schemas.Schema, error) {
+func GenerateManifestFilesFromTemplate(data any, templateFiles ...string) ([]contracts.SchemaInterface, error) {
 
-	schemas := make([]schemas.Schema, 0)
+	schemas := make([]contracts.SchemaInterface, 0)
 	logrus.Debugf("found %v template(s) to create project", len(templateFiles))
 	for _, templateFilePath := range templateFiles {
 

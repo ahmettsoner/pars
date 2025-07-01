@@ -10,8 +10,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/application/schemas"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/schemas"
 )
 
 func Test_UnMarshall_TemplateBaseStruct_FullData(t *testing.T) {

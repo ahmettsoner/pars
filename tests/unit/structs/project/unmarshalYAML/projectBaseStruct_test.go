@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/schemas"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/file"
 
 	"parsdevkit.net/models"

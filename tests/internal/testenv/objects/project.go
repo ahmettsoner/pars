@@ -2,9 +2,9 @@ package objects
 
 import (
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/schemas"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"

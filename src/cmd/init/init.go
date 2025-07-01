@@ -6,7 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"parsdevkit.net/core/schemas"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/structs/workspace"
 
 	_string "parsdevkit.net/core/utilities/string"
