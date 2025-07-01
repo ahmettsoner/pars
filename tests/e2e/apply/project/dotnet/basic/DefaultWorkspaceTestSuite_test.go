@@ -9,11 +9,11 @@ import (
 	"parsdevkit.net/operation/services"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
-	"parsdevkit.net/core/utils"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

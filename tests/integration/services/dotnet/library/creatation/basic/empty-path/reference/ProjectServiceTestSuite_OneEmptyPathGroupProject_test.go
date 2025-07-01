@@ -14,11 +14,12 @@ import (
 
 	"parsdevkit.net/core/utils"
 
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+	"pars/tests/internal/testenv/objects"
+
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
-	"parsdevkit.net/core/test/objects"
 
 	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"

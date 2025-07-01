@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utilities/_map"
+	_map "parsdevkit.net/core/utilities/map"
 )
 
 type MapFuncs struct{}

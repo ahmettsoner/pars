@@ -15,13 +15,13 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/test"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+	"pars/tests/internal/testenv/objects"
 
 	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
-	"parsdevkit.net/core/test/objects"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

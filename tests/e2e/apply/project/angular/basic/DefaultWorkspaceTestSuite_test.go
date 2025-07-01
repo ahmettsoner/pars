@@ -13,9 +13,10 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/stretchr/testify/assert"

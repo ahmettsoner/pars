@@ -9,11 +9,11 @@ import (
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
 
-	"parsdevkit.net/core/utils"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"

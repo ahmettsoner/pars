@@ -9,12 +9,13 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+	"pars/tests/internal/testenv/objects"
+
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
-	"parsdevkit.net/core/test/objects"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/stretchr/testify/assert"

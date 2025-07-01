@@ -14,8 +14,8 @@ import (
 
 	"parsdevkit.net/persistence/repositories"
 
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

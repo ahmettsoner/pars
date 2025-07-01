@@ -11,11 +11,11 @@ import (
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/persistence/repositories"
-
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

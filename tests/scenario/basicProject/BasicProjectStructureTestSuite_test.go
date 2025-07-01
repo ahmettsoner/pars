@@ -7,9 +7,9 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"

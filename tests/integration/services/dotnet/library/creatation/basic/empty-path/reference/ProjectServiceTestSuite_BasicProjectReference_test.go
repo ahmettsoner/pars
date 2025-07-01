@@ -2,6 +2,7 @@ package services
 
 import (
 	"os"
+	"testing"
 
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -9,12 +10,10 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/test"
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
-	"parsdevkit.net/core/test/objects"
-
-	"testing"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+	"pars/tests/internal/testenv/objects"
 
 	"parsdevkit.net/core/schemas"
 

@@ -9,10 +9,9 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/core/test"
-
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"

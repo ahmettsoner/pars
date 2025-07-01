@@ -16,7 +16,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	"parsdevkit.net/core/test/faker"
+	"pars/tests/internal/testenv/faker"
 
 	"github.com/stretchr/testify/assert"
 )

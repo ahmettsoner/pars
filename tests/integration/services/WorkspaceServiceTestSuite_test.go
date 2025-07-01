@@ -7,10 +7,10 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utils"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
+	"parsdevkit.net/core/utils"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"

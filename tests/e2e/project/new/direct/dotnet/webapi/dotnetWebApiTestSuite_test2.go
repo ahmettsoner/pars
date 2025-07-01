@@ -3,17 +3,16 @@ package webapi
 import (
 	"fmt"
 	"os"
+	test "pars/tests/internal/testenv"
+	"pars/tests/internal/testenv/common"
+	"pars/tests/internal/testenv/faker"
+
 	"testing"
 	"time"
 
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core/test"
-
-	"parsdevkit.net/core/test/common"
-	"parsdevkit.net/core/test/faker"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
