@@ -2,9 +2,9 @@ package layer
 
 import (
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type LayerIdentifier struct {
@@ -19,7 +19,7 @@ func NewLayerIdentifier(id int, name string) LayerIdentifier {
 	}
 }
 func (e LayerIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

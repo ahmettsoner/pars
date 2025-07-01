@@ -4,7 +4,8 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
+
 	applicationproject "parsdevkit.net/structs/project/application-project"
 )
 
@@ -83,7 +84,7 @@ func (s BaseManager) IsLayerFoldersExists(project applicationproject.ProjectSpec
 }
 
 func (s BaseManager) IsGroupExists(project applicationproject.ProjectSpecification, controlFile string) (bool, error) {
-	if utilities.IsEmpty(project.Group) {
+	if _string.IsEmpty(project.Group) {
 		return false, nil
 	}
 

@@ -5,7 +5,7 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 )
 
@@ -27,7 +27,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 	fmt.Printf(textFormat, "Architecture", runtime.GOARCH)
 
 	environment := utils.GetEnvironment()
-	if utilities.IsEmpty(environment) {
+	if _string.IsEmpty(environment) {
 		environment = "default"
 	}
 	fmt.Printf(textFormat, "Environment", environment)

@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/schemas"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type GroupBaseStruct struct {
@@ -25,10 +25,10 @@ func NewGroupBaseStruct(header schemas.SchemaHeader, specifications GroupSpecifi
 	}
 }
 func (e GroupBaseStruct) Validate() error {
-	if utilities.IsEmpty(e.Header.Name) {
+	if _string.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
-	if utilities.IsEmpty(e.Specifications.Name) {
+	if _string.IsEmpty(e.Specifications.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Specifications.Name"}
 	}
 	return nil

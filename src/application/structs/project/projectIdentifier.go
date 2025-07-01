@@ -5,8 +5,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type ProjectIdentifier struct {
@@ -27,7 +27,7 @@ func NewProjectIdentifier(id int, name string, path []string, group string, work
 	}
 }
 func (e ProjectIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

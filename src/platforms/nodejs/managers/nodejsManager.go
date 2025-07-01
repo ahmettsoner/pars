@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 
+	_string "parsdevkit.net/core/utilities/string"
+
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -19,7 +21,6 @@ import (
 
 	"parsdevkit.net/providers"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
 
 	"github.com/sirupsen/logrus"
@@ -45,7 +46,7 @@ func ProjectTypeToNodeJSCLITypeString(c nodejsModels.NodeJSProjectType) (string,
 }
 
 func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) nodejsModels.NodeJSPlatformVersion {
-	if utilities.IsEmpty(platform.Version) {
+	if _string.IsEmpty(platform.Version) {
 		platformVersion := nodejsModels.NodeJSPlatformVersions.V17
 
 		return platformVersion
@@ -59,7 +60,7 @@ func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) 
 }
 
 func (s NodeJSManager) CreateProject(project applicationproject.ProjectSpecification) error {
-	if utilities.IsEmpty(project.Group) {
+	if _string.IsEmpty(project.Group) {
 		if len(project.Package) > 0 {
 			err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "init", "--scope", fmt.Sprintf("@%v", project.Package[len(project.Package)-1]), "--yes")
 			if err != nil {
@@ -94,7 +95,7 @@ func (s NodeJSManager) RemoveProject(project applicationproject.ProjectSpecifica
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -115,7 +116,7 @@ func (s NodeJSManager) BuildProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -143,7 +144,7 @@ func (s NodeJSManager) InstallProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -167,7 +168,7 @@ func (s NodeJSManager) TestProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -191,7 +192,7 @@ func (s NodeJSManager) PackageProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -215,7 +216,7 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -234,7 +235,7 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecificatio
 }
 
 func (s NodeJSManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if len(project.GroupObject.Package) > 0 {
 			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.GroupObject.Package[len(project.GroupObject.Package)-1]), "--yes")
 			if err != nil {
@@ -288,7 +289,7 @@ func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpe
 
 		packageName := _package.Name
 
-		if !utilities.IsEmpty(_package.Version) {
+		if !_string.IsEmpty(_package.Version) {
 			packageName = fmt.Sprintf("%s@%s", packageName, _package.Version)
 		}
 
@@ -573,13 +574,13 @@ func (s NodeJSManager) PrintDataType(dataType objectresource.DataType) string {
 			return "Unknown"
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Reference {
-		if !utilities.IsEmpty(dataType.Package.Alias) {
+		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Resource {
-		if !utilities.IsEmpty(dataType.Package.Alias) {
+		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name

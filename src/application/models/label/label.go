@@ -3,9 +3,8 @@ package label
 import (
 	"strings"
 
-	"parsdevkit.net/core/utilities"
-
 	"parsdevkit.net/core/errors"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,14 +27,14 @@ func NewLabel_KeyOnly(key string) Label {
 	}
 }
 func (e Label) Validate() error {
-	if utilities.IsEmpty(e.Key) {
+	if _string.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 	return nil
 }
 
 func (s *Label) IsKeyExists() bool {
-	return !utilities.IsEmpty(s.Key)
+	return !_string.IsEmpty(s.Key)
 }
 
 func (s *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -51,7 +50,7 @@ func (s *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 			s.Key = key
 
-			if utilities.IsEmpty(s.Key) {
+			if _string.IsEmpty(s.Key) {
 				return &errors.InvalidLanguageError{Value: key}
 			}
 			s.Value = _value

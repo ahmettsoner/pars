@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
-
-	"parsdevkit.net/core/utilities"
 
 	"parsdevkit.net/core/errors"
 
@@ -31,7 +30,7 @@ func NewLanguage_LanguageOnly(_type models.LanguageType) Language {
 	}
 }
 func (s Language) Validate() error {
-	if utilities.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
+	if _string.IsEmpty(string(s.Type)) || s.Type.String() == "Unknown" {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil
@@ -39,7 +38,7 @@ func (s Language) Validate() error {
 
 func (s *Language) GetFullName() string {
 	fullName := s.Type.String()
-	if !utilities.IsEmpty(s.Version) {
+	if !_string.IsEmpty(s.Version) {
 		fullName = fmt.Sprintf("%v@%v", s.Type.String(), s.Version)
 	}
 
@@ -89,7 +88,7 @@ func (s *Language) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			}
 			s.Type = enum
 
-			if utilities.IsEmpty(string(s.Type)) {
+			if _string.IsEmpty(string(s.Type)) {
 				return &errors.InvalidLanguageError{Value: languageName}
 			}
 			s.Version = languageVersion

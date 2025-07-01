@@ -3,7 +3,7 @@ package objectresource
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type ValidationRuleInterface interface {
@@ -24,7 +24,7 @@ func NewValidationRule(_type, name string, message Message) ValidationRule {
 	}
 }
 func (e ValidationRule) Validate() error {
-	if utilities.IsEmpty(e.Type) {
+	if _string.IsEmpty(e.Type) {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil

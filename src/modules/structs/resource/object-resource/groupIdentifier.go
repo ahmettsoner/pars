@@ -2,7 +2,7 @@ package objectresource
 
 import (
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )
@@ -17,14 +17,14 @@ func NewGroupIdentifier(name string) GroupIdentifier {
 	}
 }
 func (e GroupIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
 }
 
 func (s *GroupIdentifier) IsNameExists() bool {
-	return !utilities.IsEmpty(s.Name)
+	return !_string.IsEmpty(s.Name)
 }
 
 func (s *GroupIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

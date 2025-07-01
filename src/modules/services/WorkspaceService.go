@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/application/contracts"
@@ -48,7 +48,7 @@ func NewWorkspaceService(environment string) contracts.WorkspaceServiceInterface
 func (s *WorkspaceService) correctWorkspaceName(name string) string {
 	correctedName := strings.TrimSpace(name)
 	workspaceName := func() string {
-		if !utilities.IsEmpty(correctedName) {
+		if !_string.IsEmpty(correctedName) {
 			return strings.TrimSpace(name)
 		}
 		return DEFAULT_WORKSPACE_PATH
@@ -59,7 +59,7 @@ func (s *WorkspaceService) correctWorkspaceName(name string) string {
 func (s *WorkspaceService) correctOutputPath(output string) (string, error) {
 	correctedOutput := strings.TrimSpace(output)
 	outputPath, err := func() (*string, error) {
-		if !utilities.IsEmpty(correctedOutput) {
+		if !_string.IsEmpty(correctedOutput) {
 			correctedOutput = strings.TrimSpace(correctedOutput)
 			return &correctedOutput, nil
 		}
@@ -99,7 +99,7 @@ func (s WorkspaceService) saveWorkspaceInformation(workspaceModel workspace.Work
 	if err != nil {
 		return nil, err
 	}
-	if utilities.IsEmpty(value) {
+	if _string.IsEmpty(value) {
 		err := s.settignsRespository.SetValue(CURRENT_WORKSPACE_ID, strconv.Itoa(workspaceEntity.ID))
 		if err != nil {
 			return nil, err
@@ -286,7 +286,7 @@ func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.
 // 	if err != nil {
 // 		return nil, err
 // 	}
-// 	if utilities.IsEmpty(value) {
+// 	if _string.IsEmpty(value) {
 // 		err := s.settignsRespository.SetValue(CURRENT_WORKSPACE_ID, strconv.Itoa(newWorkspace.ID))
 // 		if err != nil {
 // 			return nil, err
@@ -472,7 +472,7 @@ func (s *WorkspaceService) GetSelectedWorkspace() (*workspace.WorkspaceBaseStruc
 	if err != nil {
 		return nil, err
 	}
-	if utilities.IsEmpty(value) {
+	if _string.IsEmpty(value) {
 		return nil, nil
 	}
 

@@ -6,12 +6,12 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities"
 )
 
 type ListOptions struct {
@@ -44,7 +44,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
+	checkGlobals := _string.IsEmpty(commandOptions.Workspace)
 	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
 	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 	fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())

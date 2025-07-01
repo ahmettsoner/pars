@@ -3,7 +3,7 @@ package filetemplate
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Output struct {
@@ -16,7 +16,7 @@ func NewOutput(file string) Output {
 	}
 }
 func (e Output) Validate() error {
-	if utilities.IsEmpty(e.File) {
+	if _string.IsEmpty(e.File) {
 		return &errors.ErrFieldRequired{FieldName: "File"}
 	}
 	return nil

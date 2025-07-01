@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Template struct {
@@ -20,11 +20,11 @@ func NewTemplate(source TemplateSourceType, content string) Template {
 }
 func (s Template) Validate() error {
 
-	if utilities.IsEmpty(s.Source.String()) {
+	if _string.IsEmpty(s.Source.String()) {
 		return &errors.ErrFieldRequired{FieldName: "Source"}
 	}
 
-	if utilities.IsEmpty(s.Content) {
+	if _string.IsEmpty(s.Content) {
 		return &errors.ErrFieldRequired{FieldName: "Content"}
 	}
 	return nil

@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
 
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/engines/group"
 	v2 "parsdevkit.net/engines/v2"
@@ -44,7 +45,7 @@ var WebApiCmd = &cobra.Command{
 }
 
 func executeFunc(cmd *cobra.Command, args []string) {
-	if utilities.IsEmpty(name) {
+	if _string.IsEmpty(name) {
 		if len(args) == 0 {
 			fmt.Println("Please provide a name for the new project")
 			os.Exit(1)
@@ -53,7 +54,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if utilities.IsEmpty(name) {
+	if _string.IsEmpty(name) {
 		cmd.Help()
 		os.Exit(0)
 	}
@@ -124,7 +125,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	if !utilities.IsEmpty(projectGroup) {
+	if !_string.IsEmpty(projectGroup) {
 		groupService := group.GroupEngine{}
 
 		var groupStructData = struct {

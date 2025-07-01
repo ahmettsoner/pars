@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type GroupIdentifier struct {
@@ -33,14 +33,14 @@ func NewGroupIdentifier_Empty(name string) GroupIdentifier {
 	}
 }
 func (e GroupIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
 }
 
 func (s *GroupIdentifier) IsPathExists() bool {
-	return !utilities.IsEmpty(s.Path)
+	return !_string.IsEmpty(s.Path)
 }
 func (s *GroupIdentifier) GetRelativeGroupPath() string {
 	return s.Path

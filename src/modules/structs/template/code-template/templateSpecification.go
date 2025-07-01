@@ -6,10 +6,10 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationTemplate "parsdevkit.net/application/structs/template"
+	_string "parsdevkit.net/core/utilities/string"
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 )
 
 type TemplateSpecification struct {
@@ -39,11 +39,11 @@ func NewTemplateSpecification(id int, name, workspace, set string, path string, 
 }
 func (s TemplateSpecification) Validate() error {
 
-	if utilities.IsEmpty(s.Name) {
+	if _string.IsEmpty(s.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 
-	if utilities.IsEmpty(s.Set) {
+	if _string.IsEmpty(s.Set) {
 		return &errors.ErrFieldRequired{FieldName: "Set"}
 	}
 
@@ -70,7 +70,7 @@ func (s *TemplateSpecification) IsPackageExists() bool {
 	return len(s.Package) > 0
 }
 func (s *TemplateSpecification) IsPathExists() bool {
-	return !utilities.IsEmpty(s.Path)
+	return !_string.IsEmpty(s.Path)
 }
 
 func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {

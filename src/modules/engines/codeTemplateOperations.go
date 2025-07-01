@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	layerPkg "parsdevkit.net/application/models/layer"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utilities/file"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/operation/services"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -278,7 +278,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Project.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Project.Name) {
 			generate = false
 			if template.Configurations.Selectors.Project.Name == project.Header.Name {
 				generate = true
@@ -300,7 +300,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Resource.Name) {
 			generate = false
 			if template.Configurations.Selectors.Resource.Name == resource.Header.Name {
 				generate = true
@@ -322,7 +322,7 @@ func (s CodeTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
 			generate = false
 			for _, layerSection := range layer.Sections {
 				if template.Configurations.Selectors.Resource.Section.Name == layerSection.Name {

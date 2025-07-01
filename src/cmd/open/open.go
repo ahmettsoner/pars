@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/providers"
 
 	"parsdevkit.net/application"
@@ -11,7 +12,6 @@ import (
 	workspaceCommand "parsdevkit.net/cmd/open/workspace"
 
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/core/utilities"
 
 	"github.com/spf13/cobra"
 )
@@ -35,7 +35,7 @@ var OpenCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) == 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
 		return fmt.Errorf("error: workspace name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -45,7 +45,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 

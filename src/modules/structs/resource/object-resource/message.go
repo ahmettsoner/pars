@@ -4,9 +4,9 @@ import (
 	"reflect"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Message struct {
@@ -21,14 +21,14 @@ func NewMessage(text string, dictionary DictionaryIdentifier) Message {
 	}
 }
 func (e Message) Validate() error {
-	if utilities.IsEmpty(e.Text) {
+	if _string.IsEmpty(e.Text) {
 		return &errors.ErrFieldRequired{FieldName: "Text"}
 	}
 	return nil
 }
 
 func (s *Message) IsTextExists() bool {
-	return !utilities.IsEmpty(s.Text)
+	return !_string.IsEmpty(s.Text)
 }
 
 func (s *Message) UnmarshalYAML(unmarshal func(interface{}) error) error {

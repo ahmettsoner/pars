@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	_string "parsdevkit.net/core/utilities/string"
 	group "parsdevkit.net/modules/group/group"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
@@ -19,7 +20,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/encrypt"
 )
 
@@ -432,13 +432,13 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *core.ApplicationContext, pro
 	// }
 
 	workspaceName := project.Specifications.Workspace
-	if utilities.IsEmpty(workspaceName) {
+	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
 	var result *workspaceStruct.WorkspaceBaseStruct = nil
 
-	if !utilities.IsEmpty(workspaceName) {
+	if !_string.IsEmpty(workspaceName) {
 		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
@@ -458,7 +458,7 @@ func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.Proj
 
 	groupName := project.Specifications.Group
 
-	if !utilities.IsEmpty(groupName) {
+	if !_string.IsEmpty(groupName) {
 		groupService := group.NewGroupService(utils.GetEnvironment())
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
@@ -508,7 +508,7 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 		logrus.Debugf("found new project defination for (%v) referenced by (%v)", reference.Header.Name, prj.Header.Name)
 
 		if reference.Specifications.WorkspaceObject.ID == 0 {
-			if utilities.IsEmpty(reference.Specifications.Workspace) {
+			if _string.IsEmpty(reference.Specifications.Workspace) {
 				reference.Specifications.Workspace = prj.Specifications.Workspace
 				logrus.Debugf("decided to using same workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 			}

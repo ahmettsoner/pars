@@ -3,7 +3,7 @@ package dataresource
 import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Group struct {
@@ -23,13 +23,13 @@ func NewGroup(name string, title Message, order int, options []option.Option) Gr
 }
 
 func (e Group) Validate() error {
-	if utilities.IsEmpty(e.GroupIdentifier.Name) {
+	if _string.IsEmpty(e.GroupIdentifier.Name) {
 		return &errors.ErrFieldRequired{FieldName: "GroupIdentifier.Name"}
 	}
 	return nil
 }
 func (s *Group) IsNameExists() bool {
-	return !utilities.IsEmpty(s.Name)
+	return !_string.IsEmpty(s.Name)
 }
 
 func (s *Group) UnmarshalYAML(unmarshal func(interface{}) error) error {

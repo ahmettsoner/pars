@@ -8,10 +8,10 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/core/utilities/string"
 	group "parsdevkit.net/modules/group/group"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 
@@ -46,7 +46,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Workspace) {
+	if _string.IsEmpty(commandOptions.Workspace) {
 		appCtx := application.GetContext()
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")

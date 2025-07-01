@@ -9,9 +9,9 @@ import (
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/structs/workspace"
 
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
@@ -57,7 +57,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Path = args[1]
 	}
 
-	if utilities.IsEmpty(commandOptions.Name) {
+	if _string.IsEmpty(commandOptions.Name) {
 		commandOptions.Name = "workspace"
 		existingDefaultNamedWorkspaces, err := workspaceService.ListByNameStartWith(commandOptions.Name)
 		if err != nil {
@@ -70,7 +70,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		}
 		// fmt.Printf("Default name (%v), \n", name)
 	}
-	if utilities.IsEmpty(commandOptions.Path) {
+	if _string.IsEmpty(commandOptions.Path) {
 		commandOptions.Path = commandOptions.Name
 	}
 

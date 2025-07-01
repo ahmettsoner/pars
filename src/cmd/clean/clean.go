@@ -9,10 +9,10 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities"
 	platformsCommon "parsdevkit.net/platforms/common"
 )
 
@@ -36,7 +36,7 @@ var CleanCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) == 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
 		return fmt.Errorf("Please provide project name using the --url flag or as argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -46,7 +46,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 

@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Annotation struct {
@@ -22,14 +22,14 @@ func NewAnnotation(_type string, arguments []MethodArgument) Annotation {
 	}
 }
 func (e Annotation) Validate() error {
-	if utilities.IsEmpty(e.Type) {
+	if _string.IsEmpty(e.Type) {
 		return &errors.ErrFieldRequired{FieldName: "Type"}
 	}
 	return nil
 }
 
 func (s *Annotation) IsTypeExists() bool {
-	return !utilities.IsEmpty(s.Type)
+	return !_string.IsEmpty(s.Type)
 }
 
 func (s *Annotation) GetAllArguments() []MethodArgument {

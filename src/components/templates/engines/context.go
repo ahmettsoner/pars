@@ -8,8 +8,8 @@ import (
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/context/models"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -133,7 +133,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 	var projectObj *applicationproject.ProjectBaseStruct = nil
 	if layerObj != nil {
 		var projectList []applicationproject.ProjectBaseStruct = make([]applicationproject.ProjectBaseStruct, 0)
-		if utilities.IsEmpty(project) {
+		if _string.IsEmpty(project) {
 			projectListFromDb, err := applicationProjectService.ListBySetAndLayers(set, layer)
 			if err != nil {
 				return models.CodeTemplateDataContext{}
@@ -168,7 +168,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		var templateObj *codetemplate.TemplateBaseStruct = nil
 
 		var templatelist []codetemplate.TemplateBaseStruct = make([]codetemplate.TemplateBaseStruct, 0)
-		if utilities.IsEmpty(template) {
+		if _string.IsEmpty(template) {
 			templateListFromDb, err := codeTemplateService.ListBySetAndLayers(set, layer)
 			if err != nil {
 				return models.CodeTemplateDataContext{}
@@ -194,7 +194,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		}
 
 		if templateObj != nil {
-			if !utilities.IsEmpty(section) {
+			if !_string.IsEmpty(section) {
 				selectedContext := models.CodeTemplateDataContext{}
 				for _, objSection := range layerObj.Sections {
 					if objSection.Name == section {

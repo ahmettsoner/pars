@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/utilities"
 )
 
 type Option struct {
@@ -21,14 +21,14 @@ func NewOption(key string, value interface{}) Option {
 	}
 }
 func (e Option) Validate() error {
-	if utilities.IsEmpty(e.Key) {
+	if _string.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 	return nil
 }
 
 func (s *Option) IsKeyExists() bool {
-	return !utilities.IsEmpty(s.Key)
+	return !_string.IsEmpty(s.Key)
 }
 
 func (s *Option) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -63,7 +63,7 @@ func (s *Option) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 			s.Key = key
 
-			if utilities.IsEmpty(s.Key) {
+			if _string.IsEmpty(s.Key) {
 				return &errors.InvalidLanguageError{Value: key}
 			}
 			s.Value = _value

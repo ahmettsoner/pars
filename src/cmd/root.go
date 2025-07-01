@@ -4,10 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"parsdevkit.net/core/logs"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
-
-	"parsdevkit.net/core"
-	"parsdevkit.net/core/utilities"
 
 	cmdApply "parsdevkit.net/cmd/apply"
 	cmdBrowse "parsdevkit.net/cmd/browse"
@@ -51,7 +50,7 @@ import (
 var (
 	cfgFile          string
 	environment      string
-	logLevelEnumFlag core.LogLevelEnumFlag
+	logLevelEnumFlag logs.LogLevelEnumFlag
 )
 
 var RootCmd = &cobra.Command{
@@ -59,13 +58,13 @@ var RootCmd = &cobra.Command{
 	Short: "Smart Software Development Process Automation",
 	Long:  `Smart Software Development Process Automation`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if !utilities.IsEmpty(environment) {
+		if !_string.IsEmpty(environment) {
 			utils.SetEnvironment(environment)
 		}
 
 		utils.SetLogLevel(logLevelEnumFlag.Value)
 
-		if logLevelEnumFlag.Value != core.LogLevels.Silence {
+		if logLevelEnumFlag.Value != logs.LogLevels.Silence {
 			if logrusLogLevel, err := log.ParseLevel(string(logLevelEnumFlag.Value)); err != nil {
 				fmt.Println(err)
 				// file, err := os.OpenFile(filepath.Join(utils.GetLogLocation(), "app.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
@@ -89,7 +88,7 @@ func Execute() {
 
 	utils.PrepareLocations()
 
-	if !utilities.IsEmpty(utils.GetEnvironment()) {
+	if !_string.IsEmpty(utils.GetEnvironment()) {
 		fmt.Printf("\nRunning on '%v' environment\n", utils.GetEnvironment())
 	}
 }
@@ -100,8 +99,8 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
 	RootCmd.PersistentFlags().StringVarP(&environment, "env", "e", "", "Environment (dev, prod, test, ...)")
 
-	logLevelValues := core.LogLevelToArray()
-	logLevelEnumFlag.Value = core.LogLevels.Error
+	logLevelValues := logs.LogLevelToArray()
+	logLevelEnumFlag.Value = logs.LogLevels.Error
 	RootCmd.PersistentFlags().VarP(&logLevelEnumFlag, "log-level", "", fmt.Sprintf("Select log level %v", logLevelValues))
 
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
@@ -141,7 +140,7 @@ func addSubCommands() {
 }
 
 func initConfig() {
-	if !utilities.IsEmpty(cfgFile) {
+	if !_string.IsEmpty(cfgFile) {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		configDir := utils.GetConfigLocation()

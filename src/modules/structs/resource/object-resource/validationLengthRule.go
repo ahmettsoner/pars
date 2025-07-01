@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type ValidationLengthRule struct {
@@ -42,7 +42,7 @@ func (s *ValidationLengthRule) UnmarshalYAML(unmarshal func(interface{}) error) 
 					}
 					s.Min = intVal1
 				} else if len(parts) == 2 {
-					if !utilities.IsEmpty(parts[0]) {
+					if !_string.IsEmpty(parts[0]) {
 						intVal1, err := strconv.Atoi(parts[0])
 						if err != nil {
 							return err
@@ -50,7 +50,7 @@ func (s *ValidationLengthRule) UnmarshalYAML(unmarshal func(interface{}) error) 
 						s.Min = intVal1
 					}
 
-					if !utilities.IsEmpty(parts[1]) {
+					if !_string.IsEmpty(parts[1]) {
 						intVal2, err := strconv.Atoi(parts[1])
 						if err != nil {
 							return err

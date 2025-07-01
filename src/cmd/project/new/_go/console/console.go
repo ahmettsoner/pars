@@ -9,6 +9,7 @@ import (
 	"parsdevkit.net/structs/project"
 
 	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/core/utils/json"
@@ -47,7 +48,7 @@ var ConsoleCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) == 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
 		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -57,11 +58,11 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 
-	if utilities.IsEmpty(commandOptions.Workspace) {
+	if _string.IsEmpty(commandOptions.Workspace) {
 		commandOptions.Workspace = workspace.GetActiveWorkspaceName("")
 	}
 

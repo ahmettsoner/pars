@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 
+	_string "parsdevkit.net/core/utilities/string"
+
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -18,7 +20,6 @@ import (
 
 	"parsdevkit.net/providers"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
 
 	"github.com/sirupsen/logrus"
@@ -46,7 +47,7 @@ func ProjectTypeToAngularCLITypeString(c angularModels.AngularProjectType) (stri
 }
 
 func (s AngularManager) GetPlatformVersion(platform applicationproject.Platform) angularModels.AngularPlatformVersion {
-	if utilities.IsEmpty(platform.Version) {
+	if _string.IsEmpty(platform.Version) {
 		platformVersion := angularModels.AngularPlatformVersions.V17
 
 		return platformVersion
@@ -65,7 +66,7 @@ func (s AngularManager) CreateProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -98,7 +99,7 @@ func (s AngularManager) RemoveProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -119,7 +120,7 @@ func (s AngularManager) BuildProject(project applicationproject.ProjectSpecifica
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -147,7 +148,7 @@ func (s AngularManager) InstallProject(project applicationproject.ProjectSpecifi
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -171,7 +172,7 @@ func (s AngularManager) TestProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -195,7 +196,7 @@ func (s AngularManager) PackageProject(project applicationproject.ProjectSpecifi
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -219,7 +220,7 @@ func (s AngularManager) RunProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -283,7 +284,7 @@ func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSp
 
 		packageName := _package.Name
 
-		if !utilities.IsEmpty(_package.Version) {
+		if !_string.IsEmpty(_package.Version) {
 			packageName = fmt.Sprintf("%s@%s", packageName, _package.Version)
 		}
 

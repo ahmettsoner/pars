@@ -7,8 +7,9 @@ import (
 	"os"
 	"path/filepath"
 
+	_string "parsdevkit.net/core/utilities/string"
+
 	applicationProject "parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
@@ -28,7 +29,7 @@ func NewGoManager() GoManager {
 }
 
 func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) models.GoPlatformVersion {
-	if utilities.IsEmpty(platform.Version) {
+	if _string.IsEmpty(platform.Version) {
 		platformVersion := models.GoPlatformVersions.Go121
 
 		return platformVersion
@@ -46,7 +47,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -64,7 +65,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		err = s.AddToGroup(project)
 		if err != nil {
 			log.Fatal(err)
@@ -92,7 +93,7 @@ func (s GoManager) RemoveProject(project applicationproject.ProjectSpecification
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -112,7 +113,7 @@ func (s GoManager) BuildProject(project applicationproject.ProjectSpecification)
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -136,7 +137,7 @@ func (s GoManager) CleanProject(project applicationproject.ProjectSpecification)
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -160,7 +161,7 @@ func (s GoManager) InstallProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -184,7 +185,7 @@ func (s GoManager) TestProject(project applicationproject.ProjectSpecification) 
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -208,7 +209,7 @@ func (s GoManager) PackageProject(project applicationproject.ProjectSpecificatio
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -227,7 +228,7 @@ func (s GoManager) PackageProject(project applicationproject.ProjectSpecificatio
 }
 
 func (s GoManager) RunProject(project applicationproject.ProjectSpecification) error {
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err

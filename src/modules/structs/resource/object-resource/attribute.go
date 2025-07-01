@@ -4,9 +4,9 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Attribute struct {
@@ -29,7 +29,7 @@ func NewAttribute(name string, visibility VisibilityType, _type DataType, order 
 	}
 }
 func (e Attribute) Validate() error {
-	if utilities.IsEmpty(e.Variable.Name) {
+	if _string.IsEmpty(e.Variable.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Variable.Name"}
 	}
 	return nil
@@ -96,7 +96,7 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Common = true
 	}
 
-	if utilities.IsEmpty(string(s.Visibility)) {
+	if _string.IsEmpty(string(s.Visibility)) {
 		s.Visibility = VisibilityTypeTypes.Public
 	}
 

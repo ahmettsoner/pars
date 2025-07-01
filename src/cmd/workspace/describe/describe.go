@@ -10,8 +10,8 @@ import (
 	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/array"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -47,7 +47,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.Name) && len(args) > 0 {
+	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
 		commandOptions.Name = args[0]
 	}
 
@@ -64,7 +64,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if &appCtx.CurrentWorkspace == nil {
 		fmt.Println("* You have to set current workspace")
 	} else {
-		if utilities.IsEmpty(commandOptions.Name) {
+		if _string.IsEmpty(commandOptions.Name) {
 			if appCtx != nil {
 				commandOptions.Name = appCtx.CurrentWorkspace.Name
 			} else {
@@ -107,7 +107,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			for _, e := range *projectList {
 				name := e.GetInformation()
-				if !utilities.IsEmpty(e.Specifications.GroupObject.Name) {
+				if !_string.IsEmpty(e.Specifications.GroupObject.Name) {
 					groups[e.Specifications.Group] = append(groups[e.Specifications.Group], name)
 				} else {
 					groups[name] = []string{}

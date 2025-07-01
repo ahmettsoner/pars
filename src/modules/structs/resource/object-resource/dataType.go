@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type DataType struct {
@@ -27,7 +27,7 @@ func NewDataType(name string, _package TypePackage, category DataTypeCategory, m
 	}
 }
 func (e DataType) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -98,11 +98,11 @@ func (s *DataType) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
-	if utilities.IsEmpty(string(s.Category)) {
+	if _string.IsEmpty(string(s.Category)) {
 		s.Category = DetectDataTypeCategory(s.Name)
 	}
 
-	if utilities.IsEmpty(string(s.Modifier)) {
+	if _string.IsEmpty(string(s.Modifier)) {
 		s.Modifier = ModifierTypes.Object
 	}
 

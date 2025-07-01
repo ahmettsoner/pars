@@ -8,12 +8,12 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/array"
 )
 
@@ -57,7 +57,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
+		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
 
 		objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
 		dataResourceService := services.NewDataResourceService(utils.GetEnvironment())

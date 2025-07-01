@@ -4,9 +4,9 @@ import (
 	"strings"
 
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type MethodArgument struct {
@@ -21,10 +21,10 @@ func NewMethodArgument(name, value string) MethodArgument {
 	}
 }
 func (e MethodArgument) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
-	if utilities.IsEmpty(e.Value) {
+	if _string.IsEmpty(e.Value) {
 		return &errors.ErrFieldRequired{FieldName: "Value"}
 	}
 	return nil

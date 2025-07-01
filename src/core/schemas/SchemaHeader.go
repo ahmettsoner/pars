@@ -21,10 +21,10 @@ func NewSchemaHeader(_type StructType, kind string, name string, metadata Metada
 }
 
 func (e SchemaHeader) Validate() error {
-	// if utilities.IsEmpty(e.Type) {
+	// if _string.IsEmpty(e.Type) {
 	// 	return &errors.ErrFieldRequired{FieldName: "Type"}
 	// }
-	// if utilities.IsEmpty(e.Name) {
+	// if _string.IsEmpty(e.Name) {
 	// 	return &errors.ErrFieldRequired{FieldName: "Name"}
 	// }
 

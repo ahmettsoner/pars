@@ -7,8 +7,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 	layerPkg "parsdevkit.net/application/models/layer"
+	_string "parsdevkit.net/core/utilities/string"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
 )
 
@@ -75,7 +75,7 @@ func (s *Layer) GetPathFromName() string {
 }
 
 func (s *Layer) IsPathExists() bool {
-	return !utilities.IsEmpty(s.Path)
+	return !_string.IsEmpty(s.Path)
 }
 func (s *Layer) GetPathAsArray() []string {
 	return file.PathToArray(s.Path)

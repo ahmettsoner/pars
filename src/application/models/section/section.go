@@ -7,7 +7,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Section struct {
@@ -27,7 +27,7 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 }
 
 func (e Section) Validate() error {
-	if utilities.IsEmpty(e.SectionIdentifier.Name) {
+	if _string.IsEmpty(e.SectionIdentifier.Name) {
 		return &errors.ErrFieldRequired{FieldName: "SectionIdentifier.Name"}
 	}
 	return nil

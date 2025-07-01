@@ -6,6 +6,7 @@ import (
 
 	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/engines/commonTask"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"parsdevkit.net/operation/services"
 
@@ -51,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-		checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
+		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
 		taskService := services.NewCommonTaskService(utils.GetEnvironment())
 
 		for _, name := range commandOptions.Names {

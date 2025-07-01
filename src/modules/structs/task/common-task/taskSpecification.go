@@ -4,7 +4,7 @@ import (
 	applicationTask "parsdevkit.net/application/structs/task"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 	actionBase "parsdevkit.net/structs/task/actions"
 )
 
@@ -44,7 +44,7 @@ func NewTaskSpecification(id int, name, workspace string, trigger Trigger, retry
 }
 
 func (e TaskSpecification) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

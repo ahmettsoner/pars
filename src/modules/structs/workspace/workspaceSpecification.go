@@ -3,7 +3,7 @@ package workspace
 import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type WorkspaceSpecification struct {
@@ -16,17 +16,17 @@ func NewWorkspaceSpecification(id int, name, path string) WorkspaceSpecification
 	}
 }
 func (e WorkspaceSpecification) Validate() error {
-	if utilities.IsEmpty(e.WorkspaceIdentifier.Name) {
+	if _string.IsEmpty(e.WorkspaceIdentifier.Name) {
 		return &errors.ErrFieldRequired{FieldName: "WorkspaceIdentifier.Name"}
 	}
-	if utilities.IsEmpty(e.Path) {
+	if _string.IsEmpty(e.Path) {
 		return &errors.ErrFieldRequired{FieldName: "Path"}
 	}
 	return nil
 }
 
 func (s *WorkspaceSpecification) IsPathExists() bool {
-	return !utilities.IsEmpty(s.Path)
+	return !_string.IsEmpty(s.Path)
 }
 
 func (s *WorkspaceSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {

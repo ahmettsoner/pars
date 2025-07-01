@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type EncapsulationSetter struct {
@@ -56,7 +56,7 @@ func (s *EncapsulationSetter) UnmarshalYAML(unmarshal func(interface{}) error) e
 		}
 	}
 
-	if (!utilities.IsEmpty(s.Name) || !utilities.IsEmpty(string(s.Visibility)) || !reflect.DeepEqual(MethodIdentifier{}, s.Method)) {
+	if (!_string.IsEmpty(s.Name) || !_string.IsEmpty(string(s.Visibility)) || !reflect.DeepEqual(MethodIdentifier{}, s.Method)) {
 		s.Available = true
 	}
 

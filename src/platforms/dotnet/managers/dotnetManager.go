@@ -10,8 +10,9 @@ import (
 	"runtime"
 	"strings"
 
+	_string "parsdevkit.net/core/utilities/string"
+
 	applicationProject "parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -92,7 +93,7 @@ func (s DotnetManager) BuildProject(project applicationproject.ProjectSpecificat
 
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
@@ -117,7 +118,7 @@ func (s DotnetManager) CleanProject(project applicationproject.ProjectSpecificat
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -141,7 +142,7 @@ func (s DotnetManager) InstallProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -165,7 +166,7 @@ func (s DotnetManager) TestProject(project applicationproject.ProjectSpecificati
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -189,7 +190,7 @@ func (s DotnetManager) PackageProject(project applicationproject.ProjectSpecific
 		return err
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
 		} else {
@@ -214,7 +215,7 @@ func (s DotnetManager) RunProject(project applicationproject.ProjectSpecificatio
 
 	}
 
-	if !utilities.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Group) {
 
 		if !groupStatus {
 			return errors.New("Project group (" + project.Group + ") is not correct")
@@ -297,7 +298,7 @@ func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectSpecific
 }
 
 func (s DotnetManager) GetPlatformVersion(platform applicationproject.Platform) dotnetModels.DotnetPlatformVersion {
-	if utilities.IsEmpty(platform.Version) {
+	if _string.IsEmpty(platform.Version) {
 		platformVersion := dotnetModels.DotnetPlatformVersions.Net8
 
 		return platformVersion
@@ -328,7 +329,7 @@ func (s DotnetManager) RemoveFromGroup(project applicationproject.ProjectSpecifi
 func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
-		if utilities.IsEmpty(path) {
+		if _string.IsEmpty(path) {
 			return nil
 		}
 
@@ -356,7 +357,7 @@ func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.P
 func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
 	for _, path := range paths {
 
-		if utilities.IsEmpty(path) {
+		if _string.IsEmpty(path) {
 			return nil
 		}
 
@@ -513,7 +514,7 @@ func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpe
 
 		commandArgs := []string{"add", s.GetProjectFileRelativePath(project), "package", _package.Name}
 
-		if !utilities.IsEmpty(_package.Version) {
+		if !_string.IsEmpty(_package.Version) {
 			commandArgs = append(commandArgs, []string{"--version", _package.Version}...)
 
 		}
@@ -647,7 +648,7 @@ func (s DotnetManager) HasPackageOnProject(project applicationproject.ProjectSpe
 	packageState := false
 
 	for _, projectPackage := range packages {
-		if projectPackage.Name == _package.Name && (utilities.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
+		if projectPackage.Name == _package.Name && (_string.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
 			packageState = true
 			break
 		}
@@ -875,13 +876,13 @@ func (s DotnetManager) PrintDataType(dataType objectresource.DataType) string {
 			return "Unknown"
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Reference {
-		if !utilities.IsEmpty(dataType.Package.Alias) {
+		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name
 		}
 	} else if dataType.Category == objectresource.DataTypeCategories.Resource {
-		if !utilities.IsEmpty(dataType.Package.Alias) {
+		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name

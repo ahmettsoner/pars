@@ -10,10 +10,10 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/array"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/core/utilities"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/spf13/cobra"
@@ -53,7 +53,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Names = args
 	}
 
-	if utilities.IsEmpty(commandOptions.Workspace) {
+	if _string.IsEmpty(commandOptions.Workspace) {
 		appCtx := application.GetContext()
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")

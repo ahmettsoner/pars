@@ -1,9 +1,8 @@
 package dataresource
 
 import (
-	"parsdevkit.net/core/utilities"
-
 	"parsdevkit.net/core/errors"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )
@@ -18,14 +17,14 @@ func NewDictionaryIdentifier(key string) DictionaryIdentifier {
 	}
 }
 func (e DictionaryIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Key) {
+	if _string.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 	return nil
 }
 
 func (s *DictionaryIdentifier) IsKeyExists() bool {
-	return !utilities.IsEmpty(s.Key)
+	return !_string.IsEmpty(s.Key)
 }
 
 func (s *DictionaryIdentifier) UnmarshalYAML(unmarshal func(interface{}) error) error {

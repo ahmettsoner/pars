@@ -6,9 +6,8 @@ import (
 	"os/exec"
 	"runtime"
 
-	"parsdevkit.net/core/utilities"
-
 	"github.com/spf13/cobra"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type BrowseOptions struct {
@@ -30,7 +29,7 @@ var BrowseCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.URL) && len(args) == 0 {
+	if _string.IsEmpty(commandOptions.URL) && len(args) == 0 {
 		return fmt.Errorf("Please provide an access URL using the --url flag or as argument.")
 	}
 	if len(args) > maxArgumentCount {
@@ -40,7 +39,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if utilities.IsEmpty(commandOptions.URL) && len(args) > 0 {
+	if _string.IsEmpty(commandOptions.URL) && len(args) > 0 {
 		commandOptions.URL = args[0]
 	}
 

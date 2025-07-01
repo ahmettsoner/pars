@@ -5,7 +5,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"parsdevkit.net/application/models/section"
 )
@@ -20,7 +20,7 @@ func NewSection(name string, labels []label.Label, options []option.Option, clas
 	}
 }
 func (e Section) Validate() error {
-	if utilities.IsEmpty(e.Section.Name) {
+	if _string.IsEmpty(e.Section.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Section.Name"}
 	}
 	return nil

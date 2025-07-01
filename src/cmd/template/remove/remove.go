@@ -8,9 +8,9 @@ import (
 
 	"parsdevkit.net/components/workspace"
 
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 
@@ -58,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		checkGlobals := utilities.IsEmpty(commandOptions.Workspace)
+		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
 		codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 		fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())
 		sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())

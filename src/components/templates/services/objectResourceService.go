@@ -3,6 +3,7 @@ package services
 import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/platforms/core"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
@@ -12,7 +13,6 @@ import (
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/templates/models/objectResources"
-	"parsdevkit.net/core/utilities"
 )
 
 type ObjectResourceService struct {
@@ -27,7 +27,7 @@ func NewObjectResourceService(manager core.ManagerInterface) ObjectResourceServi
 
 func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, importsMap map[string][]string) map[string][]string {
 
-	if !utilities.IsEmpty(_type.Package.Name) {
+	if !_string.IsEmpty(_type.Package.Name) {
 		if _type.Category == objectresource.DataTypeCategories.Reference {
 			if aliases, exists := importsMap[_type.Package.Name]; exists {
 				isNew := true
@@ -41,7 +41,7 @@ func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, 
 					importsMap[_type.Package.Name] = append(aliases, _type.Package.Alias)
 				}
 			} else {
-				if !utilities.IsEmpty(_type.Package.Alias) {
+				if !_string.IsEmpty(_type.Package.Alias) {
 					importsMap[_type.Package.Name] = []string{_type.Package.Alias}
 				} else {
 					importsMap[_type.Package.Name] = []string{}

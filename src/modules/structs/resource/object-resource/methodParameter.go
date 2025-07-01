@@ -4,7 +4,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type MethodParameter struct {
@@ -18,7 +18,7 @@ func NewMethodParameter(name string, _type DataType, order int, hint Message, de
 }
 
 func (e MethodParameter) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

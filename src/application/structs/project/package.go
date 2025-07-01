@@ -4,11 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"parsdevkit.net/core/utilities"
-
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type Package struct {
@@ -29,7 +28,7 @@ func NewPackage_Basic(name string) Package {
 	}
 }
 func (e Package) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil
@@ -37,7 +36,7 @@ func (e Package) Validate() error {
 
 func (s *Package) GetFullName() string {
 	fullName := s.Name
-	if !utilities.IsEmpty(s.Version) {
+	if !_string.IsEmpty(s.Version) {
 		fullName = fmt.Sprintf("%v@%v", s.Name, s.Version)
 	}
 
@@ -92,7 +91,7 @@ func (s *Package) UnmarshalYAML(unmarshal func(interface{}) error) error {
 				s.Name = packageName
 			}
 
-			if utilities.IsEmpty(s.Name) {
+			if _string.IsEmpty(s.Name) {
 				return &errors.InvalidPackageError{Value: packageName}
 			}
 			s.Version = packageVersion
@@ -101,7 +100,7 @@ func (s *Package) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		}
 	}
 
-	if utilities.IsEmpty(string(s.Name)) {
+	if _string.IsEmpty(string(s.Name)) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 

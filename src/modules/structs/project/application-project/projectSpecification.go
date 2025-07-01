@@ -9,8 +9,8 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/file"
+	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/core/errors"
@@ -49,10 +49,10 @@ func NewProjectSpecification(id int, name, group, workspace string, projectType 
 	}
 }
 func (s ProjectSpecification) Validate() error {
-	if utilities.IsEmpty(s.ProjectIdentifier.Name) {
+	if _string.IsEmpty(s.ProjectIdentifier.Name) {
 		return &errors.ErrFieldRequired{FieldName: "ProjectIdentifier.Name"}
 	}
-	if utilities.IsEmpty(string(s.ProjectType)) || s.ProjectType.String() == "Unknown" {
+	if _string.IsEmpty(string(s.ProjectType)) || s.ProjectType.String() == "Unknown" {
 		return &errors.ErrFieldRequired{FieldName: "ProjectType"}
 	}
 	return nil
@@ -104,7 +104,7 @@ func (s *ProjectSpecification) GetRelativeGroupPath() string {
 
 // TODO: Gerekli testler tamamlanmalı
 func (s *ProjectSpecification) GetRelativeBaseGroupPath() string {
-	if !utilities.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
+	if !_string.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
 
 		paths := file.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
 		folders := file.CombinePaths(paths)
@@ -121,7 +121,7 @@ func (s *ProjectSpecification) GetAbsoluteGroupPath() string {
 
 // TODO: Gerekli testler tamamlanmalı
 func (s *ProjectSpecification) GetAbsoluteBaseGroupPath() string {
-	if !utilities.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
+	if !_string.IsEmpty(s.GroupObject.GetRelativeGroupPath()) {
 		paths := file.PathToArray(s.GroupObject.GetRelativeGroupPath())[:1]
 		absolutePath := filepath.Join(s.WorkspaceObject.GetCodeBaseFolder(), strings.Join(paths, "/"))
 
@@ -250,7 +250,7 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	s.Schema = tempObject.Schema
 	s.Configuration = tempObject.Configuration
 
-	if len(s.Package) == 0 && !utilities.IsEmpty(s.Name) {
+	if len(s.Package) == 0 && !_string.IsEmpty(s.Name) {
 		s.AppendPackage(s.Name)
 	}
 

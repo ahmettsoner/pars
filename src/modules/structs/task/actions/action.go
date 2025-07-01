@@ -3,7 +3,7 @@ package actions
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type ActionInterface interface {
@@ -34,7 +34,7 @@ func NewAction(name string) Action {
 	}
 }
 func (e Action) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

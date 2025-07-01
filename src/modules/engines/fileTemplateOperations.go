@@ -3,7 +3,6 @@ package engines
 import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
-	"parsdevkit.net/core/utilities"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -12,6 +11,7 @@ import (
 	"parsdevkit.net/structs/workspace"
 
 	templateEngine "parsdevkit.net/components/templates/engines"
+	_string "parsdevkit.net/core/utilities/string"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/persistence/contexts"
@@ -204,7 +204,7 @@ func (s FileTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Project.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Project.Name) {
 			generate = false
 			if template.Configurations.Selectors.Project.Name == project.Header.Name {
 				generate = true
@@ -226,7 +226,7 @@ func (s FileTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Resource.Name) {
 			generate = false
 			if template.Configurations.Selectors.Resource.Name == resource.Header.Name {
 				generate = true
@@ -248,7 +248,7 @@ func (s FileTemplateOperations) CheckGeneration(project applicationproject.Proje
 	}
 
 	if generate {
-		if !utilities.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
+		if !_string.IsEmpty(template.Configurations.Selectors.Resource.Section.Name) {
 			generate = false
 			for _, layerSection := range layer.Sections {
 				if template.Configurations.Selectors.Resource.Section.Name == layerSection.Name {

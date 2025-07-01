@@ -2,7 +2,7 @@ package objectresource
 
 import (
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type ValidationRegexRule struct {
@@ -17,7 +17,7 @@ func NewValidationRegexRule(name, pattern string, message Message) ValidationReg
 	}
 }
 func (e ValidationRegexRule) Validate() error {
-	if utilities.IsEmpty(e.Pattern) {
+	if _string.IsEmpty(e.Pattern) {
 		return &errors.ErrFieldRequired{FieldName: "Pattern"}
 	}
 	return nil

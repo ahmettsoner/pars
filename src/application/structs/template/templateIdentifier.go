@@ -3,7 +3,7 @@ package template
 import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 type TemplateIdentifier struct {
@@ -20,7 +20,7 @@ func NewTemplateIdentifier(id int, name string, workspace string) TemplateIdenti
 	}
 }
 func (e TemplateIdentifier) Validate() error {
-	if utilities.IsEmpty(e.Name) {
+	if _string.IsEmpty(e.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
 	return nil

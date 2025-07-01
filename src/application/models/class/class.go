@@ -3,9 +3,8 @@ package class
 import (
 	"strings"
 
-	"parsdevkit.net/core/utilities"
-
 	"parsdevkit.net/core/errors"
+	_string "parsdevkit.net/core/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )
@@ -28,7 +27,7 @@ func NewClass_KeyOnly(key string) Class {
 	}
 }
 func (e Class) Validate() error {
-	if utilities.IsEmpty(e.Key) {
+	if _string.IsEmpty(e.Key) {
 		return &errors.ErrFieldRequired{FieldName: "Key"}
 	}
 
@@ -36,7 +35,7 @@ func (e Class) Validate() error {
 }
 
 func (s *Class) IsKeyExists() bool {
-	return !utilities.IsEmpty(s.Key)
+	return !_string.IsEmpty(s.Key)
 }
 
 func (s *Class) UnmarshalYAML(unmarshal func(interface{}) error) error {
@@ -52,7 +51,7 @@ func (s *Class) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 			s.Key = key
 
-			if utilities.IsEmpty(s.Key) {
+			if _string.IsEmpty(s.Key) {
 				return &errors.InvalidLanguageError{Value: key}
 			}
 			s.Value = _value

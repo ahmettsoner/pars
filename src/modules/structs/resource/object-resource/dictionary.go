@@ -2,7 +2,7 @@ package objectresource
 
 import (
 	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities"
+	_string "parsdevkit.net/core/utilities/string"
 )
 
 // Dictionary global bi struct olarak ta tanımlanabilmeli, hem global hem  resource bağımlı şekilde tanımlanabilmeli
@@ -18,14 +18,14 @@ func NewDictionary(key string, translates map[string]string) Dictionary {
 	}
 }
 func (e Dictionary) Validate() error {
-	if utilities.IsEmpty(e.DictionaryIdentifier.Key) {
+	if _string.IsEmpty(e.DictionaryIdentifier.Key) {
 		return &errors.ErrFieldRequired{FieldName: "DictionaryIdentifier.Key"}
 	}
 	return nil
 }
 
 func (s *Dictionary) IsKeyExists() bool {
-	return !utilities.IsEmpty(s.Key)
+	return !_string.IsEmpty(s.Key)
 }
 
 func (s *Dictionary) UnmarshalYAML(unmarshal func(interface{}) error) error {
