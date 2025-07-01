@@ -5,11 +5,10 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/utils"
 )
 
-func GetContext() *core.ApplicationContext {
+func GetContext() *ApplicationContext {
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
 
 	currentWorkspace, err := workspaceService.GetActiveWorkspace()
@@ -25,7 +24,7 @@ func GetContext() *core.ApplicationContext {
 	}
 
 	if currentWorkspace != nil {
-		context := core.ApplicationContext{
+		context := ApplicationContext{
 			CurrentWorkspace: currentWorkspace.GetHeader(),
 		}
 		return &context

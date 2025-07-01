@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"parsdevkit.net/orchestrator"
+
 	"parsdevkit.net/application"
 	"parsdevkit.net/components"
 	"parsdevkit.net/components/workspace"
@@ -78,7 +80,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
-		result, err := application.GetAllManifestFilesInPath(commandOptions.FilePaths...)
+		result, err := orchestrator.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
 			log.Printf("❌ Error: %v", err)

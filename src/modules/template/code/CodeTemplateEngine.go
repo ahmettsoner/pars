@@ -3,10 +3,10 @@ package code
 import (
 	"fmt"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/schemas"
@@ -29,7 +29,7 @@ func (s CodeTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CodeTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s CodeTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas
 
 	return s.createTemplates(codetemplates, true)
 }
-func (s CodeTemplateEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

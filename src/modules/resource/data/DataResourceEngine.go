@@ -3,11 +3,11 @@ package v2
 import (
 	"fmt"
 
+	"parsdevkit.net/application"
 	dataresourceStruct "parsdevkit.net/structs/resource/data-resource"
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utilities/json"
@@ -29,7 +29,7 @@ func (s DataResourceEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s DataResourceEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s DataResourceEngine) Process(ctx *core.ApplicationContext, data []schemas
 
 	return s.createResources(dataresourceStructs, true)
 }
-func (s DataResourceEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {

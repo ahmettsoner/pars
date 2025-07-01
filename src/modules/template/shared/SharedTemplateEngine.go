@@ -8,11 +8,11 @@ import (
 
 	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/utilities/encrypt"
 )
 
@@ -28,7 +28,7 @@ func (s SharedTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s SharedTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +42,7 @@ func (s SharedTemplateEngine) Process(ctx *core.ApplicationContext, data []schem
 
 	return s.createTemplates(sharedtemplates, true)
 }
-func (s SharedTemplateEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

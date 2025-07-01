@@ -1,4 +1,4 @@
-package core
+package application
 
 import "parsdevkit.net/core/schemas"
 

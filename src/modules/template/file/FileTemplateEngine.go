@@ -3,13 +3,13 @@ package file
 import (
 	"fmt"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/engines"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
@@ -29,7 +29,7 @@ func (s FileTemplateEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s FileTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s FileTemplateEngine) Process(ctx *core.ApplicationContext, data []schemas
 
 	return s.createTemplates(filetemplates, true)
 }
-func (s FileTemplateEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {

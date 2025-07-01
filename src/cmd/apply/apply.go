@@ -15,6 +15,7 @@ import (
 	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 	"parsdevkit.net/operation/services"
+	"parsdevkit.net/orchestrator"
 
 	"github.com/spf13/cobra"
 )
@@ -78,7 +79,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
-		result, err := application.GetAllManifestFilesInPath(commandOptions.FilePaths...)
+		result, err := orchestrator.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
 			log.Printf("❌ Error: %v", err)

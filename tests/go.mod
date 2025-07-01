@@ -92,6 +92,7 @@ require (
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 )
 
@@ -138,3 +139,5 @@ require (
 )
 
 replace parsdevkit.net/core => ../src/core
+
+replace parsdevkit.net/orchestrator => ../src/orchestrator

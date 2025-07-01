@@ -3,10 +3,10 @@ package object
 import (
 	"fmt"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/engines"
 	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/operation/services"
 
@@ -29,7 +29,7 @@ func (s ObjectResourceEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s ObjectResourceEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +43,7 @@ func (s ObjectResourceEngine) Process(ctx *core.ApplicationContext, data []schem
 
 	return s.createResources(objectresourceStructs, true)
 }
-func (s ObjectResourceEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {

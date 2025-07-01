@@ -3,10 +3,10 @@ package task
 import (
 	"fmt"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/operation/services"
 
@@ -27,7 +27,7 @@ func (s CommonTaskEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s CommonTaskEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +42,7 @@ func (s CommonTaskEngine) Process(ctx *core.ApplicationContext, data []schemas.S
 	return s.createTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {

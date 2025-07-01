@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core/utilities/encrypt"
 
-	"parsdevkit.net/core"
+	"parsdevkit.net/application"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utils"
 )
@@ -23,7 +23,7 @@ func (s GroupEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s GroupEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -36,7 +36,7 @@ func (s GroupEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema
 
 	return s.createGroups(groups, false)
 }
-func (s GroupEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {

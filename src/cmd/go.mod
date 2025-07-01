@@ -57,6 +57,7 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
@@ -104,3 +105,4 @@ replace parsdevkit.net/models => ../models
 replace parsdevkit.net/operation/services => ../modules/services
 
 replace parsdevkit.net/application => ../application
+replace parsdevkit.net/orchestrator => ../orchestrator

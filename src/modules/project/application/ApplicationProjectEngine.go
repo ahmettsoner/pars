@@ -6,6 +6,8 @@ import (
 
 	"fmt"
 
+	"parsdevkit.net/application"
+
 	applicationProject "parsdevkit.net/application/structs/project"
 	_string "parsdevkit.net/core/utilities/string"
 	group "parsdevkit.net/modules/group/group"
@@ -18,7 +20,6 @@ import (
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 )
@@ -35,7 +36,7 @@ func (s ApplicationProjectEngine) Validate(data []schemas.Schema) bool {
 
 	return true
 }
-func (s ApplicationProjectEngine) Process(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -52,7 +53,7 @@ func (s ApplicationProjectEngine) Process(ctx *core.ApplicationContext, data []s
 
 	return s.createProjects(applicationprojects, true)
 }
-func (s ApplicationProjectEngine) Destroy(ctx *core.ApplicationContext, data []schemas.Schema) error {
+func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.Schema) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -390,7 +391,7 @@ func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectSt
 	return nil
 }
 
-func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.ApplicationContext, project *applicationprojectStruct.ProjectBaseStruct) error {
+func (s ApplicationProjectEngine) completeProjectInformation(ctx *application.ApplicationContext, project *applicationprojectStruct.ProjectBaseStruct) error {
 
 	logrus.Debugf("filling project (%v) information", project.Header.Name)
 
@@ -424,7 +425,7 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *core.Applicati
 	return nil
 }
 
-func (s ApplicationProjectEngine) getWorkspace(ctx *core.ApplicationContext, project applicationprojectStruct.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationContext, project applicationprojectStruct.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
 	//TODO: Bu şekilde interface'ten tip dönüşümü tamamlanamadı, yapı buna dönüştürülmeli
 	// if projectStruct, ok := project.(project.ProjectBaseStruct); !ok {
 	// 	return nil, fmt.Errorf("incompatible model type: expected %T, got %T", project, projectStruct)

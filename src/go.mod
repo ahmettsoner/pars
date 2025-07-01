@@ -117,6 +117,7 @@ require (
 	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect
@@ -134,3 +135,5 @@ require (
 replace parsdevkit.net/core => ./core
 
 replace parsdevkit.net/application => ./application
+
+replace parsdevkit.net/orchestrator => ./orchestrator

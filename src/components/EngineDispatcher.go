@@ -3,8 +3,8 @@ package components
 import (
 	"fmt"
 
-	"parsdevkit.net/core"
-	"parsdevkit.net/core/engines"
+	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/core/schemas"
 	"parsdevkit.net/core/utilities/array"
 	group "parsdevkit.net/modules/group/group"
@@ -38,7 +38,7 @@ var orderedKeys = []string{
 	"Task.Common",
 }
 
-func DispatchEngineProcess(ctx *core.ApplicationContext, t []schemas.Schema) error {
+func DispatchEngineProcess(ctx *application.ApplicationContext, t []schemas.Schema) error {
 
 	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {
@@ -70,7 +70,7 @@ func DispatchEngineProcess(ctx *core.ApplicationContext, t []schemas.Schema) err
 	}
 	return nil
 }
-func DispatchEngineDestroy(ctx *core.ApplicationContext, t []schemas.Schema) error {
+func DispatchEngineDestroy(ctx *application.ApplicationContext, t []schemas.Schema) error {
 
 	schemaGroups := make(map[string][]schemas.Schema, 0)
 	for _, data := range t {
