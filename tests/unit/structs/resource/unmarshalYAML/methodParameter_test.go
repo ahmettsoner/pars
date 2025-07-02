@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ Name: foo
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -44,7 +45,7 @@ foo
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -65,7 +66,7 @@ Type: Int
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -85,7 +86,7 @@ foo Int
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -105,7 +106,7 @@ foo Int[]
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Array, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Array, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -126,7 +127,7 @@ Order: 3
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 3, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 3, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -145,7 +146,7 @@ Hint: message_text
 
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -167,7 +168,7 @@ Hint:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -186,7 +187,7 @@ Description: message_text
 
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -208,7 +209,7 @@ Description:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
 
 	// Assert
 	a.NoError(err)
@@ -231,7 +232,7 @@ Options:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option{
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option{
 		option.NewOption("row", "1"),
 		option.NewOption("column", "3"),
 	}, []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil))
@@ -256,7 +257,7 @@ Labels:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label{
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label{
 		label.NewLabel("foo", "bar"),
 	}, objectresource.Validation{}, []objectresource.Annotation(nil))
 
@@ -280,7 +281,7 @@ Validation:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil),
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil),
 		objectresource.NewValidation(
 			objectresource.NewValidationLengthRule("", 10, 150, objectresource.Message{}),
 		), []objectresource.Annotation(nil))
@@ -304,7 +305,7 @@ Annotations:
 	var data objectresource.MethodParameter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodParameter("foo", objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation{
+	expected := objectresource.NewMethodParameter("foo", structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation{
 		objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument(nil)),
 	})
 
@@ -341,7 +342,7 @@ Annotations:
 
 	expected := objectresource.NewMethodParameter(
 		"foo",
-		objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		3,
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),

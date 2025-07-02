@@ -3,6 +3,7 @@ package objectresource
 import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	"parsdevkit.net/core/errors"
 
 	"gopkg.in/yaml.v3"
@@ -11,14 +12,14 @@ import (
 
 type Attribute struct {
 	Variable
-	Visibility    VisibilityType
+	Visibility    structs.VisibilityType
 	Group         AttributeGroup
 	Encapsulation Encapsulation
 	Properties    AttributeProperties
 	Common        bool
 }
 
-func NewAttribute(name string, visibility VisibilityType, _type DataType, order int, group AttributeGroup, encapsulation Encapsulation, properties AttributeProperties, hint Message, description Message, options []option.Option, labels []label.Label, validation Validation, annotations []Annotation, common bool) Attribute {
+func NewAttribute(name string, visibility structs.VisibilityType, _type structs.DataType, order int, group AttributeGroup, encapsulation Encapsulation, properties AttributeProperties, hint Message, description Message, options []option.Option, labels []label.Label, validation Validation, annotations []Annotation, common bool) Attribute {
 	return Attribute{
 		Variable:      NewVariable(name, _type, order, hint, description, options, labels, validation, annotations),
 		Visibility:    visibility,
@@ -48,11 +49,11 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	var tempObject = struct {
-		Visibility    VisibilityType      `yaml:"Visibility"`
-		Group         interface{}         `yaml:"Group"`
-		Encapsulation Encapsulation       `yaml:"Encapsulation"`
-		Properties    AttributeProperties `yaml:"Properties"`
-		Common        bool                `yaml:"Common"`
+		Visibility    structs.VisibilityType `yaml:"Visibility"`
+		Group         interface{}            `yaml:"Group"`
+		Encapsulation Encapsulation          `yaml:"Encapsulation"`
+		Properties    AttributeProperties    `yaml:"Properties"`
+		Common        bool                   `yaml:"Common"`
 	}{
 		Common: true,
 	}
@@ -97,7 +98,7 @@ func (s *Attribute) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if _string.IsEmpty(string(s.Visibility)) {
-		s.Visibility = VisibilityTypeTypes.Public
+		s.Visibility = structs.VisibilityTypeTypes.Public
 	}
 
 	return nil

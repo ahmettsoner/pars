@@ -3,6 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/application/structs"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/stretchr/testify/assert"
@@ -61,7 +62,7 @@ Getter:
 	var data objectresource.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", objectresource.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true), objectresource.EncapsulationSetter{})
+	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", structs.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true), objectresource.EncapsulationSetter{})
 
 	// Assert
 	a.NoError(err)
@@ -143,7 +144,7 @@ Setter:
 	var data objectresource.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", objectresource.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true))
+	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true))
 
 	// Assert
 	a.NoError(err)

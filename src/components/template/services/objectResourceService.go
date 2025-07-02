@@ -3,6 +3,7 @@ package services
 import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/platforms/core"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -25,10 +26,10 @@ func NewObjectResourceService(manager core.ManagerInterface) ObjectResourceServi
 	}
 }
 
-func (s *ObjectResourceService) DataTypeToImport(_type objectresource.DataType, importsMap map[string][]string) map[string][]string {
+func (s *ObjectResourceService) DataTypeToImport(_type structs.DataType, importsMap map[string][]string) map[string][]string {
 
 	if !_string.IsEmpty(_type.Package.Name) {
-		if _type.Category == objectresource.DataTypeCategories.Reference {
+		if _type.Category == structs.DataTypeCategories.Reference {
 			if aliases, exists := importsMap[_type.Package.Name]; exists {
 				isNew := true
 				for _, alias := range aliases {

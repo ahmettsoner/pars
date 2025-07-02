@@ -1,9 +1,9 @@
 package core
 
 import (
+	"parsdevkit.net/application/structs"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 )
 
 type ManagerInterface interface {
@@ -30,8 +30,8 @@ type ManagerInterface interface {
 	PackageProject(project applicationproject.ProjectSpecification) error
 
 	PrintPackage(packages []string) string
-	PrintDataType(dataType objectresource.DataType) string
-	PrintVisibility(visibility objectresource.VisibilityType) string
+	PrintDataType(dataType structs.DataType) string
+	PrintVisibility(visibility structs.VisibilityType) string
 
 	IsProjectFolderExists(project applicationproject.ProjectSpecification) (bool, error)
 	GetProjectFileName(project applicationproject.ProjectSpecification) string

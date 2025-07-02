@@ -3,6 +3,8 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/application/structs"
+
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
@@ -24,9 +26,9 @@ Name: foo
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -54,9 +56,9 @@ foo
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -85,9 +87,9 @@ Visibility: private
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Private,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Private,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -118,12 +120,12 @@ Parameters:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter{
-			objectresource.NewMethodParameter("ID", objectresource.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
-			objectresource.NewMethodParameter("Name", objectresource.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+			objectresource.NewMethodParameter("ID", structs.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+			objectresource.NewMethodParameter("Name", structs.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
 		},
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -155,11 +157,11 @@ Returns:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType{
-			objectresource.New_Int(),
-			objectresource.New_Generic_Reference("List", objectresource.TypePackage{}, objectresource.New_String()),
+		[]structs.DataType{
+			structs.New_Int(),
+			structs.New_Generic_Reference("List", structs.TypePackage{}, structs.New_String()),
 		},
 		objectresource.Message{},
 		objectresource.Message{},
@@ -188,9 +190,9 @@ Hint: message_text
 
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -220,9 +222,9 @@ Hint:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")),
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -250,9 +252,9 @@ Description: message_text
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
 		[]option.Option(nil),
@@ -281,9 +283,9 @@ Description:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")),
 		[]option.Option(nil),
@@ -313,9 +315,9 @@ Options:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option{
@@ -348,9 +350,9 @@ Labels:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -382,9 +384,9 @@ Annotations:
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -415,9 +417,9 @@ Code: |
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Public,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Public,
 		[]objectresource.MethodParameter(nil),
-		[]objectresource.DataType(nil),
+		[]structs.DataType(nil),
 		objectresource.Message{},
 		objectresource.Message{},
 		[]option.Option(nil),
@@ -465,14 +467,14 @@ Code: |
 	var data objectresource.Method
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethod("foo", objectresource.VisibilityTypeTypes.Private,
+	expected := objectresource.NewMethod("foo", structs.VisibilityTypeTypes.Private,
 		[]objectresource.MethodParameter{
-			objectresource.NewMethodParameter("ID", objectresource.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
-			objectresource.NewMethodParameter("Name", objectresource.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+			objectresource.NewMethodParameter("ID", structs.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+			objectresource.NewMethodParameter("Name", structs.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
 		},
-		[]objectresource.DataType{
-			objectresource.New_Int(),
-			objectresource.New_Generic_Reference("List", objectresource.TypePackage{}, objectresource.New_String()),
+		[]structs.DataType{
+			structs.New_Int(),
+			structs.New_Generic_Reference("List", structs.TypePackage{}, structs.New_String()),
 		},
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),

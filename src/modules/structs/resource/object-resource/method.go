@@ -3,6 +3,7 @@ package objectresource
 import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	"parsdevkit.net/core/errors"
 	_string "parsdevkit.net/core/utilities/string"
 
@@ -11,9 +12,9 @@ import (
 
 type Method struct {
 	Name        string
-	Visibility  VisibilityType
+	Visibility  structs.VisibilityType
 	Parameters  []MethodParameter
-	ReturnTypes []DataType
+	ReturnTypes []structs.DataType
 	Hint        Message
 	Description Message
 	Options     []option.Option
@@ -23,7 +24,7 @@ type Method struct {
 	Common      bool
 }
 
-func NewMethod(name string, visibility VisibilityType, parameters []MethodParameter, returnTypes []DataType, hint Message, description Message, options []option.Option, labels []label.Label, annotations []Annotation, code string, common bool) Method {
+func NewMethod(name string, visibility structs.VisibilityType, parameters []MethodParameter, returnTypes []structs.DataType, hint Message, description Message, options []option.Option, labels []label.Label, annotations []Annotation, code string, common bool) Method {
 	return Method{
 		Name:        name,
 		Visibility:  visibility,
@@ -50,17 +51,17 @@ func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&value); err != nil {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject = struct {
-				Name        string            `yaml:"Name"`
-				Visibility  VisibilityType    `yaml:"Visibility"`
-				Parameters  []MethodParameter `yaml:"Parameters"`
-				ReturnTypes []DataType        `yaml:"Returns"`
-				Hint        Message           `yaml:"Hint"`
-				Description Message           `yaml:"Description"`
-				Options     []option.Option   `yaml:"Options"`
-				Labels      []label.Label     `yaml:"Labels"`
-				Annotations []Annotation      `yaml:"Annotations"`
-				Code        string            `yaml:"Code"`
-				Common      bool              `yaml:"Common"`
+				Name        string                 `yaml:"Name"`
+				Visibility  structs.VisibilityType `yaml:"Visibility"`
+				Parameters  []MethodParameter      `yaml:"Parameters"`
+				ReturnTypes []structs.DataType     `yaml:"Returns"`
+				Hint        Message                `yaml:"Hint"`
+				Description Message                `yaml:"Description"`
+				Options     []option.Option        `yaml:"Options"`
+				Labels      []label.Label          `yaml:"Labels"`
+				Annotations []Annotation           `yaml:"Annotations"`
+				Code        string                 `yaml:"Code"`
+				Common      bool                   `yaml:"Common"`
 			}{
 				Common: true,
 			}
@@ -94,7 +95,7 @@ func (s *Method) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	}
 
 	if _string.IsEmpty(string(s.Visibility)) {
-		s.Visibility = VisibilityTypeTypes.Public
+		s.Visibility = structs.VisibilityTypeTypes.Public
 	}
 
 	return nil

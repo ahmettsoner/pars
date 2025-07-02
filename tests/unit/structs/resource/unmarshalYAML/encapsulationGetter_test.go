@@ -3,6 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/application/structs"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/stretchr/testify/assert"
@@ -60,7 +61,7 @@ Visibility: protected
 	var data objectresource.EncapsulationGetter
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulationGetter("", objectresource.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true)
+	expected := objectresource.NewEncapsulationGetter("", structs.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true)
 
 	// Assert
 	a.NoError(err)

@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/structs/resource/object-resource"
+	"parsdevkit.net/application/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Int
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType(objectresource.ValueTypes.Int.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType(structs.ValueTypes.Int.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -39,10 +39,10 @@ language.Language
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("language.Language", objectresource.TypePackage{}, objectresource.DataTypeCategories.Resource, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType("language.Language", structs.TypePackage{}, structs.DataTypeCategories.Resource, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -59,10 +59,10 @@ Name: Int
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType(objectresource.ValueTypes.Int.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType(structs.ValueTypes.Int.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -79,10 +79,10 @@ Name: language.Language
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("language.Language", objectresource.TypePackage{}, objectresource.DataTypeCategories.Resource, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType("language.Language", structs.TypePackage{}, structs.DataTypeCategories.Resource, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -100,10 +100,10 @@ Category: reference
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("language.Language", objectresource.TypePackage{}, objectresource.DataTypeCategories.Reference, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType("language.Language", structs.TypePackage{}, structs.DataTypeCategories.Reference, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -122,10 +122,10 @@ Package: type_pack
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("language.Language", objectresource.NewTypePackageOnly("type_pack"), objectresource.DataTypeCategories.Reference, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType("language.Language", structs.NewTypePackageOnly("type_pack"), structs.DataTypeCategories.Reference, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -143,10 +143,10 @@ Modifier: array
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType(objectresource.ValueTypes.Int.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Array, []objectresource.DataType(nil))
+	expected := structs.NewDataType(structs.ValueTypes.Int.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Array, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -164,10 +164,10 @@ Category: Resource
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType(objectresource.ValueTypes.Int.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Resource, objectresource.ModifierTypes.Object, []objectresource.DataType(nil))
+	expected := structs.NewDataType(structs.ValueTypes.Int.String(), structs.TypePackage{}, structs.DataTypeCategories.Resource, structs.ModifierTypes.Object, []structs.DataType(nil))
 
 	// Assert
 	a.NoError(err)
@@ -188,12 +188,12 @@ Generics:
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("Dictionary", objectresource.TypePackage{}, objectresource.DataTypeCategories.Reference, objectresource.ModifierTypes.Object, []objectresource.DataType{
-		objectresource.NewDataType(objectresource.ValueTypes.String.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
-		objectresource.NewDataType(objectresource.ValueTypes.Int.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := structs.NewDataType("Dictionary", structs.TypePackage{}, structs.DataTypeCategories.Reference, structs.ModifierTypes.Object, []structs.DataType{
+		structs.NewDataType(structs.ValueTypes.String.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
+		structs.NewDataType(structs.ValueTypes.Int.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 	})
 
 	// Assert
@@ -216,12 +216,12 @@ Generics:
 
 	// Act
 
-	var data objectresource.DataType
+	var data structs.DataType
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDataType("Dictionary", objectresource.TypePackage{}, objectresource.DataTypeCategories.Reference, objectresource.ModifierTypes.Object, []objectresource.DataType{
-		objectresource.NewDataType(objectresource.ValueTypes.String.String(), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
-		objectresource.NewDataType("language.Language", objectresource.TypePackage{}, objectresource.DataTypeCategories.Reference, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := structs.NewDataType("Dictionary", structs.TypePackage{}, structs.DataTypeCategories.Reference, structs.ModifierTypes.Object, []structs.DataType{
+		structs.NewDataType(structs.ValueTypes.String.String(), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
+		structs.NewDataType("language.Language", structs.TypePackage{}, structs.DataTypeCategories.Reference, structs.ModifierTypes.Object, []structs.DataType(nil)),
 	})
 
 	// Assert

@@ -10,13 +10,14 @@ import (
 	"runtime"
 	"strings"
 
+	"parsdevkit.net/application/structs"
+
 	_string "parsdevkit.net/core/utilities/string"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"parsdevkit.net/platforms/core"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
@@ -836,52 +837,52 @@ func (s DotnetManager) PrintPackage(packages []string) string {
 	}
 	return strings.Join(nonEmptyPackages, ".")
 }
-func (s DotnetManager) PrintDataType(dataType objectresource.DataType) string {
+func (s DotnetManager) PrintDataType(dataType structs.DataType) string {
 	result := ""
-	if dataType.Category == objectresource.DataTypeCategories.Value {
+	if dataType.Category == structs.DataTypeCategories.Value {
 		switch dataType.Name {
-		case string(objectresource.ValueTypes.ShortInt):
+		case string(structs.ValueTypes.ShortInt):
 			result = "short"
-		case string(objectresource.ValueTypes.Int):
+		case string(structs.ValueTypes.Int):
 			result = "int"
-		case string(objectresource.ValueTypes.LongInt):
+		case string(structs.ValueTypes.LongInt):
 			result = "long"
-		case string(objectresource.ValueTypes.Double):
+		case string(structs.ValueTypes.Double):
 			result = "double"
-		case string(objectresource.ValueTypes.Decimal):
+		case string(structs.ValueTypes.Decimal):
 			result = "decimal"
-		case string(objectresource.ValueTypes.Float):
+		case string(structs.ValueTypes.Float):
 			result = "float"
-		case string(objectresource.ValueTypes.Char):
+		case string(structs.ValueTypes.Char):
 			result = "char"
-		case string(objectresource.ValueTypes.String):
+		case string(structs.ValueTypes.String):
 			result = "string"
-		case string(objectresource.ValueTypes.Date):
+		case string(structs.ValueTypes.Date):
 			result = "DateTime"
-		case string(objectresource.ValueTypes.DateTime):
+		case string(structs.ValueTypes.DateTime):
 			result = "DateTime"
-		case string(objectresource.ValueTypes.Time):
+		case string(structs.ValueTypes.Time):
 			result = "DateTime"
-		case string(objectresource.ValueTypes.Boolean):
+		case string(structs.ValueTypes.Boolean):
 			result = "bool"
-		case string(objectresource.ValueTypes.Byte):
+		case string(structs.ValueTypes.Byte):
 			result = "byte"
-		case string(objectresource.ValueTypes.ShortBlob):
+		case string(structs.ValueTypes.ShortBlob):
 			result = "byte[]"
-		case string(objectresource.ValueTypes.Blob):
+		case string(structs.ValueTypes.Blob):
 			result = "byte[]"
-		case string(objectresource.ValueTypes.LongBlob):
+		case string(structs.ValueTypes.LongBlob):
 			result = "byte[]"
 		default:
 			return "Unknown"
 		}
-	} else if dataType.Category == objectresource.DataTypeCategories.Reference {
+	} else if dataType.Category == structs.DataTypeCategories.Reference {
 		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
 			result = dataType.Name
 		}
-	} else if dataType.Category == objectresource.DataTypeCategories.Resource {
+	} else if dataType.Category == structs.DataTypeCategories.Resource {
 		if !_string.IsEmpty(dataType.Package.Alias) {
 			result = fmt.Sprintf("%v.%v", dataType.Package.Alias, dataType.Name)
 		} else {
@@ -900,20 +901,20 @@ func (s DotnetManager) PrintDataType(dataType objectresource.DataType) string {
 		result = fmt.Sprintf("%v<%v>", result, strings.Join(generics, ", "))
 	}
 
-	if dataType.Modifier == objectresource.ModifierTypes.Array {
+	if dataType.Modifier == structs.ModifierTypes.Array {
 		result = fmt.Sprintf("%v[]", result)
 	}
 
 	return result
 }
 
-func (s DotnetManager) PrintVisibility(visibility objectresource.VisibilityType) string {
+func (s DotnetManager) PrintVisibility(visibility structs.VisibilityType) string {
 	switch visibility {
-	case objectresource.VisibilityTypeTypes.Public:
+	case structs.VisibilityTypeTypes.Public:
 		return "public"
-	case objectresource.VisibilityTypeTypes.Protected:
+	case structs.VisibilityTypeTypes.Protected:
 		return "protected"
-	case objectresource.VisibilityTypeTypes.Private:
+	case structs.VisibilityTypeTypes.Private:
 		return "private"
 	default:
 		return "Unknown"

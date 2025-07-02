@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	_string "parsdevkit.net/core/utilities/string"
 
 	"parsdevkit.net/core/errors"
@@ -14,7 +15,7 @@ import (
 
 type Variable struct {
 	Name        string
-	Type        DataType
+	Type        structs.DataType
 	Order       int
 	Hint        Message
 	Description Message
@@ -24,7 +25,7 @@ type Variable struct {
 	Annotations []Annotation
 }
 
-func NewVariable(name string, _type DataType, order int, hint Message, description Message, options []option.Option, labels []label.Label, validation Validation, annotations []Annotation) Variable {
+func NewVariable(name string, _type structs.DataType, order int, hint Message, description Message, options []option.Option, labels []label.Label, validation Validation, annotations []Annotation) Variable {
 	return Variable{
 		Name:        name,
 		Type:        _type,
@@ -49,15 +50,15 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&value); err != nil {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject struct {
-				Name        string          `yaml:"Name"`
-				Type        DataType        `yaml:"Type"`
-				Order       int             `yaml:"Order"`
-				Hint        Message         `yaml:"Hint"`
-				Description Message         `yaml:"Description"`
-				Options     []option.Option `yaml:"Options"`
-				Labels      []label.Label   `yaml:"Labels"`
-				Validation  Validation      `yaml:"Validation"`
-				Annotations []Annotation    `yaml:"Annotations"`
+				Name        string           `yaml:"Name"`
+				Type        structs.DataType `yaml:"Type"`
+				Order       int              `yaml:"Order"`
+				Hint        Message          `yaml:"Hint"`
+				Description Message          `yaml:"Description"`
+				Options     []option.Option  `yaml:"Options"`
+				Labels      []label.Label    `yaml:"Labels"`
+				Validation  Validation       `yaml:"Validation"`
+				Annotations []Annotation     `yaml:"Annotations"`
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
@@ -88,18 +89,18 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			name := strings.TrimSpace(parts[0])
 			_type := strings.TrimSpace(parts[1])
 
-			_type, modifier := DetectDataTypeModifier(_type)
-			category := DetectDataTypeCategory(_type)
+			_type, modifier := structs.DetectDataTypeModifier(_type)
+			category := structs.DetectDataTypeCategory(_type)
 
 			s.Name = name
-			s.Type = NewDataType(_type, TypePackage{}, category, modifier, []DataType(nil))
+			s.Type = structs.NewDataType(_type, structs.TypePackage{}, category, modifier, []structs.DataType(nil))
 		} else {
 			return &errors.InvalidFormatForPackageError{Value: value}
 		}
 	}
 
 	if _string.IsEmpty(string(s.Type.Name)) {
-		s.Type = NewDataType(string(ValueTypes.String), TypePackage{}, DataTypeCategories.Value, ModifierTypes.Object, []DataType(nil))
+		s.Type = structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil))
 	}
 
 	return nil

@@ -5,17 +5,18 @@ import (
 	"strconv"
 
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/application/structs"
 	_string "parsdevkit.net/core/utilities/string"
 )
 
 type EncapsulationSetter struct {
 	Name       string
-	Visibility VisibilityType
+	Visibility structs.VisibilityType
 	Method     MethodIdentifier
 	Available  bool
 }
 
-func NewEncapsulationSetter(name string, visibility VisibilityType, method MethodIdentifier, available bool) EncapsulationSetter {
+func NewEncapsulationSetter(name string, visibility structs.VisibilityType, method MethodIdentifier, available bool) EncapsulationSetter {
 	return EncapsulationSetter{
 		Name:       name,
 		Visibility: visibility,
@@ -30,9 +31,9 @@ func (s *EncapsulationSetter) UnmarshalYAML(unmarshal func(interface{}) error) e
 	if err := unmarshal(&value); err != nil {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject struct {
-				Name       string           `yaml:"Name"`
-				Visibility VisibilityType   `yaml:"Visibility"`
-				Method     MethodIdentifier `yaml:"RefMethod"`
+				Name       string                 `yaml:"Name"`
+				Visibility structs.VisibilityType `yaml:"Visibility"`
+				Method     MethodIdentifier       `yaml:"RefMethod"`
 			}
 
 			if err := unmarshal(&tempObject); err != nil {

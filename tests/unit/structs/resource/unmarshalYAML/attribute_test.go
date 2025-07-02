@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	"parsdevkit.net/application/structs"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/stretchr/testify/assert"
@@ -24,13 +25,13 @@ Name: foo
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(
-			string(objectresource.ValueTypes.String),
-			objectresource.TypePackage{},
-			objectresource.DataTypeCategories.Value,
-			objectresource.ModifierTypes.Object,
-			[]objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(
+			string(structs.ValueTypes.String),
+			structs.TypePackage{},
+			structs.DataTypeCategories.Value,
+			structs.ModifierTypes.Object,
+			[]structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -51,8 +52,8 @@ foo
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -74,8 +75,8 @@ Type: Int
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -96,8 +97,8 @@ foo Int
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -118,8 +119,8 @@ foo Int[]
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Array, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Array, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -141,8 +142,8 @@ Visibility: private
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Private,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Private,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -163,8 +164,8 @@ Order: 3
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		3, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -185,8 +186,8 @@ Group: CMD
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
 		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 0, []option.Option(nil)),
 		objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
@@ -211,8 +212,8 @@ Group:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
 		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
 		objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
@@ -238,12 +239,12 @@ Encapsulation:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{},
 		objectresource.NewEncapsulation(
 			objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{}, true),
-			objectresource.NewEncapsulationSetter("", objectresource.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
+			objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
 		),
 		objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
@@ -271,8 +272,8 @@ Properties:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
 		objectresource.AttributeGroup{},
 		objectresource.Encapsulation{}, objectresource.NewAttributeProperties(true, true, true, true, "123", "ddd"), objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
@@ -294,8 +295,8 @@ Hint: message_text
 
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -319,7 +320,7 @@ Hint:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := objectresource.NewAttribute("foo",
-		objectresource.VisibilityTypeTypes.Public, objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+		structs.VisibilityTypeTypes.Public, structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -339,8 +340,8 @@ Description: message_text
 
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -363,8 +364,8 @@ Description:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
 
 	// Assert
@@ -388,8 +389,8 @@ Options:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option{
 			option.NewOption("row", "1"),
 			option.NewOption("column", "3"),
@@ -415,8 +416,8 @@ Labels:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label{
 			label.NewLabel("foo", "bar"),
 		}, objectresource.Validation{}, []objectresource.Annotation(nil), true)
@@ -441,8 +442,8 @@ Validation:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil),
 		objectresource.NewValidation(
 			objectresource.NewValidationLengthRule("", 10, 150, objectresource.Message{}),
@@ -467,8 +468,8 @@ Annotations:
 	var data objectresource.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", objectresource.VisibilityTypeTypes.Public,
-		objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation{
 			objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument(nil)),
 		}, true)
@@ -521,13 +522,13 @@ Properties:
 
 	expected := objectresource.NewAttribute(
 		"foo",
-		objectresource.VisibilityTypeTypes.Private,
-		objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+		structs.VisibilityTypeTypes.Private,
+		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		3,
 		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
 		objectresource.NewEncapsulation(
 			objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{}, true),
-			objectresource.NewEncapsulationSetter("", objectresource.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
+			objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
 		),
 		objectresource.NewAttributeProperties(true, true, true, true, "123", "ddd"),
 		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),

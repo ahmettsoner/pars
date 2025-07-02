@@ -3,6 +3,8 @@ package unmarshalYAML
 import (
 	"testing"
 
+	"parsdevkit.net/application/structs"
+
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
@@ -71,20 +73,20 @@ Specifications:
 			},
 			[]objectresource.Layer{objectresource.NewLayer(0, "layer1", []objectresource.Section(nil)), objectresource.NewLayer(0, "layer2", []objectresource.Section(nil))},
 			[]objectresource.Attribute{
-				objectresource.NewAttribute("yea", objectresource.VisibilityTypeTypes.Private,
-					objectresource.NewDataType(string(objectresource.ValueTypes.String), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+				objectresource.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
+					structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 					0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true),
-				objectresource.NewAttribute("hoo", objectresource.VisibilityTypeTypes.Public,
-					objectresource.NewDataType(string(objectresource.ValueTypes.Int), objectresource.TypePackage{}, objectresource.DataTypeCategories.Value, objectresource.ModifierTypes.Object, []objectresource.DataType(nil)),
+				objectresource.NewAttribute("hoo", structs.VisibilityTypeTypes.Public,
+					structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 					0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true),
 			},
 			[]objectresource.Method{
-				objectresource.NewMethod("soe", objectresource.VisibilityTypeTypes.Public,
+				objectresource.NewMethod("soe", structs.VisibilityTypeTypes.Public,
 					[]objectresource.MethodParameter{
-						objectresource.NewMethodParameter("ID", objectresource.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
-						objectresource.NewMethodParameter("Name", objectresource.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+						objectresource.NewMethodParameter("ID", structs.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+						objectresource.NewMethodParameter("Name", structs.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
 					},
-					[]objectresource.DataType(nil),
+					[]structs.DataType(nil),
 					objectresource.Message{},
 					objectresource.Message{},
 					[]option.Option(nil),
