@@ -15,13 +15,13 @@ func Register(m PlatformInterface) {
 	platformRegistry[name] = m
 }
 
-func Get(name string) (PlatformInterface, error) {
+func Get(name string) PlatformInterface {
 	result, ok := platformRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("no platform found for %s", name)
+		panic(fmt.Errorf("no platform found for %s", name))
 	}
 
-	return result, nil
+	return result
 }
 
 func All() []PlatformInterface {

@@ -1,4 +1,4 @@
-package services
+package application
 
 import (
 	"encoding/json"
@@ -17,8 +17,6 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utils"
-
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -29,7 +27,6 @@ import (
 )
 
 type ApplicationProjectService struct {
-	// contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 	workspaceRespository *repositories.WorkspaceRepository
 	groupRespository     *repositories.GroupRepository
 	projectRespository   *repositories.ProjectRepository
@@ -38,22 +35,10 @@ type ApplicationProjectService struct {
 }
 
 func NewApplicationProjectService(environment string, platformRegistry map[models.PlatformType]func() core.ManagerInterface) contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
-	workspaceRespository, err := ioc.Get[*repositories.WorkspaceRepository]()
-	if err != nil {
-		panic(err)
-	}
-	groupRespository, err := ioc.Get[*repositories.GroupRepository]()
-	if err != nil {
-		panic(err)
-	}
-	projectRespository, err := ioc.Get[*repositories.ProjectRepository]()
-	if err != nil {
-		panic(err)
-	}
-	settingsRespository, err := ioc.Get[*repositories.SettingsRepository]()
-	if err != nil {
-		panic(err)
-	}
+	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
+	groupRespository := ioc.Get[*repositories.GroupRepository]()
+	projectRespository := ioc.Get[*repositories.ProjectRepository]()
+	settingsRespository := ioc.Get[*repositories.SettingsRepository]()
 
 	return &ApplicationProjectService{
 		workspaceRespository: workspaceRespository,
@@ -1627,7 +1612,8 @@ func (s *ApplicationProjectService) getProject(name string, group string, worksp
 	return entity, nil
 }
 func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*workspace.WorkspaceSpecification, error) {
-	workspaceService := NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+
 	workspace, err := workspaceService.GetByName(workspaceName)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Workspace getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", workspaceName, err)

@@ -25,14 +25,8 @@ type CodeTemplateService struct {
 }
 
 func NewCodeTemplateService(environment string) contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
-	templateRespository, err := ioc.Get[*repositories.TemplateRepository]()
-	if err != nil {
-		panic(err)
-	}
-	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
-	if err != nil {
-		panic(err)
-	}
+	templateRespository := ioc.Get[*repositories.TemplateRepository]()
+	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
 	return &CodeTemplateService{
 		environment:                  environment,

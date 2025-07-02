@@ -15,10 +15,10 @@ func Register(m ProviderInterface) {
 	providerRegistry[name] = m
 }
 
-func Get(name string) (ProviderInterface, error) {
+func Get(name string) ProviderInterface {
 	result, ok := providerRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("no provider found for %s", name)
+		panic(fmt.Errorf("no provider found for %s", name))
 	}
 
 	return result, nil

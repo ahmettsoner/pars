@@ -2,6 +2,11 @@ package describe
 
 import (
 	"fmt"
+
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
+	applicationproject "parsdevkit.net/structs/project/application-project"
+
 	"log"
 	"strings"
 
@@ -13,7 +18,6 @@ import (
 
 	"github.com/spf13/cobra"
 	group "parsdevkit.net/modules/group/group"
-	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type DescribeOptions struct {
@@ -71,7 +75,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	packageName := fmt.Sprintf("Package:\t%v", group.Specifications.GetPackageString())
 	fmt.Println(packageName)
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	projectList, err := projectService.ListByGroupName(group.Header.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group projects '%s'\n%w", commandOptions.Name, err)

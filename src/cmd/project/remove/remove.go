@@ -7,14 +7,16 @@ import (
 	"strings"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/operation/services"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/core/utilities/array"
 	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/components/workspace"
-	platformsCommon "parsdevkit.net/platforms/common"
 
 	"github.com/spf13/cobra"
 )
@@ -68,9 +70,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		applicationProjectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 		for _, name := range commandOptions.Names {
-			_, err := applicationProjectService.Remove(name, commandOptions.Workspace, false, true)
+			_, err := projectService.Remove(name, commandOptions.Workspace, false, true)
 			if err != nil {
 				return fmt.Errorf("Failed to remove project(s) '%s'\n%w", name, err)
 			}
@@ -106,7 +108,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)

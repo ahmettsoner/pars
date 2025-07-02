@@ -40,7 +40,7 @@ func (c *Container) Register(provider interface{}) error {
 }
 
 // Interface’e karşılık bir concrete register etmek
-func (c *Container) RegisterInterface(interfaceType reflect.Type, provider interface{}) error {
+func (c *Container) RegisterInterface(interfaceType reflect.Type, provider interface{}) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 
@@ -48,42 +48,38 @@ func (c *Container) RegisterInterface(interfaceType reflect.Type, provider inter
 	fnType := fn.Type()
 
 	if fnType.Kind() != reflect.Func {
-		return errors.New("provider must be a function")
+		panic(errors.New("provider must be a function"))
 	}
 
 	if fnType.NumOut() != 1 {
-		return errors.New("provider must return exactly one value")
+		panic(errors.New("provider must return exactly one value"))
 	}
 
 	returnType := fnType.Out(0)
 
 	if !returnType.Implements(interfaceType) {
-		return fmt.Errorf("return type %s does not implement %s", returnType, interfaceType)
+		panic(fmt.Errorf("return type %s does not implement %s", returnType, interfaceType))
 	}
 
 	c.providers[interfaceType] = fn
-	return nil
 }
 
-func (c *Container) Get(t any) (any, error) {
+func (c *Container) Get(t any) any {
 	typ := reflect.TypeOf(t)
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
 	}
-	v, err := c.resolve(typ)
-	if err != nil {
-		return nil, err
-	}
-	return v.Interface(), nil
+	v := c.resolve(typ)
+	return v.Interface()
 }
 
-func (c *Container) resolve(t reflect.Type) (reflect.Value, error) {
+func (c *Container) resolve(t reflect.Type) reflect.Value {
 	c.lock.RLock()
 	provider, ok := c.providers[t]
 	c.lock.RUnlock()
 
 	if !ok {
-		return reflect.Value{}, fmt.Errorf("no provider registered for %s", t)
+		panic(fmt.Errorf("no provider registered for %s", t))
 	}
 
 	providerType := provider.Type()
@@ -91,13 +87,10 @@ func (c *Container) resolve(t reflect.Type) (reflect.Value, error) {
 
 	for i := 0; i < providerType.NumIn(); i++ {
 		depType := providerType.In(i)
-		depValue, err := c.resolve(depType)
-		if err != nil {
-			return reflect.Value{}, err
-		}
+		depValue := c.resolve(depType)
 		args[i] = depValue
 	}
 
 	results := provider.Call(args)
-	return results[0], nil
+	return results[0]
 }

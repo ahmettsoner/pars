@@ -4,16 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"parsdevkit.net/operation/services"
-
-	"parsdevkit.net/core/utils"
-
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/core/utilities/string"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
-	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type CleanOptions struct {
@@ -64,8 +62,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
-
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	project, err := projectService.CleanV2(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to clean project '%s'\n%w", commandOptions.Name, err)

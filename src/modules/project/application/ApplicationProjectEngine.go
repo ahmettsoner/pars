@@ -8,11 +8,13 @@ import (
 
 	"parsdevkit.net/application"
 
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 	_string "parsdevkit.net/core/utilities/string"
 	group "parsdevkit.net/modules/group/group"
 	groupStructs "parsdevkit.net/modules/group/group/structs"
-	platformsCommon "parsdevkit.net/platforms/common"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	workspaceStruct "parsdevkit.net/structs/workspace"
 
@@ -83,8 +85,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 
 	projectsReadyToCreate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	projectsForUpdate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
-	// projectReferenceMap := make(map[string]map[string]applicationprojectStruct.ProjectSpecification)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 
 	for _, project := range projects {
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
@@ -371,7 +372,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
 
 	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	for _, project := range projects {
 
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
@@ -507,7 +508,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStruct.ProjectBaseStruct, reference applicationprojectStruct.ProjectBaseStruct) (*applicationprojectStruct.ProjectBaseStruct, error) {
 
 	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
 
 	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
@@ -547,7 +548,8 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 
 func (s ApplicationProjectEngine) sortProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+
 	logrus.Debugf("'%d' projects preparing for ordering", len(projects))
 	projectMap := make(map[string]applicationprojectStruct.ProjectSpecification)
 	for _, project := range projects {
@@ -591,7 +593,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 	return sortedProjects, nil
 }
 func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct, sortedProjectMap map[string]applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	var sortedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	var unOrderedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
 

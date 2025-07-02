@@ -11,13 +11,13 @@ import (
 	"strings"
 
 	_string "parsdevkit.net/core/utilities/string"
-	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/persistence/repositories"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/persistence/entities"
 
@@ -37,18 +37,9 @@ type WorkspaceService struct {
 }
 
 func NewWorkspaceService(environment string) contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
-	workspaceRespository, err := ioc.Get[*repositories.WorkspaceRepository]()
-	if err != nil {
-		panic(err)
-	}
-	projectRespository, err := ioc.Get[*repositories.ProjectRepository]()
-	if err != nil {
-		panic(err)
-	}
-	settingsRespository, err := ioc.Get[*repositories.SettingsRepository]()
-	if err != nil {
-		panic(err)
-	}
+	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
+	projectRespository := ioc.Get[*repositories.ProjectRepository]()
+	settingsRespository := ioc.Get[*repositories.SettingsRepository]()
 	return &WorkspaceService{
 		environment:          environment,
 		workspaceRespository: workspaceRespository,
@@ -338,7 +329,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 		return nil, errors.New("invalid workspace workspace")
 	}
 
-	projectService := NewApplicationProjectService(s.environment, platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	projectsBelongsToWorkspace, err := projectService.ListByWorkspace(workspaceName)
 	if err != nil {
 		return nil, err

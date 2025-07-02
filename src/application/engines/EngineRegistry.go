@@ -15,13 +15,13 @@ func Register(m EngineInterface) {
 	engineRegistry[name] = m
 }
 
-func Get(name string) (EngineInterface, error) {
+func Get(name string) EngineInterface {
 	result, ok := engineRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("no engine found for %s", name)
+		panic(fmt.Errorf("no engine found for %s", name))
 	}
 
-	return result, nil
+	return result
 }
 
 func All() []EngineInterface {

@@ -10,10 +10,10 @@ import (
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
 	_string "parsdevkit.net/core/utilities/string"
-	platformsCommon "parsdevkit.net/platforms/common"
-
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
@@ -46,7 +46,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 		}
 		logrus.Debugf("%d Template(s) found for layer '%v' on Resource %v\n", len(*setTemplates), layer.Name, model.Header.Name)
 
-		projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
+		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err
@@ -82,7 +82,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 		}
 		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Header.Name)
 
-		projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
+		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err
@@ -109,7 +109,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 }
 
 func (s FileTemplateOperations) GenerateContent(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
-	projectService := services.NewApplicationProjectService(s.environment, platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 
 	resourceLayer := dataresource.Layer{}
 

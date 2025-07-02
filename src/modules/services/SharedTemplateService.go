@@ -24,14 +24,8 @@ type SharedTemplateService struct {
 }
 
 func NewSharedTemplateService(environment string) contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
-	templateRespository, err := ioc.Get[*repositories.TemplateRepository]()
-	if err != nil {
-		panic(err)
-	}
-	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
-	if err != nil {
-		panic(err)
-	}
+	templateRespository := ioc.Get[*repositories.TemplateRepository]()
+	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
 	return &SharedTemplateService{
 		environment:                  environment,

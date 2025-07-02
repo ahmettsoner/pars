@@ -16,11 +16,13 @@ import (
 	templateCode "parsdevkit.net/modules/template/code"
 	templateFile "parsdevkit.net/modules/template/file"
 	templateShared "parsdevkit.net/modules/template/shared"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
 	groupSchema "parsdevkit.net/modules/group/group/structs"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
+	platformsCommon "parsdevkit.net/platforms/common"
 	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataResourceSchema "parsdevkit.net/structs/resource/data-resource"
 	objectResourceSchema "parsdevkit.net/structs/resource/object-resource"
@@ -80,6 +82,9 @@ func registerContainers() {
 	})
 	ioc.Register(func() *repositories.GenerationHistoryRepository {
 		return repositories.NewGenerationHistoryRepository(dbContext)
+	})
+	ioc.RegisterInterface[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]](func() contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
+		return projectApplication.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	})
 	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
 		return services.NewWorkspaceService(utils.GetEnvironment())

@@ -1,6 +1,10 @@
 package project
 
 import (
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
+	applicationproject "parsdevkit.net/structs/project/application-project"
+
 	"fmt"
 	"log"
 	"os"
@@ -8,7 +12,6 @@ import (
 	"parsdevkit.net/structs/project"
 
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/providers"
 
@@ -17,7 +20,6 @@ import (
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
-	platformsCommon "parsdevkit.net/platforms/common"
 
 	"parsdevkit.net/components/workspace"
 
@@ -89,7 +91,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		logrus.Debugf("project (%v) in the group (%v)", projectName, projectGroup)
 	}
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	if _string.IsEmpty(projectName) && groupId > 0 {
 		projectEntities, err := projectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", projectGroup), commandOptions.Workspace)
 		if err != nil {

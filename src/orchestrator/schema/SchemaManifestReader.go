@@ -22,10 +22,7 @@ func LoadTemplate(yamlData []byte) (schemas.SchemaInterface, error) {
 		return nil, fmt.Errorf("failed to unmarshal header: %w", err)
 	}
 
-	target, err := schemas.Get(header.GetKey())
-	if err != nil {
-		return nil, fmt.Errorf("Cannot load template for %s: %w", header.GetKey(), err)
-	}
+	target := schemas.Get(header.GetKey())
 
 	if err := yaml.Unmarshal(yamlData, target); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal body into %T: %w", target, err)

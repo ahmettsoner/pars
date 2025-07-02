@@ -14,13 +14,13 @@ func Register(m SchemaInterface) {
 	schemaRegistry[name] = func() SchemaInterface { return m }
 }
 
-func Get(name string) (SchemaInterface, error) {
+func Get(name string) SchemaInterface {
 	result, ok := schemaRegistry[name]
 	if !ok {
-		return nil, fmt.Errorf("no schema found for Type/Kind %s", name)
+		panic(fmt.Errorf("no schema found for Type/Kind %s", name))
 	}
 
-	return result(), nil
+	return result()
 }
 
 func All() []SchemaInterface {

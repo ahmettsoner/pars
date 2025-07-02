@@ -8,8 +8,6 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
@@ -18,6 +16,8 @@ import (
 	"pars/tests/internal/testenv/objects"
 
 	platformsCommon "parsdevkit.net/platforms/common"
+
+	projectApplication "parsdevkit.net/modules/project/application"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -45,7 +45,7 @@ func (suite *ProjectServiceTestSuite) SetupSuite() {
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
-	suite.service = services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	suite.service = projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
 	require.NoError(suite.T(), err, "Create temporary directory failed")

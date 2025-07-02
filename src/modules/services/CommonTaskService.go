@@ -24,14 +24,8 @@ type CommonTaskService struct {
 }
 
 func NewCommonTaskService(environment string) contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
-	taskRespository, err := ioc.Get[*repositories.TaskRepository]()
-	if err != nil {
-		panic(err)
-	}
-	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
-	if err != nil {
-		panic(err)
-	}
+	taskRespository := ioc.Get[*repositories.TaskRepository]()
+	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
 	return &CommonTaskService{
 		environment:                  environment,

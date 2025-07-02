@@ -5,12 +5,12 @@ import (
 	"os"
 	"testing"
 
+	projectApplication "parsdevkit.net/modules/project/application"
+
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/core/utilities/object"
@@ -48,7 +48,8 @@ func (suite *ProjectServiceTestSuite) SetupSuite() {
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
-	suite.service = services.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+
+	suite.service = projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
 	require.NoError(suite.T(), err, "Create temporary directory failed")

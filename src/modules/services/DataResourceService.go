@@ -24,14 +24,8 @@ type DataResourceService struct {
 }
 
 func NewDataResourceService(environment string) contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct] {
-	resourceRepository, err := ioc.Get[*repositories.ResourceRepository]()
-	if err != nil {
-		panic(err)
-	}
-	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
-	if err != nil {
-		panic(err)
-	}
+	resourceRepository := ioc.Get[*repositories.ResourceRepository]()
+	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
 	return &DataResourceService{
 		environment:                  environment,

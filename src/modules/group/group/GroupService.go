@@ -21,14 +21,8 @@ type GroupService struct {
 
 func NewGroupService(environment string) contracts.GroupServiceInterface[structs.GroupBaseStruct] {
 
-	groupRespository, err := ioc.Get[*repositories.GroupRepository]()
-	if err != nil {
-		panic(err)
-	}
-	projectRespository, err := ioc.Get[*repositories.ProjectRepository]()
-	if err != nil {
-		panic(err)
-	}
+	groupRespository := ioc.Get[*repositories.GroupRepository]()
+	projectRespository := ioc.Get[*repositories.ProjectRepository]()
 
 	return &GroupService{
 		groupRespository:   groupRespository,
