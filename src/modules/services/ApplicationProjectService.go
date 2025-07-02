@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/core/utilities/file"
 	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
@@ -18,7 +19,6 @@ import (
 
 	"parsdevkit.net/core/utils"
 
-	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -38,12 +38,28 @@ type ApplicationProjectService struct {
 }
 
 func NewApplicationProjectService(environment string, platformRegistry map[models.PlatformType]func() core.ManagerInterface) contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	workspaceRespository, err := ioc.Get[*repositories.WorkspaceRepository]()
+	if err != nil {
+		panic(err)
+	}
+	groupRespository, err := ioc.Get[*repositories.GroupRepository]()
+	if err != nil {
+		panic(err)
+	}
+	projectRespository, err := ioc.Get[*repositories.ProjectRepository]()
+	if err != nil {
+		panic(err)
+	}
+	settingsRespository, err := ioc.Get[*repositories.SettingsRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &ApplicationProjectService{
-		workspaceRespository: repositories.NewWorkspaceRepository(dbContext),
-		groupRespository:     repositories.NewGroupRepository(dbContext),
-		projectRespository:   repositories.NewProjectRepository(dbContext),
-		settingsRespository:  repositories.NewSettingsRepository(dbContext),
+		workspaceRespository: workspaceRespository,
+		groupRespository:     groupRespository,
+		projectRespository:   projectRespository,
+		settingsRespository:  settingsRespository,
 		platformRegistry:     platformRegistry,
 	}
 }

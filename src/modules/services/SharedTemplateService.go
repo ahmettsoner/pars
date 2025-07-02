@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
-	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -24,11 +24,19 @@ type SharedTemplateService struct {
 }
 
 func NewSharedTemplateService(environment string) contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	templateRespository, err := ioc.Get[*repositories.TemplateRepository]()
+	if err != nil {
+		panic(err)
+	}
+	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &SharedTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(dbContext),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
+		templateRespository:          templateRespository,
+		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 

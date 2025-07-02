@@ -9,7 +9,7 @@ import (
 	"parsdevkit.net/structs/task"
 	commontask "parsdevkit.net/structs/task/common-task"
 
-	"parsdevkit.net/persistence/contexts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -24,11 +24,19 @@ type CommonTaskService struct {
 }
 
 func NewCommonTaskService(environment string) contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	taskRespository, err := ioc.Get[*repositories.TaskRepository]()
+	if err != nil {
+		panic(err)
+	}
+	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &CommonTaskService{
 		environment:                  environment,
-		taskRespository:              repositories.NewTaskRepository(dbContext),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
+		taskRespository:              taskRespository,
+		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 

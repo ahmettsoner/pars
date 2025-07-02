@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/resource"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 
-	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -24,11 +24,19 @@ type DataResourceService struct {
 }
 
 func NewDataResourceService(environment string) contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	resourceRepository, err := ioc.Get[*repositories.ResourceRepository]()
+	if err != nil {
+		panic(err)
+	}
+	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &DataResourceService{
 		environment:                  environment,
-		resourceRepository:           repositories.NewResourceRepository(dbContext),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
+		resourceRepository:           resourceRepository,
+		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 

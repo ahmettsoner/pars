@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/core/utils"
+	"parsdevkit.net/operation/services"
 
 	group "parsdevkit.net/modules/group/group"
 	projectApplication "parsdevkit.net/modules/project/application"
@@ -12,8 +16,11 @@ import (
 	templateCode "parsdevkit.net/modules/template/code"
 	templateFile "parsdevkit.net/modules/template/file"
 	templateShared "parsdevkit.net/modules/template/shared"
+	"parsdevkit.net/structs/workspace"
 
 	groupSchema "parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/persistence/contexts"
+	"parsdevkit.net/persistence/repositories"
 	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataResourceSchema "parsdevkit.net/structs/resource/data-resource"
 	objectResourceSchema "parsdevkit.net/structs/resource/object-resource"
@@ -25,6 +32,7 @@ import (
 func RegisterServices() {
 	registerEngines()
 	registerSchemas()
+	registerContainers()
 }
 func registerSchemas() {
 	schemas.Register(&groupSchema.GroupBaseStruct{})
@@ -45,4 +53,36 @@ func registerEngines() {
 	engines.Register(&templateFile.FileTemplateEngine{})
 	engines.Register(&templateShared.SharedTemplateEngine{})
 	engines.Register(&taskCommon.CommonTaskEngine{})
+}
+func registerContainers() {
+	dbContext := contexts.NewDbContext(utils.GetEnvironment())
+
+	ioc.Register(func() *repositories.WorkspaceRepository {
+		return repositories.NewWorkspaceRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.GroupRepository {
+		return repositories.NewGroupRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.ProjectRepository {
+		return repositories.NewProjectRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.ResourceRepository {
+		return repositories.NewResourceRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.TemplateRepository {
+		return repositories.NewTemplateRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.TaskRepository {
+		return repositories.NewTaskRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.SettingsRepository {
+		return repositories.NewSettingsRepository(dbContext)
+	})
+	ioc.Register(func() *repositories.GenerationHistoryRepository {
+		return repositories.NewGenerationHistoryRepository(dbContext)
+	})
+	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
+		return services.NewWorkspaceService(utils.GetEnvironment())
+	})
+
 }

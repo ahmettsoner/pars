@@ -6,10 +6,10 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
-	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -24,11 +24,19 @@ type FileTemplateService struct {
 }
 
 func NewFileTemplateService(environment string) contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	templateRespository, err := ioc.Get[*repositories.TemplateRepository]()
+	if err != nil {
+		panic(err)
+	}
+	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &FileTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(dbContext),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
+		templateRespository:          templateRespository,
+		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 

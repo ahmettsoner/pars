@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/persistence/contexts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -25,11 +25,19 @@ type CodeTemplateService struct {
 }
 
 func NewCodeTemplateService(environment string) contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+	templateRespository, err := ioc.Get[*repositories.TemplateRepository]()
+	if err != nil {
+		panic(err)
+	}
+	generationHistoryRespository, err := ioc.Get[*repositories.GenerationHistoryRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &CodeTemplateService{
 		environment:                  environment,
-		templateRespository:          repositories.NewTemplateRepository(dbContext),
-		generationHistoryRespository: repositories.NewGenerationHistoryRepository(dbContext),
+		templateRespository:          templateRespository,
+		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 

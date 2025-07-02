@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/group/group/structs"
-	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/application/contracts"
@@ -20,10 +20,19 @@ type GroupService struct {
 }
 
 func NewGroupService(environment string) contracts.GroupServiceInterface[structs.GroupBaseStruct] {
-	dbContext := contexts.NewDbContext(environment)
+
+	groupRespository, err := ioc.Get[*repositories.GroupRepository]()
+	if err != nil {
+		panic(err)
+	}
+	projectRespository, err := ioc.Get[*repositories.ProjectRepository]()
+	if err != nil {
+		panic(err)
+	}
+
 	return &GroupService{
-		groupRespository:   repositories.NewGroupRepository(dbContext),
-		projectRespository: repositories.NewProjectRepository(dbContext),
+		groupRespository:   groupRespository,
+		projectRespository: projectRespository,
 	}
 }
 
