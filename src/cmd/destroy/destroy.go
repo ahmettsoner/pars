@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"parsdevkit.net/orchestrator"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/orchestrator/schema"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/components"
 	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utilities/json"
@@ -80,7 +80,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
-		result, err := orchestrator.GetAllManifestFilesInPath(commandOptions.FilePaths...)
+		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
 			log.Printf("❌ Error: %v", err)
@@ -99,7 +99,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			if appCtx == nil {
 				return fmt.Errorf("xxx: Current workspace bulunamadı")
 			}
-			err = components.DispatchEngineDestroy(appCtx, result)
+			err = engines.DispatchEngineDestroy(appCtx, result)
 			if err != nil {
 				log.Fatalf("Engine processing failed: %v", err)
 			}

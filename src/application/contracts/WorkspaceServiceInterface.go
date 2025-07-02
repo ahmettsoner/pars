@@ -1,6 +1,8 @@
 package contracts
 
-type WorkspaceServiceInterface[T SchemaInterface] interface {
+import "parsdevkit.net/application/schemas"
+
+type WorkspaceServiceInterface[T schemas.SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(model T) (*T, error)
 	List() (*([]T), error)

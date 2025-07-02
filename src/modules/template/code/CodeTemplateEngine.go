@@ -7,19 +7,20 @@ import (
 	"parsdevkit.net/core/utilities/json"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/engines"
+	engineOperations "parsdevkit.net/engines"
 )
 
 type CodeTemplateEngine struct{}
 
-func (s CodeTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s CodeTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*codetemplateStruct.TemplateBaseStruct)
 		if !ok {
@@ -29,7 +30,7 @@ func (s CodeTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +44,7 @@ func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createTemplates(codetemplates, true)
 }
-func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -58,6 +59,12 @@ func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []
 	return s.removeTemplates(codetemplates, true)
 }
 
+func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.Code",
+		Order: 4000,
+	}
+}
 func (s CodeTemplateEngine) createTemplates(templates []codetemplateStruct.TemplateBaseStruct, init bool) error {
 
 	templatesReadyToCreate := make([]codetemplateStruct.TemplateBaseStruct, 0)
@@ -167,7 +174,7 @@ func (s CodeTemplateEngine) generate(model codetemplateStruct.TemplateBaseStruct
 		return nil, nil
 	}
 
-	templateEngine := engines.NewCodeTemplateOperations(utils.GetEnvironment())
+	templateEngine := engineOperations.NewCodeTemplateOperations(utils.GetEnvironment())
 	err = templateEngine.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err

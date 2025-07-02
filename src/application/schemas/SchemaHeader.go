@@ -1,6 +1,8 @@
 package schemas
 
 import (
+	"fmt"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -29,6 +31,16 @@ func (e SchemaHeader) Validate() error {
 	// }
 
 	return nil
+}
+
+func (s SchemaHeader) GetKey() string {
+	var key string
+	if s.Kind != "" {
+		key = fmt.Sprintf("%s.%s", s.Type, s.Kind)
+	} else {
+		key = string(s.Type)
+	}
+	return key
 }
 
 func (s *SchemaHeader) UnmarshalYAML(unmarshal func(interface{}) error) error {

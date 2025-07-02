@@ -38,6 +38,7 @@ func main() {
 
 	utils.SetVersion(version)
 }
+
 func runInteractiveMode() {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("🔁 Interactive Cobra CLI Mode. Type 'exit' to quit.")

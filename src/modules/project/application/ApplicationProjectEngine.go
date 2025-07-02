@@ -17,16 +17,17 @@ import (
 
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/core/utilities/encrypt"
 )
 
 type ApplicationProjectEngine struct{}
 
-func (s ApplicationProjectEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s ApplicationProjectEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
 		if !ok {
@@ -36,7 +37,7 @@ func (s ApplicationProjectEngine) Validate(data []contracts.SchemaInterface) boo
 
 	return true
 }
-func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -53,7 +54,7 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 
 	return s.createProjects(applicationprojects, true)
 }
-func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -69,6 +70,12 @@ func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, d
 	}
 
 	return s.removeProjects(applicationprojects, true)
+}
+func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Project.Application",
+		Order: 2000,
+	}
 }
 
 func (s ApplicationProjectEngine) createProjects(projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {

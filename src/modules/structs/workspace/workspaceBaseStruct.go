@@ -18,6 +18,9 @@ func (e WorkspaceBaseStruct) GetHeader() schemas.SchemaHeader {
 		Name: e.Header.Name,
 	}
 }
+func (s WorkspaceBaseStruct) GetKey() string {
+	return "Workspace"
+}
 
 func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications WorkspaceSpecification) WorkspaceBaseStruct {
 	return WorkspaceBaseStruct{

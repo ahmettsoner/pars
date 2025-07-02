@@ -9,16 +9,17 @@ import (
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 )
 
 type SharedTemplateEngine struct{}
 
-func (s SharedTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s SharedTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
 		if !ok {
@@ -28,7 +29,7 @@ func (s SharedTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +43,7 @@ func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data 
 
 	return s.createTemplates(sharedtemplates, true)
 }
-func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -57,6 +58,12 @@ func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data 
 	return s.removeTemplates(sharedtemplates, true)
 }
 
+func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.Shared",
+		Order: 4000,
+	}
+}
 func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
 
 	templatesReadyToCreate := make([]sharedtemplateStruct.TemplateBaseStruct, 0)

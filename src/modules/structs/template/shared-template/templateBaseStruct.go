@@ -17,6 +17,9 @@ type TemplateBaseStruct struct {
 func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (s TemplateBaseStruct) GetKey() string {
+	return "Template.Shared"
+}
 
 func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
 	return TemplateBaseStruct{

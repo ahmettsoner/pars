@@ -6,20 +6,21 @@ import (
 	"parsdevkit.net/application"
 	dataresourceStruct "parsdevkit.net/structs/resource/data-resource"
 
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utilities/json"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/engines"
+	engineOperations "parsdevkit.net/engines"
 
 	"github.com/sirupsen/logrus"
 )
 
 type DataResourceEngine struct{}
 
-func (s DataResourceEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s DataResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*dataresourceStruct.ResourceBaseStruct)
 		if !ok {
@@ -29,7 +30,7 @@ func (s DataResourceEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +44,7 @@ func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createResources(dataresourceStructs, true)
 }
-func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataresourceStructs := make([]dataresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -58,6 +59,12 @@ func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []
 	return s.removeResources(dataresourceStructs, true)
 }
 
+func (s DataResourceEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Resource.Data",
+		Order: 3000,
+	}
+}
 func (s DataResourceEngine) createResources(resources []dataresourceStruct.ResourceBaseStruct, init bool) error {
 
 	resourcesReadyToCreate := make([]dataresourceStruct.ResourceBaseStruct, 0)
@@ -163,7 +170,7 @@ func (s DataResourceEngine) generate(model dataresourceStruct.ResourceBaseStruct
 		return nil, nil
 	}
 
-	templateOperations := engines.NewFileTemplateOperations(utils.GetEnvironment())
+	templateOperations := engineOperations.NewFileTemplateOperations(utils.GetEnvironment())
 	err = templateOperations.GenerateByResource(model)
 	if err != nil {
 		return nil, err

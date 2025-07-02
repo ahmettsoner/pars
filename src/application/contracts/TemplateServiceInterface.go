@@ -1,6 +1,8 @@
 package contracts
 
-type TemplateServiceInterface[T SchemaInterface] interface {
+import "parsdevkit.net/application/schemas"
+
+type TemplateServiceInterface[T schemas.SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(model T) (*T, error)
 	List() (*([]T), error)

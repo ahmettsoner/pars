@@ -18,6 +18,9 @@ type GroupBaseStruct struct {
 func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (s GroupBaseStruct) GetKey() string {
+	return "Group"
+}
 func NewGroupBaseStruct(header schemas.SchemaHeader, specifications GroupSpecification) GroupBaseStruct {
 	return GroupBaseStruct{
 		Header:         header,

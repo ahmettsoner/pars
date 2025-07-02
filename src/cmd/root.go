@@ -139,6 +139,10 @@ func addSubCommands() {
 
 }
 
+func init() {
+	RegisterServices()
+}
+
 func initConfig() {
 	if !_string.IsEmpty(cfgFile) {
 		viper.SetConfigFile(cfgFile)

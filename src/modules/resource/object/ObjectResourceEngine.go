@@ -4,22 +4,23 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/engines"
+	engineOperations "parsdevkit.net/engines"
 	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/json"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 )
 
 type ObjectResourceEngine struct{}
 
-func (s ObjectResourceEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s ObjectResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*objectresourceStruct.ResourceBaseStruct)
 		if !ok {
@@ -29,7 +30,7 @@ func (s ObjectResourceEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +44,7 @@ func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data 
 
 	return s.createResources(objectresourceStructs, true)
 }
-func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	objectresourceStructs := make([]objectresourceStruct.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -58,6 +59,12 @@ func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data 
 	return s.removeResources(objectresourceStructs, true)
 }
 
+func (s ObjectResourceEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Resource.Object",
+		Order: 3000,
+	}
+}
 func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.ResourceBaseStruct, init bool) error {
 
 	resourcesReadyToCreate := make([]objectresourceStruct.ResourceBaseStruct, 0)
@@ -168,7 +175,7 @@ func (s ObjectResourceEngine) generate(model objectresourceStruct.ResourceBaseSt
 	}
 
 	// TODO: Birden fazla template işlenebilmeli
-	templateEngine := engines.NewCodeTemplateOperations(utils.GetEnvironment())
+	templateEngine := engineOperations.NewCodeTemplateOperations(utils.GetEnvironment())
 	err = templateEngine.GenerateByResource(model)
 	if err != nil {
 		return nil, err

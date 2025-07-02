@@ -7,10 +7,11 @@ import (
 	"parsdevkit.net/core/utilities/json"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
-	"parsdevkit.net/engines"
+	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 
@@ -19,7 +20,7 @@ import (
 
 type FileTemplateEngine struct{}
 
-func (s FileTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s FileTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*filetemplateStruct.TemplateBaseStruct)
 		if !ok {
@@ -29,7 +30,7 @@ func (s FileTemplateEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -43,7 +44,14 @@ func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []
 
 	return s.createTemplates(filetemplates, true)
 }
-func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.File",
+		Order: 4000,
+	}
+}
+
+func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -167,7 +175,7 @@ func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct
 		return nil, nil
 	}
 
-	templateOperations := engines.NewFileTemplateOperations(utils.GetEnvironment())
+	templateOperations := engineOperations.NewFileTemplateOperations(utils.GetEnvironment())
 	err = templateOperations.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err

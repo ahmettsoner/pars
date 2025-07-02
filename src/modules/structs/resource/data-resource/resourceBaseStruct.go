@@ -18,6 +18,9 @@ type ResourceBaseStruct struct {
 func (e ResourceBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (s ResourceBaseStruct) GetKey() string {
+	return "Resource.Data"
+}
 
 func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, configurations ResourceConfiguration) ResourceBaseStruct {
 	return ResourceBaseStruct{

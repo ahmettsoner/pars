@@ -7,13 +7,14 @@ import (
 	"parsdevkit.net/core/utilities/encrypt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utils"
 )
 
 type GroupEngine struct{}
 
-func (s GroupEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*GroupBaseStruct)
 		if !ok {
@@ -23,7 +24,7 @@ func (s GroupEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s GroupEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -36,7 +37,7 @@ func (s GroupEngine) Process(ctx *application.ApplicationContext, data []contrac
 
 	return s.createGroups(groups, false)
 }
-func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	groups := make([]GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -48,6 +49,12 @@ func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []contrac
 	}
 
 	return s.removeGroups(groups, false)
+}
+func (s GroupEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Group",
+		Order: 1000,
+	}
 }
 
 func (s GroupEngine) createGroups(groups []GroupBaseStruct, init bool) error {

@@ -16,6 +16,9 @@ type ProjectBaseStruct struct {
 func (e ProjectBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (s ProjectBaseStruct) GetKey() string {
+	return "Project.Application"
+}
 
 func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpecification) ProjectBaseStruct {
 	return ProjectBaseStruct{

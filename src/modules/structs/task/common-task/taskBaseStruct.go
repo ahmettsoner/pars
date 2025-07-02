@@ -17,6 +17,9 @@ type TaskBaseStruct struct {
 func (e TaskBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (s TaskBaseStruct) GetKey() string {
+	return "Task.Common"
+}
 func NewTaskBaseStruct(header schemas.SchemaHeader, specifications TaskSpecification, configurations TaskConfiguration) TaskBaseStruct {
 	return TaskBaseStruct{
 		Header:         header,

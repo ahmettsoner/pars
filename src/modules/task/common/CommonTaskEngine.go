@@ -7,17 +7,18 @@ import (
 	"parsdevkit.net/core/utilities/json"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/operation/services"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
 )
 
 type CommonTaskEngine struct{}
 
-func (s CommonTaskEngine) Validate(data []contracts.SchemaInterface) bool {
+func (s CommonTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*commontaskStruct.TaskBaseStruct)
 		if !ok {
@@ -27,7 +28,7 @@ func (s CommonTaskEngine) Validate(data []contracts.SchemaInterface) bool {
 
 	return true
 }
-func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -42,7 +43,7 @@ func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []co
 	return s.createTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []contracts.SchemaInterface) error {
+func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -55,6 +56,13 @@ func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []co
 	}
 
 	return s.removeTasks(commontasks, true)
+}
+
+func (s CommonTaskEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Task.Common",
+		Order: 5000,
+	}
 }
 
 func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, init bool) error {
