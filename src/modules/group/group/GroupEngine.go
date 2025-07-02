@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/modules/group/group/structs"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
@@ -16,7 +17,7 @@ type GroupEngine struct{}
 
 func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*GroupBaseStruct)
+		_, ok := item.(*structs.GroupBaseStruct)
 		if !ok {
 			return false
 		}
@@ -25,10 +26,10 @@ func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]GroupBaseStruct, 0, len(data))
+	groups := make([]structs.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		group, ok := item.(*GroupBaseStruct)
+		group, ok := item.(*structs.GroupBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Process: expected GroupBaseStruct, got %T", item)
 		}
@@ -38,10 +39,10 @@ func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas
 	return s.createGroups(groups, false)
 }
 func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]GroupBaseStruct, 0, len(data))
+	groups := make([]structs.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		group, ok := item.(*GroupBaseStruct)
+		group, ok := item.(*structs.GroupBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Destroy: expected GroupBaseStruct, got %T", item)
 		}
@@ -57,10 +58,10 @@ func (s GroupEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
-func (s GroupEngine) createGroups(groups []GroupBaseStruct, init bool) error {
+func (s GroupEngine) createGroups(groups []structs.GroupBaseStruct, init bool) error {
 
-	groupsReadyToCreate := make([]GroupBaseStruct, 0)
-	groupsForUpdate := make([]GroupBaseStruct, 0)
+	groupsReadyToCreate := make([]structs.GroupBaseStruct, 0)
+	groupsForUpdate := make([]structs.GroupBaseStruct, 0)
 	groupService := NewGroupService(utils.GetEnvironment())
 
 	for _, group := range groups {
@@ -112,10 +113,10 @@ func (s GroupEngine) createGroups(groups []GroupBaseStruct, init bool) error {
 	return nil
 }
 
-func (s GroupEngine) removeGroups(groups []GroupBaseStruct, permanent bool) error {
+func (s GroupEngine) removeGroups(groups []structs.GroupBaseStruct, permanent bool) error {
 
 	GroupEngine := NewGroupService(utils.GetEnvironment())
-	groupsReadyToDelete := make([]GroupBaseStruct, 0)
+	groupsReadyToDelete := make([]structs.GroupBaseStruct, 0)
 	for _, group := range groups {
 		ok, err := GroupEngine.IsExists(group.Header.Name)
 		if err != nil {

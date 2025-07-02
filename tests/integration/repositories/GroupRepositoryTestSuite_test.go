@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	group "parsdevkit.net/modules/group/group"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
 
 	"parsdevkit.net/core/utils"
 
@@ -82,7 +82,7 @@ func (suite *GroupRepositoryTestSuite) Test_GetByName() {
 	existingGroup, err := suite.repository.GetByName(groupName)
 	require.NoError(suite.T(), err, "Failed to retrieve group by name")
 
-	groupStructFromDB := &group.GroupBaseStruct{}
+	groupStructFromDB := &groupStructs.GroupBaseStruct{}
 	err = json.Unmarshal([]byte(existingGroup.Document), groupStructFromDB)
 	require.NoError(suite.T(), err, "Failed unmarshal group entity")
 
@@ -117,7 +117,7 @@ func (suite *GroupRepositoryTestSuite) Test_ListByPath() {
 	assert.Equal(suite.T(), 2, len(*existingGroups))
 
 	for _, entity := range *existingGroups {
-		groupStructFromDB := &group.GroupBaseStruct{}
+		groupStructFromDB := &groupStructs.GroupBaseStruct{}
 		err = json.Unmarshal([]byte(entity.Document), groupStructFromDB)
 		require.NoError(suite.T(), err, "Failed unmarshal group entity")
 
@@ -140,7 +140,7 @@ func TestGroupRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(GroupRepositoryTestSuite))
 }
 
-func CreateNewSampleGroup(name string) (*entities.Group, *group.GroupBaseStruct, error) {
+func CreateNewSampleGroup(name string) (*entities.Group, *groupStructs.GroupBaseStruct, error) {
 
 	group := BasicGroup_WithName(name)
 	jsonData, err := json.Marshal(group)
@@ -156,7 +156,7 @@ func CreateNewSampleGroup(name string) (*entities.Group, *group.GroupBaseStruct,
 	return &groupEntity, group, nil
 }
 
-func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *group.GroupBaseStruct, error) {
+func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *groupStructs.GroupBaseStruct, error) {
 
 	group := BasicGroup_WithNamePath(name, set)
 
@@ -173,9 +173,9 @@ func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *group.Grou
 	return &groupEntity, group, nil
 }
 
-func BasicGroup_WithName(name string) *group.GroupBaseStruct {
+func BasicGroup_WithName(name string) *groupStructs.GroupBaseStruct {
 
-	group := group.NewGroupBaseStruct(
+	group := groupStructs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -184,7 +184,7 @@ func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group.NewGroupSpecification(0,
+		groupStructs.NewGroupSpecification(0,
 			name,
 			"path",
 			[]string{"foo", "bar"},
@@ -193,9 +193,9 @@ func BasicGroup_WithName(name string) *group.GroupBaseStruct {
 	return &group
 }
 
-func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
+func BasicGroup_WithNamePath(name, path string) *groupStructs.GroupBaseStruct {
 
-	group := group.NewGroupBaseStruct(
+	group := groupStructs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -204,7 +204,7 @@ func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group.NewGroupSpecification(0,
+		groupStructs.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/core/utilities/file"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
 
 	"parsdevkit.net/application/models/label"
 	applicationGroup "parsdevkit.net/application/structs/group"
@@ -51,7 +52,7 @@ func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 	_, err := workspaceService.Remove(workspaceName, true, true)
 	require.NoError(t, err, "Failed to delete workspace")
 }
-func CreateGroup(t *testing.T, groupName, path, environment string) group.GroupBaseStruct {
+func CreateGroup(t *testing.T, groupName, path, environment string) groupStructs.GroupBaseStruct {
 
 	groupStruct := *BasicGroup_WithNamePath(groupName, path)
 
@@ -233,9 +234,9 @@ func GetPackages(index int, count int, withVersion bool) []applicationProject.Pa
 	return selectedElements
 }
 
-func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
+func BasicGroup_WithNamePath(name, path string) *groupStructs.GroupBaseStruct {
 
-	group := group.NewGroupBaseStruct(
+	group := groupStructs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -244,7 +245,7 @@ func BasicGroup_WithNamePath(name, path string) *group.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group.NewGroupSpecification(0,
+		groupStructs.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

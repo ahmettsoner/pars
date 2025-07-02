@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	group "parsdevkit.net/modules/group/group"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
 
 	// Assert
 	a.NoError(err)
@@ -58,10 +58,10 @@ Path: parsdevkit.net/cmd
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "parsdevkit.net/cmd", []string{"CMD"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "parsdevkit.net/cmd", []string{"CMD"})
 
 	// Assert
 	a.NoError(err)
@@ -78,10 +78,10 @@ Package: pars/cmd
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "CMD", []string{"pars", "cmd"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "CMD", []string{"pars", "cmd"})
 
 	// Assert
 	a.NoError(err)
@@ -100,10 +100,10 @@ Package:
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "CMD", []string{"pars", "cmd"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "CMD", []string{"pars", "cmd"})
 
 	// Assert
 	a.NoError(err)
@@ -121,10 +121,10 @@ Name: CMD
 
 	// Act
 
-	var data group.GroupSpecification
+	var data groupStructs.GroupSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := group.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
+	expected := groupStructs.NewGroupSpecification(0, "CMD", "CMD", []string{"CMD"})
 
 	// Assert
 	a.NoError(err)

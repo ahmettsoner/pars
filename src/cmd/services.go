@@ -13,7 +13,7 @@ import (
 	templateFile "parsdevkit.net/modules/template/file"
 	templateShared "parsdevkit.net/modules/template/shared"
 
-	groupSchema "parsdevkit.net/modules/group/group"
+	groupSchema "parsdevkit.net/modules/group/group/structs"
 	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataResourceSchema "parsdevkit.net/structs/resource/data-resource"
 	objectResourceSchema "parsdevkit.net/structs/resource/object-resource"

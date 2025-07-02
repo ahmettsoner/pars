@@ -11,6 +11,7 @@ import (
 	applicationProject "parsdevkit.net/application/structs/project"
 	_string "parsdevkit.net/core/utilities/string"
 	group "parsdevkit.net/modules/group/group"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	workspaceStruct "parsdevkit.net/structs/workspace"
@@ -461,8 +462,8 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 
 	return result, nil
 }
-func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*group.GroupBaseStruct, error) {
-	result := group.GroupBaseStruct{}
+func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*groupStructs.GroupBaseStruct, error) {
+	result := groupStructs.GroupBaseStruct{}
 
 	groupName := project.Specifications.Group
 
