@@ -5,11 +5,13 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
+	codetemplate "parsdevkit.net/structs/template/code-template"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
@@ -69,7 +71,7 @@ func (s CodeTemplateEngine) createTemplates(templates []codetemplateStruct.Templ
 
 	templatesReadyToCreate := make([]codetemplateStruct.TemplateBaseStruct, 0)
 	templatesForUpdate := make([]codetemplateStruct.TemplateBaseStruct, 0)
-	templateService := services.NewCodeTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 
 	for _, template := range templates {
 		if err := template.Validate(); err != nil {
@@ -138,7 +140,7 @@ func (s CodeTemplateEngine) createTemplates(templates []codetemplateStruct.Templ
 }
 func (s CodeTemplateEngine) removeTemplates(templates []codetemplateStruct.TemplateBaseStruct, permanent bool) error {
 
-	templateService := services.NewCodeTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 	templatesReadyToDelete := make([]codetemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
 		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
@@ -163,7 +165,7 @@ func (s CodeTemplateEngine) removeTemplates(templates []codetemplateStruct.Templ
 }
 func (s CodeTemplateEngine) generate(model codetemplateStruct.TemplateBaseStruct) (*codetemplateStruct.TemplateBaseStruct, error) {
 
-	templateService := services.NewCodeTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 
 	result, err := templateService.GetByName(model.Header.Name)
 	if err != nil {

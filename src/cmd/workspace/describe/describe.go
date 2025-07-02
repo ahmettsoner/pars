@@ -11,11 +11,10 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utilities/array"
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -75,7 +74,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspace, err := workspaceService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve workspace '%s'\n%w", commandOptions.Name, err)
@@ -177,7 +176,7 @@ func viewTypeFlagCompletion(cmd *cobra.Command, args []string, toComplete string
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

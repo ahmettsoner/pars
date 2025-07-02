@@ -4,8 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
@@ -15,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	templateCode "parsdevkit.net/modules/template/code"
 )
 
 type DefaultWorkspaceTestSuite struct {
@@ -103,7 +102,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicTemplate() {
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := services.NewCodeTemplateService(suite.environment)
+	service := templateCode.NewCodeTemplateService(suite.environment)
 	template, err := service.GetByName(structData.Name)
 	require.NoError(suite.T(), err, "Failed to get template by name.")
 	assert.Equal(suite.T(), structData.Name, template.Header.Name)

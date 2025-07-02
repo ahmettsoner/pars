@@ -34,6 +34,14 @@ func (c *Container) Register(provider interface{}) error {
 		return errors.New("provider must return exactly one value")
 	}
 
+	// Parametreleri kontrol et
+	for i := 0; i < fnType.NumIn(); i++ {
+		depType := fnType.In(i)
+		if _, ok := c.providers[depType]; !ok {
+			return fmt.Errorf("dependency %s not registered for provider %s", depType, fnType)
+		}
+	}
+
 	returnType := fnType.Out(0)
 	c.providers[returnType] = fn
 	return nil
@@ -69,11 +77,47 @@ func (c *Container) Get(t any) any {
 	if typ.Kind() == reflect.Ptr {
 		typ = typ.Elem()
 	}
-	v := c.resolve(typ)
-	return v.Interface()
+	return c.resolve(typ, make(map[reflect.Type]bool)).Interface()
 }
 
-func (c *Container) resolve(t reflect.Type) reflect.Value {
+func (c *Container) Invoke(function interface{}) reflect.Value {
+	fn := reflect.ValueOf(function)
+	fnType := fn.Type()
+
+	if fnType.Kind() != reflect.Func {
+		panic(fmt.Errorf("Invoke requires a function"))
+	}
+
+	args := make([]reflect.Value, fnType.NumIn())
+
+	for i := 0; i < fnType.NumIn(); i++ {
+		paramType := fnType.In(i)
+
+		// Özel parametre (string gibi) için ayrı işlem yapılabilir
+		if paramType.Kind() == reflect.String {
+			// Örneğin environment string parametresini dışarıdan geçebilirsin
+			// Burada örnek olarak boş string veriyoruz
+			args[i] = reflect.ValueOf("")
+			continue
+		}
+
+		instance := c.GetByType(paramType)
+
+		args[i] = instance
+	}
+
+	results := fn.Call(args)
+	return results[0]
+}
+
+func (c *Container) GetByType(t reflect.Type) reflect.Value {
+	return c.resolve(t, make(map[reflect.Type]bool))
+}
+func (c *Container) resolve(t reflect.Type, visited map[reflect.Type]bool) reflect.Value {
+	if visited[t] {
+		panic(fmt.Errorf("circular dependency detected on type %s", t))
+	}
+
 	c.lock.RLock()
 	provider, ok := c.providers[t]
 	c.lock.RUnlock()
@@ -82,12 +126,17 @@ func (c *Container) resolve(t reflect.Type) reflect.Value {
 		panic(fmt.Errorf("no provider registered for %s", t))
 	}
 
+	visited[t] = true
+	defer func() {
+		delete(visited, t)
+	}()
+
 	providerType := provider.Type()
 	args := make([]reflect.Value, providerType.NumIn())
 
 	for i := 0; i < providerType.NumIn(); i++ {
 		depType := providerType.In(i)
-		depValue := c.resolve(depType)
+		depValue := c.resolve(depType, visited)
 		args[i] = depValue
 	}
 

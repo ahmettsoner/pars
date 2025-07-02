@@ -1,4 +1,4 @@
-package services
+package shared
 
 import (
 	"encoding/json"

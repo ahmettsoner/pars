@@ -4,16 +4,18 @@ import (
 	"fmt"
 	"log"
 
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/structs/workspace"
+
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 
 	"parsdevkit.net/application"
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
 )
 
 func GetActiveWorkspaceNameV2(ctx *application.ApplicationContext, workspaceName string) (string, error) {
 	if !_string.IsEmpty(workspaceName) {
-		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+		workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 		ok, err := workspaceService.IsExists(workspaceName)
 		if err != nil {
 			return "", fmt.Errorf("xxx: workspace ('%s') kontrolünde hata oluştu\n%w", workspaceName, err)
@@ -36,7 +38,7 @@ func GetActiveWorkspaceNameV2(ctx *application.ApplicationContext, workspaceName
 func GetActiveWorkspaceName(ctx *application.ApplicationContext, workspaceName string) string {
 
 	if !_string.IsEmpty(workspaceName) {
-		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+		workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
 			log.Fatal(err)
@@ -61,7 +63,7 @@ func GetActiveWorkspacePath(ctx *application.ApplicationContext, workspaceName s
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspace, err := workspaceService.GetByName(workspaceName)
 	if err != nil {
 		log.Fatal(err)

@@ -1,4 +1,4 @@
-package services
+package file
 
 import (
 	"encoding/json"
@@ -6,11 +6,10 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
-
-	"parsdevkit.net/structs/template"
-	codetemplate "parsdevkit.net/structs/template/code-template"
-
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/structs/template"
+	filetemplate "parsdevkit.net/structs/template/file-template"
+
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -18,25 +17,25 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type CodeTemplateService struct {
+type FileTemplateService struct {
 	templateRespository          *repositories.TemplateRepository
 	generationHistoryRespository *repositories.GenerationHistoryRepository
 	environment                  string
 }
 
-func NewCodeTemplateService(environment string) contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
+func NewFileTemplateService(environment string) contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct] {
 	templateRespository := ioc.Get[*repositories.TemplateRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
-	return &CodeTemplateService{
+	return &FileTemplateService{
 		environment:                  environment,
 		templateRespository:          templateRespository,
 		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 
-func (s CodeTemplateService) GetByName(name string) (*codetemplate.TemplateBaseStruct, error) {
-	var template *codetemplate.TemplateBaseStruct
+func (s FileTemplateService) GetByName(name string) (*filetemplate.TemplateBaseStruct, error) {
+	var template *filetemplate.TemplateBaseStruct
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
@@ -51,7 +50,7 @@ func (s CodeTemplateService) GetByName(name string) (*codetemplate.TemplateBaseS
 	return template, nil
 }
 
-func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codetemplate.TemplateBaseStruct, error) {
+func (s FileTemplateService) Save(model filetemplate.TemplateBaseStruct) (*filetemplate.TemplateBaseStruct, error) {
 
 	result, err := s.saveTemplateInformation(model)
 	if err != nil {
@@ -61,17 +60,35 @@ func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codet
 	return result, nil
 }
 
-func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error) {
+func (s FileTemplateService) List() (*([]filetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.Code))
+	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.File))
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]filetemplate.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template filetemplate.TemplateBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &template)
+
+		templateList = append(templateList, template)
+	}
+
+	return &templateList, nil
+}
+func (s FileTemplateService) ListByWorkspace(workspace string) (*([]filetemplate.TemplateBaseStruct), error) {
+
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.File))
+	if err != nil {
+		return nil, err
+	}
+
+	templateList := make([]filetemplate.TemplateBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var template filetemplate.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -80,36 +97,17 @@ func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]codetemplate.TemplateBaseStruct), error) {
-
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.Code))
-	if err != nil {
-		return nil, err
-	}
-
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
-
-	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
-		err = json.Unmarshal([]byte(entity.Document), &template)
-
-		templateList = append(templateList, template)
-	}
-
-	return &templateList, nil
-}
-
-func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s FileTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]filetemplate.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]filetemplate.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template filetemplate.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -118,17 +116,17 @@ func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s FileTemplateService) ListByWorkspaceSetAndLayers(workspace, set string, layers ...string) (*([]filetemplate.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]filetemplate.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template filetemplate.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -137,7 +135,7 @@ func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set strin
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*codetemplate.TemplateBaseStruct, error) {
+func (s FileTemplateService) Remove(name, workspace string, permanent bool) (*filetemplate.TemplateBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
@@ -145,13 +143,13 @@ func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*co
 		return nil, err
 	}
 	if templateTemplateEntity == nil {
-		return nil, errors.New("invalid template name")
+		return nil, errors.New("invalid template template")
 	}
 
 	logrus.Debugf("template %v deleting...", templateTemplateEntity.Name)
 
 	err = s.templateRespository.Delete(templateTemplateEntity)
-	var template codetemplate.TemplateBaseStruct
+	var template filetemplate.TemplateBaseStruct
 	err = json.Unmarshal([]byte(templateTemplateEntity.Document), &template)
 	if err != nil {
 		return nil, err
@@ -165,11 +163,11 @@ func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*co
 	return &template, nil
 }
 
-func (s CodeTemplateService) IsExists(name, workspace string) (bool, error) {
+func (s FileTemplateService) IsExists(name, workspace string) (bool, error) {
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
-		return false, fmt.Errorf("xxx: Code Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
+		return false, fmt.Errorf("xxx: File Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if templateTemplateEntity == nil {
 		return false, nil
@@ -177,20 +175,20 @@ func (s CodeTemplateService) IsExists(name, workspace string) (bool, error) {
 
 	return true, nil
 }
-func (s CodeTemplateService) GetHash(name string) (string, error) {
+func (s FileTemplateService) GetHash(name string) (string, error) {
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
-		return "", fmt.Errorf("xxx: Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
+		return "", fmt.Errorf("xxx: File Template getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 	if entity == nil {
-		return "", fmt.Errorf("xxx: Template tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
+		return "", fmt.Errorf("xxx: File Template tanımlı değil '%s' Hash bilgisi alınamıyor\n%w", name, err)
 	}
 
 	return entity.Hash, nil
 }
 
-func (s CodeTemplateService) saveTemplateInformation(templateModel codetemplate.TemplateBaseStruct) (*codetemplate.TemplateBaseStruct, error) {
+func (s FileTemplateService) saveTemplateInformation(templateModel filetemplate.TemplateBaseStruct) (*filetemplate.TemplateBaseStruct, error) {
 
 	jsonData, err := json.Marshal(templateModel)
 	if err != nil {

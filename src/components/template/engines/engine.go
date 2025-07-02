@@ -1,8 +1,9 @@
 package engines
 
 import (
-	"parsdevkit.net/core/utils"
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
+	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 )
 
 type EngineFuncs struct{}
@@ -17,7 +18,7 @@ func (t EngineFuncs) RenderContent(templateName string, data any) string {
 }
 
 func (t EngineFuncs) GetContent(templateName string) string {
-	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
+	sharedTemplateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
 
 	sharedTemplate, err := sharedTemplateService.GetByName(templateName)
 	if err != nil {

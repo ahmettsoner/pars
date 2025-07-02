@@ -7,14 +7,17 @@ import (
 	"path/filepath"
 	"strings"
 
+	workspaceStruct "parsdevkit.net/structs/workspace"
+
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
+
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utilities/json"
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
-	"parsdevkit.net/operation/services"
 	"parsdevkit.net/orchestrator/schema"
 
 	"github.com/spf13/cobra"
@@ -176,7 +179,7 @@ func GetLastComponent(path string) (string, error) {
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspaceStruct.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

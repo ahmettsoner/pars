@@ -10,9 +10,8 @@ import (
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utils"
+	templateCode "parsdevkit.net/modules/template/code"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -41,7 +40,7 @@ func (suite *TemplateServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = services.NewCodeTemplateService(suite.environment)
+	suite.service = templateCode.NewCodeTemplateService(suite.environment)
 
 	suite.T().Log("Template creation completed")
 }

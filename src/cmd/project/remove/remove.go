@@ -9,12 +9,11 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/core/utilities/array"
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/workspace"
 
@@ -124,7 +123,7 @@ func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspaceStruct.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

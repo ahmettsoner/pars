@@ -40,10 +40,10 @@ func NewCodeTemplateOperations(environment string) CodeTemplateOperations {
 }
 
 func (s CodeTemplateOperations) GenerateByResource(model objectresource.ResourceBaseStruct) error {
-	workspaceService := services.NewWorkspaceService(s.environment)
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, layer := range model.Specifications.Layers {
-		templateService := services.NewCodeTemplateService(s.environment)
+		templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 		setTemplates, err := templateService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err
@@ -76,7 +76,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 }
 
 func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBaseStruct) error {
-	workspaceService := services.NewWorkspaceService(s.environment)
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, modelLayer := range model.Specifications.Layers {
 		resourceService := services.NewObjectResourceService(s.environment)

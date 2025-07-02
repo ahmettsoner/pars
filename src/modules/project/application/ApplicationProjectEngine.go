@@ -16,9 +16,8 @@ import (
 	groupStructs "parsdevkit.net/modules/group/group/structs"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
+	"parsdevkit.net/structs/workspace"
 	workspaceStruct "parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/operation/services"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utils"
@@ -449,7 +448,7 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 	var result *workspaceStruct.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
-		workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+		workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
 			return nil, err
@@ -507,7 +506,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 
 func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStruct.ProjectBaseStruct, reference applicationprojectStruct.ProjectBaseStruct) (*applicationprojectStruct.ProjectBaseStruct, error) {
 
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
 

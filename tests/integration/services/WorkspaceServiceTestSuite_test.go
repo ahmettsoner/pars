@@ -5,12 +5,11 @@ import (
 
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/operation/services"
-
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
 	"parsdevkit.net/core/utils"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
@@ -35,7 +34,7 @@ func (suite *WorkspaceServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = services.NewWorkspaceService(suite.environment)
+	suite.service = workspaceWorkspace.NewWorkspaceService(suite.environment)
 
 	suite.T().Log("Workspace creation completed")
 }

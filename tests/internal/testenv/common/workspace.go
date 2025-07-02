@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/operation/services"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -32,7 +32,7 @@ func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, envi
 		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
-	workspaceService := services.NewWorkspaceService(environment)
+	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)
 	tempWorkspace, err := workspaceService.Save(workspace)
 	require.NoError(t, err, "Failed to save workspace")
 	assert.Equal(t, workspace, *tempWorkspace)
@@ -54,7 +54,7 @@ func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }
 func RemoveWorkspaceWithService(t *testing.T, workspaceName, environment string) {
-	workspaceService := services.NewWorkspaceService(environment)
+	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)
 	_, err := workspaceService.Remove(workspaceName, true, true)
 	require.NoError(t, err, "Failed to delete workspace")
 }

@@ -5,12 +5,14 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
+	filetemplate "parsdevkit.net/structs/template/file-template"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
 	engineOperations "parsdevkit.net/engines"
-	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/core/utils"
@@ -70,7 +72,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 
 	templatesReadyToCreate := make([]filetemplateStruct.TemplateBaseStruct, 0)
 	templatesForUpdate := make([]filetemplateStruct.TemplateBaseStruct, 0)
-	templateService := services.NewFileTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
 
 	for _, template := range templates {
 		if err := template.Validate(); err != nil {
@@ -138,7 +140,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 
 func (s FileTemplateEngine) removeTemplates(templates []filetemplateStruct.TemplateBaseStruct, permanent bool) error {
 
-	templateService := services.NewFileTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
 	templatesReadyToDelete := make([]filetemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
 		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
@@ -164,7 +166,7 @@ func (s FileTemplateEngine) removeTemplates(templates []filetemplateStruct.Templ
 }
 func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct) (*filetemplateStruct.TemplateBaseStruct, error) {
 
-	templateService := services.NewFileTemplateService(utils.GetEnvironment())
+	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
 
 	result, err := templateService.GetByName(model.Header.Name)
 	if err != nil {

@@ -3,9 +3,10 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
 )
@@ -38,7 +39,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve workspace\n%w", err)

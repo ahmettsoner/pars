@@ -6,11 +6,14 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utilities/array"
 	"parsdevkit.net/core/utils"
 	group "parsdevkit.net/modules/group/group"
+
+	"parsdevkit.net/structs/workspace"
+
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
 )
@@ -109,7 +112,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

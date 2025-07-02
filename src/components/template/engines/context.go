@@ -15,6 +15,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
+	"parsdevkit.net/structs/workspace"
 )
 
 type ContextFuncs struct{}
@@ -23,10 +24,10 @@ func (c ContextFuncs) GetContextByBaseForArray(base models.CodeTemplateDataConte
 	return c.GetContextByBase(base, args...)
 }
 func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args ...string) models.CodeTemplateDataContext {
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	applicationProjectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
-	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
+	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 
 	/*
 		Eğer set tanımlı değilse

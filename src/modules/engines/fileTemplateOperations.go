@@ -36,10 +36,10 @@ func NewFileTemplateOperations(environment string) FileTemplateOperations {
 }
 
 func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBaseStruct) error {
-	workspaceService := services.NewWorkspaceService(s.environment)
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, layer := range model.Specifications.Layers {
-		templateService := services.NewFileTemplateService(s.environment)
+		templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
 		setTemplates, err := templateService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err
@@ -72,7 +72,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 }
 
 func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBaseStruct) error {
-	workspaceService := services.NewWorkspaceService(s.environment)
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, modelLayer := range model.Specifications.Layers {
 		resourceService := services.NewDataResourceService(s.environment)

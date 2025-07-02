@@ -6,7 +6,6 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/operation/services"
 
 	group "parsdevkit.net/modules/group/group"
 	projectApplication "parsdevkit.net/modules/project/application"
@@ -16,7 +15,11 @@ import (
 	templateCode "parsdevkit.net/modules/template/code"
 	templateFile "parsdevkit.net/modules/template/file"
 	templateShared "parsdevkit.net/modules/template/shared"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 	applicationproject "parsdevkit.net/structs/project/application-project"
+	codetemplate "parsdevkit.net/structs/template/code-template"
+	filetemplate "parsdevkit.net/structs/template/file-template"
+	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 	"parsdevkit.net/structs/workspace"
 
 	groupSchema "parsdevkit.net/modules/group/group/structs"
@@ -83,11 +86,20 @@ func registerContainers() {
 	ioc.Register(func() *repositories.GenerationHistoryRepository {
 		return repositories.NewGenerationHistoryRepository(dbContext)
 	})
+	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
+		return workspaceWorkspace.NewWorkspaceService(utils.GetEnvironment())
+	})
 	ioc.RegisterInterface[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]](func() contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
 		return projectApplication.NewApplicationProjectService(utils.GetEnvironment(), platformsCommon.Registry)
 	})
-	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
-		return services.NewWorkspaceService(utils.GetEnvironment())
+	ioc.RegisterInterface[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
+		return templateCode.NewCodeTemplateService(utils.GetEnvironment())
+	})
+	ioc.RegisterInterface[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct] {
+		return templateFile.NewFileTemplateService(utils.GetEnvironment())
+	})
+	ioc.RegisterInterface[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
+		return templateShared.NewSharedTemplateService(utils.GetEnvironment())
 	})
 
 }

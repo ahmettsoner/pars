@@ -16,6 +16,7 @@ require (
 
 require (
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/workspace/workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000
@@ -89,6 +90,7 @@ replace parsdevkit.net/modules/task/common => ../task/common
 replace parsdevkit.net/modules/resource/data => ../resource/data
 
 replace parsdevkit.net/modules/group/group => ../group/group
+replace parsdevkit.net/modules/workspace/workspace => ../workspace/workspace
 
 replace parsdevkit.net/modules/resource/object => ../resource/object
 

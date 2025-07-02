@@ -10,9 +10,8 @@ import (
 	"parsdevkit.net/structs/workspace"
 
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/operation/services"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application/contracts"
@@ -48,7 +47,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	workspaceService = services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService = ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	if len(args) > 0 {
 		commandOptions.Name = args[0]

@@ -10,7 +10,7 @@ import (
 	"log"
 	"strings"
 
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/core/utilities/array"
 	_string "parsdevkit.net/core/utilities/string"
@@ -146,7 +146,7 @@ func workspaceFlagCompletion(cmd *cobra.Command, args []string, toComplete strin
 }
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

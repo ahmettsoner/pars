@@ -1,4 +1,4 @@
-package services
+package workspace
 
 import (
 	"encoding/json"
@@ -34,17 +34,20 @@ type WorkspaceService struct {
 	workspaceRespository *repositories.WorkspaceRepository
 	projectRespository   *repositories.ProjectRepository
 	settingsRespository  *repositories.SettingsRepository
+	projectService       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
 }
 
 func NewWorkspaceService(environment string) contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
 	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()
 	settingsRespository := ioc.Get[*repositories.SettingsRepository]()
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	return &WorkspaceService{
 		environment:          environment,
 		workspaceRespository: workspaceRespository,
 		projectRespository:   projectRespository,
 		settingsRespository:  settingsRespository,
+		projectService:       projectService,
 	}
 }
 func (s *WorkspaceService) correctWorkspaceName(name string) string {
@@ -329,8 +332,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 		return nil, errors.New("invalid workspace workspace")
 	}
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
-	projectsBelongsToWorkspace, err := projectService.ListByWorkspace(workspaceName)
+	projectsBelongsToWorkspace, err := s.projectService.ListByWorkspace(workspaceName)
 	if err != nil {
 		return nil, err
 	}
@@ -338,7 +340,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 	if len(*projectsBelongsToWorkspace) > 0 {
 		if force {
 			for _, project := range *projectsBelongsToWorkspace {
-				projectService.Remove(project.GetFullName(), project.Specifications.Workspace, force, permanent)
+				s.projectService.Remove(project.GetFullName(), project.Specifications.Workspace, force, permanent)
 			}
 		} else {
 			return nil, errors.New(fmt.Sprintf("workspace (%v) has related projects", workspaceName))

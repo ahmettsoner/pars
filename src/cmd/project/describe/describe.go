@@ -9,13 +9,12 @@ import (
 	"log"
 	"strings"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utilities/array"
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/components/workspace"
+
+	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -136,7 +135,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspaceStruct.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

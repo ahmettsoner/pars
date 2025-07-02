@@ -6,10 +6,12 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utilities/array"
-	"parsdevkit.net/core/utils"
+
+	"parsdevkit.net/structs/workspace"
+
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
 )
@@ -50,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	for _, name := range commandOptions.Names {
 		workspace, err := workspaceService.Remove(name, commandOptions.Force, true)
 		if err != nil {
@@ -87,7 +89,7 @@ func addSubCommands() {
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

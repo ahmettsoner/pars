@@ -3,13 +3,14 @@ package application
 import (
 	"log"
 
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 )
 
 func GetContext() *ApplicationContext {
-	workspaceService := services.NewWorkspaceService(utils.GetEnvironment())
+	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	currentWorkspace, err := workspaceService.GetActiveWorkspace()
 	if err != nil {

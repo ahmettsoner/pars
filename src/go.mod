@@ -17,6 +17,7 @@ replace parsdevkit.net/modules/task/common => ./modules/task/common
 replace parsdevkit.net/modules/resource/data => ./modules/resource/data
 
 replace parsdevkit.net/modules/group/group => ./modules/group/group
+replace parsdevkit.net/modules/workspace/workspace => ./modules/workspace/workspace
 
 replace parsdevkit.net/modules/resource/object => ./modules/resource/object
 
@@ -109,6 +110,7 @@ require (
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/workspace/workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect

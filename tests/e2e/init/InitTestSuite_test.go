@@ -5,10 +5,11 @@ import (
 	"path/filepath"
 	"testing"
 
+	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
+
 	"parsdevkit.net/core/utilities/file"
 
 	"parsdevkit.net/core/utils"
-	"parsdevkit.net/operation/services"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -152,7 +153,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnRelativePath() {
 	_, err = common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to initialize workspace")
 
-	service := services.NewWorkspaceService(suite.environment)
+	service := workspaceWorkspace.NewWorkspaceService(suite.environment)
 	workspace, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
 	require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)
@@ -182,7 +183,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnAbsolutePath() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to initialize workspace")
 
-	service := services.NewWorkspaceService(suite.environment)
+	service := workspaceWorkspace.NewWorkspaceService(suite.environment)
 	workspace, err := service.GetByName(name)
 	require.NoError(suite.T(), err, "Failed to get workspace by name.")
 	require.NotNil(suite.T(), workspace, "Not found workspace '%s'", name)

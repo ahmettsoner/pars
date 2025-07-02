@@ -9,10 +9,13 @@ import (
 	"parsdevkit.net/components/workspace"
 
 	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/operation/services"
 
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/core/utilities/array"
-	"parsdevkit.net/core/utils"
+	codetemplate "parsdevkit.net/structs/template/code-template"
+	filetemplate "parsdevkit.net/structs/template/file-template"
+	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -59,9 +62,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) > 0 {
 
 		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-		codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
-		fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())
-		sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
+		codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
+		fileTemplateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+		sharedTemplateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
 
 		for _, name := range commandOptions.Names {
 
@@ -179,7 +182,10 @@ func addSubCommands() {
 func listTemplateNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	sharedTemplateService := services.NewSharedTemplateService(utils.GetEnvironment())
+	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
+	fileTemplateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	sharedTemplateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
+
 	sharedTemplateList, err := sharedTemplateService.List()
 	if err != nil {
 		log.Fatal(err)
@@ -191,7 +197,6 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 		}
 	}
 
-	fileTemplateService := services.NewFileTemplateService(utils.GetEnvironment())
 	fileTemplateList, err := fileTemplateService.List()
 	if err != nil {
 		log.Fatal(err)
@@ -203,7 +208,6 @@ func listTemplateNameSuggestions(args []string, toComplete string) []string {
 		}
 	}
 
-	codeTemplateService := services.NewCodeTemplateService(utils.GetEnvironment())
 	codeTemplateList, err := codeTemplateService.List()
 	if err != nil {
 		log.Fatal(err)
