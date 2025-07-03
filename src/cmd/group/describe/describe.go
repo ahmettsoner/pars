@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	groupSchema "parsdevkit.net/modules/group/group/structs"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"log"
@@ -12,12 +13,10 @@ import (
 
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utilities/array"
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/pkg/utilities/array"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
-	group "parsdevkit.net/modules/group/group"
 )
 
 type DescribeOptions struct {
@@ -60,7 +59,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := group.NewGroupService(utils.GetEnvironment())
+	groupService := ioc.Get[contracts.GroupServiceInterface[groupSchema.GroupBaseStruct]]()
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group '%s'\n%w", commandOptions.Name, err)
@@ -119,7 +118,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := group.NewGroupService(utils.GetEnvironment())
+	groupService := ioc.Get[contracts.GroupServiceInterface[groupSchema.GroupBaseStruct]]()
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

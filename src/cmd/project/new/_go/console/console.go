@@ -9,11 +9,11 @@ import (
 	"parsdevkit.net/structs/project"
 
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/pkg/utils/json"
 )
 
 type NewOptions struct {

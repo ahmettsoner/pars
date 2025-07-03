@@ -8,7 +8,7 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/models"
 	"parsdevkit.net/structs/project"

@@ -4,7 +4,7 @@ go 1.23.7
 
 replace parsdevkit.net/engines => ../modules/engines
 
-replace parsdevkit.net/core => ../core
+replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/context => ../modules/context
 
@@ -14,8 +14,6 @@ replace parsdevkit.net/persistence/entities => ../data/entities
 replace parsdevkit.net/persistence/repositories => ../data/repositories
 
 replace parsdevkit.net/persistence/contexts => ../data/contexts
-
-replace parsdevkit.net/core/utils => ../modules/utils
 
 replace parsdevkit.net/providers => ../providers
 
@@ -37,12 +35,8 @@ replace parsdevkit.net/structs => ../modules/structs
 
 replace parsdevkit.net/models => ../models
 
-replace parsdevkit.net/operation/services => ../modules/services
-
 require (
-	parsdevkit.net/core v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
-	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 )
 
 require (

@@ -14,9 +14,9 @@ import (
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
+	_string "parsdevkit.net/pkg/utilities/string"
+	"parsdevkit.net/pkg/utils/json"
 )
 
 var (

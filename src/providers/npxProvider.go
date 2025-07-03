@@ -9,7 +9,7 @@ func NPXExecute(version string, path string, args ...string) error {
 	// }
 
 	var cmdPath string = "npx"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "npx.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "npx.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -27,7 +27,7 @@ func NPMXExecuteWithOutput(version string, path string, args ...string) (string,
 	// }
 
 	var cmdPath string = "npx"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "npx.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "npx.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/cmd/workspace/describe"
 	"parsdevkit.net/cmd/workspace/list"
 	"parsdevkit.net/cmd/workspace/remove"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/structs/workspace"
 

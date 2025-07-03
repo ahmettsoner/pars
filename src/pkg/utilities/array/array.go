@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"parsdevkit.net/core/utilities/common"
+	"parsdevkit.net/pkg/utilities/common"
 )
 
 func Slice(args ...interface{}) []interface{} {

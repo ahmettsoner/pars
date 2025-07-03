@@ -3,7 +3,7 @@ package sharedtemplate
 import (
 	applicationTemplate "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 )
 
 type TemplateSpecification struct {

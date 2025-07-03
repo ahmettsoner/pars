@@ -3,8 +3,8 @@ package filetemplate
 import (
 	"fmt"
 
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type Template struct {

@@ -3,11 +3,11 @@ package structs
 import (
 	"fmt"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type GroupBaseStruct struct {

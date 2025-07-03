@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 	commontask "parsdevkit.net/structs/task/common-task"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
@@ -14,7 +14,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
 type CommonTaskEngine struct{}

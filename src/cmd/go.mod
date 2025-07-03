@@ -6,11 +6,9 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.19.0
-	parsdevkit.net/core v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
-	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/dotnet v0.0.0-00010101000000-000000000000
@@ -70,7 +68,7 @@ replace parsdevkit.net/components => ../components
 
 replace parsdevkit.net/engines => ../modules/engines
 
-replace parsdevkit.net/core => ../core
+replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/context => ../modules/context
 
@@ -79,8 +77,6 @@ replace parsdevkit.net/persistence/entities => ../modules/data/entities
 replace parsdevkit.net/persistence/repositories => ../modules/data/repositories
 
 replace parsdevkit.net/persistence/contexts => ../modules/data/contexts
-
-replace parsdevkit.net/core/utils => ../modules/utils
 
 replace parsdevkit.net/providers => ../providers
 
@@ -101,8 +97,6 @@ replace parsdevkit.net/platforms/pars => ../platforms/pars
 replace parsdevkit.net/structs => ../modules/structs
 
 replace parsdevkit.net/models => ../models
-
-replace parsdevkit.net/operation/services => ../modules/services
 
 replace parsdevkit.net/application => ../application
 replace parsdevkit.net/orchestrator => ../orchestrator

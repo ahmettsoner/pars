@@ -24,6 +24,4 @@ require (
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/core/utils => ../../utils
-
 replace parsdevkit.net/persistence/entities => ../entities

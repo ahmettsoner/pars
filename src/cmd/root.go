@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"parsdevkit.net/core/logs"
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
+	"parsdevkit.net/pkg/logs"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	cmdApply "parsdevkit.net/cmd/apply"
 	cmdBrowse "parsdevkit.net/cmd/browse"
@@ -59,15 +59,15 @@ var RootCmd = &cobra.Command{
 	Long:  `Smart Software Development Process Automation`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if !_string.IsEmpty(environment) {
-			utils.SetEnvironment(environment)
+			application.SetEnvironment(environment)
 		}
 
-		utils.SetLogLevel(logLevelEnumFlag.Value)
+		application.SetLogLevel(logLevelEnumFlag.Value)
 
 		if logLevelEnumFlag.Value != logs.LogLevels.Silence {
 			if logrusLogLevel, err := log.ParseLevel(string(logLevelEnumFlag.Value)); err != nil {
 				fmt.Println(err)
-				// file, err := os.OpenFile(filepath.Join(utils.GetLogLocation(), "app.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+				// file, err := os.OpenFile(filepath.Join(application.GetLogLocation(), "app.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 				// if err != nil {
 				// 	log.Fatal(err)
 				// }
@@ -86,10 +86,10 @@ func Execute() {
 		os.Exit(1)
 	}
 
-	utils.PrepareLocations()
+	application.PrepareLocations()
 
-	if !_string.IsEmpty(utils.GetEnvironment()) {
-		fmt.Printf("\nRunning on '%v' environment\n", utils.GetEnvironment())
+	if !_string.IsEmpty(application.GetEnvironment()) {
+		fmt.Printf("\nRunning on '%v' environment\n", application.GetEnvironment())
 	}
 }
 
@@ -147,7 +147,7 @@ func initConfig() {
 	if !_string.IsEmpty(cfgFile) {
 		viper.SetConfigFile(cfgFile)
 	} else {
-		configDir := utils.GetConfigLocation()
+		configDir := application.GetConfigLocation()
 
 		viper.AddConfigPath(configDir)
 		viper.SetConfigName("config")

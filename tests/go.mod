@@ -19,8 +19,6 @@ replace parsdevkit.net/modules/workspace/workspace => ../src/modules/workspace/w
 
 replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
 
-replace parsdevkit.net/operation/services => ../src/modules/services
-
 replace parsdevkit.net/application => ../src/application
 
 replace parsdevkit.net/persistence/entities => ../src/data/entities
@@ -47,8 +45,6 @@ replace parsdevkit.net/structs => ../src/modules/structs
 
 replace parsdevkit.net/context => ../src/modules/context
 
-replace parsdevkit.net/core/utils => ../src/modules/utils
-
 replace parsdevkit.net/providers => ../src/providers
 
 replace parsdevkit.net/models => ../src/models
@@ -63,10 +59,8 @@ require (
 	github.com/magiconair/properties v1.8.7
 	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v3 v3.0.1
-	parsdevkit.net/core v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
-	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000
@@ -140,6 +134,6 @@ require (
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/core => ../src/core
+replace parsdevkit.net/pkg => ../src/pkg
 
 replace parsdevkit.net/orchestrator => ../src/orchestrator

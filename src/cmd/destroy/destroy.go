@@ -17,9 +17,9 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/core/utilities/array"
-	"parsdevkit.net/core/utilities/json"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/utilities/array"
+	"parsdevkit.net/pkg/utilities/json"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )

@@ -61,7 +61,7 @@ function(build GOOS GOARCH OUTPUT_PATH)
 
     set(GO_BUILD_COMMAND "")
     list(APPEND GO_BUILD_COMMAND ${BASH_ENV_COMMAND})
-    list(APPEND GO_BUILD_COMMAND "go build ${mod} ${build_mode} -ldflags=\"-X parsdevkit.net/core/utils.version=${APP_TAG} -X parsdevkit.net/core/utils.stage=${VERSION_CHANNEL} -buildid=${APP_NAME}\" -o ${OUTPUT_PATH} ./pars.go")
+    list(APPEND GO_BUILD_COMMAND "go build ${mod} ${build_mode} -ldflags=\"-X parsdevkit.net/pkg/utils.version=${APP_TAG} -X parsdevkit.net/pkg/utils.stage=${VERSION_CHANNEL} -buildid=${APP_NAME}\" -o ${OUTPUT_PATH} ./pars.go")
     
     command_for_shell("${HOST_SHELL}" "${GO_BUILD_COMMAND}" SHELL_GO_BUILD_COMMAND)
 

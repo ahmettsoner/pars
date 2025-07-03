@@ -7,9 +7,9 @@ import (
 
 	"gopkg.in/yaml.v3"
 	layerPkg "parsdevkit.net/application/models/layer"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 )
 
 type Layer struct {

@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 )
 
 type JsonFuncs struct{}

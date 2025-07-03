@@ -1,7 +1,7 @@
 package functions
 
 import (
-	_math "parsdevkit.net/core/utilities/math"
+	_math "parsdevkit.net/pkg/utilities/math"
 )
 
 type MathFuncs struct{}

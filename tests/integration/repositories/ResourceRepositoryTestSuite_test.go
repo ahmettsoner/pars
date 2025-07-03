@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/structs"
 
 	"parsdevkit.net/application/models/label"
@@ -13,7 +14,6 @@ import (
 
 	"parsdevkit.net/application/schemas"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
@@ -42,7 +42,7 @@ func (suite *ResourceRepositoryTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	dbContext := contexts.NewDbContext(suite.environment)
 	suite.repository = *repositories.NewResourceRepository(dbContext)

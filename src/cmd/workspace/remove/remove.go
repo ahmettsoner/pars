@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/core/utilities/array"
+	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/structs/workspace"
 

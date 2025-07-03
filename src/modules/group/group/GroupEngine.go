@@ -4,13 +4,15 @@ import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
-	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utils"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
 )
 
 type GroupEngine struct{}
@@ -62,7 +64,7 @@ func (s GroupEngine) createGroups(groups []structs.GroupBaseStruct, init bool) e
 
 	groupsReadyToCreate := make([]structs.GroupBaseStruct, 0)
 	groupsForUpdate := make([]structs.GroupBaseStruct, 0)
-	groupService := NewGroupService(utils.GetEnvironment())
+	groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
 
 	for _, group := range groups {
 		ok, err := groupService.IsExists(group.Header.Name)
@@ -115,7 +117,7 @@ func (s GroupEngine) createGroups(groups []structs.GroupBaseStruct, init bool) e
 
 func (s GroupEngine) removeGroups(groups []structs.GroupBaseStruct, permanent bool) error {
 
-	GroupEngine := NewGroupService(utils.GetEnvironment())
+	GroupEngine := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
 	groupsReadyToDelete := make([]structs.GroupBaseStruct, 0)
 	for _, group := range groups {
 		ok, err := GroupEngine.IsExists(group.Header.Name)

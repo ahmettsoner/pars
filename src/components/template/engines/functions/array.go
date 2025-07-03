@@ -3,7 +3,7 @@ package functions
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utilities/array"
+	"parsdevkit.net/pkg/utilities/array"
 )
 
 type ArrayFuncs struct{}

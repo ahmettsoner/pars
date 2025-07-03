@@ -3,7 +3,7 @@ package objectresource
 import (
 	"strings"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"gopkg.in/yaml.v3"
 )

@@ -10,7 +10,7 @@ import (
 
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/pars/models"
 )

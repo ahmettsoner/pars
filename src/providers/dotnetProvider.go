@@ -17,7 +17,7 @@ func DotnetExecute(version string, path string, args ...string) error {
 	// }
 
 	var cmdPath string = "dotnet"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("dotnet", platformVersion), "dotnet.exe")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("dotnet", platformVersion), "dotnet.exe")
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
 		return err
@@ -42,7 +42,7 @@ func DotnetExecuteWithOutput(version string, path string, args ...string) (strin
 	// }
 
 	var cmdPath string = "dotnet"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("dotnet", platformVersion), "dotnet.exe")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("dotnet", platformVersion), "dotnet.exe")
 
 	output, err := ExecuteWithOutput(path, cmdPath, args...)
 	if err != nil {

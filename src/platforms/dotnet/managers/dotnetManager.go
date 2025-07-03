@@ -12,11 +12,11 @@ import (
 
 	"parsdevkit.net/application/structs"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationProject "parsdevkit.net/application/structs/project"
-	"parsdevkit.net/core/utilities/file"
 	"parsdevkit.net/models"
+	"parsdevkit.net/pkg/utilities/file"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"

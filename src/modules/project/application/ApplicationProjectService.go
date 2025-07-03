@@ -10,9 +10,9 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/core/utilities/file"
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
+	"parsdevkit.net/pkg/utilities/file"
+	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"

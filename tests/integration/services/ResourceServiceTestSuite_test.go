@@ -3,6 +3,8 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application"
+
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
@@ -13,8 +15,6 @@ import (
 
 	"parsdevkit.net/application/schemas"
 	resourceObject "parsdevkit.net/modules/resource/object"
-
-	"parsdevkit.net/core/utils"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -38,7 +38,7 @@ func (suite *ResourceServiceTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.service = resourceObject.NewObjectResourceService(suite.environment)
 

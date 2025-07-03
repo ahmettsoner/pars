@@ -6,7 +6,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/structs"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type EncapsulationSetter struct {

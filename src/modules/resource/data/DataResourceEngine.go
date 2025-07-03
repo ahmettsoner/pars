@@ -3,7 +3,6 @@ package data
 import (
 	"fmt"
 
-	"parsdevkit.net/application"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	dataresourceStruct "parsdevkit.net/structs/resource/data-resource"
 
@@ -11,11 +10,11 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/core/utilities/json"
-	"parsdevkit.net/core/utils"
 	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/pkg/utilities/encrypt"
+	"parsdevkit.net/pkg/utilities/json"
 
 	"github.com/sirupsen/logrus"
 )
@@ -172,7 +171,7 @@ func (s DataResourceEngine) generate(model dataresourceStruct.ResourceBaseStruct
 		return nil, nil
 	}
 
-	templateOperations := engineOperations.NewFileTemplateOperations(utils.GetEnvironment())
+	templateOperations := engineOperations.NewFileTemplateOperations(application.GetEnvironment())
 	err = templateOperations.GenerateByResource(model)
 	if err != nil {
 		return nil, err

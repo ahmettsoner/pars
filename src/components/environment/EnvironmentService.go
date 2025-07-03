@@ -7,9 +7,9 @@ import (
 
 	"parsdevkit.net/application/contracts"
 
-	"parsdevkit.net/core/utilities/file"
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
+	"parsdevkit.net/pkg/utilities/file"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type EnvironmentService struct {
@@ -22,7 +22,7 @@ func NewEnvironmentService() contracts.EnvironmentServiceInterface {
 func (s *EnvironmentService) List() ([]string, error) {
 	var result = make([]string, 0)
 
-	directory := utils.GetDataLocation()
+	directory := application.GetDataLocation()
 
 	desen := "^pars-?(.*?).db$"
 

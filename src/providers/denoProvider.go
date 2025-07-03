@@ -9,7 +9,7 @@ func DenoExecute(version string, path string, args ...string) error {
 	// }
 
 	var cmdPath string = "deno"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "deno.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "deno.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -27,7 +27,7 @@ func DenoExecuteWithOutput(version string, path string, args ...string) (string,
 	// }
 
 	var cmdPath string = "deno"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "deno.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "deno.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

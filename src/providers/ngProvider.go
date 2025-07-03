@@ -24,7 +24,7 @@ func NGExecute(version string, path string, args ...string) error {
 func NGNodeExecute(path string, args ...string) error {
 
 	var cmdPath string = "ng"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", "20.11.0"), "ng.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", "20.11.0"), "ng.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"

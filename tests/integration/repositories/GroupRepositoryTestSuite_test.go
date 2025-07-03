@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
+	"parsdevkit.net/application"
 	groupStructs "parsdevkit.net/modules/group/group/structs"
-
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/persistence/contexts"
@@ -36,7 +35,7 @@ func (suite *GroupRepositoryTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	dbContext := contexts.NewDbContext(suite.environment)
 	suite.repository = *repositories.NewGroupRepository(dbContext)

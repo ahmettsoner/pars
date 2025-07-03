@@ -11,12 +11,11 @@ import (
 
 	"parsdevkit.net/structs/project"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/providers"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
@@ -76,7 +75,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	projectGroup, projectName, err := project.ParseProjectFullName(commandOptions.Name)
 
-	dbContext := contexts.NewDbContext(utils.GetEnvironment())
+	dbContext := contexts.NewDbContext(application.GetEnvironment())
 	groupRespository := repositories.NewGroupRepository(dbContext)
 	groupId := 0
 	projectGroupEntity, err := groupRespository.GetByName(projectGroup)

@@ -3,7 +3,7 @@ package providers
 func NPMExecute(path string, args ...string) error {
 
 	var cmdPath string = "npm"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", "20.11.0"), "npm.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", "20.11.0"), "npm.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -15,7 +15,7 @@ func NPMExecute(path string, args ...string) error {
 func NPMExecuteWithOutput(path string, args ...string) (string, error) {
 
 	var cmdPath string = "npm"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", "20.11.0"), "npm.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", "20.11.0"), "npm.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

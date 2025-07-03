@@ -6,10 +6,10 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationResource "parsdevkit.net/application/structs/resource"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 )
 
 type ResourceSpecification struct {

@@ -5,7 +5,7 @@ import (
 	"math"
 	"strconv"
 
-	"parsdevkit.net/core/utilities/convert"
+	"parsdevkit.net/pkg/utilities/convert"
 )
 
 func Abs(x interface{}) float64 {

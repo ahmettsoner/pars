@@ -6,9 +6,9 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"gopkg.in/yaml.v3"
 )

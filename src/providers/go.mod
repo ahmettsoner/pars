@@ -4,9 +4,7 @@ go 1.22
 
 replace parsdevkit.net/models => ../../models
 
-replace parsdevkit.net/core => ../../../core
-
-replace parsdevkit.net/core/utils => ../../modules/utils
+replace parsdevkit.net/pkg => ../../../pkg
 
 require github.com/sirupsen/logrus v1.9.3
 

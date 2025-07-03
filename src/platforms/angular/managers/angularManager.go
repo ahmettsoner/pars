@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
@@ -20,7 +20,7 @@ import (
 
 	"parsdevkit.net/providers"
 
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 
 	"github.com/sirupsen/logrus"
 )

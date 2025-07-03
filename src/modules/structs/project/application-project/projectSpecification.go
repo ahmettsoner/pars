@@ -9,11 +9,11 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/utilities/file"
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
+	"parsdevkit.net/pkg/utilities/file"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"github.com/sirupsen/logrus"
 )

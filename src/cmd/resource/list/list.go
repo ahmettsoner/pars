@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 

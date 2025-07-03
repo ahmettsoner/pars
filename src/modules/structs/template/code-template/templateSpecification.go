@@ -6,10 +6,10 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	applicationTemplate "parsdevkit.net/application/structs/template"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 )
 
 type TemplateSpecification struct {

@@ -3,6 +3,8 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application"
+
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"parsdevkit.net/application/models/label"
@@ -10,7 +12,6 @@ import (
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/core/utils"
 	templateCode "parsdevkit.net/modules/template/code"
 
 	"pars/tests/internal/testenv/common"
@@ -38,7 +39,7 @@ func (suite *TemplateServiceTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.service = templateCode.NewCodeTemplateService(suite.environment)
 

@@ -4,12 +4,11 @@ import (
 	"os"
 	"testing"
 
+	"parsdevkit.net/application"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
-
-	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -37,7 +36,7 @@ func (suite *GroupProjectPackageTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -65,7 +64,7 @@ func (suite *GroupProjectPackageTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

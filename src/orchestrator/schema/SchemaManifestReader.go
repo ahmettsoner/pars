@@ -11,9 +11,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utilities/file"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/pkg/utilities/file"
 )
 
 func LoadTemplate(yamlData []byte) (schemas.SchemaInterface, error) {
@@ -69,7 +69,7 @@ func GenerateManifestFilesFromTemplate(data any, templateFiles ...string) ([]sch
 	logrus.Debugf("found %v template(s) to create project", len(templateFiles))
 	for _, templateFilePath := range templateFiles {
 
-		var tmplFile = filepath.Join(utils.GetManagerTemplatesLocation(), templateFilePath)
+		var tmplFile = filepath.Join(application.GetManagerTemplatesLocation(), templateFilePath)
 		tmplContent, err := os.ReadFile(tmplFile)
 		if err != nil {
 			log.Fatal(err)

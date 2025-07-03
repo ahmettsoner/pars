@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 

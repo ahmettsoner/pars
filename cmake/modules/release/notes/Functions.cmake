@@ -37,7 +37,7 @@ function(build GOOS GOARCH EXT)
         set(GO_BUILD_ENV_COMMAND GOOS=${GOOS} GOARCH=${GOARCH})
     endif()
 
-    set(GO_BUILD_COMMAND ${GO_BUILD_ENV_COMMAND} go build -ldflags='-X parsdevkit.net/core/utils.version=${APP_TAG} -X parsdevkit.net/core/utils.stage=final -buildid=${APP_NAME}' -o ${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/${APP_NAME}${EXT} ./pars.go)
+    set(GO_BUILD_COMMAND ${GO_BUILD_ENV_COMMAND} go build -ldflags='-X parsdevkit.net/pkg/utils.version=${APP_TAG} -X parsdevkit.net/pkg/utils.stage=final -buildid=${APP_NAME}' -o ${CMAKE_SOURCE_DIR}/${DIST_ROOT_DIR}/${APP_TAG}/${GOOS}/bin/${APP_ARCH}/${APP_NAME}${EXT} ./pars.go)
 
     command_for_default_shell("${GO_BUILD_COMMAND}" SHELL_GO_BUILD_COMMAND)
 

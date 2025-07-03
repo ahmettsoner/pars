@@ -9,7 +9,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"

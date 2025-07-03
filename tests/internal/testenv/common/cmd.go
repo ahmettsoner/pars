@@ -3,11 +3,13 @@ package common
 import (
 	"os"
 	"os/exec"
+
+	"parsdevkit.net/application"
+
 	"path/filepath"
 	"testing"
 
 	"parsdevkit.net/cmd"
-	"parsdevkit.net/core/utils"
 
 	"github.com/stretchr/testify/require"
 )
@@ -25,7 +27,7 @@ var CommanderTypes = struct {
 }
 
 func ExecuteCommandWithSelector(commander CommanderType, t *testing.T, environment string, commands ...string) ([]string, error) {
-	return ExecuteCommandWithSelectorOnPath(commander, t, environment, utils.GetSourceLocation(), commands...)
+	return ExecuteCommandWithSelectorOnPath(commander, t, environment, application.GetSourceLocation(), commands...)
 }
 func ExecuteCommandWithSelectorOnPath(commander CommanderType, t *testing.T, environment string, path string, commands ...string) ([]string, error) {
 	switch commander {
@@ -41,7 +43,7 @@ func ExecuteCommandWithSelectorOnPath(commander CommanderType, t *testing.T, env
 }
 
 func ExecuteCommand(t *testing.T, environment string, commands ...string) ([]string, error) {
-	return ExecuteCommandOnPath(t, environment, utils.GetSourceLocation(), commands...)
+	return ExecuteCommandOnPath(t, environment, application.GetSourceLocation(), commands...)
 
 }
 
@@ -51,7 +53,7 @@ func ExecuteCommandOnPath(t *testing.T, environment string, path string, command
 }
 
 func ExecuteCommandOnCobra(t *testing.T, environment string, commands ...string) ([]string, error) {
-	return ExecuteCommandOnCobraOnPath(t, environment, utils.GetSourceLocation(), commands...)
+	return ExecuteCommandOnCobraOnPath(t, environment, application.GetSourceLocation(), commands...)
 }
 func ExecuteCommandOnCobraOnPath(t *testing.T, environment string, path string, commands ...string) ([]string, error) {
 
@@ -87,10 +89,10 @@ func ExecuteCommandOnCobraOnPath(t *testing.T, environment string, path string, 
 }
 
 func ExecuteCommandOnGo(t *testing.T, environment string, commands ...string) ([]string, error) {
-	return ExecuteCommandOnGoOnPath(t, environment, utils.GetSourceLocation(), commands...)
+	return ExecuteCommandOnGoOnPath(t, environment, application.GetSourceLocation(), commands...)
 }
 func ExecuteCommandOnGoOnPath(t *testing.T, environment string, path string, commands ...string) ([]string, error) {
-	fullCommand := []string{"run", filepath.Join(utils.GetSourceLocation(), "pars.go")}
+	fullCommand := []string{"run", filepath.Join(application.GetSourceLocation(), "pars.go")}
 	fullCommand = append(fullCommand, commands...)
 	fullCommand = append(fullCommand, []string{"--log-level", "verbose", "--env", environment}...)
 
@@ -109,7 +111,7 @@ func ExecuteCommandOnGoOnPath(t *testing.T, environment string, path string, com
 }
 
 func ExecuteCommandOnPars(t *testing.T, environment string, commands ...string) ([]string, error) {
-	return ExecuteCommandOnParsOnPath(t, environment, utils.GetSourceLocation(), commands...)
+	return ExecuteCommandOnParsOnPath(t, environment, application.GetSourceLocation(), commands...)
 }
 func ExecuteCommandOnParsOnPath(t *testing.T, environment string, path string, commands ...string) ([]string, error) {
 	fullCommand := []string{}

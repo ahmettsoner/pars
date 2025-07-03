@@ -1,15 +1,15 @@
 package test
 
 import (
+	"parsdevkit.net/application"
+
 	"os"
 	"path/filepath"
 	"time"
-
-	"parsdevkit.net/core/utils"
 )
 
 func CreateTempTestDirectory(testName string) (string, error) {
-	testDir := filepath.Join(utils.GetTempsLocation(), "test", testName)
+	testDir := filepath.Join(application.GetTempsLocation(), "test", testName)
 	err := os.MkdirAll(testDir, os.ModePerm)
 	if err != nil {
 		return "", err

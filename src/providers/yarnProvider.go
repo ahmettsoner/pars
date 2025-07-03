@@ -3,7 +3,7 @@ package providers
 func YarnExecute(path string, args ...string) error {
 
 	var cmdPath string = "yarn"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", "20.11.0"), "yarn.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", "20.11.0"), "yarn.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -15,7 +15,7 @@ func YarnExecute(path string, args ...string) error {
 func YarnExecuteWithOutput(path string, args ...string) (string, error) {
 
 	var cmdPath string = "yarn"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", "20.11.0"), "yarn.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", "20.11.0"), "yarn.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

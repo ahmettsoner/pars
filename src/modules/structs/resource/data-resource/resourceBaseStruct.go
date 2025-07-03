@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/schemas"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 )
 
 type ResourceBaseStruct struct {

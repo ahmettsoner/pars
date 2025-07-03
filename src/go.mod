@@ -21,8 +21,6 @@ replace parsdevkit.net/modules/workspace/workspace => ./modules/workspace/worksp
 
 replace parsdevkit.net/modules/resource/object => ./modules/resource/object
 
-replace parsdevkit.net/operation/services => ./modules/services
-
 replace parsdevkit.net/persistence/entities => ./data/entities
 
 replace parsdevkit.net/persistence/repositories => ./data/repositories
@@ -47,8 +45,6 @@ replace parsdevkit.net/structs => ./modules/structs
 
 replace parsdevkit.net/context => ./modules/context
 
-replace parsdevkit.net/core/utils => ./modules/utils
-
 replace parsdevkit.net/providers => ./providers
 
 replace parsdevkit.net/models => ./models
@@ -61,7 +57,6 @@ replace parsdevkit.net/cmd => ./cmd
 
 require (
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -106,7 +101,7 @@ require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
@@ -118,7 +113,6 @@ require (
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
@@ -134,7 +128,7 @@ require (
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/core => ./core
+replace parsdevkit.net/pkg => ./pkg
 
 replace parsdevkit.net/application => ./application
 

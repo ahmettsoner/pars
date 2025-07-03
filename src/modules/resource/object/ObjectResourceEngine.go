@@ -3,7 +3,6 @@ package object
 import (
 	"fmt"
 
-	"parsdevkit.net/application"
 	engineOperations "parsdevkit.net/engines"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
@@ -12,12 +11,12 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
 type ObjectResourceEngine struct{}
@@ -177,7 +176,7 @@ func (s ObjectResourceEngine) generate(model objectresourceStruct.ResourceBaseSt
 	}
 
 	// TODO: Birden fazla template işlenebilmeli
-	templateEngine := engineOperations.NewCodeTemplateOperations(utils.GetEnvironment())
+	templateEngine := engineOperations.NewCodeTemplateOperations(application.GetEnvironment())
 	err = templateEngine.GenerateByResource(model)
 	if err != nil {
 		return nil, err

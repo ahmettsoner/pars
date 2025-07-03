@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/cmd"
-	"parsdevkit.net/core/utils"
 )
 
 var version string
@@ -24,7 +24,7 @@ func main() {
 			fmt.Println("✅ Success: Operation completed.")
 		}
 	}
-	// logLevel := utils.GetLogLevel()
+	// logLevel := application.GetLogLevel()
 
 	// if logLevel != core.LogLevels.None {
 	// 	if logrusLogLevel, err := log.ParseLevel(string(logLevel)); err != nil {
@@ -36,7 +36,7 @@ func main() {
 	// 	fmt.Println("Zaten istenmiyor!!!")
 	// }
 
-	utils.SetVersion(version)
+	application.SetVersion(version)
 }
 
 func runInteractiveMode() {

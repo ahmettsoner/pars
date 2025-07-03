@@ -10,7 +10,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )

@@ -5,16 +5,16 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/engines/group"
 	v2 "parsdevkit.net/engines/v2"
 	"parsdevkit.net/models"
+	"parsdevkit.net/pkg/utils/json"
 	"parsdevkit.net/structs/project"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )

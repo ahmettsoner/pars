@@ -7,9 +7,9 @@ import (
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -33,7 +33,7 @@ func (suite *InitTestSuite) SetupSuite() {
 
 	suite.T().Log("Preparing test suite...")
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
@@ -47,7 +47,7 @@ func (suite *InitTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -141,7 +141,7 @@ func (suite *InitTestSuite) TestInitializeBasicWorkspaceOnRelativePath() {
 
 	name := suite.faker.Workspace.Name()
 	dirInTestArea := filepath.Join(suite.testArea, suite.faker.Project.Path(1))
-	relativePath, err := file.FindRelativePath(utils.GetSourceLocation(), dirInTestArea)
+	relativePath, err := file.FindRelativePath(application.GetSourceLocation(), dirInTestArea)
 	require.NoError(suite.T(), err, "failed find relative path")
 
 	commands := []string{

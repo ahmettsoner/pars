@@ -4,7 +4,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"

@@ -10,26 +10,26 @@ import (
 
 	"parsdevkit.net/platforms/core"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 )
 
 type NodeJSTemplateEngine struct{}
 
 func (s *NodeJSTemplateEngine) AddSimpleClass(templateName string, outputFile string, data any) error {
 	var templateFilePath = "/nodejs/net70/SimpleClass.cs.templ"
-	var tmplFile = filepath.Join(utils.GetManagerTemplatesLocation(), templateFilePath)
+	var tmplFile = filepath.Join(application.GetManagerTemplatesLocation(), templateFilePath)
 
 	return s.RenderTemplate(tmplFile, templateName, outputFile, data)
 }
 func (s *NodeJSTemplateEngine) AddSimpleConsoleClass(templateName string, outputFile string, data any) error {
 	var templateFilePath = "/nodejs/net70/SimpleConsoleClass.cs.templ"
-	var tmplFile = filepath.Join(utils.GetManagerTemplatesLocation(), templateFilePath)
+	var tmplFile = filepath.Join(application.GetManagerTemplatesLocation(), templateFilePath)
 
 	return s.RenderTemplate(tmplFile, templateName, outputFile, data)
 }
 func (s *NodeJSTemplateEngine) AddSimpleControllerClass(templateName string, outputFile string, data any) error {
 	var templateFilePath = "/nodejs/net70/SimpleControllerClass.cs.templ"
-	var tmplFile = filepath.Join(utils.GetManagerTemplatesLocation(), templateFilePath)
+	var tmplFile = filepath.Join(application.GetManagerTemplatesLocation(), templateFilePath)
 
 	return s.RenderTemplate(tmplFile, templateName, outputFile, data)
 }
@@ -45,7 +45,7 @@ func (s *NodeJSTemplateEngine) RenderTemplate(tmplFile string, templateName stri
 		Version:   "1.0.0",
 	}
 	var infoTemplateFilePath = "/nodejs/generateMessage.templ"
-	var infoTmplFile = filepath.Join(utils.GetManagerTemplatesLocation(), infoTemplateFilePath)
+	var infoTmplFile = filepath.Join(application.GetManagerTemplatesLocation(), infoTemplateFilePath)
 	infoStr, err := s.GetContent(infoTmplFile, "info", infoData)
 	if err != nil {
 		return err

@@ -2,6 +2,9 @@ package webapp
 
 import (
 	"fmt"
+
+	"parsdevkit.net/application"
+
 	"os"
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -9,8 +12,6 @@ import (
 
 	"testing"
 	"time"
-
-	"parsdevkit.net/core/utils"
 
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -35,7 +36,7 @@ func (suite *DotnetWebAppTestSuite) SetupSuite() {
 
 	suite.T().Log("Preparing test suite...")
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -54,7 +55,7 @@ func (suite *DotnetWebAppTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

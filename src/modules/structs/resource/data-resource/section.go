@@ -4,8 +4,8 @@ import (
 	"parsdevkit.net/application/models/class"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/models/section"
 )

@@ -13,8 +13,8 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utilities/array"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/utilities/array"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )

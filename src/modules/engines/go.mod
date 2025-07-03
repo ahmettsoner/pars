@@ -6,10 +6,8 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000
-	parsdevkit.net/core/utils v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000
-	parsdevkit.net/operation/services v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
@@ -42,7 +40,7 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/core v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
@@ -54,8 +52,6 @@ require (
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
 )
-
-replace parsdevkit.net/operation/services => ../services
 
 replace parsdevkit.net/persistence/entities => ../../data/entities
 
@@ -94,13 +90,11 @@ replace parsdevkit.net/modules/workspace/workspace => ../workspace/workspace
 
 replace parsdevkit.net/modules/resource/object => ../resource/object
 
-replace parsdevkit.net/core/utils => ../utils
-
 replace parsdevkit.net/providers => ../providers
 
 replace parsdevkit.net/models => ../../models
 
-replace parsdevkit.net/core => ../../core
+replace parsdevkit.net/pkg => ../../pkg
 
 replace parsdevkit.net/persistence/contexts => ../../data/contexts
 

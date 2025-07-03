@@ -10,7 +10,7 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -32,7 +32,7 @@ func (suite *GroupTestSuite) SetupSuite() {
 	suite.T().Log("Preparing test suite...")
 
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -53,7 +53,7 @@ func (suite *GroupTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -63,7 +63,7 @@ func (suite *GroupTestSuite) TearDownTest() {
 }
 
 func (suite *GroupTestSuite) TestCreateBasicGroup() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("basic_group.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("basic_group.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	name := suite.faker.Project.Group()

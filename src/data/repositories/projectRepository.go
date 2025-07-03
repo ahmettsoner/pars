@@ -3,8 +3,8 @@ package repositories
 import (
 	"errors"
 
-	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/persistence/contexts"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/persistence/entities"
 

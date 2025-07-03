@@ -6,9 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/core/utilities/array"
-	"parsdevkit.net/core/utils"
-	group "parsdevkit.net/modules/group/group"
+	groupStructs "parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/structs/workspace"
 
@@ -56,7 +55,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		groupService := group.NewGroupService(utils.GetEnvironment())
+		groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
 		for _, name := range commandOptions.Names {
 			_, err := groupService.Remove(name, true)
 			if err != nil {
@@ -96,7 +95,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := group.NewGroupService(utils.GetEnvironment())
+	groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

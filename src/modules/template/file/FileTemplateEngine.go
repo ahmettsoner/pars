@@ -3,19 +3,18 @@ package file
 import (
 	"fmt"
 
-	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
 	engineOperations "parsdevkit.net/engines"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
 )
@@ -177,7 +176,7 @@ func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct
 		return nil, nil
 	}
 
-	templateOperations := engineOperations.NewFileTemplateOperations(utils.GetEnvironment())
+	templateOperations := engineOperations.NewFileTemplateOperations(application.GetEnvironment())
 	err = templateOperations.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err

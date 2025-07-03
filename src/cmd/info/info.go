@@ -5,8 +5,8 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 var InfoCmd = &cobra.Command{
@@ -20,22 +20,22 @@ var InfoCmd = &cobra.Command{
 func executeFunc(cmd *cobra.Command, args []string) {
 	textFormat := "%-20s: %v\n"
 	fmt.Println("New generation SDK")
-	fmt.Printf(textFormat, "Stage", utils.GetStage())
-	fmt.Printf(textFormat, "Version", utils.GetVersion())
-	fmt.Printf(textFormat, "Platform", utils.GetPlatform())
+	fmt.Printf(textFormat, "Stage", application.GetStage())
+	fmt.Printf(textFormat, "Version", application.GetVersion())
+	fmt.Printf(textFormat, "Platform", application.GetPlatform())
 	fmt.Printf(textFormat, "OS", runtime.GOOS)
 	fmt.Printf(textFormat, "Architecture", runtime.GOARCH)
 
-	environment := utils.GetEnvironment()
+	environment := application.GetEnvironment()
 	if _string.IsEmpty(environment) {
 		environment = "default"
 	}
 	fmt.Printf(textFormat, "Environment", environment)
 
-	if utils.GetStage() == string(utils.StageTypes.None) {
-		fmt.Printf(textFormat, "Codebase Path", utils.GetCodeBaseLocation())
+	if application.GetStage() == string(application.StageTypes.None) {
+		fmt.Printf(textFormat, "Codebase Path", application.GetCodeBaseLocation())
 	}
-	fmt.Printf(textFormat, "Executable Path", utils.GetExecutableLocation())
-	fmt.Printf(textFormat, "Config Directory", utils.GetConfigLocation())
-	fmt.Printf(textFormat, "Data Directory", utils.GetDataLocation())
+	fmt.Printf(textFormat, "Executable Path", application.GetExecutableLocation())
+	fmt.Printf(textFormat, "Config Directory", application.GetConfigLocation())
+	fmt.Printf(textFormat, "Data Directory", application.GetDataLocation())
 }

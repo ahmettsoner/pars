@@ -1,9 +1,9 @@
 package project
 
 import (
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 )
 
 func ParseProjectFullName(fullname string) (string, string, error) {

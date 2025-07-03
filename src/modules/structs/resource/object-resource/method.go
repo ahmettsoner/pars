@@ -4,8 +4,8 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )

@@ -3,8 +3,8 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/core/utilities/file"
 	groupStructs "parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/application/models/label"
 	applicationGroup "parsdevkit.net/application/structs/group"

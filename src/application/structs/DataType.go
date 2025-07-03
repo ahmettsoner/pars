@@ -3,10 +3,10 @@ package structs
 import (
 	"strings"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"gopkg.in/yaml.v3"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type DataType struct {

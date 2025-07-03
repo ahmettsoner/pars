@@ -9,8 +9,8 @@ import (
 	"log"
 	"strings"
 
-	"parsdevkit.net/core/utilities/array"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/utilities/array"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
 

@@ -9,7 +9,7 @@ func BUNExecute(version string, path string, args ...string) error {
 	// }
 
 	var cmdPath string = "bun"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "bun.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "bun.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -27,7 +27,7 @@ func BUNExecuteWithOutput(version string, path string, args ...string) (string, 
 	// }
 
 	var cmdPath string = "bun"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "bun.cmd")
+	// cmdPath = filepath.Join(application..GetBinaryLocation("nodejs", platformVersion), "bun.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

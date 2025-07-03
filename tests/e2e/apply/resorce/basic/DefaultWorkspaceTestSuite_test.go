@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -32,7 +32,7 @@ func (suite *DefaultWorkspaceTestSuite) SetupSuite() {
 	suite.T().Log("Preparing test suite...")
 
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -54,7 +54,7 @@ func (suite *DefaultWorkspaceTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -64,7 +64,7 @@ func (suite *DefaultWorkspaceTestSuite) TearDownTest() {
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateBasicResource() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("basic_resource.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("basic_resource.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	resourceName := suite.faker.Project.Name()

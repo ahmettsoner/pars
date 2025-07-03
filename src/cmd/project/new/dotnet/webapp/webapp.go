@@ -5,12 +5,12 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/pkg/utils/json"
 
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/engines/group"
 	"parsdevkit.net/models"
+	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/structs/project"
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"

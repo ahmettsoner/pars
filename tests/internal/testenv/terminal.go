@@ -1,10 +1,10 @@
 package test
 
 import (
+	"parsdevkit.net/application"
+
 	"os/exec"
 	"testing"
-
-	"parsdevkit.net/core/utils"
 )
 
 func ExecuteCommand(t *testing.T, environment string, commands ...string) ([]string, error) {
@@ -14,7 +14,7 @@ func ExecuteCommand(t *testing.T, environment string, commands ...string) ([]str
 
 	t.Logf("executing command %v", fullCommand[2:])
 	cmd := exec.Command("go", fullCommand...)
-	cmd.Dir = utils.GetSourceLocation()
+	cmd.Dir = application.GetSourceLocation()
 
 	output, err := cmd.CombinedOutput()
 	t.Logf(">>> %v", string(output))

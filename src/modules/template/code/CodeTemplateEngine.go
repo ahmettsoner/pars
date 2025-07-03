@@ -3,8 +3,7 @@ package code
 import (
 	"fmt"
 
-	"parsdevkit.net/application"
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
@@ -13,8 +12,8 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 
-	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
 	engineOperations "parsdevkit.net/engines"
@@ -176,7 +175,7 @@ func (s CodeTemplateEngine) generate(model codetemplateStruct.TemplateBaseStruct
 		return nil, nil
 	}
 
-	templateEngine := engineOperations.NewCodeTemplateOperations(utils.GetEnvironment())
+	templateEngine := engineOperations.NewCodeTemplateOperations(application.GetEnvironment())
 	err = templateEngine.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err

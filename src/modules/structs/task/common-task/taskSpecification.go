@@ -3,8 +3,8 @@ package commontask
 import (
 	applicationTask "parsdevkit.net/application/structs/task"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 	actionBase "parsdevkit.net/structs/task/actions"
 )
 

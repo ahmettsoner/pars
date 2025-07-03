@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )

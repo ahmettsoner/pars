@@ -3,7 +3,7 @@ package basic
 import (
 	"testing"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -29,7 +29,7 @@ func (suite *DefaultWorkspaceTestSuite) SetupSuite() {
 	suite.T().Log("Preparing test suite...")
 
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -51,7 +51,7 @@ func (suite *DefaultWorkspaceTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		// common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		// os.RemoveAll(suite.testArea)
-		// os.Remove(utils.GetDBLocation(suite.environment))
+		// os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -61,16 +61,16 @@ func (suite *DefaultWorkspaceTestSuite) TearDownTest() {
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
-	groupsDeclarationFile := utils.GetTestFileFromCurrentLocation("backend-group.yaml")
+	groupsDeclarationFile := application.GetTestFileFromCurrentLocation("backend-group.yaml")
 	common.Apply(common.CommanderTypes.GO, suite.T(), groupsDeclarationFile, suite.environment)
 
-	projectsDeclarationFile := utils.GetTestFileFromCurrentLocation("backend-projects.yaml")
+	projectsDeclarationFile := application.GetTestFileFromCurrentLocation("backend-projects.yaml")
 	common.Apply(common.CommanderTypes.GO, suite.T(), projectsDeclarationFile, suite.environment)
 
-	templatesDeclarationFile := utils.GetTestFileFromCurrentLocation("templates.yaml")
+	templatesDeclarationFile := application.GetTestFileFromCurrentLocation("templates.yaml")
 	common.Apply(common.CommanderTypes.GO, suite.T(), templatesDeclarationFile, suite.environment)
 
-	resourcesDeclarationFile := utils.GetTestFileFromCurrentLocation("resources.yaml")
+	resourcesDeclarationFile := application.GetTestFileFromCurrentLocation("resources.yaml")
 	common.Apply(common.CommanderTypes.GO, suite.T(), resourcesDeclarationFile, suite.environment)
 
 	suite.T().Cleanup(func() {

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	utilsString "parsdevkit.net/core/utilities/string"
+	utilsString "parsdevkit.net/pkg/utilities/string"
 )
 
 func GetOnlyFileName(file string) string {

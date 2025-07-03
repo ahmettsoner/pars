@@ -3,7 +3,7 @@ package shared
 import (
 	"fmt"
 
-	"parsdevkit.net/core/utilities/json"
+	"parsdevkit.net/pkg/utilities/json"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 	sharedtemplateStruct "parsdevkit.net/structs/template/shared-template"
 
@@ -14,7 +14,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
 type SharedTemplateEngine struct{}

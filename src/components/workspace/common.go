@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/application/ioc"
 
 	"parsdevkit.net/application"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 func GetActiveWorkspaceNameV2(ctx *application.ApplicationContext, workspaceName string) (string, error) {

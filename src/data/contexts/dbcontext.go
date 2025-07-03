@@ -1,7 +1,7 @@
 package contexts
 
 import (
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	"parsdevkit.net/persistence/entities"
 
@@ -24,7 +24,7 @@ func NewDbContext(environment string) *DbContext {
 
 func connectToDB(environment string) *gorm.DB {
 
-	// logLevel := utils.GetLogLevel()
+	// logLevel := application.GetLogLevel()
 	gormLogLevel := logger.Silent
 	// if logLevel == core.LogLevels.Verbose {
 	// 	gormLogLevel = logger.Info
@@ -34,7 +34,7 @@ func connectToDB(environment string) *gorm.DB {
 	// 	gormLogLevel = logger.Error
 	// }
 
-	db, err := gorm.Open(sqlite.Open(utils.GetDBLocation(environment)), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open(application.GetDBLocation(environment)), &gorm.Config{
 		Logger: logger.Default.LogMode(gormLogLevel),
 	})
 	db.Set("gorm:json_type", "json1")

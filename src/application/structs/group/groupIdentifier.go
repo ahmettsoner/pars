@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type GroupIdentifier struct {

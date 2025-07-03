@@ -8,11 +8,11 @@ import (
 
 	"parsdevkit.net/components/workspace"
 
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/core/utilities/array"
+	"parsdevkit.net/pkg/utilities/array"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"

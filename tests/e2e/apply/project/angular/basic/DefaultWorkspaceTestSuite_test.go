@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/models"
 	angularModels "parsdevkit.net/platforms/angular/models"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	projectApplication "parsdevkit.net/modules/project/application"
 
@@ -41,7 +41,7 @@ func (suite *DefaultWorkspaceTestSuite) SetupSuite() {
 	suite.T().Log("Preparing test suite...")
 
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -63,7 +63,7 @@ func (suite *DefaultWorkspaceTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -73,7 +73,7 @@ func (suite *DefaultWorkspaceTestSuite) TearDownTest() {
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("basic_project.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("basic_project.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	projectName := suite.faker.Project.Name()
@@ -115,7 +115,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnly() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("basic_project_with_layer.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("basic_project_with_layer.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	projectName := suite.faker.Project.Name()
@@ -159,7 +159,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnl
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_NameOnly() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("basic_project_with_reference.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("basic_project_with_reference.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	projectName1 := suite.faker.Project.Name()
@@ -219,7 +219,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("group_project.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("group_project.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	projectName := suite.faker.Project.Name()
@@ -265,7 +265,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 }
 
 func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject_WithLayer_NameOnly() {
-	declarationFile := utils.GetTestFileFromCurrentLocation("group_project_with_layer.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("group_project_with_layer.yaml")
 	suite.T().Logf("Starting test for (%v)", declarationFile)
 
 	projectName := suite.faker.Project.Name()

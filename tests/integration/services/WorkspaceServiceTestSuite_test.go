@@ -3,12 +3,13 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application"
+
 	"parsdevkit.net/structs/workspace"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
-	"parsdevkit.net/core/utils"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 
 	"github.com/magiconair/properties/assert"
@@ -32,7 +33,7 @@ func (suite *WorkspaceServiceTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.service = workspaceWorkspace.NewWorkspaceService(suite.environment)
 

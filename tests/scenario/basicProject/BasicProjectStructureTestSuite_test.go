@@ -1,11 +1,11 @@
 package basic
 
 import (
+	"parsdevkit.net/application"
+
 	"fmt"
 	"os"
 	"testing"
-
-	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -32,7 +32,7 @@ func (suite *BasicProjectStructureTestSuite) SetupSuite() {
 	suite.T().Log("Preparing test suite...")
 
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 	suite.set = suite.faker.Project.Set()
@@ -55,7 +55,7 @@ func (suite *BasicProjectStructureTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 
@@ -102,7 +102,7 @@ func (suite *BasicProjectStructureTestSuite) fTestCreateBasicResource() {
 		Layers:  structLayers,
 	}
 
-	declarationFile := utils.GetTestFileFromCurrentLocation("resources.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("resources.yaml")
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
@@ -132,7 +132,7 @@ func TestBasicProjectStructureTestSuite(t *testing.T) {
 
 func CreateNewProjectFromTemplateFile(commander common.CommanderType, t *testing.T, environment, testArea, name, set string, layers []string, dependencies []string, references []string) string {
 
-	declarationFile := utils.GetTestFileFromCurrentLocation("projects.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("projects.yaml")
 
 	var structData = struct {
 		Name         string
@@ -160,7 +160,7 @@ func CreateNewProjectFromTemplateFile(commander common.CommanderType, t *testing
 }
 func CreateNewServiceTemplateFromTemplateFile(t *testing.T, environment, testArea, name, set string, layers []string) string {
 
-	declarationFile := utils.GetTestFileFromCurrentLocation("templates.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("templates.yaml")
 
 	var structData = struct {
 		Name    string
@@ -214,7 +214,7 @@ func CreateNewServiceTemplateFromTemplateFile(t *testing.T, environment, testAre
 }
 func CreateNewServiceInterfaceTemplateFromTemplateFile(t *testing.T, environment, testArea, name, set string, layers []string) string {
 
-	declarationFile := utils.GetTestFileFromCurrentLocation("templates.yaml")
+	declarationFile := application.GetTestFileFromCurrentLocation("templates.yaml")
 
 	var structData = struct {
 		Name    string

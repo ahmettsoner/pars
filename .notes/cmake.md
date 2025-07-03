@@ -292,15 +292,15 @@ C:\
  └── config.yaml
 
 go build sırasında stage tanımlanır ve buna göre file structure şekillenir
-'parsdevkit.net/core/utils.stage=[none, dev, test, prod]'
+'parsdevkit.net/pkg/utils.stage=[none, dev, test, prod]'
 Project run 'da project root code base inşaa edilir
 dev binary'de proje klasörleri executable'ın bulunduğu dizinde inşaa edilir. PARS_PROJECT_ROOT tanımlı ise bu dizini proje dizini kabul eder
 test stage'de binary'nin bulunduğu dizinde inşaa edilir
 prod stage'de ilgili os için belirlenen dir yapısı kullanılır
 PARS_PROJECT_ROOT env var tanımlı ise proje dizini olarak bunu kullanır (birden çok proje olduğunda birincil proje tanımlamak için kullanılır) yoksa her proje kendi base'ini kullanır
 Code Base, dev ortamında alınan hızlı build'lerde build alınan code base'in yada env' adresini referans eder. projeden build alındığını belirtir
-dev ortamı için build alınmışsa parsdevkit.net/core/utils.stage bilgisi içerir ve kullanılacağı yerde code base env olarak tanımlı ise onu kullanır, yoksa boştur
-test ve prod ortamları için build alınmışsa parsdevkit.net/core/utils.stage bilgisi içerir ve kullanılacağı yerde code base olmayacağı anlamına gelir
+dev ortamı için build alınmışsa parsdevkit.net/pkg/utils.stage bilgisi içerir ve kullanılacağı yerde code base env olarak tanımlı ise onu kullanır, yoksa boştur
+test ve prod ortamları için build alınmışsa parsdevkit.net/pkg/utils.stage bilgisi içerir ve kullanılacağı yerde code base olmayacağı anlamına gelir
 
 ---
 

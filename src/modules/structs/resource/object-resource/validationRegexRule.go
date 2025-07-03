@@ -1,8 +1,8 @@
 package objectresource
 
 import (
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type ValidationRegexRule struct {

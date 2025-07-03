@@ -6,11 +6,11 @@ import (
 	"os"
 
 	"parsdevkit.net/cmd/open/workspace"
-	"parsdevkit.net/core/utils/json"
 	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/pkg/utils/json"
 
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
+	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/structs/project"
 
 	"github.com/spf13/cobra"

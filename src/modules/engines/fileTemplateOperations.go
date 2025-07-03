@@ -3,7 +3,7 @@ package engines
 import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
-	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/pkg/utilities/encrypt"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
@@ -12,9 +12,9 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/persistence/entities"
 

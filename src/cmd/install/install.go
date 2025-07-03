@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"parsdevkit.net/operation/services"
-
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
 
@@ -55,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	_, err := projectService.Install(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to install project '%s' packages\n%w", commandOptions.Name, err)

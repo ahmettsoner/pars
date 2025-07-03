@@ -3,14 +3,15 @@ package workspace
 import (
 	"testing"
 
+	"parsdevkit.net/application"
+
 	"github.com/stretchr/testify/require"
-	"parsdevkit.net/core/utils"
 )
 
 func Test_GetCodeBaseLocation(t *testing.T) {
 
 	// Arrange
-	codebaseLocation := utils.GetCodeBaseLocation()
+	codebaseLocation := application.GetCodeBaseLocation()
 
 	// Act
 

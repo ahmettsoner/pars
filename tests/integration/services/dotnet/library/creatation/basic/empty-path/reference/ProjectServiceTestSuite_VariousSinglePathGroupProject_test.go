@@ -4,13 +4,13 @@ import (
 	"os"
 	"testing"
 
+	"parsdevkit.net/application"
+
 	"parsdevkit.net/models"
 	platformsCommon "parsdevkit.net/platforms/common"
 	projectStruct "parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/application/schemas"
 
@@ -46,7 +46,7 @@ func (suite *ProjectServiceVariousSinglePathGroupProjectReferenceTestSuite) Setu
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
 	suite.service = projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
@@ -67,7 +67,7 @@ func (suite *ProjectServiceVariousSinglePathGroupProjectReferenceTestSuite) Tear
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		common.RemoveWorkspaceWithService(suite.T(), suite.workspaceName, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

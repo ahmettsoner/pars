@@ -5,11 +5,11 @@ import (
 	"log"
 	"os"
 
-	_string "parsdevkit.net/core/utilities/string"
-	"parsdevkit.net/core/utils/json"
 	"parsdevkit.net/engines/group"
 	v2 "parsdevkit.net/engines/v2"
 	"parsdevkit.net/models"
+	_string "parsdevkit.net/pkg/utilities/string"
+	"parsdevkit.net/pkg/utils/json"
 	"parsdevkit.net/structs/project"
 
 	nodejsModels "parsdevkit.net/platforms/nodejs/models"

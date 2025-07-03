@@ -11,8 +11,8 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
-	"parsdevkit.net/core/utilities/array"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/utilities/array"
+	_string "parsdevkit.net/pkg/utilities/string"
 	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/workspace"

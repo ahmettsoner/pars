@@ -2,11 +2,12 @@ package net8
 
 import (
 	"encoding/json"
+
+	"parsdevkit.net/application"
+
 	"testing"
 
 	"parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/core/utils"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
@@ -36,7 +37,7 @@ func (suite *WorkspaceRepositoryTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	dbContext := contexts.NewDbContext(suite.environment)
 	suite.repository = *repositories.NewWorkspaceRepository(dbContext)

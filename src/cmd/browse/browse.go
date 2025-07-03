@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type BrowseOptions struct {

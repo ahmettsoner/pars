@@ -2,12 +2,13 @@ package net8
 
 import (
 	"os"
+
+	"parsdevkit.net/application"
+
 	"testing"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
-
-	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"
@@ -34,7 +35,7 @@ func (suite *SimpleGroupProjectTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 	suite.group = suite.faker.Project.Group()
@@ -54,7 +55,7 @@ func (suite *SimpleGroupProjectTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

@@ -5,8 +5,8 @@ import (
 
 	"parsdevkit.net/persistence/contexts"
 
-	"parsdevkit.net/core/utilities/encrypt"
 	"parsdevkit.net/persistence/entities"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"gorm.io/gorm"
 )

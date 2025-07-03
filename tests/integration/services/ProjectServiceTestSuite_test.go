@@ -2,6 +2,9 @@ package services
 
 import (
 	"fmt"
+
+	"parsdevkit.net/application"
+
 	"os"
 	"testing"
 
@@ -12,9 +15,8 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	"parsdevkit.net/core/utilities/file"
-	"parsdevkit.net/core/utilities/object"
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/pkg/utilities/file"
+	"parsdevkit.net/pkg/utilities/object"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	test "pars/tests/internal/testenv"
@@ -45,7 +47,7 @@ func (suite *ProjectServiceTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
 
@@ -67,7 +69,7 @@ func (suite *ProjectServiceTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		RemoveWorkspace(suite.T(), suite.workspaceName, suite.environment)
 		os.RemoveAll(suite.testArea)
-		os.Remove(utils.GetDBLocation(suite.environment))
+		os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

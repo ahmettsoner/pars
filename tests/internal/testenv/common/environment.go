@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 )
 
 func GenerateEnvironment(t *testing.T, path string) string {

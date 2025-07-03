@@ -6,11 +6,9 @@ import (
 
 	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/engines/commonTask"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/operation/services"
-
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	"github.com/spf13/cobra"
 )
@@ -53,7 +51,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-		taskService := services.NewCommonTaskService(utils.GetEnvironment())
+		taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
 		for _, name := range commandOptions.Names {
 			if checkGlobals {

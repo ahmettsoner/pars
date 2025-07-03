@@ -9,7 +9,7 @@ func PNPMExecute(version string, path string, args ...string) error {
 	// }
 
 	var cmdPath string = "pnpm"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "pnpm.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "pnpm.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {
@@ -27,7 +27,7 @@ func PNPMExecuteWithOutput(version string, path string, args ...string) (string,
 	// }
 
 	var cmdPath string = "pnpm"
-	// cmdPath = filepath.Join(utils.GetBinaryLocation("nodejs", platformVersion), "pnpm.cmd")
+	// cmdPath = filepath.Join(application.GetBinaryLocation("nodejs", platformVersion), "pnpm.cmd")
 
 	err := Execute(path, cmdPath, args...)
 	if err != nil {

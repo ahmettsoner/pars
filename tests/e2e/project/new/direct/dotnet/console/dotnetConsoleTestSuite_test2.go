@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"parsdevkit.net/core/utils"
+	"parsdevkit.net/application"
 
 	platformsCommon "parsdevkit.net/platforms/common"
 
@@ -34,7 +34,7 @@ func (suite *DotnetConsoleTestSuite) SetupSuite() {
 
 	suite.T().Log("Preparing test suite...")
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspace = suite.faker.Workspace.Name()
 
@@ -53,7 +53,7 @@ func (suite *DotnetConsoleTestSuite) TearDownSuite() {
 	if !suite.noCleanOnFail || !suite.T().Failed() {
 		// common.RemoveWorkspace(suite.T(), suite.workspace, suite.environment)
 		// os.RemoveAll(suite.testArea)
-		// os.Remove(utils.GetDBLocation(suite.environment))
+		// os.Remove(application.GetDBLocation(suite.environment))
 	}
 }
 

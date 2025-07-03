@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	_string "parsdevkit.net/core/utilities/string"
 	"parsdevkit.net/models"
+	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/core/errors"
+	"parsdevkit.net/pkg/errors"
 
 	"gopkg.in/yaml.v3"
 )

@@ -3,10 +3,9 @@ package services
 import (
 	"testing"
 
+	"parsdevkit.net/application"
 	group "parsdevkit.net/modules/group/group"
 	groupStructs "parsdevkit.net/modules/group/group/structs"
-
-	"parsdevkit.net/core/utils"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -31,7 +30,7 @@ func (suite *GroupServiceTestSuite) SetupSuite() {
 
 	suite.faker = faker.NewFaker()
 	suite.noCleanOnFail = true
-	testArea := utils.GenerateTestArea()
+	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.service = group.NewGroupService(suite.environment)
 

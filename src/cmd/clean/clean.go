@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/core/utilities/string"
+	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/spf13/cobra"

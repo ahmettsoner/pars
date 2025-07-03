@@ -6,25 +6,22 @@ import (
 
 	"fmt"
 
-	"parsdevkit.net/application"
-
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
-	_string "parsdevkit.net/core/utilities/string"
-	group "parsdevkit.net/modules/group/group"
 	groupStructs "parsdevkit.net/modules/group/group/structs"
+	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 	workspaceStruct "parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/core/utils"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/core/utilities/encrypt"
+	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
 type ApplicationProjectEngine struct{}
@@ -468,7 +465,7 @@ func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.Proj
 	groupName := project.Specifications.Group
 
 	if !_string.IsEmpty(groupName) {
-		groupService := group.NewGroupService(utils.GetEnvironment())
+		groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
 			return nil, err

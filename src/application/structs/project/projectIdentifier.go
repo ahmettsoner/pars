@@ -4,9 +4,9 @@ import (
 	"path/filepath"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/errors"
-	"parsdevkit.net/core/utilities/file"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	"parsdevkit.net/pkg/utilities/file"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type ProjectIdentifier struct {

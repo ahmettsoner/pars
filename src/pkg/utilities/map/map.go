@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"sort"
 
-	"parsdevkit.net/core/utilities/convert"
+	"parsdevkit.net/pkg/utilities/convert"
 )
 
 func Has(in interface{}, key interface{}) bool {

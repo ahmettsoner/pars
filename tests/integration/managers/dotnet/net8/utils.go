@@ -17,7 +17,7 @@ import (
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
 	"github.com/stretchr/testify/require"
-	"parsdevkit.net/core/utilities/file"
+	"parsdevkit.net/pkg/utilities/file"
 )
 
 func InitializeNewWorkspace(t *testing.T, testPath, workspaceName, environment string) {

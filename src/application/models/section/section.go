@@ -6,8 +6,8 @@ import (
 	"parsdevkit.net/application/models/option"
 
 	"gopkg.in/yaml.v3"
-	"parsdevkit.net/core/errors"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type Section struct {

@@ -3,12 +3,12 @@ package describe
 import (
 	"fmt"
 
-	"parsdevkit.net/operation/services"
-
-	"parsdevkit.net/core/utils"
-
 	"github.com/spf13/cobra"
-	_string "parsdevkit.net/core/utilities/string"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/group/group/structs"
+	_string "parsdevkit.net/pkg/utilities/string"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 )
 
 type DescribeOptions struct {
@@ -50,7 +50,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := services.NewGroupService(utils.GetEnvironment())
+	groupService := ioc.Get[contracts.GroupServiceInterface[structs.GroupBaseStruct]]()
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to describe task '%s'\n%w", commandOptions.Name, err)
@@ -59,7 +59,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	name := fmt.Sprintf("%v", group.Name)
 	fmt.Println(name)
 
-	projectService := services.NewApplicationProjectService(utils.GetEnvironment())
+	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
 	projectList, err := projectService.ListByGroupName(group.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group tasks '%s'\n%w", commandOptions.Name, err)
