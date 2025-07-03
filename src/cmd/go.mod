@@ -64,19 +64,17 @@ require (
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/components => ../components
-
 replace parsdevkit.net/engines => ../modules/engines
 
 replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/context => ../modules/context
 
-replace parsdevkit.net/persistence/entities => ../modules/data/entities
+replace parsdevkit.net/persistence/entities => ../data/entities
 
-replace parsdevkit.net/persistence/repositories => ../modules/data/repositories
+replace parsdevkit.net/persistence/repositories => ../data/repositories
 
-replace parsdevkit.net/persistence/contexts => ../modules/data/contexts
+replace parsdevkit.net/persistence/contexts => ../data/contexts
 
 replace parsdevkit.net/providers => ../providers
 
@@ -85,6 +83,8 @@ replace parsdevkit.net/platforms/core => ../platforms/core
 replace parsdevkit.net/platforms/common => ../platforms/common
 
 replace parsdevkit.net/platforms/nodejs => ../platforms/nodejs
+
+replace parsdevkit.net/components => ../components
 
 replace parsdevkit.net/platforms/angular => ../platforms/angular
 

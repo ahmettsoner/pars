@@ -23,6 +23,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	applicationProject "parsdevkit.net/application/structs/project"
+	projectComponent "parsdevkit.net/components/project"
 	"parsdevkit.net/platforms/core"
 )
 
@@ -516,7 +517,7 @@ func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspa
 
 	var projectList []applicationproject.ProjectBaseStruct = []applicationproject.ProjectBaseStruct{}
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -593,7 +594,7 @@ func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspac
 	var result applicationproject.ProjectBaseStruct = applicationproject.ProjectBaseStruct{}
 	logrus.Debugf("trying to find project with fullname (%v)", name)
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -815,7 +816,7 @@ func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicati
 
 func (s *ApplicationProjectService) Remove(name string, workspaceName string, force bool, permanent bool) (*applicationproject.ProjectBaseStruct, error) {
 	logrus.Debugf("project(s) will be %v removing", name)
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -952,7 +953,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 }
 
 func (s *ApplicationProjectService) IsExists(name string, workspaceName string) (bool, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return false, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -982,7 +983,7 @@ func (s *ApplicationProjectService) IsExists(name string, workspaceName string) 
 }
 
 func (s ApplicationProjectService) GetHash(name string, workspaceName string) (string, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return "", fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -1012,7 +1013,7 @@ func (s ApplicationProjectService) GetHash(name string, workspaceName string) (s
 }
 
 func (s *ApplicationProjectService) Build(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
 	}
@@ -1088,7 +1089,7 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 }
 
 func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}
@@ -1166,7 +1167,7 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 }
 
 func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}
@@ -1244,7 +1245,7 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 }
 
 func (s *ApplicationProjectService) Install(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}
@@ -1322,7 +1323,7 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 }
 
 func (s *ApplicationProjectService) Test(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}
@@ -1399,7 +1400,7 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 }
 
 func (s *ApplicationProjectService) Release(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}
@@ -1477,7 +1478,7 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 }
 
 func (s *ApplicationProjectService) Run(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
 	}

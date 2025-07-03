@@ -11,10 +11,10 @@ import (
 	"parsdevkit.net/engines/group"
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/structs/project"
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
+	"parsdevkit.net/components"
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
@@ -60,7 +60,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := components.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}

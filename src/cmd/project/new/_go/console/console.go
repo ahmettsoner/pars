@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/project"
 
+	"parsdevkit.net/components"
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -71,7 +71,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := components.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}

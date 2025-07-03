@@ -9,8 +9,6 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/structs/project"
-
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/providers"
@@ -20,6 +18,7 @@ import (
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 
+	"parsdevkit.net/components/project"
 	"parsdevkit.net/components/workspace"
 
 	"github.com/sirupsen/logrus"

@@ -9,10 +9,10 @@ import (
 	v2 "parsdevkit.net/engines/v2"
 	"parsdevkit.net/models"
 	"parsdevkit.net/pkg/utils/json"
-	"parsdevkit.net/structs/project"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 
+	"parsdevkit.net/components"
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -58,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := components.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}

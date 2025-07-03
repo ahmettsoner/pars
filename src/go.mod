@@ -17,6 +17,7 @@ replace parsdevkit.net/modules/task/common => ./modules/task/common
 replace parsdevkit.net/modules/resource/data => ./modules/resource/data
 
 replace parsdevkit.net/modules/group/group => ./modules/group/group
+
 replace parsdevkit.net/modules/workspace/workspace => ./modules/workspace/workspace
 
 replace parsdevkit.net/modules/resource/object => ./modules/resource/object
@@ -55,9 +56,7 @@ replace parsdevkit.net/components => ./components
 
 replace parsdevkit.net/cmd => ./cmd
 
-require (
-	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
-)
+require parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
 
 require (
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
@@ -101,11 +100,9 @@ require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/workspace/workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect
@@ -113,10 +110,12 @@ require (
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/workspace/workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000 // indirect

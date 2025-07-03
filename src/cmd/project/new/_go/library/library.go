@@ -11,7 +11,6 @@ import (
 
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/structs/project"
 
 	"github.com/spf13/cobra"
 )
@@ -59,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		log.Fatal("There are no active workspace, please initialize or switch to available workspace")
 	}
 
-	projectGroup, projectName, err := project.ParseProjectFullName(name)
+	projectGroup, projectName, err := components.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}
