@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 
 	"github.com/spf13/cobra"
 )

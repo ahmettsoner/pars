@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"

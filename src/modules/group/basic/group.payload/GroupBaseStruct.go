@@ -1,4 +1,4 @@
-package group_payload
+package basic_group_payload
 
 import (
 	"fmt"

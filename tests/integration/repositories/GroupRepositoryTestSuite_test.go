@@ -6,7 +6,7 @@ import (
 
 	"parsdevkit.net/application"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/persistence/contexts"

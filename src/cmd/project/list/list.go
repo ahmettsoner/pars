@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/components/workspace"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application"

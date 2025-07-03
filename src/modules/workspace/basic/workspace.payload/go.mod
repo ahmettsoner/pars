@@ -1,4 +1,4 @@
-module parsdevkit.net/modules/group/basic_group_payload
+module parsdevkit.net/modules/workspace/basic_workspace_payload
 
 replace parsdevkit.net/structs => ../../../../structs
 

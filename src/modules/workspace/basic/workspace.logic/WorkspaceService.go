@@ -1,4 +1,4 @@
-package workspace
+package basic_workspace
 
 import (
 	"encoding/json"

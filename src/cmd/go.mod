@@ -9,8 +9,8 @@ require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/group/group_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
@@ -18,7 +18,7 @@ require (
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/workspace/workspace v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
@@ -74,11 +74,11 @@ require (
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/modules/workspace/workspace => ../modules/workspace/basic
+replace parsdevkit.net/modules/workspace/basic_workspace => ../modules/workspace/basic/workspace.logic
 
-replace parsdevkit.net/modules/group/group => ../modules/group/basic
+replace parsdevkit.net/modules/group/basic_group => ../modules/group/basic/group.logic
 
-replace parsdevkit.net/modules/group/group_payload => ../modules/group/basic/group.payload
+replace parsdevkit.net/modules/group/basic_group_payload => ../modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/project/application => ../modules/project/application
 

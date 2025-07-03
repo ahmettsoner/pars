@@ -1,4 +1,4 @@
-module parsdevkit.net/modules/workspace/workspace
+module parsdevkit.net/modules/workspace/basic_workspace
 
 go 1.23.7
 

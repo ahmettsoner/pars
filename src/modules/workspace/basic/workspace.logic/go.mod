@@ -1,27 +1,27 @@
-module parsdevkit.net/modules/group/group
+module parsdevkit.net/modules/workspace/basic_workspace
 
-replace parsdevkit.net/structs => ../../structs
+replace parsdevkit.net/structs => ../../../structs
 
-replace parsdevkit.net/application => ../../../application
+replace parsdevkit.net/application => ../../../../application
 
-replace parsdevkit.net/pkg => ../../../pkg
+replace parsdevkit.net/pkg => ../../../../pkg
 
-replace parsdevkit.net/persistence/contexts => ../../../data/contexts
+replace parsdevkit.net/persistence/contexts => ../../../../data/contexts
 
-replace parsdevkit.net/persistence/entities => ../../../data/entities
+replace parsdevkit.net/persistence/entities => ../../../../data/entities
 
-replace parsdevkit.net/persistence/repositories => ../../../data/repositories
+replace parsdevkit.net/persistence/repositories => ../../../../data/repositories
 
-replace parsdevkit.net/modules/group/group_contract => ./group.contract
+replace parsdevkit.net/modules/workspace/basic_workspace_contract => ../workspace.contract
 
-replace parsdevkit.net/modules/group/group_payload => ./group.payload
+replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../workspace.payload
 
 go 1.23.7
 
 require (
 	github.com/sirupsen/logrus v1.9.3
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/group/group_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000

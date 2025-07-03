@@ -34,9 +34,9 @@ replace parsdevkit.net/modules/task/common => ../task/common
 
 replace parsdevkit.net/modules/resource/data => ../resource/data
 
-replace parsdevkit.net/modules/group/group => ../group/basic
+replace parsdevkit.net/modules/group/basic_group => ../group/basic/group.logic
 
-replace parsdevkit.net/modules/workspace/workspace => ../workspace/basic
+replace parsdevkit.net/modules/workspace/basic_workspace => ../workspace/basic/workspace.logic
 
 replace parsdevkit.net/modules/resource/object => ../resource/object
 

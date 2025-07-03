@@ -10,7 +10,7 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
-	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"

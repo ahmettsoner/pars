@@ -3,18 +3,18 @@ package services
 import (
 	"testing"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/application/models/label"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
-	group "parsdevkit.net/modules/group/group"
+	group "parsdevkit.net/modules/group/basic_group"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/platforms/dotnet/managers"

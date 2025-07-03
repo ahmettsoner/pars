@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/structs/workspace"
 
-	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

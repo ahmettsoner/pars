@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"parsdevkit.net/models"
-	"parsdevkit.net/modules/group/group"
+	group "parsdevkit.net/modules/group/basic_group"
 
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/orchestrator/schema"

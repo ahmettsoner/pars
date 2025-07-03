@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
+	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
 	"parsdevkit.net/pkg/utilities/file"
 

@@ -1,11 +1,11 @@
-package group
+package basic_group
 
 import (
 	"fmt"
 
 	"github.com/sirupsen/logrus"
 
-	"parsdevkit.net/modules/group/group_payload"
+	"parsdevkit.net/modules/group/basic_group_payload"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/application"
@@ -19,7 +19,7 @@ type GroupEngine struct{}
 
 func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*group_payload.GroupBaseStruct)
+		_, ok := item.(*basic_group_payload.GroupBaseStruct)
 		if !ok {
 			return false
 		}
@@ -28,10 +28,10 @@ func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]group_payload.GroupBaseStruct, 0, len(data))
+	groups := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		group, ok := item.(*group_payload.GroupBaseStruct)
+		group, ok := item.(*basic_group_payload.GroupBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Process: expected GroupBaseStruct, got %T", item)
 		}
@@ -41,10 +41,10 @@ func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas
 	return s.createGroups(groups, false)
 }
 func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]group_payload.GroupBaseStruct, 0, len(data))
+	groups := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		group, ok := item.(*group_payload.GroupBaseStruct)
+		group, ok := item.(*basic_group_payload.GroupBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Destroy: expected GroupBaseStruct, got %T", item)
 		}
@@ -60,11 +60,11 @@ func (s GroupEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
-func (s GroupEngine) createGroups(groups []group_payload.GroupBaseStruct, init bool) error {
+func (s GroupEngine) createGroups(groups []basic_group_payload.GroupBaseStruct, init bool) error {
 
-	groupsReadyToCreate := make([]group_payload.GroupBaseStruct, 0)
-	groupsForUpdate := make([]group_payload.GroupBaseStruct, 0)
-	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+	groupsReadyToCreate := make([]basic_group_payload.GroupBaseStruct, 0)
+	groupsForUpdate := make([]basic_group_payload.GroupBaseStruct, 0)
+	groupService := ioc.Get[contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct]]()
 
 	for _, group := range groups {
 		ok, err := groupService.IsExists(group.Header.Name)
@@ -115,10 +115,10 @@ func (s GroupEngine) createGroups(groups []group_payload.GroupBaseStruct, init b
 	return nil
 }
 
-func (s GroupEngine) removeGroups(groups []group_payload.GroupBaseStruct, permanent bool) error {
+func (s GroupEngine) removeGroups(groups []basic_group_payload.GroupBaseStruct, permanent bool) error {
 
-	GroupEngine := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
-	groupsReadyToDelete := make([]group_payload.GroupBaseStruct, 0)
+	GroupEngine := ioc.Get[contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct]]()
+	groupsReadyToDelete := make([]basic_group_payload.GroupBaseStruct, 0)
 	for _, group := range groups {
 		ok, err := GroupEngine.IsExists(group.Header.Name)
 		if err != nil {

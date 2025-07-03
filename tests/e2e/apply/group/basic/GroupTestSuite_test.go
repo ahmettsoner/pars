@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/modules/group/group"
+	group "parsdevkit.net/modules/group/basic_group"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"

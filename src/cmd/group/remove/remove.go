@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"parsdevkit.net/modules/group/group_payload"
+	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/structs/workspace"
