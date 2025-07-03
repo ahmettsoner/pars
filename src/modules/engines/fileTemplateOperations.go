@@ -4,7 +4,6 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/operation/services"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
@@ -75,7 +74,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, modelLayer := range model.Specifications.Layers {
-		resourceService := services.NewDataResourceService(s.environment)
+		resourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
 		setResources, err := resourceService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err

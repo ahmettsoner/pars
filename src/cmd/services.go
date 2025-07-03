@@ -11,12 +11,16 @@ import (
 	projectApplication "parsdevkit.net/modules/project/application"
 	resourceData "parsdevkit.net/modules/resource/data"
 	resourceObject "parsdevkit.net/modules/resource/object"
+
 	taskCommon "parsdevkit.net/modules/task/common"
 	templateCode "parsdevkit.net/modules/template/code"
 	templateFile "parsdevkit.net/modules/template/file"
 	templateShared "parsdevkit.net/modules/template/shared"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/workspace"
 	applicationproject "parsdevkit.net/structs/project/application-project"
+	dataresource "parsdevkit.net/structs/resource/data-resource"
+	objectresource "parsdevkit.net/structs/resource/object-resource"
+	commontask "parsdevkit.net/structs/task/common-task"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
@@ -100,6 +104,15 @@ func registerContainers() {
 	})
 	ioc.RegisterInterface[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
 		return templateShared.NewSharedTemplateService(utils.GetEnvironment())
+	})
+	ioc.RegisterInterface[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]](func() contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct] {
+		return resourceObject.NewObjectResourceService(utils.GetEnvironment())
+	})
+	ioc.RegisterInterface[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]](func() contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct] {
+		return resourceData.NewDataResourceService(utils.GetEnvironment())
+	})
+	ioc.RegisterInterface[contracts.TaskServiceInterface[commontask.TaskBaseStruct]](func() contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
+		return taskCommon.NewCommonTaskService(utils.GetEnvironment())
 	})
 
 }

@@ -5,12 +5,12 @@ import (
 	"log"
 	"strings"
 
-	"parsdevkit.net/operation/services"
-
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/core/utilities/string"
-
-	"parsdevkit.net/core/utils"
+	dataresource "parsdevkit.net/structs/resource/data-resource"
+	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -59,8 +59,8 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
 
-		objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
-		dataResourceService := services.NewDataResourceService(utils.GetEnvironment())
+		objectResourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
+		dataResourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
 
 		for _, name := range commandOptions.Names {
 			if checkGlobals {
@@ -154,7 +154,8 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	objectResourceService := services.NewObjectResourceService(utils.GetEnvironment())
+	objectResourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
+	dataResourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
 	objectResourceList, err := objectResourceService.List()
 	if err != nil {
 		log.Fatal(err)
@@ -166,7 +167,6 @@ func listResourceNameSuggestions(args []string, toComplete string) []string {
 		}
 	}
 
-	dataResourceService := services.NewDataResourceService(utils.GetEnvironment())
 	dataResourceList, err := dataResourceService.List()
 	if err != nil {
 		log.Fatal(err)

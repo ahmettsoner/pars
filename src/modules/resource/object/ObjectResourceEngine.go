@@ -5,10 +5,12 @@ import (
 
 	"parsdevkit.net/application"
 	engineOperations "parsdevkit.net/engines"
+	objectresource "parsdevkit.net/structs/resource/object-resource"
 	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/application/ioc"
 
 	"parsdevkit.net/core/utilities/json"
 
@@ -69,7 +71,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 
 	resourcesReadyToCreate := make([]objectresourceStruct.ResourceBaseStruct, 0)
 	resourcesForUpdate := make([]objectresourceStruct.ResourceBaseStruct, 0)
-	resourceService := services.NewObjectResourceService(utils.GetEnvironment())
+	resourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
 
 	for _, resource := range resources {
 		if err := resource.Validate(); err != nil {
@@ -137,7 +139,7 @@ func (s ObjectResourceEngine) createResources(resources []objectresourceStruct.R
 
 func (s ObjectResourceEngine) removeResources(resources []objectresourceStruct.ResourceBaseStruct, permanent bool) error {
 
-	resourceService := services.NewObjectResourceService(utils.GetEnvironment())
+	resourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
 	resourcesReadyToDelete := make([]objectresourceStruct.ResourceBaseStruct, 0)
 	for _, resource := range resources {
 		ok, err := resourceService.IsExists(resource.Header.Name, resource.Specifications.Workspace)
@@ -163,7 +165,7 @@ func (s ObjectResourceEngine) removeResources(resources []objectresourceStruct.R
 }
 func (s ObjectResourceEngine) generate(model objectresourceStruct.ResourceBaseStruct) (*objectresourceStruct.ResourceBaseStruct, error) {
 
-	resourceService := services.NewObjectResourceService(utils.GetEnvironment())
+	resourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
 
 	result, err := resourceService.GetByName(model.Header.Name)
 	if err != nil {

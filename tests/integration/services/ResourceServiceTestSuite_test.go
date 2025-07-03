@@ -12,7 +12,7 @@ import (
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/operation/services"
+	resourceObject "parsdevkit.net/modules/resource/object"
 
 	"parsdevkit.net/core/utils"
 
@@ -40,7 +40,7 @@ func (suite *ResourceServiceTestSuite) SetupSuite() {
 	suite.noCleanOnFail = true
 	testArea := utils.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
-	suite.service = services.NewObjectResourceService(suite.environment)
+	suite.service = resourceObject.NewObjectResourceService(suite.environment)
 
 	suite.T().Log("Resource creation completed")
 }

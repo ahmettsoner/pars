@@ -5,15 +5,16 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/core/utilities/json"
+	commontask "parsdevkit.net/structs/task/common-task"
 	commontaskStruct "parsdevkit.net/structs/task/common-task"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/operation/services"
+	"parsdevkit.net/application/ioc"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/core/utilities/encrypt"
-	"parsdevkit.net/core/utils"
 )
 
 type CommonTaskEngine struct{}
@@ -69,7 +70,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 
 	tasksReadyToCreate := make([]commontaskStruct.TaskBaseStruct, 0)
 	tasksForUpdate := make([]commontaskStruct.TaskBaseStruct, 0)
-	taskService := services.NewCommonTaskService(utils.GetEnvironment())
+	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
 	for _, task := range tasks {
 		if err := task.Validate(); err != nil {
@@ -136,7 +137,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 }
 func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, permanent bool) error {
 
-	taskService := services.NewCommonTaskService(utils.GetEnvironment())
+	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 	tasksReadyToDelete := make([]commontaskStruct.TaskBaseStruct, 0)
 	for _, task := range tasks {
 		ok, err := taskService.IsExists(task.Header.Name, task.Specifications.Workspace)
@@ -162,7 +163,7 @@ func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, p
 }
 func (s CommonTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commontaskStruct.TaskBaseStruct, error) {
 
-	taskService := services.NewCommonTaskService(utils.GetEnvironment())
+	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
 	result, err := taskService.GetByName(model.Header.Name)
 	if err != nil {

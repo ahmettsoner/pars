@@ -4,8 +4,6 @@ import (
 	"os"
 	"testing"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/core/utils"
 
 	test "pars/tests/internal/testenv"
@@ -15,6 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	resourceObject "parsdevkit.net/modules/resource/object"
 )
 
 type DefaultWorkspaceTestSuite struct {
@@ -89,7 +88,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicResource() {
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := services.NewObjectResourceService(suite.environment)
+	service := resourceObject.NewObjectResourceService(suite.environment)
 	resource, err := service.GetByName(structData.Name)
 	require.NoError(suite.T(), err, "Failed to get resource by name.")
 	assert.Equal(suite.T(), structData.Name, resource.Header.Name)

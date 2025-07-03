@@ -3,9 +3,8 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/operation/services"
-
 	"github.com/spf13/cobra"
+	"parsdevkit.net/components/environment"
 )
 
 type EnvironmentListOptions struct {
@@ -33,7 +32,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	environmentService := services.NewEnvironmentService()
+	environmentService := environment.NewEnvironmentService()
 	environmentlist, err := environmentService.List()
 	if err != nil {
 		return fmt.Errorf("Failed list environments\n%w", err)
