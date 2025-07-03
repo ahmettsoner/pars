@@ -14,11 +14,11 @@ replace parsdevkit.net/modules/task/common => ../src/modules/task/common
 
 replace parsdevkit.net/modules/resource/data => ../src/modules/resource/data
 
-replace parsdevkit.net/modules/group/group => ../src/modules/group/group
+replace parsdevkit.net/modules/group/group => ../src/modules/group/basic
 
-replace parsdevkit.net/modules/group/group_payload => ../src/modules/group/group/group.payload
+replace parsdevkit.net/modules/group/group_payload => ../src/modules/group/basic/group.payload
 
-replace parsdevkit.net/modules/workspace/workspace => ../src/modules/workspace/workspace
+replace parsdevkit.net/modules/workspace/workspace => ../src/modules/workspace/basic
 
 replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
 

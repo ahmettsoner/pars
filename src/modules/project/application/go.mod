@@ -20,7 +20,7 @@ replace parsdevkit.net/persistence/entities => ../../../data/entities
 
 replace parsdevkit.net/persistence/repositories => ../../../data/repositories
 
-replace parsdevkit.net/modules/group/group_payload => ../../group/group/group.payload
+replace parsdevkit.net/modules/group/group_payload => ../../group/basic/group.payload
 
 require (
 	github.com/sirupsen/logrus v1.9.3

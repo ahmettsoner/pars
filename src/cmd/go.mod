@@ -74,11 +74,11 @@ require (
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/modules/workspace/workspace => ../modules/workspace/workspace
+replace parsdevkit.net/modules/workspace/workspace => ../modules/workspace/basic
 
-replace parsdevkit.net/modules/group/group => ../modules/group/group
+replace parsdevkit.net/modules/group/group => ../modules/group/basic
 
-replace parsdevkit.net/modules/group/group_payload => ../modules/group/group/group.payload
+replace parsdevkit.net/modules/group/group_payload => ../modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/project/application => ../modules/project/application
 
