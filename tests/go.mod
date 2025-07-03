@@ -4,15 +4,15 @@ go 1.23.7
 
 replace parsdevkit.net/modules/project/application_project => ../src/modules/project/application/project
 
-replace parsdevkit.net/modules/template/code => ../src/modules/template/code
+replace parsdevkit.net/modules/template/code_template => ../src/modules/template/code/template
 
-replace parsdevkit.net/modules/template/shared => ../src/modules/template/shared
+replace parsdevkit.net/modules/template/shared_template => ../src/modules/template/shared/template
 
-replace parsdevkit.net/modules/template/file => ../src/modules/template/file
+replace parsdevkit.net/modules/template/file_template => ../src/modules/template/file/template
 
-replace parsdevkit.net/modules/task/common => ../src/modules/task/common
+replace parsdevkit.net/modules/task/basic_task => ../src/modules/task/basic/task
 
-replace parsdevkit.net/modules/resource/data => ../src/modules/resource/data
+replace parsdevkit.net/modules/resource/data_resource => ../src/modules/resource/data/resource
 
 replace parsdevkit.net/modules/group/basic_group => ../src/modules/group/basic/group
 
@@ -20,7 +20,7 @@ replace parsdevkit.net/modules/group/basic_group_payload => ../src/modules/group
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ../src/modules/workspace/basic/workspace
 
-replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
+replace parsdevkit.net/modules/resource/object_resource => ../src/modules/resource/object/resource
 
 replace parsdevkit.net/application => ../src/application
 
@@ -67,8 +67,8 @@ require (
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
@@ -88,10 +88,10 @@ require (
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/template/file v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/template/shared v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 )
 

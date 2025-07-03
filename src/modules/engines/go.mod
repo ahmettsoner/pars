@@ -24,21 +24,21 @@ replace parsdevkit.net/structs => ../structs
 
 replace parsdevkit.net/modules/project/application_project => ../project/application/project
 
-replace parsdevkit.net/modules/template/code => ../template/code
+replace parsdevkit.net/modules/template/code_template => ../template/code/template
 
-replace parsdevkit.net/modules/template/shared => ../template/shared
+replace parsdevkit.net/modules/template/shared_template => ../template/shared/template
 
-replace parsdevkit.net/modules/template/file => ../template/file
+replace parsdevkit.net/modules/template/file_template => ../template/file/template
 
-replace parsdevkit.net/modules/task/common => ../task/common
+replace parsdevkit.net/modules/task/basic_task => ../task/basic/task
 
-replace parsdevkit.net/modules/resource/data => ../resource/data
+replace parsdevkit.net/modules/resource/data_resource => ../resource/data/resource
 
 replace parsdevkit.net/modules/group/basic_group => ../group/basic/group
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ../workspace/basic/workspace
 
-replace parsdevkit.net/modules/resource/object => ../resource/object
+replace parsdevkit.net/modules/resource/object_resource => ../resource/object/resource
 
 replace parsdevkit.net/providers => ../../providers
 

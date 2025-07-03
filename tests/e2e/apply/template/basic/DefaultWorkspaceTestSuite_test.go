@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	templateCode "parsdevkit.net/modules/template/code"
+	templateCode "parsdevkit.net/modules/template/code_template"
 )
 
 type DefaultWorkspaceTestSuite struct {

@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	resourceObject "parsdevkit.net/modules/resource/object"
+	resourceObject "parsdevkit.net/modules/resource/object_resource"
 )
 
 type DefaultWorkspaceTestSuite struct {

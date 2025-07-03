@@ -12,7 +12,7 @@ import (
 	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
-	templateCode "parsdevkit.net/modules/template/code"
+	templateCode "parsdevkit.net/modules/template/code_template"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"

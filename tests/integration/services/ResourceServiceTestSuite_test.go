@@ -14,7 +14,7 @@ import (
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"parsdevkit.net/application/schemas"
-	resourceObject "parsdevkit.net/modules/resource/object"
+	resourceObject "parsdevkit.net/modules/resource/object_resource"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
