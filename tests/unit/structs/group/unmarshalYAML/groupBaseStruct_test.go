@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	groupStructs "parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/modules/group/group_payload"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -27,10 +27,10 @@ Specifications:
 
 	// Act
 
-	var data groupStructs.GroupBaseStruct
+	var data group_payload.GroupBaseStruct
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := groupStructs.GroupBaseStruct{
+	expected := group_payload.GroupBaseStruct{
 		Header: schemas.SchemaHeader{
 			Type: schemas.StructTypes.Group,
 			Kind: "",
@@ -39,7 +39,7 @@ Specifications:
 				Tags: []string{"tag1", "tag2"},
 			},
 		},
-		Specifications: groupStructs.NewGroupSpecification(0, "CMD", "cmd", []string{"pars", "cmd"}),
+		Specifications: group_payload.NewGroupSpecification(0, "CMD", "cmd", []string{"pars", "cmd"}),
 	}
 
 	// Assert

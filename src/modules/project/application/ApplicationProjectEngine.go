@@ -9,7 +9,8 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
-	groupStructs "parsdevkit.net/modules/group/group/structs"
+
+	"parsdevkit.net/modules/group/group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
@@ -459,13 +460,13 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 
 	return result, nil
 }
-func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*groupStructs.GroupBaseStruct, error) {
-	result := groupStructs.GroupBaseStruct{}
+func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*group_payload.GroupBaseStruct, error) {
+	result := group_payload.GroupBaseStruct{}
 
 	groupName := project.Specifications.Group
 
 	if !_string.IsEmpty(groupName) {
-		groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
+		groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
 			return nil, err

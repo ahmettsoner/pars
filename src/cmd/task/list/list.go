@@ -3,12 +3,11 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/operation/services"
-
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/application"
+	"parsdevkit.net/components/workspace"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +45,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-	taskService := services.NewCommonTaskService(application.GetEnvironment())
+	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
 	if checkGlobals {
 		fmt.Println()

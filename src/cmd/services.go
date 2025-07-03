@@ -27,7 +27,7 @@ import (
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 	"parsdevkit.net/structs/workspace"
 
-	groupSchema "parsdevkit.net/modules/group/group/structs"
+	"parsdevkit.net/modules/group/group_payload"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 	platformsCommon "parsdevkit.net/platforms/common"
@@ -45,7 +45,7 @@ func RegisterServices() {
 	registerContainers()
 }
 func registerSchemas() {
-	schemas.Register(&groupSchema.GroupBaseStruct{})
+	schemas.Register(&group_payload.GroupBaseStruct{})
 	schemas.Register(&applicationProjectSchema.ProjectBaseStruct{})
 	schemas.Register(&dataResourceSchema.ResourceBaseStruct{})
 	schemas.Register(&objectResourceSchema.ResourceBaseStruct{})
@@ -94,7 +94,7 @@ func registerContainers() {
 	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
 		return workspaceWorkspace.NewWorkspaceService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.GroupServiceInterface[groupSchema.GroupBaseStruct]](func() contracts.GroupServiceInterface[groupSchema.GroupBaseStruct] {
+	ioc.RegisterInterface[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]](func() contracts.GroupServiceInterface[group_payload.GroupBaseStruct] {
 		return groupGroup.NewGroupService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]](func() contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {

@@ -5,15 +5,19 @@ import (
 	"log"
 	"os"
 
+	"gorm.io/gorm/schema"
 	"parsdevkit.net/models"
 
-	"parsdevkit.net/components"
+	"parsdevkit.net/application/engines"
+
+	projectComponent "parsdevkit.net/components/project"
+
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/orchestrator/schema"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
-	v2 "parsdevkit.net/engines/v2"
-	"parsdevkit.net/pkg/utils/json"
+	"parsdevkit.net/pkg/utilities/json"
 )
 
 type NewOptions struct {
@@ -71,38 +75,38 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectGroup, projectName, err := components.ParseProjectFullName(name)
+	projectGroup, _, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var structData = struct {
-		Group           string
-		Name            string
-		Set             string
-		Package         string
-		Path            string
-		Workspace       string
-		PlatformVersion models.GoPlatformVersion
-		RuntimeVersion  models.GoRuntimeVersion
-		DesignType      models.DesignType
-		Architecture    models.ArchitectureType
-		Template        models.TemplateType
-		Methodology     models.MethodologyType
-	}{
-		Group:           projectGroup,
-		Name:            commandOptions.Name,
-		Set:             commandOptions.Set,
-		Package:         commandOptions.Package,
-		Path:            commandOptions.Name,
-		PlatformVersion: commandOptions.PlatformVersion.Value,
-		RuntimeVersion:  commandOptions.RuntimeVersion.Value,
-		Methodology:     commandOptions.Methodology.Value,
-		DesignType:      commandOptions.Design.Value,
-		Architecture:    commandOptions.Architecture.Value,
-		Template:        commandOptions.Template.Value,
-		Workspace:       commandOptions.Workspace,
-	}
+	// var structData = struct {
+	// 	Group           string
+	// 	Name            string
+	// 	Set             string
+	// 	Package         string
+	// 	Path            string
+	// 	Workspace       string
+	// 	PlatformVersion models.GoPlatformVersion
+	// 	RuntimeVersion  models.GoRuntimeVersion
+	// 	DesignType      models.DesignType
+	// 	Architecture    models.ArchitectureType
+	// 	Template        models.TemplateType
+	// 	Methodology     models.MethodologyType
+	// }{
+	// 	Group:           projectGroup,
+	// 	Name:            commandOptions.Name,
+	// 	Set:             commandOptions.Set,
+	// 	Package:         commandOptions.Package,
+	// 	Path:            commandOptions.Name,
+	// 	PlatformVersion: commandOptions.PlatformVersion.Value,
+	// 	RuntimeVersion:  commandOptions.RuntimeVersion.Value,
+	// 	Methodology:     commandOptions.Methodology.Value,
+	// 	DesignType:      commandOptions.Design.Value,
+	// 	Architecture:    commandOptions.Architecture.Value,
+	// 	Template:        commandOptions.Template.Value,
+	// 	Workspace:       commandOptions.Workspace,
+	// }
 
 	var templateFilePath = "/go/projects/console.yaml.templ"
 	if commandOptions.Architecture.Value == models.ArchitectureTypes.None {
@@ -135,7 +139,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+	result, err := schema.GenerateManifestFilesFromTemplate(templateFilePath)
 
 	if err != nil {
 		log.Printf("❌ Error: %v", err)
@@ -150,7 +154,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 		}
 
-		err = v2.DispatchEngineProcess(result)
+		err = engines.DispatchEngineProcess(result)
 		if err != nil {
 			log.Fatalf("Engine processing failed: %v", err)
 		}

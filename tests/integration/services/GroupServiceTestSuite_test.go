@@ -5,7 +5,8 @@ import (
 
 	"parsdevkit.net/application"
 	group "parsdevkit.net/modules/group/group"
-	groupStructs "parsdevkit.net/modules/group/group/structs"
+
+	"parsdevkit.net/modules/group/group_payload"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -18,7 +19,7 @@ import (
 
 type GroupServiceTestSuite struct {
 	suite.Suite
-	service       contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]
+	service       contracts.GroupServiceInterface[group_payload.GroupBaseStruct]
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool

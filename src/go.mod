@@ -18,6 +18,10 @@ replace parsdevkit.net/modules/resource/data => ./modules/resource/data
 
 replace parsdevkit.net/modules/group/group => ./modules/group/group
 
+replace parsdevkit.net/modules/group/group_contract => ./modules/group/group/group.contract
+
+replace parsdevkit.net/modules/group/group_payload => ./modules/group/group/group.payload
+
 replace parsdevkit.net/modules/workspace/workspace => ./modules/workspace/workspace
 
 replace parsdevkit.net/modules/resource/object => ./modules/resource/object
@@ -56,7 +60,10 @@ replace parsdevkit.net/components => ./components
 
 replace parsdevkit.net/cmd => ./cmd
 
-require parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
+require (
+	parsdevkit.net/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
+)
 
 require (
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
@@ -64,7 +71,6 @@ require (
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.10.0 // indirect
-	github.com/go-ozzo/ozzo-validation/v4 v4.3.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -88,7 +94,7 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
@@ -97,12 +103,12 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/group v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/group/group_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect

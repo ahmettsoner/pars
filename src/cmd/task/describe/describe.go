@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/modules/group/group/structs"
+
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 )

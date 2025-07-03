@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	applicationGroup "parsdevkit.net/application/structs/group"
-	groupStructs "parsdevkit.net/modules/group/group/structs"
+
+	"parsdevkit.net/modules/group/group_payload"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +15,7 @@ func Test_Group_Relative_Path(t *testing.T) {
 
 	// Arrange
 	a := assert.New(t)
-	data := groupStructs.GroupSpecification{
+	data := group_payload.GroupSpecification{
 		GroupIdentifier: applicationGroup.GroupIdentifier{
 			Path: "path",
 		},

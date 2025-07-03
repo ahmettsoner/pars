@@ -6,7 +6,8 @@ import (
 	"strings"
 
 	"parsdevkit.net/components/workspace"
-	groupStructs "parsdevkit.net/modules/group/group/structs"
+
+	"parsdevkit.net/modules/group/group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application"
@@ -77,7 +78,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	groupService := ioc.Get[contracts.GroupServiceInterface[groupStructs.GroupBaseStruct]]()
+	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
 	groupList, err := groupService.List()
 	if err != nil {
 		return fmt.Errorf("Failed to list projects groups\n%w", err)

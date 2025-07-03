@@ -1,4 +1,4 @@
-package structs
+package group_payload
 
 import (
 	"fmt"

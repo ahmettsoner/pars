@@ -5,14 +5,16 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/engines/group"
-	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/pkg/utils/json"
 
 	parsModels "parsdevkit.net/platforms/pars/models"
 
-	"parsdevkit.net/components"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/orchestrator/schema"
+
+	projectComponent "parsdevkit.net/components/project"
+
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
@@ -52,28 +54,28 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
-	projectGroup, projectName, err := components.ParseProjectFullName(name)
+	projectGroup, _, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var structData = struct {
-		Group           string
-		Name            string
-		Set             string
-		Package         string
-		Path            string
-		Workspace       string
-		PlatformVersion parsModels.ParsPlatformVersion
-	}{
-		Group:           projectGroup,
-		Name:            projectName,
-		Set:             projectSet,
-		Package:         _package,
-		Path:            projectName,
-		Workspace:       workspaceName,
-		PlatformVersion: platformVersionEnumFlag.Value,
-	}
+	// var structData = struct {
+	// 	Group           string
+	// 	Name            string
+	// 	Set             string
+	// 	Package         string
+	// 	Path            string
+	// 	Workspace       string
+	// 	PlatformVersion parsModels.ParsPlatformVersion
+	// }{
+	// 	Group:           projectGroup,
+	// 	Name:            projectName,
+	// 	Set:             projectSet,
+	// 	Package:         _package,
+	// 	Path:            projectName,
+	// 	Workspace:       workspaceName,
+	// 	PlatformVersion: platformVersionEnumFlag.Value,
+	// }
 
 	var templateFilePath = "/pars/projects/project.yaml.templ"
 
@@ -91,7 +93,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+	result, err := schema.GenerateManifestFilesFromTemplate(templateFilePath)
 
 	if err != nil {
 		log.Printf("❌ Error: %v", err)
@@ -106,7 +108,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 		}
 
-		err = v2.DispatchEngineProcess(result)
+		err = engines.DispatchEngineProcess(result)
 		if err != nil {
 			log.Fatalf("Engine processing failed: %v", err)
 		}

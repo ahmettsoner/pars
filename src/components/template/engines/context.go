@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	"parsdevkit.net/structs/workspace"
@@ -23,7 +23,7 @@ func (c ContextFuncs) GetContextByBaseForArray(base models.CodeTemplateDataConte
 }
 func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args ...string) models.CodeTemplateDataContext {
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
-	applicationProjectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	applicationProjectService := ioc.Get[contracts.ProjectServiceInterface[applicationProjectSchema.ProjectBaseStruct]]()
 	objectResourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
 	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 
@@ -129,9 +129,9 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		}
 	}
 
-	var projectObj *applicationproject.ProjectBaseStruct = nil
+	var projectObj *applicationProjectSchema.ProjectBaseStruct = nil
 	if layerObj != nil {
-		var projectList []applicationproject.ProjectBaseStruct = make([]applicationproject.ProjectBaseStruct, 0)
+		var projectList []applicationProjectSchema.ProjectBaseStruct = make([]applicationProjectSchema.ProjectBaseStruct, 0)
 		if _string.IsEmpty(project) {
 			projectListFromDb, err := applicationProjectService.ListBySetAndLayers(set, layer)
 			if err != nil {

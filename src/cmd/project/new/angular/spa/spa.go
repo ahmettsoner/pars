@@ -5,14 +5,17 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/engines/group"
-	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/models"
-	"parsdevkit.net/pkg/utils/json"
+	"parsdevkit.net/modules/group/group"
+	"parsdevkit.net/pkg/utilities/json"
+
+	"parsdevkit.net/orchestrator/schema"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 
-	"parsdevkit.net/components"
+	projectComponent "parsdevkit.net/components/project"
+
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -58,7 +61,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
-	projectGroup, projectName, err := components.ParseProjectFullName(name)
+	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -136,7 +139,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+	result, err := schema.GenerateManifestFilesFromTemplate(templateFilePath)
 
 	if err != nil {
 		log.Printf("❌ Error: %v", err)
@@ -151,7 +154,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 		}
 
-		err = v2.DispatchEngineProcess(result)
+		err = engines.DispatchEngineProcess(result)
 		if err != nil {
 			log.Fatalf("Engine processing failed: %v", err)
 		}

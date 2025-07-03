@@ -5,15 +5,17 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/engines/group"
-	v2 "parsdevkit.net/engines/v2"
+	"parsdevkit.net/orchestrator/schema"
+
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/models"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/pkg/utils/json"
 
 	nodejsModels "parsdevkit.net/platforms/nodejs/models"
 
-	"parsdevkit.net/components"
+	projectComponent "parsdevkit.net/components/project"
+
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
@@ -58,38 +60,38 @@ func executeFunc(cmd *cobra.Command, args []string) {
 
 	workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
-	projectGroup, projectName, err := components.ParseProjectFullName(name)
+	projectGroup, _, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	var structData = struct {
-		Group           string
-		Name            string
-		Set             string
-		Package         string
-		Path            string
-		Workspace       string
-		PlatformVersion nodejsModels.nodejsPlatformVersion
-		RuntimeVersion  nodejsModels.NodeJSRuntimeVersion
-		DesignType      models.DesignType
-		Architecture    models.ArchitectureType
-		Template        models.TemplateType
-		Methodology     models.MethodologyType
-	}{
-		Group:           projectGroup,
-		Name:            projectName,
-		Set:             projectSet,
-		Package:         _package,
-		Path:            projectName,
-		PlatformVersion: platformVersionEnumFlag.Value,
-		RuntimeVersion:  runtimeVersionEnumFlag.Value,
-		Methodology:     methodologyTypeEnumFlag.Value,
-		DesignType:      designTypeEnumFlag.Value,
-		Architecture:    architectureTypeEnumFlag.Value,
-		Template:        templateTypeEnumFlag.Value,
-		Workspace:       workspaceName,
-	}
+	// var structData = struct {
+	// 	Group           string
+	// 	Name            string
+	// 	Set             string
+	// 	Package         string
+	// 	Path            string
+	// 	Workspace       string
+	// 	PlatformVersion nodejsModels.nodejsPlatformVersion
+	// 	RuntimeVersion  nodejsModels.NodeJSRuntimeVersion
+	// 	DesignType      models.DesignType
+	// 	Architecture    models.ArchitectureType
+	// 	Template        models.TemplateType
+	// 	Methodology     models.MethodologyType
+	// }{
+	// 	Group:           projectGroup,
+	// 	Name:            projectName,
+	// 	Set:             projectSet,
+	// 	Package:         _package,
+	// 	Path:            projectName,
+	// 	PlatformVersion: platformVersionEnumFlag.Value,
+	// 	RuntimeVersion:  runtimeVersionEnumFlag.Value,
+	// 	Methodology:     methodologyTypeEnumFlag.Value,
+	// 	DesignType:      designTypeEnumFlag.Value,
+	// 	Architecture:    architectureTypeEnumFlag.Value,
+	// 	Template:        templateTypeEnumFlag.Value,
+	// 	Workspace:       workspaceName,
+	// }
 
 	var templateFilePath = "/nodejs/projects/library.yaml.templ"
 	if architectureTypeEnumFlag.Value == models.ArchitectureTypes.None {
@@ -136,7 +138,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+	result, err := schema.GenerateManifestFilesFromTemplate(templateFilePath)
 
 	if err != nil {
 		log.Printf("❌ Error: %v", err)
@@ -151,7 +153,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 		}
 
-		err = v2.DispatchEngineProcess(result)
+		err = engines.DispatchEngineProcess(result)
 		if err != nil {
 			log.Fatalf("Engine processing failed: %v", err)
 		}

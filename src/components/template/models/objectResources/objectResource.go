@@ -2,7 +2,7 @@ package objectResources
 
 import (
 	"parsdevkit.net/application/models/class"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
@@ -21,7 +21,7 @@ type Workspace struct {
 
 type ApplicationProjectComposite struct {
 	ApplicationProject
-	Original applicationproject.ProjectBaseStruct
+	Original applicationProjectSchema.ProjectBaseStruct
 }
 
 type ApplicationProject struct {

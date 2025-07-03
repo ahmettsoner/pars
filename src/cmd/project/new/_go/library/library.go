@@ -5,9 +5,11 @@ import (
 	"log"
 	"os"
 
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/cmd/open/workspace"
-	v2 "parsdevkit.net/engines/v2"
-	"parsdevkit.net/pkg/utils/json"
+	"parsdevkit.net/pkg/utilities/json"
+
+	"parsdevkit.net/orchestrator/schema"
 
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -122,7 +124,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	result, err := v2.GenerateManifestFilesFromTemplate(templateFilePath)
+	result, err := schema.GenerateManifestFilesFromTemplate(templateFilePath)
 
 	if err != nil {
 		log.Printf("❌ Error: %v", err)
@@ -137,7 +139,7 @@ func executeFunc(cmd *cobra.Command, args []string) {
 			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
 		}
 
-		err = v2.DispatchEngineProcess(result)
+		err = engines.DispatchEngineProcess(result)
 		if err != nil {
 			log.Fatalf("Engine processing failed: %v", err)
 		}
