@@ -3,10 +3,8 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	"parsdevkit.net/modules/group/basic_group_contract"
 
 	"github.com/spf13/cobra"
 )
@@ -31,7 +29,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	groupList, err := groupService.List()
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve groups\n%w", err)

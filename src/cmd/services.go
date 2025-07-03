@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/application/schemas"
 
 	group "parsdevkit.net/modules/group/basic_group"
+	"parsdevkit.net/modules/group/basic_group_contract"
 	projectApplication "parsdevkit.net/modules/project/application_project"
 	resourceData "parsdevkit.net/modules/resource/data_resource"
 	resourceObject "parsdevkit.net/modules/resource/object_resource"
@@ -94,7 +95,7 @@ func registerContainers() {
 	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
 		return workspaceWorkspace.NewWorkspaceService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]](func() contracts.GroupServiceInterface[group_payload.GroupBaseStruct] {
+	ioc.RegisterInterface[basic_group_contract.GroupInterface](func() basic_group_contract.GroupInterface {
 		return groupGroup.NewGroupService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]](func() contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {

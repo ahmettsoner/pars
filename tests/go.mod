@@ -15,6 +15,7 @@ replace parsdevkit.net/modules/task/basic_task => ../src/modules/task/basic/task
 replace parsdevkit.net/modules/resource/data_resource => ../src/modules/resource/data/resource
 
 replace parsdevkit.net/modules/group/basic_group => ../src/modules/group/basic/group
+replace parsdevkit.net/modules/group/basic_group_contract => ../src/modules/group/basic/group.contract
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../src/modules/group/basic/group.payload
 
@@ -66,6 +67,7 @@ require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000

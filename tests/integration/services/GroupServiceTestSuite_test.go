@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 	group "parsdevkit.net/modules/group/basic_group"
-	"parsdevkit.net/modules/group/basic_group_payload"
+	"parsdevkit.net/modules/group/basic_group_contract"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -13,12 +13,11 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/application/contracts"
 )
 
 type GroupServiceTestSuite struct {
 	suite.Suite
-	service       contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct]
+	service       basic_group_contract.GroupInterface
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool

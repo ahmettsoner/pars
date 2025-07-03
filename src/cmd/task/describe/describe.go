@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/group/basic_group_contract"
 
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -50,7 +51,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := ioc.Get[contracts.GroupServiceInterface[structs.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to describe task '%s'\n%w", commandOptions.Name, err)

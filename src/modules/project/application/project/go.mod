@@ -21,6 +21,7 @@ replace parsdevkit.net/persistence/entities => ../../../data/entities
 replace parsdevkit.net/persistence/repositories => ../../../data/repositories
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../../group/basic/group.payload
+replace parsdevkit.net/modules/group/basic_group_contract => ../../group/basic/group.contract
 
 require (
 	github.com/sirupsen/logrus v1.9.3
@@ -28,6 +29,7 @@ require (
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000

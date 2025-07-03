@@ -6,13 +6,13 @@ import (
 	"os"
 	"strings"
 
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/group/basic_group_contract"
 
 	"github.com/spf13/cobra"
 )
@@ -55,7 +55,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+		groupService := ioc.Get[basic_group_contract.GroupInterface]()
 		for _, name := range commandOptions.Names {
 			_, err := groupService.Remove(name, true)
 			if err != nil {
@@ -95,7 +95,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

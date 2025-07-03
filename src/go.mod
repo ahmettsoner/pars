@@ -108,6 +108,7 @@ require (
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect

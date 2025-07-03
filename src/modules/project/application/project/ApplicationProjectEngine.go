@@ -10,6 +10,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
+	"parsdevkit.net/modules/group/basic_group_contract"
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -466,7 +467,7 @@ func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.Proj
 	groupName := project.Specifications.Group
 
 	if !_string.IsEmpty(groupName) {
-		groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+		groupService := ioc.Get[basic_group_contract.GroupInterface]()
 		group, err := groupService.GetByName(groupName)
 		if err != nil {
 			return nil, err

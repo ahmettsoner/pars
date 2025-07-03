@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	"parsdevkit.net/modules/group/basic_group_contract"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"log"
@@ -59,7 +59,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	group, err := groupService.GetByName(commandOptions.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group '%s'\n%w", commandOptions.Name, err)
@@ -118,7 +118,7 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	groupService := ioc.Get[contracts.GroupServiceInterface[group_payload.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	groupList, err := groupService.List()
 	if err != nil {
 		log.Fatal(err)

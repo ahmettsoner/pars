@@ -5,11 +5,11 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/group/basic_group_contract"
 	"parsdevkit.net/modules/group/basic_group_payload"
 
 	"parsdevkit.net/persistence/repositories"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
@@ -20,7 +20,7 @@ type GroupService struct {
 	projectRespository *repositories.ProjectRepository
 }
 
-func NewGroupService(environment string) contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct] {
+func NewGroupService(environment string) basic_group_contract.GroupInterface {
 
 	groupRespository := ioc.Get[*repositories.GroupRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()

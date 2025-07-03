@@ -11,6 +11,7 @@ require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
@@ -77,6 +78,7 @@ require (
 replace parsdevkit.net/modules/workspace/basic_workspace => ../modules/workspace/basic/workspace
 
 replace parsdevkit.net/modules/group/basic_group => ../modules/group/basic/group
+replace parsdevkit.net/modules/group/basic_group_contract => ../modules/group/basic/group.contract
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../modules/group/basic/group.payload
 

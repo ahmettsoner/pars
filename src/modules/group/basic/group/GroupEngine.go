@@ -9,10 +9,10 @@ import (
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/group/basic_group_contract"
 )
 
 type GroupEngine struct{}
@@ -64,7 +64,7 @@ func (s GroupEngine) createGroups(groups []basic_group_payload.GroupBaseStruct, 
 
 	groupsReadyToCreate := make([]basic_group_payload.GroupBaseStruct, 0)
 	groupsForUpdate := make([]basic_group_payload.GroupBaseStruct, 0)
-	groupService := ioc.Get[contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct]]()
+	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 
 	for _, group := range groups {
 		ok, err := groupService.IsExists(group.Header.Name)
@@ -117,7 +117,7 @@ func (s GroupEngine) createGroups(groups []basic_group_payload.GroupBaseStruct, 
 
 func (s GroupEngine) removeGroups(groups []basic_group_payload.GroupBaseStruct, permanent bool) error {
 
-	GroupEngine := ioc.Get[contracts.GroupServiceInterface[basic_group_payload.GroupBaseStruct]]()
+	GroupEngine := ioc.Get[basic_group_contract.GroupInterface]()
 	groupsReadyToDelete := make([]basic_group_payload.GroupBaseStruct, 0)
 	for _, group := range groups {
 		ok, err := GroupEngine.IsExists(group.Header.Name)

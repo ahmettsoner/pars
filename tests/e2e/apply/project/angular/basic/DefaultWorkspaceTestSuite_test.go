@@ -239,7 +239,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
 
 	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
