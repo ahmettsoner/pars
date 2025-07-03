@@ -10,10 +10,11 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
+	"parsdevkit.net/modules/project/application_project_contract"
+
 	"parsdevkit.net/modules/group/basic_group_contract"
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 	workspaceStruct "parsdevkit.net/structs/workspace"
@@ -83,7 +84,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 
 	projectsReadyToCreate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	projectsForUpdate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	for _, project := range projects {
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
@@ -370,7 +371,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
 
 	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	for _, project := range projects {
 
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
@@ -506,7 +507,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStruct.ProjectBaseStruct, reference applicationprojectStruct.ProjectBaseStruct) (*applicationprojectStruct.ProjectBaseStruct, error) {
 
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
 
 	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
@@ -546,7 +547,7 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 
 func (s ApplicationProjectEngine) sortProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	logrus.Debugf("'%d' projects preparing for ordering", len(projects))
 	projectMap := make(map[string]applicationprojectStruct.ProjectSpecification)
@@ -591,7 +592,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 	return sortedProjects, nil
 }
 func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct, sortedProjectMap map[string]applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	var sortedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	var unOrderedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
 

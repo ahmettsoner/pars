@@ -18,18 +18,17 @@ import (
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	service       application_project_contract.ProjectInterface
 	environment   string
 	testArea      string
 	workspaceName string

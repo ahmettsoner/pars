@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/pkg/utilities/file"
@@ -27,12 +27,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/application/contracts"
 )
 
 type ProjectServiceTestSuite struct {
 	suite.Suite
-	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	service       application_project_contract.ProjectInterface
 	environment   string
 	testArea      string
 	workspaceName string

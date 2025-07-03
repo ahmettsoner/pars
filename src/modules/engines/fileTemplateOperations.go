@@ -12,7 +12,9 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
+	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/persistence/contexts"
+
 	"parsdevkit.net/persistence/repositories"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -45,7 +47,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 		}
 		logrus.Debugf("%d Template(s) found for layer '%v' on Resource %v\n", len(*setTemplates), layer.Name, model.Header.Name)
 
-		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+		projectService := ioc.Get[application_project_contract.ProjectInterface]()
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err
@@ -81,7 +83,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 		}
 		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Header.Name)
 
-		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+		projectService := ioc.Get[application_project_contract.ProjectInterface]()
 		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err
@@ -108,7 +110,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 }
 
 func (s FileTemplateOperations) GenerateContent(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	resourceLayer := dataresource.Layer{}
 

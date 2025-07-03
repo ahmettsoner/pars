@@ -4,12 +4,10 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/group/basic_group_contract"
 
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 )
 
 type DescribeOptions struct {
@@ -60,7 +58,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	name := fmt.Sprintf("%v", group.Name)
 	fmt.Println(name)
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	projectList, err := projectService.ListByGroupName(group.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group tasks '%s'\n%w", commandOptions.Name, err)

@@ -52,7 +52,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	_, err := projectService.Install(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to install project '%s' packages\n%w", commandOptions.Name, err)

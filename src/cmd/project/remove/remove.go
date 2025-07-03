@@ -9,11 +9,12 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
 	workspaceStruct "parsdevkit.net/structs/workspace"
+
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/components/workspace"
 
@@ -69,7 +70,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+		projectService := ioc.Get[application_project_contract.ProjectInterface]()
 		for _, name := range commandOptions.Names {
 			_, err := projectService.Remove(name, commandOptions.Workspace, false, true)
 			if err != nil {
@@ -107,7 +108,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		log.Fatal(err)

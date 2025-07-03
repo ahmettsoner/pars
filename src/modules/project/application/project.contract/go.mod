@@ -1,6 +1,7 @@
 module parsdevkit.net/modules/project/application_project_contract
 
 replace parsdevkit.net/modules/project/application_project_payload => ../project.payload
+replace parsdevkit.net/modules/project/application_project_contract => ../project.contract
 
 replace parsdevkit.net/structs => ../../../../structs
 
@@ -12,7 +13,8 @@ go 1.23.7
 
 require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000
 )
 
 require (

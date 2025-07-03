@@ -10,6 +10,7 @@ import (
 	group "parsdevkit.net/modules/group/basic_group"
 	"parsdevkit.net/modules/group/basic_group_contract"
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 	resourceData "parsdevkit.net/modules/resource/data_resource"
 	resourceObject "parsdevkit.net/modules/resource/object_resource"
 
@@ -19,7 +20,6 @@ import (
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	commontask "parsdevkit.net/structs/task/common-task"
@@ -98,7 +98,7 @@ func registerContainers() {
 	ioc.RegisterInterface[basic_group_contract.GroupInterface](func() basic_group_contract.GroupInterface {
 		return groupGroup.NewGroupService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]](func() contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
+	ioc.RegisterInterface[application_project_contract.ProjectInterface](func() application_project_contract.ProjectInterface {
 		return projectApplication.NewApplicationProjectService(application.GetEnvironment(), platformsCommon.Registry)
 	})
 	ioc.RegisterInterface[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {

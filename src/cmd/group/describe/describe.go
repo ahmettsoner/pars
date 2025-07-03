@@ -6,13 +6,13 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/group/basic_group_contract"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"log"
 	"strings"
 
 	"parsdevkit.net/structs/workspace"
 
+	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -74,7 +74,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	packageName := fmt.Sprintf("Package:\t%v", group.Specifications.GetPackageString())
 	fmt.Println(packageName)
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	projectList, err := projectService.ListByGroupName(group.Header.Name)
 	if err != nil {
 		return fmt.Errorf("Failed to retrieve group projects '%s'\n%w", commandOptions.Name, err)

@@ -13,12 +13,12 @@ import (
 
 	"parsdevkit.net/application/schemas"
 
-	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"
 
 	test "pars/tests/internal/testenv"
 
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -31,7 +31,7 @@ import (
 
 type ProjectServiceVariousDefaultPathGroupProjectReferenceTestSuite struct {
 	suite.Suite
-	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	service       application_project_contract.ProjectInterface
 	environment   string
 	testArea      string
 	workspaceName string

@@ -17,10 +17,10 @@ import (
 	"pars/tests/internal/testenv/objects"
 
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/application/schemas"
 
-	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"
 
 	"github.com/stretchr/testify/assert"
@@ -30,7 +30,7 @@ import (
 
 type ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite struct {
 	suite.Suite
-	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	service       application_project_contract.ProjectInterface
 	environment   string
 	testArea      string
 	workspaceName string

@@ -5,6 +5,7 @@ go 1.23.7
 toolchain go1.24.2
 
 replace parsdevkit.net/modules/project/application_project => ./modules/project/application/project
+replace parsdevkit.net/modules/project/application_project_contract => ./modules/project/application/project.contract
 
 replace parsdevkit.net/modules/template/code_template => ./modules/template/code/template
 
@@ -111,6 +112,7 @@ require (
 	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect

@@ -3,12 +3,12 @@ package describe
 import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"fmt"
 	"log"
 	"strings"
 
+	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -68,7 +68,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	projectList, err := projectService.ListByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to describe project '%s'\n%w", commandOptions.Name, err)
@@ -108,7 +108,7 @@ func addSubCommands() {
 func listProjectNameSuggestions(args []string, toComplete string) []string {
 
 	var suggestions = make([]string, 0)
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	projectList, err := projectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {

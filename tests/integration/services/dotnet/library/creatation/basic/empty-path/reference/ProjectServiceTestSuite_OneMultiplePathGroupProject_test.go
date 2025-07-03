@@ -18,19 +18,19 @@ import (
 	"pars/tests/internal/testenv/faker"
 	"pars/tests/internal/testenv/objects"
 
-	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	projectApplication "parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"github.com/stretchr/testify/suite"
 )
 
 type ProjectServiceOneMultiplePathGroupProjectReferenceTestSuite struct {
 	suite.Suite
-	service       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	service       application_project_contract.ProjectInterface
 	environment   string
 	testArea      string
 	workspaceName string

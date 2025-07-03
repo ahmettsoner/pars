@@ -8,13 +8,14 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
+
+	"parsdevkit.net/modules/project/application_project_contract"
 
 	"github.com/spf13/cobra"
 )
@@ -83,7 +84,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	if workspace == nil {
 		fmt.Println("There are no workspace yet...")
 	} else {
-		projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+		projectService := ioc.Get[application_project_contract.ProjectInterface]()
 		projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
 		if err != nil {
 			return fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", commandOptions.Name, err)

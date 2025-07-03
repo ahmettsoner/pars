@@ -11,10 +11,11 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/modules/project/application_project_contract"
+
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/pkg/utilities/array"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"github.com/spf13/cobra"
@@ -59,7 +60,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	applicationProjectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	applicationProjectService := ioc.Get[application_project_contract.ProjectInterface]()
 	applicationProjectList, err := applicationProjectService.ListByWorkspace(commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to listing projects\n%w", err)

@@ -4,15 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	"parsdevkit.net/modules/project/application_project_contract"
 )
 
 type CleanOptions struct {
@@ -62,7 +61,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	_, err := projectService.Test(commandOptions.Name, commandOptions.Workspace)
 	if err != nil {
 		return fmt.Errorf("Failed to test project '%s'\n%w", commandOptions.Name, err)

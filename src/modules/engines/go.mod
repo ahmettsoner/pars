@@ -23,6 +23,7 @@ replace parsdevkit.net/platforms/pars => ../../platforms/pars
 replace parsdevkit.net/structs => ../structs
 
 replace parsdevkit.net/modules/project/application_project => ../project/application/project
+replace parsdevkit.net/modules/project/application_project_contract => ../project/application/project.contract
 
 replace parsdevkit.net/modules/template/code_template => ../template/code/template
 

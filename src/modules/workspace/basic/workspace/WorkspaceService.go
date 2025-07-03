@@ -13,11 +13,12 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/modules/project/application_project_contract"
+
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/persistence/repositories"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/persistence/entities"
 
@@ -34,14 +35,14 @@ type WorkspaceService struct {
 	workspaceRespository *repositories.WorkspaceRepository
 	projectRespository   *repositories.ProjectRepository
 	settingsRespository  *repositories.SettingsRepository
-	projectService       contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]
+	projectService       application_project_contract.ProjectInterface
 }
 
 func NewWorkspaceService(environment string) contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
 	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()
 	settingsRespository := ioc.Get[*repositories.SettingsRepository]()
-	projectService := ioc.Get[contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct]]()
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	return &WorkspaceService{
 		environment:          environment,
 		workspaceRespository: workspaceRespository,

@@ -19,6 +19,8 @@ import (
 
 	"parsdevkit.net/persistence/repositories"
 
+	"parsdevkit.net/modules/project/application_project_contract"
+
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
@@ -35,7 +37,7 @@ type ApplicationProjectService struct {
 	platformRegistry     map[models.PlatformType]func() core.ManagerInterface
 }
 
-func NewApplicationProjectService(environment string, platformRegistry map[models.PlatformType]func() core.ManagerInterface) contracts.ProjectServiceInterface[applicationproject.ProjectBaseStruct] {
+func NewApplicationProjectService(environment string, platformRegistry map[models.PlatformType]func() core.ManagerInterface) application_project_contract.ProjectInterface {
 	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
 	groupRespository := ioc.Get[*repositories.GroupRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()
