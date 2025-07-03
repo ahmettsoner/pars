@@ -4,7 +4,7 @@ go 1.23.7
 
 toolchain go1.24.2
 
-replace parsdevkit.net/modules/project/application => ./modules/project/application
+replace parsdevkit.net/modules/project/application_project => ./modules/project/application/project
 
 replace parsdevkit.net/modules/template/code => ./modules/template/code
 
@@ -16,13 +16,13 @@ replace parsdevkit.net/modules/task/common => ./modules/task/common
 
 replace parsdevkit.net/modules/resource/data => ./modules/resource/data
 
-replace parsdevkit.net/modules/group/basic_group => ./modules/group/basic/group.logic
+replace parsdevkit.net/modules/group/basic_group => ./modules/group/basic/group
 
 replace parsdevkit.net/modules/group/basic_group_contract => ./modules/group/basic/group.contract
 
 replace parsdevkit.net/modules/group/basic_group_payload => ./modules/group/basic/group.payload
 
-replace parsdevkit.net/modules/workspace/basic_workspace => ./modules/workspace/basic/workspace.logic
+replace parsdevkit.net/modules/workspace/basic_workspace => ./modules/workspace/basic/workspace
 
 replace parsdevkit.net/modules/resource/object => ./modules/resource/object
 
@@ -109,7 +109,7 @@ require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000 // indirect

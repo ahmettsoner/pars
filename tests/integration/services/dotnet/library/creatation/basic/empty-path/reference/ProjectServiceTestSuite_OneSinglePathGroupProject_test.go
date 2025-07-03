@@ -11,7 +11,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	"parsdevkit.net/application/schemas"
 

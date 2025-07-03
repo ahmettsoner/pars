@@ -8,7 +8,7 @@ import (
 	"os"
 	"testing"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"

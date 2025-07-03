@@ -16,7 +16,7 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 )
 
 type DotnetConsoleTestSuite struct {

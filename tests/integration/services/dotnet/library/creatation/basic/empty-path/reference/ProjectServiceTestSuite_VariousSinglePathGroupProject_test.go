@@ -17,7 +17,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	applicationGroup "parsdevkit.net/application/structs/group"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"

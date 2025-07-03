@@ -1,4 +1,4 @@
-package application
+package application_project
 
 import (
 	"encoding/json"

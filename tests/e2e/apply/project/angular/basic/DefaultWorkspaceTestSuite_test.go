@@ -12,7 +12,7 @@ import (
 
 	"parsdevkit.net/application"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"

@@ -15,7 +15,7 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	test "pars/tests/internal/testenv"
 	"pars/tests/internal/testenv/common"

@@ -11,7 +11,7 @@ require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/task/common v0.0.0-00010101000000-000000000000
@@ -74,13 +74,13 @@ require (
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
 )
 
-replace parsdevkit.net/modules/workspace/basic_workspace => ../modules/workspace/basic/workspace.logic
+replace parsdevkit.net/modules/workspace/basic_workspace => ../modules/workspace/basic/workspace
 
-replace parsdevkit.net/modules/group/basic_group => ../modules/group/basic/group.logic
+replace parsdevkit.net/modules/group/basic_group => ../modules/group/basic/group
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../modules/group/basic/group.payload
 
-replace parsdevkit.net/modules/project/application => ../modules/project/application
+replace parsdevkit.net/modules/project/application_project => ../modules/project/application/project
 
 replace parsdevkit.net/modules/resource/data => ../modules/resource/data
 

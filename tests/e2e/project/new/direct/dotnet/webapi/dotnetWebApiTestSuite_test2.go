@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"

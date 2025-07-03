@@ -18,7 +18,7 @@ import (
 
 	test "pars/tests/internal/testenv"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"

@@ -18,7 +18,7 @@ import (
 
 	platformsCommon "parsdevkit.net/platforms/common"
 
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

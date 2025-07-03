@@ -2,7 +2,7 @@ module pars/tests
 
 go 1.23.7
 
-replace parsdevkit.net/modules/project/application => ../src/modules/project/application
+replace parsdevkit.net/modules/project/application_project => ../src/modules/project/application/project
 
 replace parsdevkit.net/modules/template/code => ../src/modules/template/code
 
@@ -14,11 +14,11 @@ replace parsdevkit.net/modules/task/common => ../src/modules/task/common
 
 replace parsdevkit.net/modules/resource/data => ../src/modules/resource/data
 
-replace parsdevkit.net/modules/group/basic_group => ../src/modules/group/basic/group.logic
+replace parsdevkit.net/modules/group/basic_group => ../src/modules/group/basic/group
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../src/modules/group/basic/group.payload
 
-replace parsdevkit.net/modules/workspace/basic_workspace => ../src/modules/workspace/basic/workspace.logic
+replace parsdevkit.net/modules/workspace/basic_workspace => ../src/modules/workspace/basic/workspace
 
 replace parsdevkit.net/modules/resource/object => ../src/modules/resource/object
 
@@ -66,7 +66,7 @@ require (
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/project/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000

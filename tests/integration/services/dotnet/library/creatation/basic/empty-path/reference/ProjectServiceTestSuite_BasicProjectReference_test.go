@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/models"
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 	platformsCommon "parsdevkit.net/platforms/common"
 
 	test "pars/tests/internal/testenv"

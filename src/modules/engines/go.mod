@@ -22,7 +22,7 @@ replace parsdevkit.net/platforms/pars => ../../platforms/pars
 
 replace parsdevkit.net/structs => ../structs
 
-replace parsdevkit.net/modules/project/application => ../project/application
+replace parsdevkit.net/modules/project/application_project => ../project/application/project
 
 replace parsdevkit.net/modules/template/code => ../template/code
 
@@ -34,9 +34,9 @@ replace parsdevkit.net/modules/task/common => ../task/common
 
 replace parsdevkit.net/modules/resource/data => ../resource/data
 
-replace parsdevkit.net/modules/group/basic_group => ../group/basic/group.logic
+replace parsdevkit.net/modules/group/basic_group => ../group/basic/group
 
-replace parsdevkit.net/modules/workspace/basic_workspace => ../workspace/basic/workspace.logic
+replace parsdevkit.net/modules/workspace/basic_workspace => ../workspace/basic/workspace
 
 replace parsdevkit.net/modules/resource/object => ../resource/object
 

@@ -15,7 +15,7 @@ import (
 	"parsdevkit.net/application"
 
 	"github.com/stretchr/testify/assert"
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"

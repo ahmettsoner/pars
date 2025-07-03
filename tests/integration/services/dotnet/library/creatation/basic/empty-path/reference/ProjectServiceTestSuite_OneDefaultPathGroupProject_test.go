@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/application"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	"parsdevkit.net/models"
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 	platformsCommon "parsdevkit.net/platforms/common"
 	projectStruct "parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"

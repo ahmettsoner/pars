@@ -1,4 +1,4 @@
-module parsdevkit.net/modules/project/application
+module parsdevkit.net/modules/project/application_project
 
 go 1.23.7
 

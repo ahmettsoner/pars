@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/application/schemas"
 
 	group "parsdevkit.net/modules/group/basic_group"
-	projectApplication "parsdevkit.net/modules/project/application"
+	projectApplication "parsdevkit.net/modules/project/application_project"
 	resourceData "parsdevkit.net/modules/resource/data"
 	resourceObject "parsdevkit.net/modules/resource/object"
 
