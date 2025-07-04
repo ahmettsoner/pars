@@ -9,7 +9,7 @@ import (
 	"parsdevkit.net/cmd/open/workspace"
 	"parsdevkit.net/pkg/utilities/json"
 
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"

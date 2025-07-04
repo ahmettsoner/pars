@@ -15,13 +15,14 @@ require (
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
-	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
@@ -87,8 +88,10 @@ replace parsdevkit.net/modules/project/application_project => ../modules/project
 replace parsdevkit.net/modules/project/application_project_contract => ../modules/project/application/project.contract
 
 replace parsdevkit.net/modules/resource/data_resource => ../modules/resource/data/resource
+replace parsdevkit.net/modules/resource/data_resource_contract => ../modules/resource/data/resource.contract
 
 replace parsdevkit.net/modules/resource/object_resource => ../modules/resource/object/resource
+replace parsdevkit.net/modules/resource/object_resource_contract => ../modules/resource/object/resource.contract
 
 replace parsdevkit.net/modules/template/code_template => ../modules/template/code/template
 
@@ -134,4 +137,3 @@ replace parsdevkit.net/models => ../models
 
 replace parsdevkit.net/application => ../application
 
-replace parsdevkit.net/orchestrator => ../orchestrator

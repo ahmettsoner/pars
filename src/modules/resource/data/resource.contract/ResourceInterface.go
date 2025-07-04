@@ -1,7 +1,7 @@
 package data_resource_contract
 
 import (
-	"parsdevkit.net/data/contracts"
+	"parsdevkit.net/application/contracts"
 	// resource_payload "parsdevkit.net/modules/resource/data_resource_payload"
 	resource_payload "parsdevkit.net/structs/resource/data-resource"
 )

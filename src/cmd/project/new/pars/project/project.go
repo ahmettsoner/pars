@@ -11,7 +11,7 @@ import (
 	parsModels "parsdevkit.net/platforms/pars/models"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	projectComponent "parsdevkit.net/components/project"
 

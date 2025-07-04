@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/application/engines"
 	group "parsdevkit.net/modules/group/basic_group"
 
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"

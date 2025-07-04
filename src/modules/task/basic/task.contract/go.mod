@@ -2,7 +2,7 @@ module parsdevkit.net/modules/task/basic_task_contract
 
 replace parsdevkit.net/modules/task/basic_task_payload => ../task.payload
 
-replace parsdevkit.net/structs => ../../../../structs
+replace parsdevkit.net/structs => ../../../structs
 
 replace parsdevkit.net/basic => ../../../../basic
 

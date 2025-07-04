@@ -18,7 +18,7 @@ import (
 
 	"parsdevkit.net/components/workspace"
 
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	"github.com/spf13/cobra"
 )

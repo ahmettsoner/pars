@@ -3,12 +3,11 @@ package data_resource
 import (
 	"fmt"
 
-	dataresource "parsdevkit.net/structs/resource/data-resource"
 	dataresourceStruct "parsdevkit.net/structs/resource/data-resource"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/resource/data_resource_contract"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
@@ -70,7 +69,7 @@ func (s DataResourceEngine) createResources(resources []dataresourceStruct.Resou
 
 	resourcesReadyToCreate := make([]dataresourceStruct.ResourceBaseStruct, 0)
 	resourcesForUpdate := make([]dataresourceStruct.ResourceBaseStruct, 0)
-	resourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
+	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 
 	for _, resource := range resources {
 		if err := resource.Validate(); err != nil {
@@ -133,7 +132,7 @@ func (s DataResourceEngine) createResources(resources []dataresourceStruct.Resou
 }
 func (s DataResourceEngine) removeResources(resources []dataresourceStruct.ResourceBaseStruct, permanent bool) error {
 
-	resourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
+	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 	resourcesReadyToDelete := make([]dataresourceStruct.ResourceBaseStruct, 0)
 	for _, resource := range resources {
 		ok, err := resourceService.IsExists(resource.Header.Name, resource.Specifications.Workspace)
@@ -160,7 +159,7 @@ func (s DataResourceEngine) removeResources(resources []dataresourceStruct.Resou
 
 func (s DataResourceEngine) generate(model dataresourceStruct.ResourceBaseStruct) (*dataresourceStruct.ResourceBaseStruct, error) {
 
-	resourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
+	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 
 	result, err := resourceService.GetByName(model.Header.Name)
 	if err != nil {

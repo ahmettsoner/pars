@@ -14,8 +14,8 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/components/schema"
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/orchestrator/schema"
 	"parsdevkit.net/pkg/utilities/array"
 	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"

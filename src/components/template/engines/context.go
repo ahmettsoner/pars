@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"strings"
 
+	"parsdevkit.net/modules/resource/object_resource_contract"
+
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/context/models"
@@ -26,7 +28,7 @@ func (c ContextFuncs) GetContextByBaseForArray(base models.CodeTemplateDataConte
 func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args ...string) models.CodeTemplateDataContext {
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 	applicationProjectService := ioc.Get[application_project_contract.ProjectInterface]()
-	objectResourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
+	objectResourceService := ioc.Get[object_resource_contract.ResourceInterface]()
 	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
 
 	/*

@@ -34,12 +34,14 @@ replace parsdevkit.net/modules/template/file_template => ../template/file/templa
 replace parsdevkit.net/modules/task/basic_task => ../task/basic/task
 
 replace parsdevkit.net/modules/resource/data_resource => ../resource/data/resource
+replace parsdevkit.net/modules/resource/data_resource_contract => ../resource/data/resource.contract
 
 replace parsdevkit.net/modules/group/basic_group => ../group/basic/group
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ../workspace/basic/workspace
 
 replace parsdevkit.net/modules/resource/object_resource => ../resource/object/resource
+replace parsdevkit.net/modules/resource/object_resource_contract => ../resource/object/resource.contract
 
 replace parsdevkit.net/providers => ../../providers
 

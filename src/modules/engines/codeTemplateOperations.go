@@ -8,6 +8,7 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
+	"parsdevkit.net/modules/resource/object_resource_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
 	"parsdevkit.net/pkg/utilities/file"
 
@@ -80,7 +81,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, modelLayer := range model.Specifications.Layers {
-		resourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
+		resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
 		setResources, err := resourceService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err

@@ -5,7 +5,6 @@ import (
 
 	"parsdevkit.net/application"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
@@ -19,6 +18,8 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
+	"parsdevkit.net/modules/resource/object_resource_contract"
+
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -26,7 +27,7 @@ import (
 
 type ResourceServiceTestSuite struct {
 	suite.Suite
-	service       contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]
+	service       object_resource_contract.ResourceInterface
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool

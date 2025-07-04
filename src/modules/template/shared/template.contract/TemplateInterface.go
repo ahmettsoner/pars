@@ -2,7 +2,7 @@ package shared_template_contract
 
 import (
 	// template_payload "parsdevkit.net/modules/template/shared_template_payload"
-	"parsdevkit.net/shared/contracts"
+	"parsdevkit.net/application/contracts"
 	template_payload "parsdevkit.net/structs/template/shared-template"
 )
 

@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/resource/data_resource_contract"
 	"parsdevkit.net/structs/resource"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 
@@ -23,7 +23,7 @@ type DataResourceService struct {
 	environment                  string
 }
 
-func NewDataResourceService(environment string) contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct] {
+func NewDataResourceService(environment string) data_resource_contract.ResourceInterface {
 	resourceRepository := ioc.Get[*repositories.ResourceRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 

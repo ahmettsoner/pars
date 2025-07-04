@@ -3,12 +3,12 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/modules/resource/data_resource_contract"
+	"parsdevkit.net/modules/resource/object_resource_contract"
+
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
-	dataresource "parsdevkit.net/structs/resource/data-resource"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -47,8 +47,8 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-	objectResourceService := ioc.Get[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]]()
-	dataResourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
+	objectResourceService := ioc.Get[object_resource_contract.ResourceInterface]()
+	dataResourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 
 	if checkGlobals {
 		fmt.Println("*** Global Resources ***")

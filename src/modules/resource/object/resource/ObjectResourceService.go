@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
+	"parsdevkit.net/modules/resource/object_resource_contract"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,7 +23,7 @@ type ObjectResourceService struct {
 	environment                  string
 }
 
-func NewObjectResourceService(environment string) contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct] {
+func NewObjectResourceService(environment string) object_resource_contract.ResourceInterface {
 	resourceRepository := ioc.Get[*repositories.ResourceRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 

@@ -2,7 +2,7 @@ module parsdevkit.net/modules/resource/data_resource_contract
 
 replace parsdevkit.net/modules/resource/data_resource_payload => ../resource.payload
 
-replace parsdevkit.net/structs => ../../../../structs
+replace parsdevkit.net/structs => ../../../structs
 
 replace parsdevkit.net/data => ../../../../data
 
@@ -13,6 +13,7 @@ go 1.23.7
 require (
 	parsdevkit.net/data v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

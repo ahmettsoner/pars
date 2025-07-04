@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/models"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/models"

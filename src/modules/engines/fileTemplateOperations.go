@@ -13,6 +13,8 @@ import (
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
+	"parsdevkit.net/modules/resource/data_resource_contract"
+
 	"parsdevkit.net/persistence/contexts"
 
 	"parsdevkit.net/persistence/repositories"
@@ -76,7 +78,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
 
 	for _, modelLayer := range model.Specifications.Layers {
-		resourceService := ioc.Get[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]]()
+		resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 		setResources, err := resourceService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
 		if err != nil {
 			return err

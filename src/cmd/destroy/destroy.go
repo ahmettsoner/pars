@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	workspaceStruct "parsdevkit.net/structs/workspace"
 

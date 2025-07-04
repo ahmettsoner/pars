@@ -12,8 +12,8 @@ import (
 
 	projectComponent "parsdevkit.net/components/project"
 
+	"parsdevkit.net/components/schema"
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/orchestrator/schema"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"

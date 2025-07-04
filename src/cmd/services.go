@@ -12,7 +12,9 @@ import (
 	projectApplication "parsdevkit.net/modules/project/application_project"
 	"parsdevkit.net/modules/project/application_project_contract"
 	resourceData "parsdevkit.net/modules/resource/data_resource"
+	"parsdevkit.net/modules/resource/data_resource_contract"
 	resourceObject "parsdevkit.net/modules/resource/object_resource"
+	"parsdevkit.net/modules/resource/object_resource_contract"
 
 	groupGroup "parsdevkit.net/modules/group/basic_group"
 	taskCommon "parsdevkit.net/modules/task/basic_task"
@@ -20,8 +22,6 @@ import (
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
-	dataresource "parsdevkit.net/structs/resource/data-resource"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 	commontask "parsdevkit.net/structs/task/common-task"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
@@ -110,11 +110,11 @@ func registerContainers() {
 	ioc.RegisterInterface[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
 		return templateShared.NewSharedTemplateService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct]](func() contracts.ResourceServiceInterface[objectresource.ResourceBaseStruct] {
-		return resourceObject.NewObjectResourceService(application.GetEnvironment())
-	})
-	ioc.RegisterInterface[contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct]](func() contracts.ResourceServiceInterface[dataresource.ResourceBaseStruct] {
+	ioc.RegisterInterface[data_resource_contract.ResourceInterface](func() data_resource_contract.ResourceInterface {
 		return resourceData.NewDataResourceService(application.GetEnvironment())
+	})
+	ioc.RegisterInterface[object_resource_contract.ResourceInterface](func() object_resource_contract.ResourceInterface {
+		return resourceObject.NewObjectResourceService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[contracts.TaskServiceInterface[commontask.TaskBaseStruct]](func() contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
 		return taskCommon.NewCommonTaskService(application.GetEnvironment())

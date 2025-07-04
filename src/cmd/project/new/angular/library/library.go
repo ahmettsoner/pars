@@ -9,7 +9,7 @@ import (
 	group "parsdevkit.net/modules/group/basic_group"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/orchestrator/schema"
+	"parsdevkit.net/components/schema"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 

@@ -16,6 +16,7 @@ replace parsdevkit.net/modules/template/file_template => ./modules/template/file
 replace parsdevkit.net/modules/task/basic_task => ./modules/task/basic/task
 
 replace parsdevkit.net/modules/resource/data_resource => ./modules/resource/data/resource
+replace parsdevkit.net/modules/resource/data_resource_contract => ./modules/resource/data/resource.contract
 
 replace parsdevkit.net/modules/group/basic_group => ./modules/group/basic/group
 
@@ -26,6 +27,7 @@ replace parsdevkit.net/modules/group/basic_group_payload => ./modules/group/basi
 replace parsdevkit.net/modules/workspace/basic_workspace => ./modules/workspace/basic/workspace
 
 replace parsdevkit.net/modules/resource/object_resource => ./modules/resource/object/resource
+replace parsdevkit.net/modules/resource/object_resource_contract => ./modules/resource/object/resource.contract
 
 replace parsdevkit.net/persistence/entities => ./data/entities
 
@@ -114,13 +116,14 @@ require (
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/orchestrator v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect
@@ -140,4 +143,3 @@ replace parsdevkit.net/pkg => ./pkg
 
 replace parsdevkit.net/application => ./application
 
-replace parsdevkit.net/orchestrator => ./orchestrator

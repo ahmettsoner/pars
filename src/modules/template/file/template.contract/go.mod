@@ -2,7 +2,7 @@ module parsdevkit.net/modules/template/code_template_contract
 
 replace parsdevkit.net/modules/template/code_template_payload => ../template.payload
 
-replace parsdevkit.net/structs => ../../../../structs
+replace parsdevkit.net/structs => ../../../structs
 
 replace parsdevkit.net/code => ../../../../code
 
