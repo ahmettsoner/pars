@@ -98,13 +98,25 @@ func (s *ProjectRepository) ListByPath(paths ...string) (*([]entities.Project), 
 }
 
 func (s *ProjectRepository) Delete(entity *entities.Project) error {
-	result := s.DbContext.Database.Delete(&entity)
+	result := s.DbContext.Database.Delete(entity)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
+func (s *ProjectRepository) DeleteByName(name string) error {
+	entity, err := s.GetByName(name)
+	if err != nil {
+		return err
+	}
+
+	result := s.DbContext.Database.Delete(entity)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
 func (s *ProjectRepository) GetIndividualByWorkspaceName(workspaceName string) (*entities.Project, error) {
 	entity := new(entities.Project)
 	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Group') = '' and json_extract(document, '$.Specifications.Workspace') = ?", workspaceName).First(entity)

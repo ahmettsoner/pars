@@ -13,6 +13,10 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	_string "parsdevkit.net/pkg/utilities/string"
+
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
@@ -40,6 +44,10 @@ func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []
 			return fmt.Errorf("invalid item type in Process: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, filetemplate); err != nil {
+			return err
+		}
+
 		filetemplates = append(filetemplates, *filetemplate)
 	}
 
@@ -61,6 +69,9 @@ func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []
 			return fmt.Errorf("invalid item type in Destroy: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, filetemplate); err != nil {
+			return err
+		}
 		filetemplates = append(filetemplates, *filetemplate)
 	}
 
@@ -180,6 +191,53 @@ func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct
 	err = templateOperations.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *filetemplateStruct.TemplateBaseStruct) error {
+
+	logrus.Debugf("filling model (%v) information", model.Header.Name)
+
+	model.Specifications.Name = model.Header.Name
+
+	activeWorkspace, err := s.getWorkspace(ctx, *model)
+	if err != nil {
+		return err
+	}
+
+	//WARN: Doğru mu oldu?
+	model.Specifications.Workspace = activeWorkspace.Header.Name
+	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
+
+	if _string.IsEmpty(model.Specifications.Output.File) {
+		model.Specifications.Output.File = model.Header.Name
+	}
+	return nil
+}
+
+func (s FileTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model filetemplateStruct.TemplateBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+
+	workspaceName := model.Specifications.Workspace
+	if _string.IsEmpty(workspaceName) {
+		workspaceName = ctx.CurrentWorkspace.Name
+	}
+
+	var result *workspaceStruct.WorkspaceBaseStruct = nil
+
+	if !_string.IsEmpty(workspaceName) {
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+		workspace, err := workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return nil, err
+		}
+		if workspace == nil {
+			return nil, fmt.Errorf("workspace name (%v) is not correct", workspaceName)
+		}
+		result = workspace
+	} else {
 	}
 
 	return result, nil

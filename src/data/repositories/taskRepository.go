@@ -61,7 +61,7 @@ func (s *TaskRepository) ListBySetAndLayers(set string, layers ...string) (*([]e
 	SELECT tasks.*
 	FROM tasks
 	JOIN json_each(tasks.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
+	WHERE json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -76,7 +76,7 @@ func (s *TaskRepository) ListByWorkspaceSetAndLayers(workspace, set string, laye
 	SELECT tasks.*
 	FROM tasks
 	JOIN json_each(tasks.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
+	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(tasks.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {

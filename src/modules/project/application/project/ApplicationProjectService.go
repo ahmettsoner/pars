@@ -59,9 +59,9 @@ func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseS
 
 	if _, err := s.saveProjectInformation(model); err != nil {
 		logrus.Warnf("yyy: rolling back the creating %v!", model.Header.Name)
-		_, err := s.rollbackSaveProjectInformation(model)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, err)
+		_, rbErr := s.rollbackSaveProjectInformation(model)
+		if rbErr != nil {
+			return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
 		}
 		return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
@@ -69,6 +69,14 @@ func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseS
 	if init {
 		_, err := s.GenerateProject(model)
 		if err != nil {
+			_, rbErr := s.rollbackProjectGeneration(model)
+			if rbErr != nil {
+				return nil, fmt.Errorf("xxx: Application Project oluştururken meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
+			}
+			_, rbErr = s.rollbackSaveProjectInformation(model)
+			if rbErr != nil {
+				return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
+			}
 			return nil, fmt.Errorf("xxx: Application Project oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
@@ -135,10 +143,6 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 	}
 
 	if err := projectManager.CreateProject(model.Specifications); err != nil {
-		_, err := s.rollbackSaveProjectInformation(model)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, err)
-		}
 		return nil, fmt.Errorf("xxx: Application Project oluştururken hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
@@ -884,76 +888,85 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 		}
 
-		projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
+		_, err = s.DestroyProject(project)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında, Platform Manager bulunamadı '%s'\n%w", projectName, err)
+			return nil, fmt.Errorf("xxx: Proje kaldırma işleminde hata oluştu \n%w", err)
 		}
 
-		logrus.Debugf("project (%v) content removing", projectName)
-		err = projectManager.RemoveProject(project.Specifications)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectName, err)
-		}
-
-		groupStatus, err := projectManager.IsGroupFileExists(project.Specifications)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project grup dosyaları kontrolünde hata oluştu: '%s'\n%w", projectName, err)
-		}
-
-		if !_string.IsEmpty(project.Specifications.Group) {
-			if !groupStatus {
-				return nil, errors.New("Project group (" + project.Specifications.Group + ") is not correct")
-			} else {
-				err := projectManager.RemoveFromGroup(project.Specifications)
-				if err != nil {
-					return nil, fmt.Errorf("xxx: Gruba ait Application Project Gruptan kaldırma işleminde beklenmeyen hata oluştu '%s'\n%w", projectName, err)
-				}
-			}
-		}
-
-		logrus.Debugf("project (%v) content removed", projectName)
-
-		if !_string.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
-			logrus.Debugf("project (%v) files/folders (%v) removing", projectName, project.Specifications.GetAbsoluteBaseProjectPath())
-			if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseProjectPath()); err != nil {
-				return nil, fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", projectName, project.Specifications.GetAbsoluteBaseProjectPath(), err)
-			}
-			logrus.Debugf("project (%v) files/folders removed", projectName)
-		} else {
-			logrus.Debugf("You should delete project files for project (%v)", projectName)
-		}
-
-		logrus.Debugf("project (%v) information removing", projectName)
+		logrus.Debugf("project (%v) information removing", project.Header.Name)
 		err = s.projectRespository.Delete(entity)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 		}
 		logrus.Debugf("project (%v) information removed", projectName)
 
-		if !_string.IsEmpty(project.Specifications.Group) {
-			count, err := s.projectRespository.CountByWorkspaceIDAndGroup(workspaceName, projectGroup)
-			if err != nil {
-				return nil, fmt.Errorf("xxx: Grupta bulunan proje sayısı tespiti aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
-			}
-
-			if count == 0 {
-				if !_string.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
-					logrus.Debugf("project group (%v) has no other project inside, all things removing belong to group", projectGroup)
-					logrus.Debugf("removing path %v \n project: %v, group: %v", project.Specifications.GetAbsoluteGroupPath(), project.Header.Name, project.Specifications.Group)
-					if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseGroupPath()); err != nil {
-						return nil, fmt.Errorf("xxx: GApplication Project silme aşamasında child proje bulunmayan grubun path'ini silme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
-					}
-				} else {
-					logrus.Debugf("You should delete group files for grpup (%v)", projectGroup)
-				}
-				projectManager.DeleteGroup(project.Specifications)
-			}
-		}
-
 		return &project, nil
 	}
 }
+func (s *ApplicationProjectService) DestroyProject(project applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
+	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında, Platform Manager bulunamadı '%s'\n%w", project.Header.Name, err)
+	}
+
+	logrus.Debugf("project (%v) content removing", project.Header.Name)
+	err = projectManager.RemoveProject(project.Specifications)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında beklenmeyen hata oluştu '%s'\n%w", project.Header.Name, err)
+	}
+
+	groupStatus, err := projectManager.IsGroupFileExists(project.Specifications)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Application Project grup dosyaları kontrolünde hata oluştu: '%s'\n%w", project.Header.Name, err)
+	}
+
+	if !_string.IsEmpty(project.Specifications.Group) {
+		if !groupStatus {
+			return nil, errors.New("Project group (" + project.Specifications.Group + ") is not correct")
+		} else {
+			err := projectManager.RemoveFromGroup(project.Specifications)
+			if err != nil {
+				return nil, fmt.Errorf("xxx: Gruba ait Application Project Gruptan kaldırma işleminde beklenmeyen hata oluştu '%s'\n%w", project.Header.Name, err)
+			}
+		}
+	}
+
+	logrus.Debugf("project (%v) content removed", project.Header.Name)
+
+	// if !_string.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
+	if len(project.Specifications.Path) > 0 {
+		logrus.Debugf("project (%v) files/folders (%v) removing", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath())
+		if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseProjectPath()); err != nil {
+			return nil, fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath(), err)
+		}
+		logrus.Debugf("project (%v) files/folders removed", project.Header.Name)
+	} else {
+		logrus.Debugf("You should delete project files for project (%v)", project.Header.Name)
+	}
+
+	if !_string.IsEmpty(project.Specifications.Group) {
+		count, err := s.projectRespository.CountByWorkspaceIDAndGroup(project.Specifications.Workspace, project.Specifications.Group)
+		if err != nil {
+			return nil, fmt.Errorf("xxx: Grupta bulunan proje sayısı tespiti aşamasında beklenmeyen hata oluştu '%s'\n%w", project.Specifications.Group, err)
+		}
+
+		if count == 0 {
+			if !_string.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
+				logrus.Debugf("project group (%v) has no other project inside, all things removing belong to group", project.Specifications.Group)
+				logrus.Debugf("removing path %v \n project: %v, group: %v", project.Specifications.GetAbsoluteGroupPath(), project.Header.Name, project.Specifications.Group)
+				if err := os.RemoveAll(project.Specifications.GetAbsoluteBaseGroupPath()); err != nil {
+					return nil, fmt.Errorf("xxx: Application Project silme aşamasında child proje bulunmayan grubun path'ini silme aşamasında beklenmeyen hata oluştu '%s'\n%w", project.Specifications.Group, err)
+				}
+			} else {
+				logrus.Debugf("You should delete group files for grpup (%v)", project.Specifications.Group)
+			}
+			projectManager.DeleteGroup(project.Specifications)
+		}
+	}
+
+	return &project, nil
+}
 func (s *ApplicationProjectService) IsExists(name string, workspaceName string) (bool, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
@@ -1662,21 +1675,24 @@ func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel 
 
 	logrus.Debugf("project %v information rolling back", projectModel.Header.Name)
 
-	jsonData, err := json.Marshal(projectModel)
+	err := s.projectRespository.DeleteByName(projectModel.Header.Name)
 	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project json'a dönüştürülemedi %+v\n%w", projectModel, err)
+		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %s\n%w", projectModel.Header.Name, err)
 	}
 
-	projectEntity := entities.Project{
-		Name:     projectModel.Header.Name,
-		Document: string(jsonData),
-	}
+	logrus.Debugf("project %v information rolledback", projectModel.Header.Name)
+	return &projectModel, nil
+}
 
-	err = s.projectRespository.Delete(&projectEntity)
+func (s *ApplicationProjectService) rollbackProjectGeneration(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+
+	logrus.Debugf("project %v dosya rolling back", projectModel.Header.Name)
+
+	_, err := s.DestroyProject(projectModel)
 	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %+v\n%w", projectEntity, err)
+		return nil, fmt.Errorf("xxx: Application Project dosya silme aşamasında beklenmeyen hata oluştu %s\n%w", projectModel.Header.Name, err)
 	}
 
-	logrus.Debugf("project %v information saved", projectModel.Header.Name)
+	logrus.Debugf("project %v dosya rolledback", projectModel.Header.Name)
 	return &projectModel, nil
 }

@@ -402,6 +402,8 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *application.Ap
 
 	logrus.Debugf("filling project (%v) information", project.Header.Name)
 
+	project.Specifications.Name = project.Header.Name
+
 	activeWorkspace, err := s.getWorkspace(ctx, *project)
 	if err != nil {
 		return err

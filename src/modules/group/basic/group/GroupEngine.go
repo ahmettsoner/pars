@@ -35,6 +35,9 @@ func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas
 		if !ok {
 			return fmt.Errorf("invalid item type in Process: expected GroupBaseStruct, got %T", item)
 		}
+		if err := s.completeInformation(ctx, group); err != nil {
+			return err
+		}
 		groups = append(groups, *group)
 	}
 
@@ -47,6 +50,9 @@ func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas
 		group, ok := item.(*basic_group_payload.GroupBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Destroy: expected GroupBaseStruct, got %T", item)
+		}
+		if err := s.completeInformation(ctx, group); err != nil {
+			return err
 		}
 		groups = append(groups, *group)
 	}
@@ -138,6 +144,15 @@ func (s GroupEngine) removeGroups(groups []basic_group_payload.GroupBaseStruct, 
 		fmt.Printf("%v Group deleted\n", group.Header.Name)
 
 	}
+
+	return nil
+}
+
+func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, model *basic_group_payload.GroupBaseStruct) error {
+
+	logrus.Debugf("filling group (%v) information", model.Header.Name)
+
+	model.Specifications.Name = model.Header.Name
 
 	return nil
 }

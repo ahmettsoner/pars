@@ -17,6 +17,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type CodeTemplateEngine struct{}
@@ -40,6 +43,10 @@ func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []
 			return fmt.Errorf("invalid item type in Process: expected codetemplateStruct.TemplateBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, codetemplate); err != nil {
+			return err
+		}
+
 		codetemplates = append(codetemplates, *codetemplate)
 	}
 
@@ -52,6 +59,10 @@ func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []
 		codetemplate, ok := item.(*codetemplateStruct.TemplateBaseStruct)
 		if !ok {
 			return fmt.Errorf("invalid item type in Destroy: expected codetemplateStruct.TemplateBaseStruct, got %T", item)
+		}
+
+		if err := s.completeInformation(ctx, codetemplate); err != nil {
+			return err
 		}
 
 		codetemplates = append(codetemplates, *codetemplate)
@@ -179,6 +190,54 @@ func (s CodeTemplateEngine) generate(model codetemplateStruct.TemplateBaseStruct
 	err = templateEngine.GenerateByTemplate(model)
 	if err != nil {
 		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s CodeTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *codetemplateStruct.TemplateBaseStruct) error {
+
+	logrus.Debugf("filling model (%v) information", model.Header.Name)
+
+	model.Specifications.Name = model.Header.Name
+
+	activeWorkspace, err := s.getWorkspace(ctx, *model)
+	if err != nil {
+		return err
+	}
+
+	//WARN: Doğru mu oldu?
+	model.Specifications.Workspace = activeWorkspace.Header.Name
+	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
+
+	if _string.IsEmpty(model.Specifications.Output.File) {
+		model.Specifications.Output.File = model.Header.Name
+	}
+
+	return nil
+}
+
+func (s CodeTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model codetemplateStruct.TemplateBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+
+	workspaceName := model.Specifications.Workspace
+	if _string.IsEmpty(workspaceName) {
+		workspaceName = ctx.CurrentWorkspace.Name
+	}
+
+	var result *workspaceStruct.WorkspaceBaseStruct = nil
+
+	if !_string.IsEmpty(workspaceName) {
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+		workspace, err := workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return nil, err
+		}
+		if workspace == nil {
+			return nil, fmt.Errorf("workspace name (%v) is not correct", workspaceName)
+		}
+		result = workspace
+	} else {
 	}
 
 	return result, nil

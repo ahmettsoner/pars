@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"parsdevkit.net/application"
+	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/project/application_project_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
@@ -44,7 +47,15 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	}
 
 	if _string.IsEmpty(commandOptions.Workspace) {
-		commandOptions.Workspace = workspace.GetActiveWorkspaceName("")
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
+		if err != nil {
+			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
+		}
+		commandOptions.Workspace = workspaceName
 	}
 
 	return nil

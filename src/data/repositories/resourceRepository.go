@@ -77,7 +77,7 @@ func (s *ResourceRepository) ListBySetAndLayers(set string, layers ...string) (*
 	SELECT resources.*
 	FROM resources
 	JOIN json_each(resources.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
+	WHERE json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)
 	if result.Error != nil {
@@ -92,7 +92,7 @@ func (s *ResourceRepository) ListByWorkspaceSetAndLayers(workspace, set string, 
 	SELECT resources.*
 	FROM resources
 	JOIN json_each(resources.document, '$.Specifications.Layers') AS json_each
-	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Header.Name') IN (?)
+	WHERE json_extract(document, '$.Specifications.Workspace') = ? and json_extract(resources.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, workspace, set, layers).Scan(&entities)
 	if result.Error != nil {

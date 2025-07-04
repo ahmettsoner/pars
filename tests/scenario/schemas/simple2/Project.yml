@@ -1,0 +1,6 @@
+Type: Project
+Kind: Application
+Name: App2
+Specifications:
+  Platform: Dotnet
+  Group: TestGroup

@@ -47,7 +47,8 @@ func ProjectTypeToDotnetCLITypeString(c models.ProjectType) (string, error) {
 	case models.ProjectTypes.WebApp:
 		return "webapp", nil
 	default:
-		return "", fmt.Errorf("error: %v is not defined for %v", c, models.ProjectTypes)
+		// return "", fmt.Errorf("error: %v is not defined for %v", c, models.ProjectTypes)
+		return "classlib", nil
 	}
 }
 
@@ -66,7 +67,7 @@ func (s DotnetManager) CreateProject(project applicationproject.ProjectSpecifica
 
 	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.ProjectType))
 	if err != nil {
-		return err
+		return fmt.Errorf("xxx: proje oluşturma işlemi sırasında ProjectType bulunamadı? %w", err)
 	}
 	// if dotnetProjectType == "webapp" {
 	// 	dotnetProjectType, err = DotnetWebAppOptionToDotnetCLITypeString(dotnetModels.DotnetWebAppOption(project.GetConfiguration().Options))

@@ -31,9 +31,6 @@ func (e GroupBaseStruct) Validate() error {
 	if _string.IsEmpty(e.Header.Name) {
 		return &errors.ErrFieldRequired{FieldName: "Name"}
 	}
-	if _string.IsEmpty(e.Specifications.Name) {
-		return &errors.ErrFieldRequired{FieldName: "Specifications.Name"}
-	}
 	return nil
 }
 

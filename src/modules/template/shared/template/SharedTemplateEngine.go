@@ -14,6 +14,10 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	_string "parsdevkit.net/pkg/utilities/string"
+
 	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
@@ -38,6 +42,9 @@ func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data 
 			return fmt.Errorf("invalid item type in Process: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, sharedtemplate); err != nil {
+			return err
+		}
 		sharedtemplates = append(sharedtemplates, *sharedtemplate)
 	}
 
@@ -52,6 +59,9 @@ func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data 
 			return fmt.Errorf("invalid item type in Destroy: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, sharedtemplate); err != nil {
+			return err
+		}
 		sharedtemplates = append(sharedtemplates, *sharedtemplate)
 	}
 
@@ -151,4 +161,48 @@ func (s SharedTemplateEngine) removeTemplates(templates []sharedtemplateStruct.T
 	}
 
 	return nil
+}
+
+func (s SharedTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *sharedtemplateStruct.TemplateBaseStruct) error {
+
+	logrus.Debugf("filling model (%v) information", model.Header.Name)
+
+	model.Specifications.Name = model.Header.Name
+
+	activeWorkspace, err := s.getWorkspace(ctx, *model)
+	if err != nil {
+		return err
+	}
+
+	//WARN: Doğru mu oldu?
+	model.Specifications.Workspace = activeWorkspace.Header.Name
+	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
+
+	return nil
+}
+
+func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model sharedtemplateStruct.TemplateBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+
+	workspaceName := model.Specifications.Workspace
+	if _string.IsEmpty(workspaceName) {
+		workspaceName = ctx.CurrentWorkspace.Name
+	}
+
+	var result *workspaceStruct.WorkspaceBaseStruct = nil
+
+	if !_string.IsEmpty(workspaceName) {
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+		workspace, err := workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return nil, err
+		}
+		if workspace == nil {
+			return nil, fmt.Errorf("workspace name (%v) is not correct", workspaceName)
+		}
+		result = workspace
+	} else {
+	}
+
+	return result, nil
 }

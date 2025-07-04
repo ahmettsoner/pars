@@ -11,7 +11,11 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
+	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	_string "parsdevkit.net/pkg/utilities/string"
+
 	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
 	"parsdevkit.net/pkg/utilities/json"
 
@@ -39,6 +43,9 @@ func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []
 			return fmt.Errorf("invalid item type in Process: expected dataresourceStruct.ResourceBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, dataresourceStruct); err != nil {
+			return err
+		}
 		dataresourceStructs = append(dataresourceStructs, *dataresourceStruct)
 	}
 
@@ -53,6 +60,9 @@ func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []
 			return fmt.Errorf("invalid item type in Destroy: expected dataresourceStruct.ResourceBaseStruct, got %T", item)
 		}
 
+		if err := s.completeInformation(ctx, dataresourceStruct); err != nil {
+			return err
+		}
 		dataresourceStructs = append(dataresourceStructs, *dataresourceStruct)
 	}
 
@@ -174,6 +184,49 @@ func (s DataResourceEngine) generate(model dataresourceStruct.ResourceBaseStruct
 	err = templateOperations.GenerateByResource(model)
 	if err != nil {
 		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s DataResourceEngine) completeInformation(ctx *application.ApplicationContext, model *dataresourceStruct.ResourceBaseStruct) error {
+
+	logrus.Debugf("filling model (%v) information", model.Header.Name)
+
+	model.Specifications.Name = model.Header.Name
+
+	activeWorkspace, err := s.getWorkspace(ctx, *model)
+	if err != nil {
+		return err
+	}
+
+	//WARN: Doğru mu oldu?
+	model.Specifications.Workspace = activeWorkspace.Header.Name
+	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
+
+	return nil
+}
+
+func (s DataResourceEngine) getWorkspace(ctx *application.ApplicationContext, model dataresourceStruct.ResourceBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+	workspaceName := model.Specifications.Workspace
+	if _string.IsEmpty(workspaceName) {
+		workspaceName = ctx.CurrentWorkspace.Name
+	}
+
+	var result *workspaceStruct.WorkspaceBaseStruct = nil
+
+	if !_string.IsEmpty(workspaceName) {
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+		workspace, err := workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return nil, err
+		}
+		if workspace == nil {
+			return nil, fmt.Errorf("workspace name (%v) is not correct", workspaceName)
+		}
+		result = workspace
+	} else {
 	}
 
 	return result, nil
