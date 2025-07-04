@@ -5,11 +5,11 @@ import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
-	dataresource "parsdevkit.net/structs/resource/data-resource"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 

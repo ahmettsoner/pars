@@ -5,7 +5,7 @@ import (
 
 	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/modules/resource/object_resource_contract"
-	objectresourceStruct "parsdevkit.net/structs/resource/object-resource"
+	objectresourceStruct "parsdevkit.net/modules/resource/object_resource_payload"
 
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"

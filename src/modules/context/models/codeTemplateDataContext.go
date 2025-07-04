@@ -3,8 +3,8 @@ package models
 import (
 	objectResourceService "parsdevkit.net/components/template/services"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 	platformsCommon "parsdevkit.net/platforms/common"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	"parsdevkit.net/components/template/models/objectResources"

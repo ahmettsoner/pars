@@ -1,6 +1,6 @@
 package models
 
-import objectresource "parsdevkit.net/structs/resource/object-resource"
+import objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 
 type CodeTemplateIdentifierContext struct {
 	Resource objectresource.ResourceBaseStruct

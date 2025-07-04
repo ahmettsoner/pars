@@ -147,8 +147,10 @@ require (
 	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/data_resource_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/resource/object_resource_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000 // indirect

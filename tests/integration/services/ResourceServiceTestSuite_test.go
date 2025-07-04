@@ -9,7 +9,7 @@ import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 
 	"parsdevkit.net/application/schemas"
 	resourceObject "parsdevkit.net/modules/resource/object_resource"

@@ -12,10 +12,10 @@ import (
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/modules/project/application_project_contract"
 	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 )
 

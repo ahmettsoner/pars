@@ -1,0 +1,70 @@
+package object_resource_payload
+
+import (
+	"parsdevkit.net/pkg/errors"
+	_string "parsdevkit.net/pkg/utilities/string"
+)
+
+type ValidationRegexRule struct {
+	ValidationRule
+	Pattern string
+}
+
+func NewValidationRegexRule(name, pattern string, message Message) ValidationRegexRule {
+	return ValidationRegexRule{
+		ValidationRule: NewValidationRule("Regex", name, message),
+		Pattern:        pattern,
+	}
+}
+func (e ValidationRegexRule) Validate() error {
+	if _string.IsEmpty(e.Pattern) {
+		return &errors.ErrFieldRequired{FieldName: "Pattern"}
+	}
+	return nil
+}
+
+func (s *ValidationRegexRule) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var rawData = make(map[string]interface{}, 0)
+
+	if err := unmarshal(&rawData); err != nil {
+		return err
+	} else {
+		if len(rawData) == 1 && rawData["Regex"] != nil {
+			var tempObject struct {
+				Regex string `yaml:"Regex"`
+			}
+
+			if err := unmarshal(&tempObject); err == nil {
+				s.Pattern = tempObject.Regex
+			} else {
+				return &errors.InvalidFormatForPackageError{Value: tempObject.Regex}
+			}
+
+			s.ValidationRule = NewValidationRule("Regex", "", Message{})
+		} else {
+			var tempHeaderObject struct {
+				ValidationRule
+			}
+
+			if err := unmarshal(&tempHeaderObject); err != nil {
+				return err
+			} else {
+
+				s.ValidationRule = tempHeaderObject.ValidationRule
+			}
+
+			var tempObject struct {
+				Pattern string `yaml:"Pattern"`
+			}
+
+			if err := unmarshal(&tempObject); err != nil {
+				return err
+			} else {
+				s.Pattern = tempObject.Pattern
+			}
+		}
+
+	}
+
+	return nil
+}

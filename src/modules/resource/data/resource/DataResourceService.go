@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/resource/data_resource_contract"
-	dataresource "parsdevkit.net/structs/resource/data-resource"
+	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
 
 	"parsdevkit.net/persistence/repositories"
 

@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"

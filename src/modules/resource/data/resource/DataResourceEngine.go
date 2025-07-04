@@ -3,7 +3,7 @@ package data_resource
 import (
 	"fmt"
 
-	dataresourceStruct "parsdevkit.net/structs/resource/data-resource"
+	dataresourceStruct "parsdevkit.net/modules/resource/data_resource_payload"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"

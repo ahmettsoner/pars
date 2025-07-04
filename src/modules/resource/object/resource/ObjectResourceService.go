@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
-	objectresource "parsdevkit.net/structs/resource/object-resource"
+	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	"parsdevkit.net/persistence/repositories"

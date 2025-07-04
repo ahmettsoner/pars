@@ -4,9 +4,9 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
-	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/application/contracts"

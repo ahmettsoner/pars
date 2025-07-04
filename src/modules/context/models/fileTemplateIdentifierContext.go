@@ -1,6 +1,6 @@
 package models
 
-import dataresource "parsdevkit.net/structs/resource/data-resource"
+import dataresource "parsdevkit.net/modules/resource/data_resource_payload"
 
 type FileTemplateIdentifierContext struct {
 	Resource dataresource.ResourceBaseStruct
