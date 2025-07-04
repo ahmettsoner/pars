@@ -7,7 +7,6 @@ import (
 
 	"parsdevkit.net/application/contracts"
 
-	"parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	"parsdevkit.net/application/ioc"
@@ -63,7 +62,7 @@ func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codet
 
 func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.Code))
+	entityList, err := s.templateRespository.ListByKind(codetemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +81,7 @@ func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error
 
 func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]codetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.Code))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, codetemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}

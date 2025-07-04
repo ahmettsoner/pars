@@ -6,7 +6,6 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 )
@@ -16,7 +15,7 @@ func BasicProject_WithName(name string, projectType models.ProjectType, platform
 	project := applicationproject.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Project,
-			string(project.ProjectKinds.Application),
+			applicationproject.PROJECT_KIND,
 			name,
 			schemas.Metadata{
 				Tags: []string(nil),

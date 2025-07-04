@@ -7,7 +7,6 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/structs/template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	"parsdevkit.net/persistence/repositories"
@@ -81,7 +80,7 @@ func (s SharedTemplateService) Save(model sharedtemplate.TemplateBaseStruct) (*s
 
 func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.Shared))
+	entityList, err := s.templateRespository.ListByKind(sharedtemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +98,7 @@ func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), e
 }
 func (s SharedTemplateService) ListByWorkspace(workspace string) (*([]sharedtemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.Shared))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, sharedtemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}

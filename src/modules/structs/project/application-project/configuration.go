@@ -6,8 +6,6 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-
-	"parsdevkit.net/structs/project"
 )
 
 type Configuration struct {
@@ -72,7 +70,7 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		s.Dependencies = tempObject.Dependencies
 		for _, ref := range tempObject.References {
 			projSpec := NewProjectBaseStruct(
-				schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), ref.Name, schemas.Metadata{}),
+				schemas.NewSchemaHeader(schemas.StructTypes.Project, PROJECT_KIND, ref.Name, schemas.Metadata{}),
 				NewProjectSpecification(
 					0,
 					"",

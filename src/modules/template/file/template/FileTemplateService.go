@@ -7,7 +7,6 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/structs/template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/persistence/repositories"
@@ -62,7 +61,7 @@ func (s FileTemplateService) Save(model filetemplate.TemplateBaseStruct) (*filet
 
 func (s FileTemplateService) List() (*([]filetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(string(template.TemplateKinds.File))
+	entityList, err := s.templateRespository.ListByKind(filetemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +79,7 @@ func (s FileTemplateService) List() (*([]filetemplate.TemplateBaseStruct), error
 }
 func (s FileTemplateService) ListByWorkspace(workspace string) (*([]filetemplate.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, string(template.TemplateKinds.File))
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, filetemplate.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}

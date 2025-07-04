@@ -7,7 +7,6 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/resource/data_resource_contract"
-	"parsdevkit.net/structs/resource"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 
 	"parsdevkit.net/persistence/repositories"
@@ -62,7 +61,7 @@ func (s DataResourceService) Save(model dataresource.ResourceBaseStruct) (*datar
 
 func (s DataResourceService) List() (*([]dataresource.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByKind(string(resource.ResourceKinds.Data))
+	entityList, err := s.resourceRepository.ListByKind(dataresource.RESOURCE_KIND)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +79,7 @@ func (s DataResourceService) List() (*([]dataresource.ResourceBaseStruct), error
 }
 func (s DataResourceService) ListByWorkspace(workspace string) (*([]dataresource.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, string(resource.ResourceKinds.Data))
+	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, dataresource.RESOURCE_KIND)
 	if err != nil {
 		return nil, err
 	}

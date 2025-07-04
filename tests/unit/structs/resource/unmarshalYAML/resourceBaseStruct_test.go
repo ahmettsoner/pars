@@ -8,7 +8,6 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"github.com/stretchr/testify/assert"
@@ -56,7 +55,7 @@ Specifications:
 	expected := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			string(resource.ResourceKinds.Object),
+			objectresource.RESOURCE_KIND,
 			"Pars.CMD",
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},

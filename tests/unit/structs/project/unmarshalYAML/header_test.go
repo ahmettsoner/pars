@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/structs/project"
+	applicationproject "parsdevkit.net/structs/project/application-project"
 )
 
 func Test_UnMarshall_Header_Basic(t *testing.T) {
@@ -27,7 +27,7 @@ Metadata:
 
 	expected := schemas.SchemaHeader{
 		Type:     schemas.StructTypes.Project,
-		Kind:     string(project.ProjectKinds.Application),
+		Kind:     applicationproject.PROJECT_KIND,
 		Name:     "CMD",
 		Metadata: schemas.Metadata{},
 	}
@@ -58,7 +58,7 @@ Metadata:
 
 	expected := schemas.SchemaHeader{
 		Type: schemas.StructTypes.Project,
-		Kind: string(project.ProjectKinds.Application),
+		Kind: applicationproject.PROJECT_KIND,
 		Name: "CMD",
 		Metadata: schemas.Metadata{
 			Tags: []string{"foo", "bar"},

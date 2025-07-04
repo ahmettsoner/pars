@@ -100,7 +100,7 @@ func TestTemplateServiceTestSuite(t *testing.T) {
 func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,
@@ -131,7 +131,7 @@ func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
 func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruct {
 
 	template := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), name, schemas.Metadata{}),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, name, schemas.Metadata{}),
 		codetemplate.NewTemplateSpecification(
 			0,
 			name,

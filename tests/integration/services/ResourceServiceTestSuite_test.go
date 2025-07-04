@@ -9,7 +9,6 @@ import (
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/structs/resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 
 	"parsdevkit.net/application/schemas"
@@ -101,7 +100,7 @@ func BasicResource(name string) *objectresource.ResourceBaseStruct {
 	resource := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			string(resource.ResourceKinds.Object),
+			objectresource.RESOURCE_KIND,
 			name,
 			schemas.Metadata{
 				Tags: []string{},
@@ -130,7 +129,7 @@ func BasicResource_WithName(name string) *objectresource.ResourceBaseStruct {
 	resource := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			string(resource.ResourceKinds.Object),
+			objectresource.RESOURCE_KIND,
 			name,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
@@ -183,7 +182,7 @@ func BasicResource_WithNameSet(name, set string) *objectresource.ResourceBaseStr
 	resource := objectresource.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			string(resource.ResourceKinds.Object),
+			objectresource.RESOURCE_KIND,
 			name,
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},

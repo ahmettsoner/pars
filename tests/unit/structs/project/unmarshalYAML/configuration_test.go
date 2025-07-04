@@ -8,7 +8,6 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/stretchr/testify/assert"
@@ -42,7 +41,7 @@ References:
 		},
 		[]applicationproject.ProjectBaseStruct{
 			applicationproject.NewProjectBaseStruct(
-				schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), "Logging", schemas.Metadata{}),
+				schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
 				applicationproject.NewProjectSpecification(
 					0,
 					"",

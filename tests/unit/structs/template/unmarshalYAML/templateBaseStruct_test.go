@@ -5,7 +5,6 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/structs/template"
-	templateStruct "parsdevkit.net/structs/template"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	"github.com/stretchr/testify/assert"
@@ -41,7 +40,7 @@ Specifications:
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	expected := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, string(templateStruct.TemplateKinds.Code), "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
 		codetemplate.NewTemplateSpecification(0,
 			"Entity",
 			"",

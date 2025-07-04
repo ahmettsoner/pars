@@ -7,7 +7,6 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/models"
 	platformsCommon "parsdevkit.net/platforms/common"
-	projectStruct "parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
@@ -89,7 +88,7 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -131,8 +130,8 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -171,7 +170,7 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -215,8 +214,8 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -255,7 +254,7 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -302,8 +301,8 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -343,7 +342,7 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)
@@ -390,8 +389,8 @@ func (suite *ProjectServiceOneEmptyPathGroupProjectReferenceTestSuite) Test_Crea
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
-		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, string(projectStruct.ProjectKinds.Application), referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
+		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
 
 	temp, err := suite.service.Create(project, true)

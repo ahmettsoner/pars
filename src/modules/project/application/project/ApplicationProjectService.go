@@ -13,7 +13,6 @@ import (
 	"parsdevkit.net/models"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	"parsdevkit.net/structs/workspace"
 
@@ -370,7 +369,7 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 // OK!
 func (s *ApplicationProjectService) List() (*([]applicationproject.ProjectBaseStruct), error) {
 
-	entityList, err := s.projectRespository.ListByKind(string(project.ProjectKinds.Application))
+	entityList, err := s.projectRespository.ListByKind(applicationproject.PROJECT_KIND)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}

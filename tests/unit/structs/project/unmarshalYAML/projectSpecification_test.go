@@ -5,7 +5,6 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/project"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/application/schemas"
@@ -71,7 +70,7 @@ Configuration:
 			},
 			[]applicationproject.ProjectBaseStruct{
 				applicationproject.NewProjectBaseStruct(
-					schemas.NewSchemaHeader(schemas.StructTypes.Project, string(project.ProjectKinds.Application), "Logging", schemas.Metadata{}),
+					schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
 					applicationproject.NewProjectSpecification(
 						0,
 						"",

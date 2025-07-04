@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
-	"parsdevkit.net/structs/task"
 	commontask "parsdevkit.net/structs/task/basic-task"
 
 	"parsdevkit.net/application/ioc"
@@ -62,7 +61,7 @@ func (s BasicTaskService) Save(model commontask.TaskBaseStruct) (*commontask.Tas
 
 func (s BasicTaskService) List() (*([]commontask.TaskBaseStruct), error) {
 
-	entityList, err := s.taskRespository.ListByKind(string(task.TaskKinds.Common))
+	entityList, err := s.taskRespository.ListByKind(commontask.TASK_KIND)
 	if err != nil {
 		return nil, err
 	}
