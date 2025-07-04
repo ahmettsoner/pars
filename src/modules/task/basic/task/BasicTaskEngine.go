@@ -5,8 +5,8 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/pkg/utilities/json"
-	commontask "parsdevkit.net/structs/task/common-task"
-	commontaskStruct "parsdevkit.net/structs/task/common-task"
+	commontask "parsdevkit.net/structs/task/basic-task"
+	commontaskStruct "parsdevkit.net/structs/task/basic-task"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
@@ -17,9 +17,9 @@ import (
 	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
-type CommonTaskEngine struct{}
+type BasicTaskEngine struct{}
 
-func (s CommonTaskEngine) Validate(data []schemas.SchemaInterface) bool {
+func (s BasicTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
 		_, ok := item.(*commontaskStruct.TaskBaseStruct)
 		if !ok {
@@ -29,7 +29,7 @@ func (s CommonTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+func (s BasicTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -44,7 +44,7 @@ func (s CommonTaskEngine) Process(ctx *application.ApplicationContext, data []sc
 	return s.createTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
@@ -59,14 +59,14 @@ func (s CommonTaskEngine) Destroy(ctx *application.ApplicationContext, data []sc
 	return s.removeTasks(commontasks, true)
 }
 
-func (s CommonTaskEngine) GetConfig() engines.EngineConfig {
+func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
 		Name:  "Task.Common",
 		Order: 5000,
 	}
 }
 
-func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, init bool) error {
+func (s BasicTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, init bool) error {
 
 	tasksReadyToCreate := make([]commontaskStruct.TaskBaseStruct, 0)
 	tasksForUpdate := make([]commontaskStruct.TaskBaseStruct, 0)
@@ -135,7 +135,7 @@ func (s CommonTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, i
 
 	return nil
 }
-func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, permanent bool) error {
+func (s BasicTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, permanent bool) error {
 
 	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 	tasksReadyToDelete := make([]commontaskStruct.TaskBaseStruct, 0)
@@ -161,7 +161,7 @@ func (s CommonTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, p
 
 	return nil
 }
-func (s CommonTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commontaskStruct.TaskBaseStruct, error) {
+func (s BasicTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commontaskStruct.TaskBaseStruct, error) {
 
 	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 

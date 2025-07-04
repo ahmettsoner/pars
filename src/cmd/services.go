@@ -22,7 +22,7 @@ import (
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
-	commontask "parsdevkit.net/structs/task/common-task"
+	commontask "parsdevkit.net/structs/task/basic-task"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
@@ -63,7 +63,7 @@ func registerEngines() {
 	engines.Register(&templateCode.CodeTemplateEngine{})
 	engines.Register(&templateFile.FileTemplateEngine{})
 	engines.Register(&templateShared.SharedTemplateEngine{})
-	engines.Register(&taskCommon.CommonTaskEngine{})
+	engines.Register(&taskCommon.BasicTaskEngine{})
 }
 func registerContainers() {
 	dbContext := contexts.NewDbContext(application.GetEnvironment())
@@ -117,7 +117,7 @@ func registerContainers() {
 		return resourceObject.NewObjectResourceService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[contracts.TaskServiceInterface[commontask.TaskBaseStruct]](func() contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
-		return taskCommon.NewCommonTaskService(application.GetEnvironment())
+		return taskCommon.NewBasicTaskService(application.GetEnvironment())
 	})
 
 }

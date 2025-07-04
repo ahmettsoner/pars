@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/structs/task"
-	commontask "parsdevkit.net/structs/task/common-task"
+	commontask "parsdevkit.net/structs/task/basic-task"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
@@ -17,24 +17,24 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type CommonTaskService struct {
+type BasicTaskService struct {
 	taskRespository              *repositories.TaskRepository
 	generationHistoryRespository *repositories.GenerationHistoryRepository
 	environment                  string
 }
 
-func NewCommonTaskService(environment string) contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
+func NewBasicTaskService(environment string) contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
 	taskRespository := ioc.Get[*repositories.TaskRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
-	return &CommonTaskService{
+	return &BasicTaskService{
 		environment:                  environment,
 		taskRespository:              taskRespository,
 		generationHistoryRespository: generationHistoryRespository,
 	}
 }
 
-func (s CommonTaskService) GetByName(name string) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) GetByName(name string) (*commontask.TaskBaseStruct, error) {
 	var task *commontask.TaskBaseStruct
 
 	entity, err := s.taskRespository.GetByName(name)
@@ -50,7 +50,7 @@ func (s CommonTaskService) GetByName(name string) (*commontask.TaskBaseStruct, e
 	return task, nil
 }
 
-func (s CommonTaskService) Save(model commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) Save(model commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
 
 	result, err := s.saveTaskInformation(model)
 	if err != nil {
@@ -60,7 +60,7 @@ func (s CommonTaskService) Save(model commontask.TaskBaseStruct) (*commontask.Ta
 	return result, nil
 }
 
-func (s CommonTaskService) List() (*([]commontask.TaskBaseStruct), error) {
+func (s BasicTaskService) List() (*([]commontask.TaskBaseStruct), error) {
 
 	entityList, err := s.taskRespository.ListByKind(string(task.TaskKinds.Common))
 	if err != nil {
@@ -79,7 +79,7 @@ func (s CommonTaskService) List() (*([]commontask.TaskBaseStruct), error) {
 	return &taskList, nil
 }
 
-func (s CommonTaskService) ListBySetAndLayers(set string, layers ...string) (*([]commontask.TaskBaseStruct), error) {
+func (s BasicTaskService) ListBySetAndLayers(set string, layers ...string) (*([]commontask.TaskBaseStruct), error) {
 
 	entityList, err := s.taskRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
@@ -98,7 +98,7 @@ func (s CommonTaskService) ListBySetAndLayers(set string, layers ...string) (*([
 	return &taskList, nil
 }
 
-func (s CommonTaskService) Remove(name, workspace string, permanent bool) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) Remove(name, workspace string, permanent bool) (*commontask.TaskBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	taskTaskEntity, err := s.taskRespository.GetByNameAndWorkspace(name, workspace)
@@ -121,7 +121,7 @@ func (s CommonTaskService) Remove(name, workspace string, permanent bool) (*comm
 	return &task, nil
 }
 
-func (s CommonTaskService) IsExists(name, workspace string) (bool, error) {
+func (s BasicTaskService) IsExists(name, workspace string) (bool, error) {
 
 	taskTaskEntity, err := s.taskRespository.GetByNameAndWorkspace(name, workspace)
 	if err != nil {
@@ -133,7 +133,7 @@ func (s CommonTaskService) IsExists(name, workspace string) (bool, error) {
 
 	return true, nil
 }
-func (s CommonTaskService) GetHash(name string) (string, error) {
+func (s BasicTaskService) GetHash(name string) (string, error) {
 
 	entity, err := s.taskRespository.GetByName(name)
 	if err != nil {
@@ -146,7 +146,7 @@ func (s CommonTaskService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s CommonTaskService) saveTaskInformation(taskMommonl commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) saveTaskInformation(taskMommonl commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
 
 	jsonData, err := json.Marshal(taskMommonl)
 	if err != nil {
