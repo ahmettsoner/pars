@@ -18,8 +18,8 @@ import (
 
 	"parsdevkit.net/application/schemas"
 
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
 
@@ -33,7 +33,7 @@ type ProjectServiceBasicProjectReferenceTestSuite struct {
 	environment   string
 	testArea      string
 	workspaceName string
-	workspace     workspace.WorkspaceSpecification
+	workspace     basic_workspace_payload.WorkspaceSpecification
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

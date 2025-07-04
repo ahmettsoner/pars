@@ -3,13 +3,12 @@ package common
 import (
 	"testing"
 
-	"parsdevkit.net/structs/workspace"
-
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) {
@@ -18,9 +17,9 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 	_, err := ExecuteCommand(t, environment, commands...)
 	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }
-func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {
+func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, environment string) basic_workspace_payload.WorkspaceBaseStruct {
 
-	workspace := workspace.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -29,7 +28,7 @@ func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, envi
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		basic_workspace_payload.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
 	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)

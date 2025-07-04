@@ -8,13 +8,14 @@ import (
 	"path/filepath"
 	"strings"
 
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/models"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -1613,8 +1614,8 @@ func (s *ApplicationProjectService) getProject(name string, group string, worksp
 
 	return entity, nil
 }
-func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*workspace.WorkspaceSpecification, error) {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*basic_workspace_payload.WorkspaceSpecification, error) {
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	workspace, err := workspaceService.GetByName(workspaceName)
 	if err != nil {

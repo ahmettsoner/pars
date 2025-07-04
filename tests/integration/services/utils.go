@@ -11,8 +11,8 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	group "parsdevkit.net/modules/group/basic_group"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
@@ -25,9 +25,9 @@ import (
 	"parsdevkit.net/application/schemas"
 )
 
-func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) workspace.WorkspaceBaseStruct {
+func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) basic_workspace_payload.WorkspaceBaseStruct {
 
-	workspace := workspace.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -36,7 +36,7 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		workspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		basic_workspace_payload.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
 	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)

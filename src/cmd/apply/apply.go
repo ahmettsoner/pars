@@ -7,10 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	workspaceStruct "parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
@@ -179,7 +177,7 @@ func GetLastComponent(path string) (string, error) {
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspaceStruct.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

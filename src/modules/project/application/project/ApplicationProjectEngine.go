@@ -6,7 +6,6 @@ import (
 
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
@@ -14,10 +13,10 @@ import (
 
 	"parsdevkit.net/modules/group/basic_group_contract"
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
-	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
@@ -448,7 +447,7 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 	var result *workspaceStruct.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
-		workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 		workspace, err := workspaceService.GetByName(workspaceName)
 		if err != nil {
 			return nil, err
@@ -506,7 +505,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 
 func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStruct.ProjectBaseStruct, reference applicationprojectStruct.ProjectBaseStruct) (*applicationprojectStruct.ProjectBaseStruct, error) {
 
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
 

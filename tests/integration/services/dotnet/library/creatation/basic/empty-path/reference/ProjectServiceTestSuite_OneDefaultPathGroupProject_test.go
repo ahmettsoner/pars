@@ -9,9 +9,9 @@ import (
 	"parsdevkit.net/models"
 	projectApplication "parsdevkit.net/modules/project/application_project"
 	"parsdevkit.net/modules/project/application_project_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	platformsCommon "parsdevkit.net/platforms/common"
 	applicationproject "parsdevkit.net/structs/project/application-project"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/application/schemas"
 
@@ -31,7 +31,7 @@ type ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite struct {
 	environment   string
 	testArea      string
 	workspaceName string
-	workspace     workspace.WorkspaceSpecification
+	workspace     basic_workspace_payload.WorkspaceSpecification
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

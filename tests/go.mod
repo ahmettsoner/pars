@@ -22,6 +22,8 @@ replace parsdevkit.net/modules/group/basic_group_contract => ../src/modules/grou
 replace parsdevkit.net/modules/group/basic_group_payload => ../src/modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ../src/modules/workspace/basic/workspace
+replace parsdevkit.net/modules/workspace/basic_workspace_contract => ../src/modules/workspace/basic/workspace.contract
+replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../src/modules/workspace/basic/workspace.payload
 
 replace parsdevkit.net/modules/resource/object_resource => ../src/modules/resource/object/resource
 replace parsdevkit.net/modules/resource/object_resource_contract => ../src/modules/resource/object/resource.contract
@@ -77,6 +79,8 @@ require (
 	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000

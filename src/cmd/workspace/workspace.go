@@ -8,11 +8,9 @@ import (
 	"parsdevkit.net/cmd/workspace/describe"
 	"parsdevkit.net/cmd/workspace/list"
 	"parsdevkit.net/cmd/workspace/remove"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/structs/workspace"
-
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
@@ -48,7 +46,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 	if !_string.IsEmpty(commandOptions.SwitchTo) {
 
-		workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 		_, err := workspaceService.ChangeCurrentWorkspace(commandOptions.SwitchTo)
 		if err != nil {
 			return fmt.Errorf("Failed to switch '%s'\n%w", commandOptions.SwitchTo, err)
@@ -79,7 +77,7 @@ func addSubCommands() {
 }
 
 func switchFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

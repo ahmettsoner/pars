@@ -22,11 +22,11 @@ import (
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	commontask "parsdevkit.net/structs/task/basic-task"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
-	"parsdevkit.net/structs/workspace"
 
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	"parsdevkit.net/persistence/contexts"
@@ -92,7 +92,7 @@ func registerContainers() {
 	ioc.Register(func() *repositories.GenerationHistoryRepository {
 		return repositories.NewGenerationHistoryRepository(dbContext)
 	})
-	ioc.RegisterInterface[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]](func() contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
+	ioc.RegisterInterface[basic_workspace_contract.WorkspaceInterface](func() basic_workspace_contract.WorkspaceInterface {
 		return workspaceWorkspace.NewWorkspaceService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[basic_group_contract.GroupInterface](func() basic_group_contract.GroupInterface {

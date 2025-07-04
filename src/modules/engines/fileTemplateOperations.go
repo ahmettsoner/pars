@@ -3,17 +3,18 @@ package engines
 import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/data_resource_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"parsdevkit.net/persistence/contexts"
 
@@ -39,7 +40,7 @@ func NewFileTemplateOperations(environment string) FileTemplateOperations {
 }
 
 func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBaseStruct) error {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	for _, layer := range model.Specifications.Layers {
 		templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
@@ -75,7 +76,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 }
 
 func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBaseStruct) error {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	for _, modelLayer := range model.Specifications.Layers {
 		resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
@@ -111,7 +112,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 	return nil
 }
 
-func (s FileTemplateOperations) GenerateContent(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
+func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	resourceLayer := dataresource.Layer{}

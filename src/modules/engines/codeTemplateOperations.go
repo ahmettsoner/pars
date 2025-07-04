@@ -16,7 +16,6 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
@@ -26,6 +25,8 @@ import (
 	"parsdevkit.net/context/models"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 type CodeTemplateOperations struct {
@@ -42,7 +43,7 @@ func NewCodeTemplateOperations(environment string) CodeTemplateOperations {
 }
 
 func (s CodeTemplateOperations) GenerateByResource(model objectresource.ResourceBaseStruct) error {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	for _, layer := range model.Specifications.Layers {
 		templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
@@ -78,7 +79,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 }
 
 func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBaseStruct) error {
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	for _, modelLayer := range model.Specifications.Layers {
 		resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
@@ -114,7 +115,7 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 	return nil
 }
 
-func (s CodeTemplateOperations) GenerateContent(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
+func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
 	resourceLayer := objectresource.Layer{}

@@ -4,10 +4,10 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/template/models/objectResources"
 	objectResourceService "parsdevkit.net/components/template/services"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	platformsCommon "parsdevkit.net/platforms/common"
 )
 
@@ -20,7 +20,7 @@ type FileTemplateDataContext struct {
 	Section   objectResources.DataSectionComposite
 }
 
-func NewFileTemplateDataContext(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer dataresource.Layer) *FileTemplateDataContext {
+func NewFileTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer dataresource.Layer) *FileTemplateDataContext {
 	manager, err := platformsCommon.GetPlatformManager(project.Specifications.Platform.Type, platformsCommon.Registry)
 	if err != nil {
 		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)

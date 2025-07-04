@@ -1,7 +1,6 @@
 package describe
 
 import (
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 
 	"fmt"
@@ -9,12 +8,11 @@ import (
 	"strings"
 
 	"parsdevkit.net/modules/project/application_project_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
-
-	workspaceStruct "parsdevkit.net/structs/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -135,7 +133,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspaceStruct.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

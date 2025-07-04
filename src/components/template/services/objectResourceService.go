@@ -4,6 +4,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
 	applicationproject "parsdevkit.net/structs/project/application-project"
@@ -11,7 +12,6 @@ import (
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/template/models/objectResources"
 )
@@ -393,7 +393,7 @@ func (s *ObjectResourceService) MessageToModel(message objectresource.Message) o
 	return result
 }
 
-func (s *ObjectResourceService) WorkspaceToModel(workspace workspace.WorkspaceBaseStruct) objectResources.Workspace {
+func (s *ObjectResourceService) WorkspaceToModel(workspace basic_workspace_payload.WorkspaceBaseStruct) objectResources.Workspace {
 
 	var result objectResources.Workspace = objectResources.Workspace{
 		Name: workspace.Header.Name,

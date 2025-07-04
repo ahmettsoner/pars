@@ -6,9 +6,9 @@ import (
 	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/components/template/models/objectResources"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 type CodeTemplateDataContext struct {
@@ -20,7 +20,7 @@ type CodeTemplateDataContext struct {
 	Section   objectResources.ObjectSectionComposite
 }
 
-func NewCodeTemplateDataContext(workspace workspace.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
+func NewCodeTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
 	manager, err := platformsCommon.GetPlatformManager(project.Specifications.Platform.Type, platformsCommon.Registry)
 	if err != nil {
 		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)

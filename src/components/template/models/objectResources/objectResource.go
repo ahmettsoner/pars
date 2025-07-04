@@ -2,17 +2,17 @@ package objectResources
 
 import (
 	"parsdevkit.net/application/models/class"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	filetemplate "parsdevkit.net/structs/template/file-template"
-	"parsdevkit.net/structs/workspace"
 )
 
 type WorkspaceComposite struct {
 	Workspace
-	Original workspace.WorkspaceBaseStruct
+	Original basic_workspace_payload.WorkspaceBaseStruct
 }
 
 type Workspace struct {

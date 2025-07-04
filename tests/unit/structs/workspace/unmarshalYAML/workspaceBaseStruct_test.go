@@ -3,11 +3,10 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/workspace"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 func Test_UnMarshall_WorkspaceBaseStruct_FullData(t *testing.T) {
@@ -27,10 +26,10 @@ Specifications:
 
 	// Act
 
-	var data workspace.WorkspaceBaseStruct
+	var data basic_workspace_payload.WorkspaceBaseStruct
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := workspace.WorkspaceBaseStruct{
+	expected := basic_workspace_payload.WorkspaceBaseStruct{
 		Header: schemas.SchemaHeader{
 			Type: schemas.StructTypes.Workspace,
 			Name: "Pars.CMD",
@@ -38,7 +37,7 @@ Specifications:
 				Tags: []string{"tag1", "tag2"},
 			},
 		},
-		Specifications: workspace.NewWorkspaceSpecification(0, "CMD", "cmd"),
+		Specifications: basic_workspace_payload.NewWorkspaceSpecification(0, "CMD", "cmd"),
 	}
 
 	// Assert

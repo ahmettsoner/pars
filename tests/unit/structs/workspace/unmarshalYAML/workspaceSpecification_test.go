@@ -3,10 +3,9 @@ package unmarshalYAML
 import (
 	"testing"
 
-	"parsdevkit.net/structs/workspace"
-
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 func Test_UnMarshall_WorkspaceSpecification_Path_SingleLine(t *testing.T) {
@@ -20,10 +19,10 @@ Path: sample-path
 
 	// Act
 
-	var data workspace.WorkspaceSpecification
+	var data basic_workspace_payload.WorkspaceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := workspace.NewWorkspaceSpecification(0, "CMD", "sample-path")
+	expected := basic_workspace_payload.NewWorkspaceSpecification(0, "CMD", "sample-path")
 
 	// Assert
 	a.NoError(err)
@@ -42,10 +41,10 @@ Path: sample-path
 
 	// Act
 
-	var data workspace.WorkspaceSpecification
+	var data basic_workspace_payload.WorkspaceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := workspace.NewWorkspaceSpecification(0, "CMD", "sample-path")
+	expected := basic_workspace_payload.NewWorkspaceSpecification(0, "CMD", "sample-path")
 
 	// Assert
 	a.NoError(err)

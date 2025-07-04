@@ -5,23 +5,22 @@ import (
 
 	"parsdevkit.net/application"
 
-	"parsdevkit.net/structs/workspace"
-
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/schemas"
 )
 
 type WorkspaceServiceTestSuite struct {
 	suite.Suite
-	service       contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]
+	service       basic_workspace_contract.WorkspaceInterface
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool
@@ -91,9 +90,9 @@ func TestWorkspaceServiceTestSuite(t *testing.T) {
 	suite.Run(t, new(WorkspaceServiceTestSuite))
 }
 
-func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
+func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBaseStruct {
 
-	workspace := workspace.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -102,7 +101,7 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		workspace.NewWorkspaceSpecification(0,
+		basic_workspace_payload.NewWorkspaceSpecification(0,
 			name,
 			"path",
 		),
@@ -110,9 +109,9 @@ func BasicWorkspace_WithName(name string) *workspace.WorkspaceBaseStruct {
 	return &workspace
 }
 
-func BasicWorkspace_WithSpecification(specifications workspace.WorkspaceSpecification) *workspace.WorkspaceBaseStruct {
+func BasicWorkspace_WithSpecification(specifications basic_workspace_payload.WorkspaceSpecification) *basic_workspace_payload.WorkspaceBaseStruct {
 
-	workspace := workspace.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -126,9 +125,9 @@ func BasicWorkspace_WithSpecification(specifications workspace.WorkspaceSpecific
 	return &workspace
 }
 
-func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStruct {
+func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload.WorkspaceBaseStruct {
 
-	workspace := workspace.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -137,7 +136,7 @@ func BasicWorkspace_WithNamePath(name, path string) *workspace.WorkspaceBaseStru
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		workspace.NewWorkspaceSpecification(0,
+		basic_workspace_payload.NewWorkspaceSpecification(0,
 			name,
 			path,
 		),

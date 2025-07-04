@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"os"
 	"testing"
@@ -13,7 +14,6 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/pkg/utilities/file"
 	"parsdevkit.net/pkg/utilities/object"
@@ -35,7 +35,7 @@ type ProjectServiceTestSuite struct {
 	environment   string
 	testArea      string
 	workspaceName string
-	workspace     workspace.WorkspaceSpecification
+	workspace     basic_workspace_payload.WorkspaceSpecification
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

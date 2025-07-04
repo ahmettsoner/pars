@@ -3,14 +3,12 @@ package describe
 import (
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/group/basic_group_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"log"
 	"strings"
-
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/pkg/utilities/array"
@@ -145,7 +143,7 @@ func workspaceFlagCompletion(cmd *cobra.Command, args []string, toComplete strin
 }
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
-	workspaceService := ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	workspaceList, err := workspaceService.List()
 	if err != nil {
 		log.Fatal(err)

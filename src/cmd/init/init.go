@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/structs/workspace"
 
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
 type InitOptions struct {
@@ -24,7 +24,7 @@ type InitOptions struct {
 
 var commandOptions InitOptions
 var maxArgumentCount int = 2
-var workspaceService contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]
+var workspaceService basic_workspace_contract.WorkspaceInterface
 
 var InitCmd = &cobra.Command{
 	Use:               "init [name] [path]",
@@ -47,7 +47,7 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	workspaceService = ioc.Get[contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct]]()
+	workspaceService = ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	if len(args) > 0 {
 		commandOptions.Name = args[0]
@@ -87,7 +87,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	workspace, err := workspaceService.Save(workspace.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), workspace.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
+	workspace, err := workspaceService.Save(basic_workspace_payload.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), basic_workspace_payload.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
 	if err != nil {
 		return fmt.Errorf("Failed to initialize workspace '%s'\n%w", commandOptions.Name, err)
 	}

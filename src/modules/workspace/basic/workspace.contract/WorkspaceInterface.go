@@ -1,9 +1,8 @@
 package basic_workspace_contract
 
 import (
-	// workspace_payload "parsdevkit.net/modules/workspace/basic_workspace_payload"
-	workspace_payload "parsdevkit.net/structs/workspace"
-	"parsdevkit.net/workspace/contracts"
+	"parsdevkit.net/application/contracts"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
 
-type WorkspaceInterface contracts.WorkspaceServiceInterface[workspace_payload.WorkspaceBaseStruct]
+type WorkspaceInterface contracts.WorkspaceServiceInterface[basic_workspace_payload.WorkspaceBaseStruct]

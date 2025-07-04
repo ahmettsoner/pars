@@ -10,13 +10,14 @@ import (
 	"strconv"
 	"strings"
 
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/modules/project/application_project_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/structs/workspace"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -38,7 +39,7 @@ type WorkspaceService struct {
 	projectService       application_project_contract.ProjectInterface
 }
 
-func NewWorkspaceService(environment string) contracts.WorkspaceServiceInterface[workspace.WorkspaceBaseStruct] {
+func NewWorkspaceService(environment string) basic_workspace_contract.WorkspaceInterface {
 	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()
 	settingsRespository := ioc.Get[*repositories.SettingsRepository]()
@@ -84,7 +85,7 @@ func (s *WorkspaceService) correctOutputPath(output string) (string, error) {
 	return *outputPath, nil
 }
 
-func (s WorkspaceService) saveWorkspaceInformation(workspaceModel workspace.WorkspaceBaseStruct) (*workspace.WorkspaceBaseStruct, error) {
+func (s WorkspaceService) saveWorkspaceInformation(workspaceModel basic_workspace_payload.WorkspaceBaseStruct) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 
 	jsonData, err := json.Marshal(workspaceModel)
 	if err != nil {
@@ -115,8 +116,8 @@ func (s WorkspaceService) saveWorkspaceInformation(workspaceModel workspace.Work
 	return &workspaceModel, nil
 }
 
-func (s *WorkspaceService) Get(id int) (*workspace.WorkspaceSpecification, error) {
-	var workspace *workspace.WorkspaceSpecification
+func (s *WorkspaceService) Get(id int) (*basic_workspace_payload.WorkspaceSpecification, error) {
+	var workspace *basic_workspace_payload.WorkspaceSpecification
 
 	entity, err := s.workspaceRespository.Get(id)
 	if err != nil {
@@ -132,8 +133,8 @@ func (s *WorkspaceService) Get(id int) (*workspace.WorkspaceSpecification, error
 	return workspace, nil
 }
 
-func (s WorkspaceService) GetByName(name string) (*workspace.WorkspaceBaseStruct, error) {
-	var workspace *workspace.WorkspaceBaseStruct
+func (s WorkspaceService) GetByName(name string) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
+	var workspace *basic_workspace_payload.WorkspaceBaseStruct
 
 	entity, err := s.workspaceRespository.GetByName(name)
 	if err != nil {
@@ -148,17 +149,17 @@ func (s WorkspaceService) GetByName(name string) (*workspace.WorkspaceBaseStruct
 	return workspace, nil
 }
 
-func (s WorkspaceService) ListByNameStartWith(name string) (*([]workspace.WorkspaceBaseStruct), error) {
+func (s WorkspaceService) ListByNameStartWith(name string) (*([]basic_workspace_payload.WorkspaceBaseStruct), error) {
 
 	entityList, err := s.workspaceRespository.ListByNameStartWith(name)
 	if err != nil {
 		return nil, err
 	}
 
-	workspaceList := make([]workspace.WorkspaceBaseStruct, 0)
+	workspaceList := make([]basic_workspace_payload.WorkspaceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var workspace workspace.WorkspaceBaseStruct
+		var workspace basic_workspace_payload.WorkspaceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &workspace)
 
 		workspaceList = append(workspaceList, workspace)
@@ -167,7 +168,7 @@ func (s WorkspaceService) ListByNameStartWith(name string) (*([]workspace.Worksp
 	return &workspaceList, nil
 }
 
-func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.WorkspaceBaseStruct, error) {
+func (s WorkspaceService) Save(model basic_workspace_payload.WorkspaceBaseStruct) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 
 	workspaceName := s.correctWorkspaceName(model.Specifications.Name)
 	outputPath, err := s.correctOutputPath(model.Specifications.Path)
@@ -302,17 +303,17 @@ func (s WorkspaceService) Save(model workspace.WorkspaceBaseStruct) (*workspace.
 // 	return &workspace, nil
 // }
 
-func (s WorkspaceService) List() (*([]workspace.WorkspaceBaseStruct), error) {
+func (s WorkspaceService) List() (*([]basic_workspace_payload.WorkspaceBaseStruct), error) {
 
 	entityList, err := s.workspaceRespository.List()
 	if err != nil {
 		return nil, err
 	}
 
-	workspaceList := make([]workspace.WorkspaceBaseStruct, 0)
+	workspaceList := make([]basic_workspace_payload.WorkspaceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var workspace workspace.WorkspaceBaseStruct
+		var workspace basic_workspace_payload.WorkspaceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &workspace)
 
 		workspaceList = append(workspaceList, workspace)
@@ -321,7 +322,7 @@ func (s WorkspaceService) List() (*([]workspace.WorkspaceBaseStruct), error) {
 	return &workspaceList, nil
 }
 
-func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*workspace.WorkspaceBaseStruct, error) {
+func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	workspaceName := s.correctWorkspaceName(name)
@@ -358,7 +359,7 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*work
 		return nil, err
 	}
 
-	var workspace workspace.WorkspaceBaseStruct
+	var workspace basic_workspace_payload.WorkspaceBaseStruct
 	err = json.Unmarshal([]byte(workspaceEntity.Document), &workspace)
 	if err != nil {
 		return nil, err
@@ -445,7 +446,7 @@ func (s *WorkspaceService) IsExists(name string) (bool, error) {
 	return true, nil
 }
 
-func (s *WorkspaceService) GetActiveWorkspace() (*workspace.WorkspaceBaseStruct, error) {
+func (s *WorkspaceService) GetActiveWorkspace() (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 	workingDir, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -454,7 +455,7 @@ func (s *WorkspaceService) GetActiveWorkspace() (*workspace.WorkspaceBaseStruct,
 	return s.IsDirectoryReserved(workingDir)
 }
 
-func (s *WorkspaceService) IsDirectoryReserved(path string) (*workspace.WorkspaceBaseStruct, error) {
+func (s *WorkspaceService) IsDirectoryReserved(path string) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 	directories := s.getDirectories(path)
 
 	entityList, err := s.workspaceRespository.ListByStartWithPath(directories)
@@ -462,7 +463,7 @@ func (s *WorkspaceService) IsDirectoryReserved(path string) (*workspace.Workspac
 		return nil, err
 	}
 
-	workspace := workspace.WorkspaceBaseStruct{}
+	workspace := basic_workspace_payload.WorkspaceBaseStruct{}
 
 	if len(*entityList) > 0 {
 		err = json.Unmarshal([]byte((*entityList)[0].Document), &workspace)
@@ -472,7 +473,7 @@ func (s *WorkspaceService) IsDirectoryReserved(path string) (*workspace.Workspac
 	}
 }
 
-func (s *WorkspaceService) GetSelectedWorkspace() (*workspace.WorkspaceBaseStruct, error) {
+func (s *WorkspaceService) GetSelectedWorkspace() (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 	value, err := s.settingsRespository.GetValue(CURRENT_WORKSPACE_ID)
 	if err != nil {
 		return nil, err
@@ -491,7 +492,7 @@ func (s *WorkspaceService) GetSelectedWorkspace() (*workspace.WorkspaceBaseStruc
 		return nil, err
 	}
 	if entity != nil {
-		var workspace workspace.WorkspaceBaseStruct
+		var workspace basic_workspace_payload.WorkspaceBaseStruct
 		err = json.Unmarshal([]byte((*entity).Document), &workspace)
 		return &workspace, nil
 	} else {
@@ -501,7 +502,7 @@ func (s *WorkspaceService) GetSelectedWorkspace() (*workspace.WorkspaceBaseStruc
 	return nil, nil
 }
 
-func (s *WorkspaceService) ChangeCurrentWorkspace(name string) (*workspace.WorkspaceBaseStruct, error) {
+func (s *WorkspaceService) ChangeCurrentWorkspace(name string) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 	workspaceName := s.correctWorkspaceName(name)
 	workspaceEntity, err := s.workspaceRespository.GetByName(workspaceName)
 	if err != nil {
@@ -516,7 +517,7 @@ func (s *WorkspaceService) ChangeCurrentWorkspace(name string) (*workspace.Works
 		return nil, err
 	}
 
-	var workspace workspace.WorkspaceBaseStruct
+	var workspace basic_workspace_payload.WorkspaceBaseStruct
 	err = json.Unmarshal([]byte((*workspaceEntity).Document), &workspace)
 
 	return &workspace, nil
