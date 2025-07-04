@@ -13,7 +13,8 @@ Grouplu proje eklendiğinde `p r Group/Project` sln kalıyor proje siliniyor?
 
 testlerde bazılarında env bozuluyor ve ana db'ye yazıyor
 
-set bağımsız template ve resource'ler işlenebilmeli?
+set bağımsız template ve resource'ler işlenebilmeli? 
+layer tanımlanmazsa root folder kullanlarak işlem yapılmalı? projede "/" path için layer tanımlı değilse otomatik eklenmeli
 ---
 
 `ProjectServiceInterface`'te Proje dosya kaldırma func tanımlanmalı

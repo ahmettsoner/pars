@@ -1,0 +1,10 @@
+Type: Project
+Kind: Application
+Name: App4
+Specifications:
+  Platform: Dotnet
+  Group: TestGroup
+  Set: S1
+  Configuration:
+    Layers:
+      - L1

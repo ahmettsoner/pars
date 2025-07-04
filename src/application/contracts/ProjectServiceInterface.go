@@ -15,11 +15,14 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	// DeleteProject(model T) (*T, error) //from db
 	GetByName(name string) (*T, error)
 	Remove(name string, workspaceName string, force bool, permanent bool) (*T, error) //Object üzerinden yapılablir Create gibi, buda RemoveByName olabilir
-	List() (*([]T), error)
+	List() (*([]T), error)                                                            //ListAll olarak değişecek
 	IsExists(name string, workspaceName string) (bool, error)
 
 	//Query
-	GetByFullNameWorkspace(name string, workspaceName string) (*T, error)
+	// GetByName(name string, workspaceName string) (*T, error)
+	// ListByFilter(set, workspace, group string, layers ...string) (*([]T), error)
+
+	GetByFullNameWorkspace(name string, workspaceName string) (*T, error) //GetByName olarak değişecek
 	ListBySet(set string) (*([]T), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]T), error)
 	ListByWorkspace(workspaceName string) (*([]T), error)
