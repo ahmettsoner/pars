@@ -6,7 +6,7 @@ import (
 
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 )
 
 type BaseManager struct {

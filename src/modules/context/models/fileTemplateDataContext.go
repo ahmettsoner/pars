@@ -1,7 +1,7 @@
 package models
 
 import (
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 

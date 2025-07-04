@@ -11,8 +11,8 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	group "parsdevkit.net/modules/group/basic_group"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 

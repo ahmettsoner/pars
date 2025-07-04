@@ -13,10 +13,10 @@ import (
 
 	"parsdevkit.net/modules/group/basic_group_contract"
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	applicationprojectStruct "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationprojectStruct "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"

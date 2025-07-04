@@ -14,14 +14,25 @@ require (
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/data_resource_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/resource/object_resource_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/task/basic_task_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/task/basic_task_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/code_template_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/code_template_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/file_template_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/file_template_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/shared_template_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/shared_template_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
@@ -93,22 +104,33 @@ replace parsdevkit.net/modules/group/basic_group_payload => ../modules/group/bas
 replace parsdevkit.net/modules/project/application_project => ../modules/project/application/project
 
 replace parsdevkit.net/modules/project/application_project_contract => ../modules/project/application/project.contract
+replace parsdevkit.net/modules/project/application_project_payload => ../modules/project/application/project.payload
 
 replace parsdevkit.net/modules/resource/data_resource => ../modules/resource/data/resource
 
 replace parsdevkit.net/modules/resource/data_resource_contract => ../modules/resource/data/resource.contract
+replace parsdevkit.net/modules/resource/data_resource_paylad => ../modules/resource/data/resource.payload
 
 replace parsdevkit.net/modules/resource/object_resource => ../modules/resource/object/resource
 
 replace parsdevkit.net/modules/resource/object_resource_contract => ../modules/resource/object/resource.contract
+replace parsdevkit.net/modules/resource/object_resource_payload => ../modules/resource/object/resource.payload
 
 replace parsdevkit.net/modules/template/code_template => ../modules/template/code/template
+replace parsdevkit.net/modules/template/code_template_payload => ../modules/template/code/template.payload
+replace parsdevkit.net/modules/template/code_template_contract => ../modules/template/code/template.contract
 
 replace parsdevkit.net/modules/template/file_template => ../modules/template/file/template
+replace parsdevkit.net/modules/template/file_template_payload => ../modules/template/file/template.payload
+replace parsdevkit.net/modules/template/file_template_contract => ../modules/template/file/template.contract
 
 replace parsdevkit.net/modules/template/shared_template => ../modules/template/shared/template
+replace parsdevkit.net/modules/template/shared_template_payload => ../modules/template/shared/template.payload
+replace parsdevkit.net/modules/template/shared_template_contract => ../modules/template/shared/template.contract
 
 replace parsdevkit.net/modules/task/basic_task => ../modules/task/basic/task
+replace parsdevkit.net/modules/task/basic_task_payload => ../modules/task/basic/task.payload
+replace parsdevkit.net/modules/task/basic_task_contract => ../modules/task/basic/task.contract
 
 replace parsdevkit.net/engines => ../modules/engines
 

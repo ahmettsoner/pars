@@ -10,8 +10,8 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/pkg/utilities/file"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/go/models"

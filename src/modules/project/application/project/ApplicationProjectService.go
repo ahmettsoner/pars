@@ -12,10 +12,10 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/models"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/persistence/repositories"
 

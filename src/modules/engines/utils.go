@@ -3,7 +3,7 @@ package engines
 import (
 	"fmt"
 
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 )
 
 func PrintRefInfo(projects []applicationproject.ProjectSpecification) {

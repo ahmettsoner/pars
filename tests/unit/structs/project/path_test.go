@@ -12,7 +12,7 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	layerPkg "parsdevkit.net/application/models/layer"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 

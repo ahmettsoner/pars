@@ -29,10 +29,10 @@ import (
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
 	platformsCommon "parsdevkit.net/platforms/common"
-	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataResourceSchema "parsdevkit.net/structs/resource/data-resource"
 	objectResourceSchema "parsdevkit.net/structs/resource/object-resource"
 	codeTemplateSchema "parsdevkit.net/structs/template/code-template"

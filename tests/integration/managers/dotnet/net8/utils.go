@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	"parsdevkit.net/platforms/dotnet/managers"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"

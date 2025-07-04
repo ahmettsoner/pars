@@ -6,8 +6,8 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 )
 
 func BasicProject_WithName(name string, projectType models.ProjectType, platform models.PlatformType, runtime models.RuntimeType, workspace basic_workspace_payload.WorkspaceSpecification) *applicationproject.ProjectBaseStruct {

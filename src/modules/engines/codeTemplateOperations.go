@@ -12,8 +12,8 @@ import (
 	"parsdevkit.net/pkg/utilities/encrypt"
 	"parsdevkit.net/pkg/utilities/file"
 
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 

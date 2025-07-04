@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/platforms/core"

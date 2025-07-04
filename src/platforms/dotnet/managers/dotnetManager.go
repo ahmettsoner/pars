@@ -16,8 +16,8 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/pkg/utilities/file"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"parsdevkit.net/platforms/core"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"

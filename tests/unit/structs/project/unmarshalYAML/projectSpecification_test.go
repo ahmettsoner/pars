@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	"parsdevkit.net/application/schemas"
 	goModels "parsdevkit.net/platforms/go/models"

@@ -13,7 +13,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 	"parsdevkit.net/platforms/core"

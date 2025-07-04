@@ -2,8 +2,8 @@ package objectResources
 
 import (
 	"parsdevkit.net/application/models/class"
+	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	applicationProjectSchema "parsdevkit.net/structs/project/application-project"
 	dataresource "parsdevkit.net/structs/resource/data-resource"
 	objectresource "parsdevkit.net/structs/resource/object-resource"
 	codetemplate "parsdevkit.net/structs/template/code-template"

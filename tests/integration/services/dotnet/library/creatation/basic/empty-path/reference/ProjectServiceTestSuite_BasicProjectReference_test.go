@@ -18,8 +18,8 @@ import (
 
 	"parsdevkit.net/application/schemas"
 
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	"github.com/stretchr/testify/assert"
 

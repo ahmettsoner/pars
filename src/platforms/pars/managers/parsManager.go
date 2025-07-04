@@ -8,7 +8,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"

@@ -2,8 +2,7 @@ package application_project_contract
 
 import (
 	"parsdevkit.net/application/contracts"
-	// project_payload "parsdevkit.net/modules/project/application_project_payload"
-	project_payload "parsdevkit.net/structs/project/application-project"
+	"parsdevkit.net/modules/project/application_project_payload"
 )
 
-type ProjectInterface contracts.ProjectServiceInterface[project_payload.ProjectBaseStruct]
+type ProjectInterface contracts.ProjectServiceInterface[application_project_payload.ProjectBaseStruct]

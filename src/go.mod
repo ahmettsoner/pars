@@ -5,18 +5,40 @@ go 1.23.7
 toolchain go1.24.2
 
 replace parsdevkit.net/modules/project/application_project => ./modules/project/application/project
+
 replace parsdevkit.net/modules/project/application_project_contract => ./modules/project/application/project.contract
+
+replace parsdevkit.net/modules/project/application_project_payload => ./modules/project/application/project.payload
 
 replace parsdevkit.net/modules/template/code_template => ./modules/template/code/template
 
+replace parsdevkit.net/modules/template/code_template_payload => ./modules/template/code/template.payload
+
+replace parsdevkit.net/modules/template/code_template_contract => ./modules/template/code/template.contract
+
 replace parsdevkit.net/modules/template/shared_template => ./modules/template/shared/template
+
+replace parsdevkit.net/modules/template/shared_template_payload => ./modules/template/shared/template.payload
+
+replace parsdevkit.net/modules/template/shared_template_contract => ./modules/template/shared/template.contract
 
 replace parsdevkit.net/modules/template/file_template => ./modules/template/file/template
 
+replace parsdevkit.net/modules/template/file_template_payload => ./modules/template/file/template.payload
+
+replace parsdevkit.net/modules/template/file_template_contract => ./modules/template/file/template.contract
+
 replace parsdevkit.net/modules/task/basic_task => ./modules/task/basic/task
 
+replace parsdevkit.net/modules/task/basic_task_payload => ./modules/task/basic/task.payload
+
+replace parsdevkit.net/modules/task/basic_task_contract => ./modules/task/basic/task.contract
+
 replace parsdevkit.net/modules/resource/data_resource => ./modules/resource/data/resource
+
 replace parsdevkit.net/modules/resource/data_resource_contract => ./modules/resource/data/resource.contract
+
+replace parsdevkit.net/modules/resource/data_resource_payload => ./modules/resource/data/resource.payload
 
 replace parsdevkit.net/modules/group/basic_group => ./modules/group/basic/group
 
@@ -25,11 +47,16 @@ replace parsdevkit.net/modules/group/basic_group_contract => ./modules/group/bas
 replace parsdevkit.net/modules/group/basic_group_payload => ./modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ./modules/workspace/basic/workspace
+
 replace parsdevkit.net/modules/workspace/basic_workspace_contract => ./modules/workspace/basic/workspace.contract
+
 replace parsdevkit.net/modules/workspace/basic_workspace_payload => ./modules/workspace/basic/workspace.payload
 
 replace parsdevkit.net/modules/resource/object_resource => ./modules/resource/object/resource
+
 replace parsdevkit.net/modules/resource/object_resource_contract => ./modules/resource/object/resource.contract
+
+replace parsdevkit.net/modules/resource/object_resource_payload => ./modules/resource/object/resource.payload
 
 replace parsdevkit.net/persistence/entities => ./data/entities
 
@@ -117,6 +144,7 @@ require (
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000 // indirect
@@ -146,4 +174,3 @@ require (
 replace parsdevkit.net/pkg => ./pkg
 
 replace parsdevkit.net/application => ./application
-

@@ -11,7 +11,7 @@ import (
 	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	goModels "parsdevkit.net/platforms/go/models"
 

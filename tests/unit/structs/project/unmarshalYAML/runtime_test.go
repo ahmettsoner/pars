@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/structs/project/application-project"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 

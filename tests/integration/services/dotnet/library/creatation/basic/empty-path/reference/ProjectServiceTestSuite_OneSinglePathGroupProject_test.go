@@ -6,9 +6,9 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/models"
+	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 	platformsCommon "parsdevkit.net/platforms/common"
-	applicationproject "parsdevkit.net/structs/project/application-project"
 
 	projectApplication "parsdevkit.net/modules/project/application_project"
 	"parsdevkit.net/modules/project/application_project_contract"
