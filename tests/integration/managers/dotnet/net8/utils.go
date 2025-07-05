@@ -12,6 +12,7 @@ import (
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/platforms/dotnet/managers"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
@@ -41,24 +42,27 @@ func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 	// ExecuteCommand(t, environment, "remove", "workspace", workspaceName)
 }
 
-func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) applicationproject.ProjectSpecification {
+func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) applicationproject.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.GroupIdentifier{},
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(name),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{},
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.GroupIdentifier{},
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(name),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{},
+		),
 	)
 	manager := managers.NewDotnetManager()
 	err := manager.CreateProject(project)
@@ -67,26 +71,29 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 	return project
 }
 
-func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName string, layers []project.Layer) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName string, layers []project.Layer) applicationproject.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.GroupIdentifier{},
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(name),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{
-			Layers: layers,
-		},
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.GroupIdentifier{},
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(name),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{
+				Layers: layers,
+			},
+		),
 	)
 	manager := managers.NewDotnetManager()
 	err := manager.CreateProject(project)
@@ -94,56 +101,27 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName s
 
 	return project
 }
-func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, groupName, groupPath string) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, groupName, groupPath string) applicationproject.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(name),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{},
-	)
-	manager := managers.NewDotnetManager()
-
-	err := manager.CreateProject(project)
-	require.NoError(t, err)
-
-	err = manager.AddToGroup(project)
-	require.NoError(t, err)
-
-	return project
-}
-
-func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, workspaceName, groupName, groupPath string, layers []project.Layer) applicationproject.ProjectSpecification {
-
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(name),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{
-			Layers: layers,
-		},
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(name),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{},
+		),
 	)
 	manager := managers.NewDotnetManager()
 
@@ -156,24 +134,29 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, worksp
 	return project
 }
 
-func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, workspaceName, groupName, groupPath string) applicationproject.ProjectSpecification {
+func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, workspaceName, groupName, groupPath string, layers []project.Layer) applicationproject.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(path),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{},
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(name),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{
+				Layers: layers,
+			},
+		),
 	)
 	manager := managers.NewDotnetManager()
 
@@ -185,24 +168,60 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, wo
 
 	return project
 }
-func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, workspaceName string) applicationproject.ProjectSpecification {
 
-	project := applicationproject.NewProjectSpecification(
-		0,
-		name,
-		"",
-		workspaceName,
-		models.ProjectTypes.Library,
-		applicationGroup.NewGroupIdentifier(0, name, name, []string(nil)),
-		"",
-		[]string(nil),
-		[]label.Label(nil),
-		file.PathToArray(path),
-		applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-		applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-		applicationproject.Runtime{},
-		applicationproject.Schema{},
-		applicationproject.Configuration{},
+func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, workspaceName, groupName, groupPath string) applicationproject.ProjectBaseStruct {
+
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.NewGroupIdentifier(0, groupName, groupPath, []string(nil)),
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(path),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{},
+		),
+	)
+	manager := managers.NewDotnetManager()
+
+	err := manager.CreateProject(project)
+	require.NoError(t, err)
+
+	err = manager.AddToGroup(project)
+	require.NoError(t, err)
+
+	return project
+}
+func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, workspaceName string) applicationproject.ProjectBaseStruct {
+
+	project := applicationproject.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
+		applicationproject.NewProjectSpecification(
+			0,
+			name,
+			"",
+			workspaceName,
+			models.ProjectTypes.Library,
+			applicationGroup.NewGroupIdentifier(0, name, name, []string(nil)),
+			"",
+			[]string(nil),
+			[]label.Label(nil),
+			file.PathToArray(path),
+			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
+			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationproject.Runtime{},
+			applicationproject.Schema{},
+			applicationproject.Configuration{},
+		),
 	)
 	manager := managers.NewDotnetManager()
 

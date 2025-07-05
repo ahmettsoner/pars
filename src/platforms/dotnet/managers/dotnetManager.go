@@ -62,20 +62,20 @@ func DotnetWebAppOptionToDotnetCLITypeString(c dotnetModels.DotnetWebAppOption) 
 	}
 }
 
-func (s DotnetManager) CreateProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
 
-	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.ProjectType))
+	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.Specifications.ProjectType))
 	if err != nil {
 		return fmt.Errorf("xxx: proje oluşturma işlemi sırasında ProjectType bulunamadı? %w", err)
 	}
 	// if dotnetProjectType == "webapp" {
-	// 	dotnetProjectType, err = DotnetWebAppOptionToDotnetCLITypeString(dotnetModels.DotnetWebAppOption(project.GetConfiguration().Options))
+	// 	dotnetProjectType, err = DotnetWebAppOptionToDotnetCLITypeString(dotnetModels.DotnetWebAppOption(project.Specifications.GetConfiguration().Options))
 	// 	if err != nil {
 	// 		return err
 	// 	}
 	// }
 
-	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Name, "--output", file.PathWithDot(project.GetRelativeProjectPath()))
+	err = providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", dotnetProjectType, "--name", project.Specifications.Name, "--output", file.PathWithDot(project.Specifications.GetRelativeProjectPath()))
 	if err != nil {
 		return err
 	}
@@ -83,29 +83,29 @@ func (s DotnetManager) CreateProject(project applicationproject.ProjectSpecifica
 	return nil
 }
 
-func (s DotnetManager) RemoveProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
 	return nil
 }
 
-func (s DotnetManager) BuildProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "build", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "build", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "build", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "build", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -113,23 +113,23 @@ func (s DotnetManager) BuildProject(project applicationproject.ProjectSpecificat
 	return nil
 }
 
-func (s DotnetManager) CleanProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "clean", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "clean", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "clean", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "clean", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -137,23 +137,23 @@ func (s DotnetManager) CleanProject(project applicationproject.ProjectSpecificat
 	return nil
 }
 
-func (s DotnetManager) InstallProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "restore", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "restore", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "restore", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "restore", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -161,23 +161,23 @@ func (s DotnetManager) InstallProject(project applicationproject.ProjectSpecific
 	return nil
 }
 
-func (s DotnetManager) TestProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) TestProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "test", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "test", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "test", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "test", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -185,23 +185,23 @@ func (s DotnetManager) TestProject(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s DotnetManager) PackageProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "publish", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "publish", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "publish", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "publish", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -209,25 +209,25 @@ func (s DotnetManager) PackageProject(project applicationproject.ProjectSpecific
 	return nil
 }
 
-func (s DotnetManager) RunProject(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) RunProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "run", "--project", project.GetRelativeProjectPath())
+			err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "run", "--project", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "run", "--project", filepath.Join(project.Name))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "run", "--project", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -235,11 +235,11 @@ func (s DotnetManager) RunProject(project applicationproject.ProjectSpecificatio
 	return nil
 }
 
-func (s DotnetManager) RemoveDefaultFiles(project applicationproject.ProjectSpecification) error {
+func (s DotnetManager) RemoveDefaultFiles(project applicationproject.ProjectBaseStruct) error {
 	var paths []string = []string{}
-	projectPath := project.GetAbsoluteProjectPath()
+	projectPath := project.Specifications.GetAbsoluteProjectPath()
 
-	var projectType models.ProjectType = models.ProjectType(project.ProjectType)
+	var projectType models.ProjectType = models.ProjectType(project.Specifications.ProjectType)
 	paths = append(paths, filepath.Join(projectPath, "obj"))
 	if projectType == models.ProjectTypes.Library {
 		paths = append(paths, filepath.Join(projectPath, "Class1.cs"))
@@ -252,17 +252,17 @@ func (s DotnetManager) RemoveDefaultFiles(project applicationproject.ProjectSpec
 
 	return s.FileRemover(paths...)
 }
-func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectSpecification) error {
+func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectBaseStruct) error {
 
-	// projectPath := project.GetProjectPath()
-	// var projectType models.ProjectType = models.ProjectType(project.GetSchema().ProjectType)
+	// projectPath := project.Specifications.GetProjectPath()
+	// var projectType models.ProjectType = models.ProjectType(project.Specifications.GetSchema().ProjectType)
 
 	// templateManager := DotnetTemplateEngine{}
 	// if projectType == models.ProjectTypes.Library {
 	// 	outputFile := filepath.Join(projectPath, "SampleClass.cs")
 
 	// 	data := resources.Class{
-	// 		Package: project.Name,
+	// 		Package: project.Specifications.Name,
 	// 		Name:    "SampleClass",
 	// 	}
 	// 	err := templateManager.AddSimpleClass(data.Name, outputFile, data)
@@ -274,7 +274,7 @@ func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectSpecific
 
 	// 	data := resources.Controller{
 	// 		Class: resources.Class{
-	// 			Package: project.Name,
+	// 			Package: project.Specifications.Name,
 	// 			Name:    "SampleController",
 	// 		},
 	// 	}
@@ -287,7 +287,7 @@ func (s *DotnetManager) addHelloWorld(project applicationproject.ProjectSpecific
 	// 	outputFile := filepath.Join(projectPath, "Program.cs")
 
 	// 	data := resources.Class{
-	// 		Package: project.Name,
+	// 		Package: project.Specifications.Name,
 	// 		Name:    "Program",
 	// 	}
 	// 	err := templateManager.AddSimpleConsoleClass(data.Name, outputFile, data)
@@ -313,29 +313,29 @@ func (s DotnetManager) GetPlatformVersion(platform applicationproject.Platform) 
 	}
 }
 
-func (s DotnetManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "sln", "--name", project.GroupObject.Name, "--output", file.PathWithDot(project.GetRelativeGroupPath()))
+func (s DotnetManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", "sln", "--name", project.Specifications.GroupObject.Name, "--output", file.PathWithDot(project.Specifications.GetRelativeGroupPath()))
 }
 
-func (s DotnetManager) DeleteGroup(project applicationproject.ProjectSpecification) {
+func (s DotnetManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
 }
 
-func (s DotnetManager) AddToGroup(project applicationproject.ProjectSpecification) error {
-	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "sln", s.GetGroupFileRelativePath(project), "add", s.GetProjectFileRelativePath(project))
+func (s DotnetManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "sln", s.GetGroupFileRelativePath(project), "add", s.GetProjectFileRelativePath(project))
 }
 
-func (s DotnetManager) RemoveFromGroup(project applicationproject.ProjectSpecification) error {
-	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "sln", s.GetGroupFileRelativePath(project), "remove", s.GetProjectFileRelativePath(project))
+func (s DotnetManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+	return providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "sln", s.GetGroupFileRelativePath(project), "remove", s.GetProjectFileRelativePath(project))
 }
 
-func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
 	for _, path := range paths {
 
 		if _string.IsEmpty(path) {
 			return nil
 		}
 
-		projectFile := filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
+		projectFile := filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
 		folderPath := fmt.Sprintf("%v\\", filepath.Join(path))
 
 		data, err := os.ReadFile(projectFile)
@@ -356,14 +356,14 @@ func (s DotnetManager) AddFolderToProjectDefinition(project applicationproject.P
 
 	return nil
 }
-func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+func (s DotnetManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
 	for _, path := range paths {
 
 		if _string.IsEmpty(path) {
 			return nil
 		}
 
-		projectFile := filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
+		projectFile := filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
 		folderPath := fmt.Sprintf("%v\\", filepath.Join(path))
 
 		data, err := os.ReadFile(projectFile)
@@ -510,7 +510,7 @@ func removeFolderFromItemProperty(xmlContent []byte, folderPath string) ([]byte,
 	return m.XmlIndent("", "    ")
 }
 
-func (s DotnetManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s DotnetManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 
 	for _, _package := range dependencies {
 
@@ -521,7 +521,7 @@ func (s DotnetManager) AddDependenciesToProject(project applicationproject.Proje
 
 		}
 
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), commandArgs...)
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), commandArgs...)
 		if err != nil {
 			return err
 		}
@@ -530,11 +530,11 @@ func (s DotnetManager) AddDependenciesToProject(project applicationproject.Proje
 	return nil
 }
 
-func (s DotnetManager) ListDependenciesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Package, error) {
+func (s DotnetManager) ListDependenciesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Package, error) {
 
-	commandArgs := []string{"list", s.GetProjectFileRelativePath(projectSpecification), "package"}
+	commandArgs := []string{"list", s.GetProjectFileRelativePath(project), "package"}
 
-	output, err := providers.DotnetExecuteWithOutput(string(s.GetPlatformVersion(projectSpecification.Platform)), projectSpecification.GetCodeBasePath(), commandArgs...)
+	output, err := providers.DotnetExecuteWithOutput(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), commandArgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -551,10 +551,10 @@ func (s DotnetManager) ListDependenciesFromProject(projectSpecification applicat
 	return dependencies, nil
 }
 
-func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 
 	for _, _package := range dependencies {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "package", _package.Name)
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "package", _package.Name)
 		if err != nil {
 			return err
 		}
@@ -563,10 +563,10 @@ func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.
 	return nil
 }
 
-func (s DotnetManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s DotnetManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	for _, reference := range references {
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "add", s.GetProjectFileRelativePath(project), "reference", s.GetProjectFileRelativePath(reference))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "add", s.GetProjectFileRelativePath(project), "reference", s.GetProjectFileRelativePath(reference))
 		if err != nil {
 			return err
 		}
@@ -575,11 +575,11 @@ func (s DotnetManager) AddReferenceToProject(project applicationproject.ProjectS
 	return nil
 }
 
-func (s DotnetManager) RemoveReferenceFromProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s DotnetManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
-		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "reference", s.GetProjectFileRelativePath(reference))
+		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "reference", s.GetProjectFileRelativePath(reference))
 		if err != nil {
 			return err
 		}
@@ -588,27 +588,27 @@ func (s DotnetManager) RemoveReferenceFromProject(project applicationproject.Pro
 	return nil
 }
 
-func (s DotnetManager) GetProjectFileRelativePath(project applicationproject.ProjectSpecification) string {
+func (s DotnetManager) GetProjectFileRelativePath(project applicationproject.ProjectBaseStruct) string {
 
-	return filepath.Join(project.GetRelativeProjectPath(), s.GetProjectFileName(project))
+	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
 }
 
-func (s DotnetManager) GetProjectFileAbsolutePath(project applicationproject.ProjectSpecification) string {
+func (s DotnetManager) GetProjectFileAbsolutePath(project applicationproject.ProjectBaseStruct) string {
 
-	return filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
+	return filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
 }
 
-func (s DotnetManager) GetGroupFileRelativePath(project applicationproject.ProjectSpecification) string {
+func (s DotnetManager) GetGroupFileRelativePath(project applicationproject.ProjectBaseStruct) string {
 
-	return filepath.Join(project.GetRelativeGroupPath(), s.GetGroupFileName(project))
+	return filepath.Join(project.Specifications.GetRelativeGroupPath(), s.GetGroupFileName(project))
 }
 
-func (s DotnetManager) GetGroupFileAbsolutePath(project applicationproject.ProjectSpecification) string {
+func (s DotnetManager) GetGroupFileAbsolutePath(project applicationproject.ProjectBaseStruct) string {
 
-	return filepath.Join(project.GetAbsoluteGroupPath(), s.GetGroupFileName(project))
+	return filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))
 }
 
-func (s DotnetManager) IsProjectFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s DotnetManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(s.GetProjectFileAbsolutePath(project)) // check if the project file exists
 
@@ -621,13 +621,13 @@ func (s DotnetManager) IsProjectFileExists(project applicationproject.ProjectSpe
 	}
 }
 
-func (s DotnetManager) GetProjectFileName(project applicationproject.ProjectSpecification) string {
-	return fmt.Sprintf("%v.csproj", project.Name)
+func (s DotnetManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
+	return fmt.Sprintf("%v.csproj", project.Specifications.Name)
 }
 
-func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -637,10 +637,10 @@ func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectSpeci
 		return !stat.IsDir(), nil
 	}
 }
-func (s DotnetManager) GetGroupFileName(project applicationproject.ProjectSpecification) string {
-	return fmt.Sprintf("%v.sln", project.GroupObject.Name)
+func (s DotnetManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
+	return fmt.Sprintf("%v.sln", project.Specifications.GroupObject.Name)
 }
-func (s DotnetManager) HasDependencyOnProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) (bool, error) {
+func (s DotnetManager) HasDependencyOnProject(project applicationproject.ProjectBaseStruct, _package applicationProject.Package) (bool, error) {
 
 	dependencies, err := s.ListDependenciesFromProject(project)
 	if err != nil {
@@ -659,7 +659,7 @@ func (s DotnetManager) HasDependencyOnProject(project applicationproject.Project
 	return packageState, nil
 }
 
-func (s DotnetManager) HasReferenceOnProject(project applicationproject.ProjectSpecification, reference applicationproject.ProjectSpecification) (bool, error) {
+func (s DotnetManager) HasReferenceOnProject(project applicationproject.ProjectBaseStruct, reference applicationproject.ProjectBaseStruct) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -670,7 +670,7 @@ func (s DotnetManager) HasReferenceOnProject(project applicationproject.ProjectS
 
 	for _, projectReference := range references {
 
-		if projectReference.Name == reference.Name && projectReference.GetAbsoluteProjectPath() == reference.GetAbsoluteProjectPath() {
+		if projectReference.Specifications.Name == reference.Specifications.Name && projectReference.Specifications.GetAbsoluteProjectPath() == reference.Specifications.GetAbsoluteProjectPath() {
 			referenceState = true
 			break
 		}
@@ -679,9 +679,9 @@ func (s DotnetManager) HasReferenceOnProject(project applicationproject.ProjectS
 	return referenceState, nil
 }
 
-func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectSpecification) ([]applicationproject.ProjectSpecification, error) {
+func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
 
-	groupFile := filepath.Join(proj.GetAbsoluteGroupPath(), fmt.Sprintf("%v.sln", proj.Group))
+	groupFile := filepath.Join(proj.Specifications.GetAbsoluteGroupPath(), fmt.Sprintf("%v.sln", proj.Specifications.Group))
 
 	data, err := os.ReadFile(groupFile)
 	if err != nil {
@@ -692,14 +692,16 @@ func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectSpec
 
 	matches := pattern.FindAllStringSubmatch(string(data), -1)
 
-	projects := make([]applicationproject.ProjectSpecification, 0)
+	projects := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, match := range matches {
-		projects = append(projects, applicationproject.ProjectSpecification{
-			ProjectIdentifier: applicationProject.ProjectIdentifier{
-				Name:      string(match[2]),
-				Path:      []string{filepath.Dir(string(match[3]))},
-				Group:     proj.Group,
-				Workspace: proj.Workspace},
+		projects = append(projects, applicationproject.ProjectBaseStruct{
+			Specifications: applicationproject.ProjectSpecification{
+				ProjectIdentifier: applicationProject.ProjectIdentifier{
+					Name:      string(match[2]),
+					Path:      []string{filepath.Dir(string(match[3]))},
+					Group:     proj.Specifications.Group,
+					Workspace: proj.Specifications.Workspace},
+			},
 		},
 		)
 	}
@@ -707,7 +709,7 @@ func (s DotnetManager) ListProjectsFromGroup(proj applicationproject.ProjectSpec
 	return projects, nil
 }
 
-func (s DotnetManager) HasProjectOnGroup(project applicationproject.ProjectSpecification) (bool, error) {
+func (s DotnetManager) HasProjectOnGroup(project applicationproject.ProjectBaseStruct) (bool, error) {
 
 	projects, err := s.ListProjectsFromGroup(project)
 	if err != nil {
@@ -717,7 +719,7 @@ func (s DotnetManager) HasProjectOnGroup(project applicationproject.ProjectSpeci
 	projectState := false
 
 	for _, groupProject := range projects {
-		if groupProject.Name == project.Name && groupProject.GetRelativeProjectPath() == project.GetRelativeProjectPath() {
+		if groupProject.Specifications.Name == project.Specifications.Name && groupProject.Specifications.GetRelativeProjectPath() == project.Specifications.GetRelativeProjectPath() {
 			projectState = true
 			break
 		}
@@ -726,11 +728,11 @@ func (s DotnetManager) HasProjectOnGroup(project applicationproject.ProjectSpeci
 	return projectState, nil
 }
 
-func (s DotnetManager) ListReferencesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.ProjectSpecification, error) {
+func (s DotnetManager) ListReferencesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
 
-	commandArgs := []string{"list", s.GetProjectFileRelativePath(projectSpecification), "reference"}
+	commandArgs := []string{"list", s.GetProjectFileRelativePath(project), "reference"}
 
-	output, err := providers.DotnetExecuteWithOutput(string(s.GetPlatformVersion(projectSpecification.Platform)), projectSpecification.GetCodeBasePath(), commandArgs...)
+	output, err := providers.DotnetExecuteWithOutput(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), commandArgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -739,15 +741,15 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]applicationproject.ProjectSpecification, 0)
+	references := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, match := range matches {
-		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := file.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+		for _, projectReference := range project.Specifications.Configuration.References {
+			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}
 
-			pathWithProjectName := filepath.Join(relativeToReference, s.GetProjectFileName(projectReference.Specifications))
+			pathWithProjectName := filepath.Join(relativeToReference, s.GetProjectFileName(projectReference))
 
 			unifiedPath := string(match[0])
 			if runtime.GOOS != "windows" {
@@ -757,7 +759,7 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 			// OS'ye uygun hale getir (slashes normalize edilir)
 			normalizedPath := filepath.Clean(unifiedPath)
 			if normalizedPath == pathWithProjectName {
-				references = append(references, projectReference.Specifications)
+				references = append(references, projectReference)
 				break
 			}
 
@@ -767,9 +769,9 @@ func (s DotnetManager) ListReferencesFromProject(projectSpecification applicatio
 	return references, nil
 }
 
-func (s DotnetManager) ListFoldersFromProjectDefinition(proj applicationproject.ProjectSpecification) ([]string, error) {
+func (s DotnetManager) ListFoldersFromProjectDefinition(project applicationproject.ProjectBaseStruct) ([]string, error) {
 
-	groupFile := filepath.Join(proj.GetAbsoluteProjectPath(), s.GetProjectFileName(proj))
+	groupFile := filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))
 
 	data, err := os.ReadFile(groupFile)
 	if err != nil {
@@ -788,16 +790,16 @@ func (s DotnetManager) ListFoldersFromProjectDefinition(proj applicationproject.
 	return folders, nil
 }
 
-func (s DotnetManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error) {
+func (s DotnetManager) ListLayersFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Layer, error) {
 
-	folders, err := s.ListFoldersFromProjectDefinition(projectSpecification)
+	folders, err := s.ListFoldersFromProjectDefinition(project)
 	if err != nil {
 		return nil, err
 	}
 
 	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
-		for _, projectLayer := range projectSpecification.Configuration.Layers {
+		for _, projectLayer := range project.Specifications.Configuration.Layers {
 
 			if filepath.Join(folder) == filepath.Join(projectLayer.Path) {
 				layers = append(layers, projectLayer)
@@ -810,7 +812,7 @@ func (s DotnetManager) ListLayersFromProject(projectSpecification applicationpro
 	return layers, nil
 }
 
-func (s DotnetManager) HasLayerOnProject(project applicationproject.ProjectSpecification, layer string) (bool, error) {
+func (s DotnetManager) HasLayerOnProject(project applicationproject.ProjectBaseStruct, layer string) (bool, error) {
 
 	layers, err := s.ListLayersFromProject(project)
 	if err != nil {

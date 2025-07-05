@@ -60,27 +60,27 @@ func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) 
 	}
 }
 
-func (s NodeJSManager) CreateProject(project applicationproject.ProjectSpecification) error {
-	if _string.IsEmpty(project.Group) {
-		if len(project.Package) > 0 {
-			err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "init", "--scope", fmt.Sprintf("@%v", project.Package[len(project.Package)-1]), "--yes")
+func (s NodeJSManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
+	if _string.IsEmpty(project.Specifications.Group) {
+		if len(project.Specifications.Package) > 0 {
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "init", "--scope", fmt.Sprintf("@%v", project.Specifications.Package[len(project.Specifications.Package)-1]), "--yes")
 			if err != nil {
 				return err
 			}
 		} else {
-			err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "init", "--yes")
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "init", "--yes")
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		if len(project.Package) > 0 {
-			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.Package[len(project.Package)-1]), "--yes", "--workspace", filepath.Join(project.GetProjectPath()))
+		if len(project.Specifications.Package) > 0 {
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.Specifications.Package[len(project.Specifications.Package)-1]), "--yes", "--workspace", filepath.Join(project.Specifications.GetProjectPath()))
 			if err != nil {
 				return err
 			}
 		} else {
-			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--yes", "--workspace", filepath.Join(project.GetProjectPath()))
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "init", "--yes", "--workspace", filepath.Join(project.Specifications.GetProjectPath()))
 			if err != nil {
 				return err
 			}
@@ -90,17 +90,17 @@ func (s NodeJSManager) CreateProject(project applicationproject.ProjectSpecifica
 	return nil
 }
 
-func (s NodeJSManager) RemoveProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			logrus.Debugf("Project removing from group (%v).", project.Group)
+			logrus.Debugf("Project removing from group (%v).", project.Specifications.Group)
 			err := s.RemoveFromGroup(project)
 			if err != nil {
 				log.Fatal(err)
@@ -111,23 +111,23 @@ func (s NodeJSManager) RemoveProject(project applicationproject.ProjectSpecifica
 	return nil
 }
 
-func (s NodeJSManager) BuildProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteGroupPath(), "build", project.Name)
+			err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteGroupPath(), "build", project.Specifications.Name)
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteGroupPath(), "build")
+		err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteGroupPath(), "build")
 		if err != nil {
 			return err
 		}
@@ -135,27 +135,27 @@ func (s NodeJSManager) BuildProject(project applicationproject.ProjectSpecificat
 	return nil
 }
 
-func (s NodeJSManager) CleanProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
 	return nil
 }
 
-func (s NodeJSManager) InstallProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "install", "--force")
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "install", "--force")
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "install", "--force")
+		err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "install", "--force")
 		if err != nil {
 			return err
 		}
@@ -163,23 +163,23 @@ func (s NodeJSManager) InstallProject(project applicationproject.ProjectSpecific
 	return nil
 }
 
-func (s NodeJSManager) TestProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) TestProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteGroupPath(), "test", project.Name)
+			err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteGroupPath(), "test", project.Specifications.Name)
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteProjectPath(), "test")
+		err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteProjectPath(), "test")
 		if err != nil {
 			return err
 		}
@@ -187,23 +187,23 @@ func (s NodeJSManager) TestProject(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s NodeJSManager) PackageProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteGroupPath(), "build", project.Name)
+			err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteGroupPath(), "build", project.Specifications.Name)
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteProjectPath(), "build")
+		err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteProjectPath(), "build")
 		if err != nil {
 			return err
 		}
@@ -211,23 +211,23 @@ func (s NodeJSManager) PackageProject(project applicationproject.ProjectSpecific
 	return nil
 }
 
-func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) RunProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteGroupPath(), "serve", project.Name, "--open")
+			err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteGroupPath(), "serve", project.Specifications.Name, "--open")
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetAbsoluteProjectPath(), "serve", "--open")
+		err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetAbsoluteProjectPath(), "serve", "--open")
 		if err != nil {
 			return err
 		}
@@ -235,15 +235,15 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectSpecificatio
 	return nil
 }
 
-func (s NodeJSManager) CreateGroup(project applicationproject.ProjectSpecification) error {
-	if !_string.IsEmpty(project.Group) {
-		if len(project.GroupObject.Package) > 0 {
-			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.GroupObject.Package[len(project.GroupObject.Package)-1]), "--yes")
+func (s NodeJSManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+	if !_string.IsEmpty(project.Specifications.Group) {
+		if len(project.Specifications.GroupObject.Package) > 0 {
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.Specifications.GroupObject.Package[len(project.Specifications.GroupObject.Package)-1]), "--yes")
 			if err != nil {
 				return err
 			}
 		} else {
-			err := providers.NPMExecute(project.GetAbsoluteGroupPath(), "init", "--yes")
+			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "init", "--yes")
 			if err != nil {
 				return err
 			}
@@ -252,17 +252,17 @@ func (s NodeJSManager) CreateGroup(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s NodeJSManager) DeleteGroup(project applicationproject.ProjectSpecification) {
+func (s NodeJSManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
 	fmt.Println("Please remove group manually")
 }
 
-func (s NodeJSManager) AddToGroup(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s NodeJSManager) RemoveFromGroup(project applicationproject.ProjectSpecification) error {
-	// err := providers.NGExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "new", "--name", project.GroupObject.Name, "--create-application", "false", "--skip-install", "true", "--skip-git", "true", "--skip-tests", "true", "--routing", "--new-project-root", "")
+func (s NodeJSManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+	// err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", "--name", project.Specifications.GroupObject.Name, "--create-application", "false", "--skip-install", "true", "--skip-git", "true", "--skip-tests", "true", "--routing", "--new-project-root", "")
 	// if err != nil {
 	// 	return err
 	// }
@@ -270,9 +270,9 @@ func (s NodeJSManager) RemoveFromGroup(project applicationproject.ProjectSpecifi
 	return nil
 }
 
-func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectSpecification, paths ...string) (string, error) {
+func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
-	folders = append(folders, project.GetAbsoluteProjectPath())
+	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
 	for _, path := range paths {
 		folders = append(folders, path)
 	}
@@ -285,7 +285,7 @@ func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectSpe
 	return foldePath, nil
 }
 
-func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 	for _, _package := range dependencies {
 
 		packageName := _package.Name
@@ -294,7 +294,7 @@ func (s NodeJSManager) AddDependenciesToProject(project applicationproject.Proje
 			packageName = fmt.Sprintf("%s@%s", packageName, _package.Version)
 		}
 
-		err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "install", packageName)
+		err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "install", packageName)
 
 		if err != nil {
 			return err
@@ -304,10 +304,10 @@ func (s NodeJSManager) AddDependenciesToProject(project applicationproject.Proje
 	return nil
 }
 
-func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 	for _, _package := range dependencies {
 
-		err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", _package.Name)
+		err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "uninstall", _package.Name)
 
 		if err != nil {
 			return err
@@ -316,16 +316,16 @@ func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.
 	return nil
 }
 
-func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	for _, reference := range references {
-		relativePath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
 
-		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "link", relativePath)
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "install", "file:"+relativePath)
+		// err = providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "link", relativePath)
+		err = providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "install", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -334,17 +334,17 @@ func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectS
 	return nil
 }
 
-func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
-		relativePath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
 
-		// err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "unlink", relativePath)
-		err = providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", "file:"+relativePath)
+		// err = providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "unlink", relativePath)
+		err = providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "uninstall", "file:"+relativePath)
 		if err != nil {
 			return err
 		}
@@ -353,9 +353,9 @@ func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.Pro
 	return nil
 }
 
-func (s NodeJSManager) IsProjectFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s NodeJSManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -365,13 +365,13 @@ func (s NodeJSManager) IsProjectFileExists(project applicationproject.ProjectSpe
 		return !stat.IsDir(), nil
 	}
 }
-func (s NodeJSManager) GetProjectFileName(project applicationproject.ProjectSpecification) string {
+func (s NodeJSManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
 	return "package.json"
 }
 
-func (s NodeJSManager) IsGroupFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s NodeJSManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -381,20 +381,20 @@ func (s NodeJSManager) IsGroupFileExists(project applicationproject.ProjectSpeci
 		return !stat.IsDir(), nil
 	}
 }
-func (s NodeJSManager) GetGroupFileName(project applicationproject.ProjectSpecification) string {
+func (s NodeJSManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
 	return "package.json"
 }
 
-func (s NodeJSManager) ListLayersFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Layer, error) {
+func (s NodeJSManager) ListLayersFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Layer, error) {
 
-	folders, err := s.ListFoldersFromProjectDefinition(projectSpecification)
+	folders, err := s.ListFoldersFromProjectDefinition(project)
 	if err != nil {
 		return nil, err
 	}
 
 	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
-		for _, projectLayer := range projectSpecification.Configuration.Layers {
+		for _, projectLayer := range project.Specifications.Configuration.Layers {
 
 			if filepath.Join(folder) == filepath.Join(projectLayer.Path) {
 				layers = append(layers, projectLayer)
@@ -407,7 +407,7 @@ func (s NodeJSManager) ListLayersFromProject(projectSpecification applicationpro
 	return layers, nil
 }
 
-func (s NodeJSManager) HasLayerOnProject(project applicationproject.ProjectSpecification, layer string) (bool, error) {
+func (s NodeJSManager) HasLayerOnProject(project applicationproject.ProjectBaseStruct, layer string) (bool, error) {
 
 	layers, err := s.ListLayersFromProject(project)
 	if err != nil {
@@ -426,11 +426,11 @@ func (s NodeJSManager) HasLayerOnProject(project applicationproject.ProjectSpeci
 	return layerState, nil
 }
 
-func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectSpecification) error {
+func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectBaseStruct) error {
 	var paths []string = []string{}
-	// projectPath := project.GetAbsoluteProjectPath()
+	// projectPath := project.Specifications.GetAbsoluteProjectPath()
 
-	var projectType models.ProjectType = models.ProjectType(project.ProjectType)
+	var projectType models.ProjectType = models.ProjectType(project.Specifications.ProjectType)
 	if projectType == models.ProjectTypes.Library {
 	} else if projectType == models.ProjectTypes.SPA {
 	}
@@ -438,19 +438,19 @@ func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectSpec
 	return s.FileRemover(paths...)
 }
 
-func (s NodeJSManager) AddFolderToProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+func (s NodeJSManager) AddFolderToProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
-func (s NodeJSManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectSpecification, paths ...string) error {
+func (s NodeJSManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
 
-func (s NodeJSManager) GetProjectFileRelativePath(project applicationproject.ProjectSpecification) string {
+func (s NodeJSManager) GetProjectFileRelativePath(project applicationproject.ProjectBaseStruct) string {
 
-	return filepath.Join(project.GetRelativeProjectPath(), s.GetProjectFileName(project))
+	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
 }
 
-func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectSpecification, reference applicationproject.ProjectSpecification) (bool, error) {
+func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectBaseStruct, reference applicationproject.ProjectBaseStruct) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -461,7 +461,7 @@ func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectS
 
 	for _, projectReference := range references {
 
-		if projectReference.Name == reference.Name && projectReference.GetAbsoluteProjectPath() == reference.GetAbsoluteProjectPath() {
+		if projectReference.Specifications.Name == reference.Specifications.Name && projectReference.Specifications.GetAbsoluteProjectPath() == reference.Specifications.GetAbsoluteProjectPath() {
 			referenceState = true
 			break
 		}
@@ -470,9 +470,9 @@ func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectS
 	return referenceState, nil
 }
 
-func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationproject.ProjectSpecification, error) {
+func (s NodeJSManager) ListReferencesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
 
-	output, err := providers.NPMExecuteWithOutput(projectSpecification.GetAbsoluteProjectPath(), "list", "--link")
+	output, err := providers.NPMExecuteWithOutput(project.Specifications.GetAbsoluteProjectPath(), "list", "--link")
 	if err != nil {
 		return nil, err
 	}
@@ -481,10 +481,10 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]applicationproject.ProjectSpecification, 0)
+	references := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, match := range matches {
-		for _, projectReference := range projectSpecification.Configuration.References {
-			relativeToReference, err := file.FindRelativePath(projectSpecification.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
+		for _, projectReference := range project.Specifications.Configuration.References {
+			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err
 			}
@@ -492,7 +492,7 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 			pathFromProjectSource := filepath.Clean(string(match[4]))
 			pathFromStruct := filepath.Clean(relativeToReference)
 			if pathFromProjectSource == pathFromStruct {
-				references = append(references, projectReference.Specifications)
+				references = append(references, projectReference)
 				break
 			}
 
@@ -502,9 +502,9 @@ func (s NodeJSManager) ListReferencesFromProject(projectSpecification applicatio
 	return references, nil
 }
 
-func (s NodeJSManager) IsProjectFolderExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s NodeJSManager) IsProjectFolderExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(project.GetAbsoluteProjectPath()) // check if the project directory exists
+	stat, err := os.Stat(project.Specifications.GetAbsoluteProjectPath()) // check if the project directory exists
 
 	if os.IsNotExist(err) {
 		return false, nil

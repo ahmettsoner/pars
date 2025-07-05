@@ -7,7 +7,6 @@ import (
 	"parsdevkit.net/application"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
-	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
 
@@ -26,7 +25,7 @@ type BasicProjectReferenceTestSuite struct {
 	environment   string
 	workspace     string
 	manager       core.ManagerInterface
-	project       applicationproject.ProjectSpecification
+	project       applicationproject.ProjectBaseStruct
 	faker         *faker.Faker
 	noCleanOnFail bool
 }
@@ -72,16 +71,13 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences() {
 	projectName := suite.faker.Project.Name()
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName, schemas.Metadata{}),
-			referenceProject,
-		),
+		referenceProject,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
 
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
@@ -98,19 +94,13 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 	referenceProject := CreateNewTestProject(suite.T(), projectName1, suite.testArea, suite.workspace)
 	referenceProject2 := CreateNewTestProject(suite.T(), projectName2, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName1, schemas.Metadata{}),
-			referenceProject,
-		),
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName2, schemas.Metadata{}),
-			referenceProject2,
-		),
+		referenceProject,
+		referenceProject2,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
@@ -118,7 +108,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 	packages, err := suite.manager.ListReferencesFromProject(suite.project)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Configuration.Dependencies))
+	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Configuration.Dependencies))
 
 	suite.T().Cleanup(func() {
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
@@ -130,21 +120,18 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences() {
 	projectName := suite.faker.Project.Name()
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName, schemas.Metadata{}),
-			referenceProject,
-		),
+		referenceProject,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	for _, projectReference := range suite.project.Configuration.References {
-		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference.Specifications)
+	for _, projectReference := range suite.project.Specifications.Configuration.References {
+		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference)
 		require.NoError(suite.T(), err, "failed to validate package on project")
 		assert.True(suite.T(), packageState)
 	}
@@ -161,15 +148,12 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences_GroupedProjec
 	CreateNewTestProjectGroupAndPath(suite.T(), groupName, groupName, suite.testArea, suite.workspace)
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName, schemas.Metadata{}),
-			referenceProject,
-		),
+		referenceProject,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
@@ -188,19 +172,13 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName1, suite.testArea, suite.workspace, groupName, groupName)
 	referenceProject2 := CreateNewTestProjectWithGroup(suite.T(), projectName2, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName1, schemas.Metadata{}),
-			referenceProject,
-		),
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName2, schemas.Metadata{}),
-			referenceProject2,
-		),
+		referenceProject,
+		referenceProject2,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
@@ -208,7 +186,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 	packages, err := suite.manager.ListReferencesFromProject(suite.project)
 	require.NoError(suite.T(), err, "failed to list references")
 
-	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Configuration.Dependencies))
+	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Configuration.Dependencies))
 
 	suite.T().Cleanup(func() {
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
@@ -222,21 +200,18 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences_GroupedProj
 	CreateNewTestProjectGroupAndPath(suite.T(), groupName, groupName, suite.testArea, suite.workspace)
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
 	newReferences := []applicationproject.ProjectBaseStruct{
-		applicationproject.NewProjectBaseStruct(
-			schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, projectName, schemas.Metadata{}),
-			referenceProject,
-		),
+		referenceProject,
 	}
-	suite.project.Configuration.References = append(suite.project.Configuration.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectSpecification, 0)
+	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
-		newReferencesSpecs = append(newReferencesSpecs, ref.Specifications)
+		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	for _, projectReference := range suite.project.Configuration.References {
-		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference.Specifications)
+	for _, projectReference := range suite.project.Specifications.Configuration.References {
+		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference)
 		require.NoError(suite.T(), err, "failed to validate package on project")
 		assert.True(suite.T(), packageState)
 	}

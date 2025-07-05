@@ -39,13 +39,13 @@ func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) mo
 	}
 }
 
-func (s ParsManager) CreateProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
 
 	if _, err := s.CreateProjectFolder(project); err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -65,15 +65,15 @@ func (s ParsManager) CreateProject(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s ParsManager) RemoveProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
 			err := s.RemoveFromGroup(project)
 			if err != nil {
@@ -85,64 +85,64 @@ func (s ParsManager) RemoveProject(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s ParsManager) BuildProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) CleanProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) InstallProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) TestProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) TestProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) PackageProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RunProject(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) RunProject(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s *ParsManager) removeClassLibraryDefaultFiles(project applicationproject.ProjectSpecification) error {
+func (s *ParsManager) removeClassLibraryDefaultFiles(project applicationproject.ProjectBaseStruct) error {
 	var paths []string = []string{}
 
 	return s.FileRemover(paths...)
 }
 
-func (s ParsManager) CreateGroup(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) DeleteGroup(project applicationproject.ProjectSpecification) {
+func (s ParsManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
 }
 
-func (s ParsManager) AddToGroup(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveFromGroup(project applicationproject.ProjectSpecification) error {
+func (s ParsManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectSpecification, paths ...string) (string, error) {
+func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	var foldersRelative []string = []string{}
-	folders = append(folders, project.GetAbsoluteProjectPath())
+	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
 	for _, path := range paths {
 		folders = append(folders, path)
 		foldersRelative = append(foldersRelative, path)
@@ -157,31 +157,31 @@ func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectSpeci
 	return foldersRelativePath, nil
 }
 
-func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 
 	return nil
 }
 
-func (s ParsManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s ParsManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveReferenceFromProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s ParsManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) IsProjectFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s ParsManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 	return s.IsProjectFolderExists(project)
 }
 
-func (s ParsManager) IsGroupFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s ParsManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
 	return s.IsGroupFolderExists(project)
 }

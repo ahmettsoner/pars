@@ -41,13 +41,13 @@ func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) mode
 		return platformVersion
 	}
 }
-func (s GoManager) CreateProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
 
 	if _, err := s.CreateProjectFolder(project); err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -60,12 +60,12 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 		}
 	}
 
-	err := providers.GoExecute(project.GetAbsoluteProjectPath(), "mod", "init", s.GetProjectPackage(project))
+	err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "init", s.GetProjectPackage(project))
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		err = s.AddToGroup(project)
 		if err != nil {
 			log.Fatal(err)
@@ -76,26 +76,26 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 	// 	return err
 	// }
 
-	// if project.Configuration.Dependencies != nil {
-	// 	s.AddDependenciesToProject(project, project.Configuration.Dependencies)
+	// if project.Specifications.Configuration.Dependencies != nil {
+	// 	s.AddDependenciesToProject(project, project.Specifications.Configuration.Dependencies)
 	// }
 
-	// if project.Configuration.References != nil {
-	// 	s.AddReferenceToProject(project, project.Configuration.References)
+	// if project.Specifications.Configuration.References != nil {
+	// 	s.AddReferenceToProject(project, project.Specifications.Configuration.References)
 	// }
 
 	return nil
 }
 
-func (s GoManager) RemoveProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
 			err := s.RemoveFromGroup(project)
 			if err != nil {
@@ -107,23 +107,23 @@ func (s GoManager) RemoveProject(project applicationproject.ProjectSpecification
 	return nil
 }
 
-func (s GoManager) BuildProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.GoExecute(project.GetCodeBasePath(), "build")
+			err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "build")
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.GoExecute(project.GetCodeBasePath(), "build")
+		err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "build")
 		if err != nil {
 			return err
 		}
@@ -131,23 +131,23 @@ func (s GoManager) BuildProject(project applicationproject.ProjectSpecification)
 	return nil
 }
 
-func (s GoManager) CleanProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.GoExecute(project.GetCodeBasePath(), "clean", filepath.Join(project.GetAbsoluteGroupPath(), project.Name))
+			err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "clean", filepath.Join(project.Specifications.GetAbsoluteGroupPath(), project.Specifications.Name))
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.GoExecute(project.GetCodeBasePath(), "clean", filepath.Join(project.Name))
+		err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "clean", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -155,23 +155,23 @@ func (s GoManager) CleanProject(project applicationproject.ProjectSpecification)
 	return nil
 }
 
-func (s GoManager) InstallProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.GoExecute(project.GetCodeBasePath(), "restore", project.GetRelativeProjectPath())
+			err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "restore", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.GoExecute(project.GetCodeBasePath(), "restore", filepath.Join(project.Name))
+		err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "restore", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -179,23 +179,23 @@ func (s GoManager) InstallProject(project applicationproject.ProjectSpecificatio
 	return nil
 }
 
-func (s GoManager) TestProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) TestProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.GoExecute(project.GetCodeBasePath(), "test", project.GetRelativeProjectPath())
+			err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "test", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.GoExecute(project.GetCodeBasePath(), "test", filepath.Join(project.Name))
+		err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "test", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -203,23 +203,23 @@ func (s GoManager) TestProject(project applicationproject.ProjectSpecification) 
 	return nil
 }
 
-func (s GoManager) PackageProject(project applicationproject.ProjectSpecification) error {
+func (s GoManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
 	}
 
-	if !_string.IsEmpty(project.Group) {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		} else {
-			err := providers.GoExecute(project.GetCodeBasePath(), "publish", project.GetRelativeProjectPath())
+			err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "publish", project.Specifications.GetRelativeProjectPath())
 			if err != nil {
 				return err
 			}
 		}
 	} else {
-		err := providers.GoExecute(project.GetCodeBasePath(), "publish", filepath.Join(project.Name))
+		err := providers.GoExecute(project.Specifications.GetCodeBasePath(), "publish", filepath.Join(project.Specifications.Name))
 		if err != nil {
 			return err
 		}
@@ -227,8 +227,8 @@ func (s GoManager) PackageProject(project applicationproject.ProjectSpecificatio
 	return nil
 }
 
-func (s GoManager) RunProject(project applicationproject.ProjectSpecification) error {
-	if !_string.IsEmpty(project.Group) {
+func (s GoManager) RunProject(project applicationproject.ProjectBaseStruct) error {
+	if !_string.IsEmpty(project.Specifications.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
 			return err
@@ -236,42 +236,20 @@ func (s GoManager) RunProject(project applicationproject.ProjectSpecification) e
 		}
 
 		if !groupStatus {
-			return errors.New("Project group (" + project.Group + ") is not correct")
+			return errors.New("Project group (" + project.Specifications.Group + ") is not correct")
 		}
 	}
 
-	err := providers.GoExecute(project.GetAbsoluteGroupPath(), "run", s.GetProjectPackage(project))
+	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "run", s.GetProjectPackage(project))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s GoManager) CreateGroup(project applicationproject.ProjectSpecification) error {
+func (s GoManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
 
-	err := providers.GoExecute(project.GetAbsoluteGroupPath(), "mod", "init", s.GetGroupPackage(project))
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s GoManager) DeleteGroup(project applicationproject.ProjectSpecification) {
-}
-
-func (s GoManager) AddToGroup(project applicationproject.ProjectSpecification) error {
-
-	relativeProjectPath, err := file.FindRelativePath(project.GetAbsoluteGroupPath(), project.GetAbsoluteProjectPath())
-	if err != nil {
-		return err
-	}
-	err = providers.GoExecute(project.GetAbsoluteGroupPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(project), relativeProjectPath))
-	if err != nil {
-		return err
-	}
-
-	err = providers.GoExecute(project.GetAbsoluteGroupPath(), "get", s.GetProjectPackage(project))
+	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "init", s.GetGroupPackage(project))
 	if err != nil {
 		return err
 	}
@@ -279,8 +257,21 @@ func (s GoManager) AddToGroup(project applicationproject.ProjectSpecification) e
 	return nil
 }
 
-func (s GoManager) RemoveFromGroup(project applicationproject.ProjectSpecification) error {
-	err := providers.GoExecute(project.GetAbsoluteGroupPath(), "mod", "tidy")
+func (s GoManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
+}
+
+func (s GoManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+
+	relativeProjectPath, err := file.FindRelativePath(project.Specifications.GetAbsoluteGroupPath(), project.Specifications.GetAbsoluteProjectPath())
+	if err != nil {
+		return err
+	}
+	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(project), relativeProjectPath))
+	if err != nil {
+		return err
+	}
+
+	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "get", s.GetProjectPackage(project))
 	if err != nil {
 		return err
 	}
@@ -288,10 +279,19 @@ func (s GoManager) RemoveFromGroup(project applicationproject.ProjectSpecificati
 	return nil
 }
 
-func (s GoManager) CreateProjectFolder(project applicationproject.ProjectSpecification, paths ...string) (string, error) {
+func (s GoManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "tidy")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s GoManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	var foldersRelative []string = []string{}
-	folders = append(folders, project.GetAbsoluteProjectPath())
+	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
 	for _, path := range paths {
 		folders = append(folders, path)
 		foldersRelative = append(foldersRelative, path)
@@ -306,10 +306,10 @@ func (s GoManager) CreateProjectFolder(project applicationproject.ProjectSpecifi
 	return foldersRelativePath, nil
 }
 
-func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 
 	for _, _package := range dependencies {
-		err := providers.GoExecute(project.GetAbsoluteProjectPath(), "get", _package.GetFullName())
+		err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", _package.GetFullName())
 		if err != nil {
 			return err
 		}
@@ -318,7 +318,7 @@ func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectSp
 	return nil
 }
 
-func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
 	fmt.Printf("remove package not implemented yet")
 	// for _, _package := range dependencies {
 	// }
@@ -326,20 +326,20 @@ func (s GoManager) RemoveDependenciesFromProject(project applicationproject.Proj
 	return nil
 }
 
-func (s GoManager) AddReferenceToProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s GoManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
-		relativeProjectPath, err := file.FindRelativePath(project.GetAbsoluteProjectPath(), reference.GetAbsoluteProjectPath())
+		relativeProjectPath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
 		if err != nil {
 			return err
 		}
-		err = providers.GoExecute(project.GetAbsoluteProjectPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(reference), relativeProjectPath))
+		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(reference), relativeProjectPath))
 		if err != nil {
 			return err
 		}
 
-		err = providers.GoExecute(project.GetAbsoluteProjectPath(), "get", s.GetProjectPackage(reference))
+		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", s.GetProjectPackage(reference))
 		if err != nil {
 			return err
 		}
@@ -348,16 +348,16 @@ func (s GoManager) AddReferenceToProject(project applicationproject.ProjectSpeci
 	return nil
 }
 
-func (s GoManager) RemoveReferenceFromProject(project applicationproject.ProjectSpecification, references []applicationproject.ProjectSpecification) error {
+func (s GoManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
 	fmt.Printf("Remove reference not implemented yet")
 	// for _, reference := range references {
 	// }
 
 	return nil
 }
-func (s GoManager) IsProjectFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s GoManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -367,13 +367,13 @@ func (s GoManager) IsProjectFileExists(project applicationproject.ProjectSpecifi
 		return !stat.IsDir(), nil
 	}
 }
-func (s GoManager) GetProjectFileName(project applicationproject.ProjectSpecification) string {
+func (s GoManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
 	return fmt.Sprintf("go.mod")
 }
 
-func (s GoManager) IsGroupFileExists(project applicationproject.ProjectSpecification) (bool, error) {
+func (s GoManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -383,6 +383,6 @@ func (s GoManager) IsGroupFileExists(project applicationproject.ProjectSpecifica
 		return !stat.IsDir(), nil
 	}
 }
-func (s GoManager) GetGroupFileName(project applicationproject.ProjectSpecification) string {
+func (s GoManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
 	return fmt.Sprintf("go.mod")
 }
