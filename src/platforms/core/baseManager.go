@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
@@ -20,6 +21,9 @@ func BaseManagerNew(packageDelimiter string) BaseManager {
 	}
 }
 
+func (s BaseManager) GetDefaultPlatformProjectType(model applicationproject.ProjectSpecification) models.ProjectType {
+	return models.ProjectTypes.Library
+}
 func (s *BaseManager) FileRemover(paths ...string) error {
 	for _, v := range paths {
 		if err := os.RemoveAll(v); err != nil {

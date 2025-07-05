@@ -128,7 +128,7 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 
 	return objectResources.ObjectResource{
 		Name:       resource.Name,
-		Package:    s.manager.PrintPackage(packages),
+		Package:    s.manager.PrintDependencies(packages),
 		Labels:     s.LabelListToModel(resource.Labels...),
 		Layers:     s.LayerListToModel(resource, project, template, resource.Layers...),
 		Dictionary: s.DictionaryListToModel(resource.Dictionary...),
@@ -156,7 +156,7 @@ func (s *ObjectResourceService) DataResourceToModel(resource dataresource.Resour
 
 	return objectResources.DataResource{
 		Name:    resource.Name,
-		Package: s.manager.PrintPackage(packages),
+		Package: s.manager.PrintDependencies(packages),
 		Labels:  s.LabelListToModel(resource.Labels...),
 		Layers:  s.DataLayerListToModel(resource, project, template, resource.Layers...),
 		// Dictionary: s.DictionaryListToModel(resource.Dictionary...),
@@ -243,7 +243,7 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 
 	return objectResources.ObjectSection{
 		Name:       section.Name,
-		Package:    s.manager.PrintPackage(packages),
+		Package:    s.manager.PrintDependencies(packages),
 		Classes:    section.Classes,
 		Labels:     s.LabelListToModel(section.Labels...),
 		Options:    s.OptionListToModel(section.Options...),
@@ -270,7 +270,7 @@ func (s *ObjectResourceService) DataSectionToModel(resource dataresource.Resourc
 
 	return objectResources.DataSection{
 		Name:    section.Name,
-		Package: s.manager.PrintPackage(packages),
+		Package: s.manager.PrintDependencies(packages),
 		Labels:  s.LabelListToModel(section.Labels...),
 		Options: s.OptionListToModel(section.Options...),
 	}
@@ -403,11 +403,11 @@ func (s *ObjectResourceService) WorkspaceToModel(workspace basic_workspace_paylo
 }
 
 func (s *ObjectResourceService) ApplicationProjectToModel(project applicationproject.ProjectBaseStruct) objectResources.ApplicationProject {
-	packages := project.Specifications.GetAllPackage()
+	dependencies := project.Specifications.GetAllPackage()
 
 	var result objectResources.ApplicationProject = objectResources.ApplicationProject{
 		Name:    project.Header.Name,
-		Package: s.manager.PrintPackage(packages),
+		Package: s.manager.PrintDependencies(dependencies),
 		Labels:  s.LabelListToModel(project.Specifications.Labels...),
 	}
 
@@ -415,11 +415,11 @@ func (s *ObjectResourceService) ApplicationProjectToModel(project applicationpro
 }
 
 func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.TemplateBaseStruct) objectResources.FileTemplate {
-	packages := template.Specifications.Package
+	dependencies := template.Specifications.Package
 
 	var result objectResources.FileTemplate = objectResources.FileTemplate{
 		Name:    template.Header.Name,
-		Package: s.manager.PrintPackage(packages),
+		Package: s.manager.PrintDependencies(dependencies),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
 
@@ -427,11 +427,11 @@ func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.Templa
 }
 
 func (s *ObjectResourceService) CodeTemplateToModel(template codetemplate.TemplateBaseStruct) objectResources.CodeTemplate {
-	packages := template.Specifications.Package
+	dependencies := template.Specifications.Package
 
 	var result objectResources.CodeTemplate = objectResources.CodeTemplate{
 		Name:    template.Header.Name,
-		Package: s.manager.PrintPackage(packages),
+		Package: s.manager.PrintDependencies(dependencies),
 		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
 

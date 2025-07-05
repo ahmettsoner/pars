@@ -1,0 +1,9 @@
+Type: Resource
+Kind: Object
+Name: Res1
+Specifications:
+  Set: S1
+  Layers:
+    - L1
+  Attributes: 
+    - Name

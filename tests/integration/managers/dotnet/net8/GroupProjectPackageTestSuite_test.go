@@ -78,7 +78,7 @@ func (suite *GroupProjectPackageTestSuite) Test_AddNewPackages_WithoutVersion() 
 		newPackages := GetPackages(0, 1, false)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 	}
 
@@ -92,7 +92,7 @@ func (suite *GroupProjectPackageTestSuite) Test_AddNewPackages_WithVersion() {
 		newPackages := GetPackages(1, 1, true)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 	}
 
@@ -107,11 +107,11 @@ func (suite *GroupProjectPackageTestSuite) Test_ValidatePackages_WithoutVersion(
 		newPackages := GetPackages(2, 1, false)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 
 		for _, projectPackage := range groupProject.Configuration.Dependencies {
-			packageState, err := suite.manager.HasPackageOnProject(groupProject, projectPackage)
+			packageState, err := suite.manager.HasDependencyOnProject(groupProject, projectPackage)
 			require.NoError(suite.T(), err, "failed to check package on project")
 			assert.True(suite.T(), packageState)
 		}
@@ -128,11 +128,11 @@ func (suite *GroupProjectPackageTestSuite) Test_ValidatePackages_WithVersion() {
 		newPackages := GetPackages(3, 1, true)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 
 		for _, projectPackage := range groupProject.Configuration.Dependencies {
-			packageState, err := suite.manager.HasPackageOnProject(groupProject, projectPackage)
+			packageState, err := suite.manager.HasDependencyOnProject(groupProject, projectPackage)
 			require.NoError(suite.T(), err, "failed to check package on project")
 			assert.True(suite.T(), packageState)
 		}
@@ -149,10 +149,10 @@ func (suite *GroupProjectPackageTestSuite) Test_ListPackages_WithoutVersion() {
 		newPackages := GetPackages(4, 1, false)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 
-		packages, err := suite.manager.ListPackagesFromProject(groupProject)
+		packages, err := suite.manager.ListDependenciesFromProject(groupProject)
 		require.NoError(suite.T(), err, "failed to list packages")
 
 		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Configuration.Dependencies))
@@ -169,10 +169,10 @@ func (suite *GroupProjectPackageTestSuite) Test_ListPackages_WithVersion() {
 		newPackages := GetPackages(5, 1, true)
 
 		groupProject.Configuration.Dependencies = append(groupProject.Configuration.Dependencies, newPackages...)
-		err := suite.manager.AddPackageToProject(groupProject, newPackages)
+		err := suite.manager.AddDependenciesToProject(groupProject, newPackages)
 		require.NoError(suite.T(), err, "failed to add packages")
 
-		packages, err := suite.manager.ListPackagesFromProject(groupProject)
+		packages, err := suite.manager.ListDependenciesFromProject(groupProject)
 		require.NoError(suite.T(), err, "failed to list packages")
 
 		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Configuration.Dependencies))

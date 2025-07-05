@@ -265,7 +265,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}
 
 			if len(newItems) > 0 {
-				err := projectService.AddPackageToProject(project, newItems...)
+				err := projectService.AddDependenciesToProject(project, newItems...)
 				if err != nil {
 					return err
 				}
@@ -277,7 +277,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 					if err != nil {
 						return err
 					}
-					err = projectService.AddPackageToProject(project, item.New)
+					err = projectService.AddDependenciesToProject(project, item.New)
 					if err != nil {
 						return err
 					}
@@ -431,6 +431,13 @@ func (s ApplicationProjectEngine) completeProjectInformation(ctx *application.Ap
 	project.Specifications.Configuration.References = projectReferences
 	logrus.Debugf("project references (%d) restored for (%v)", len(project.Specifications.Configuration.References), project.Specifications.Path)
 
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projectType, err := projectService.GetDefaultPlatformProjectType(*project)
+	if err != nil {
+		return err
+	}
+
+	project.Specifications.ProjectType = projectType
 	return nil
 }
 

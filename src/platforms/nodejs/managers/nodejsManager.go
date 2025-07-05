@@ -285,8 +285,8 @@ func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectSpe
 	return foldePath, nil
 }
 
-func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
-	for _, _package := range packages {
+func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+	for _, _package := range dependencies {
 
 		packageName := _package.Name
 
@@ -304,8 +304,8 @@ func (s NodeJSManager) AddPackageToProject(project applicationproject.ProjectSpe
 	return nil
 }
 
-func (s NodeJSManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
-	for _, _package := range packages {
+func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+	for _, _package := range dependencies {
 
 		err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", _package.Name)
 
@@ -526,9 +526,9 @@ func (s NodeJSManager) NormalizeText(input string) string {
 	return input
 }
 
-func (s NodeJSManager) PrintPackage(packages []string) string {
+func (s NodeJSManager) PrintDependencies(dependencies []string) string {
 	var nonEmptyPackages []string
-	for _, pkg := range packages {
+	for _, pkg := range dependencies {
 		if pkg != "" {
 			nonEmptyPackages = append(nonEmptyPackages, pkg)
 		}

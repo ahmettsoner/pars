@@ -83,26 +83,31 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
-			log.Printf("❌ Error: %v", err)
-		} else {
-			for _, data := range result {
+			return fmt.Errorf("%w", err)
+		}
 
-				if err := data.Validate(); err != nil {
-					jsonObject, _ := json.ToJson(data)
-					return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-				}
+		if len(result) == 0 {
+			fmt.Printf("Belirtilen dosya/dizinde uygun schema bulunamadı!\n")
+			return nil
+		}
 
-				fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
+		for _, data := range result {
+
+			if err := data.Validate(); err != nil {
+				jsonObject, _ := json.ToJson(data)
+				return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 			}
 
-			appCtx := application.GetContext()
-			if appCtx == nil {
-				return fmt.Errorf("xxx: Current workspace bulunamadı")
-			}
-			err = engines.DispatchEngineProcess(appCtx, result)
-			if err != nil {
-				return fmt.Errorf("Engine processing failed: %v", err)
-			}
+			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
+		}
+
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		err = engines.DispatchEngineProcess(appCtx, result)
+		if err != nil {
+			return fmt.Errorf("Engine processing failed: %v", err)
 		}
 
 		fmt.Fprintf(os.Stdout, "✔ Schema(s) '%v' applied successfully\n", commandOptions.FilePaths)

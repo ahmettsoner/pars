@@ -157,12 +157,12 @@ func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectSpeci
 	return foldersRelativePath, nil
 }
 
-func (s ParsManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
 	return nil
 }
 
-func (s ParsManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
 	return nil
 }

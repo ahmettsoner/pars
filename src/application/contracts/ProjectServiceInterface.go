@@ -3,6 +3,7 @@ package contracts
 import (
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/project"
+	"parsdevkit.net/models"
 )
 
 type ProjectServiceInterface[T schemas.SchemaInterface] interface {
@@ -32,6 +33,7 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 
 	//Helper
 	GetHash(name string, workspaceName string) (string, error)
+	GetDefaultPlatformProjectType(model T) (models.ProjectType, error)
 
 	//Structure (File/Folder)
 	CheckIfWorkingOnProject() (*T, error)
@@ -53,7 +55,7 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 
 	//Dependency
 	ValidateProjectDependencies(model T) (bool, error)
-	AddPackageToProject(model T, packages ...project.Package) error
+	AddDependenciesToProject(model T, packages ...project.Package) error
 	RemovePackageToProject(model T, packages ...project.Package) error
 	//ListPackages
 

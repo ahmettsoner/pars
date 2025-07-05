@@ -77,7 +77,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectSpecification
 	// }
 
 	// if project.Configuration.Dependencies != nil {
-	// 	s.AddPackageToProject(project, project.Configuration.Dependencies)
+	// 	s.AddDependenciesToProject(project, project.Configuration.Dependencies)
 	// }
 
 	// if project.Configuration.References != nil {
@@ -306,9 +306,9 @@ func (s GoManager) CreateProjectFolder(project applicationproject.ProjectSpecifi
 	return foldersRelativePath, nil
 }
 
-func (s GoManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
-	for _, _package := range packages {
+	for _, _package := range dependencies {
 		err := providers.GoExecute(project.GetAbsoluteProjectPath(), "get", _package.GetFullName())
 		if err != nil {
 			return err
@@ -318,9 +318,9 @@ func (s GoManager) AddPackageToProject(project applicationproject.ProjectSpecifi
 	return nil
 }
 
-func (s GoManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 	fmt.Printf("remove package not implemented yet")
-	// for _, _package := range packages {
+	// for _, _package := range dependencies {
 	// }
 
 	return nil

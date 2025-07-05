@@ -52,6 +52,17 @@ func NewApplicationProjectService(environment string, platformRegistry map[model
 	}
 }
 
+func (s *ApplicationProjectService) GetDefaultPlatformProjectType(model applicationproject.ProjectBaseStruct) (models.ProjectType, error) {
+
+	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
+	if err != nil {
+		return "", fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
+	}
+
+	return projectManager.GetDefaultPlatformProjectType(model.Specifications), nil
+
+}
+
 // OK!
 func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseStruct, init bool) (*applicationproject.ProjectBaseStruct, error) {
 
@@ -143,7 +154,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 	}
 
 	if err := projectManager.CreateProject(model.Specifications); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken hata meydana geldi: '%s'\n%w", model.Header.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project oluştururken provider'da hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
 	if !_string.IsEmpty(model.Specifications.Group) {
@@ -162,7 +173,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 	}
 
 	if model.Specifications.Configuration.Dependencies != nil {
-		err := s.AddPackageToProject(model, model.Specifications.Configuration.Dependencies...)
+		err := s.AddDependenciesToProject(model, model.Specifications.Configuration.Dependencies...)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
@@ -177,28 +188,28 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 
 	return result, nil
 }
-func (s ApplicationProjectService) AddPackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationProject.Package) error {
+func (s ApplicationProjectService) AddDependenciesToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Package) error {
 	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
-	err = projectManager.AddPackageToProject(model.Specifications, packages)
+	err = projectManager.AddDependenciesToProject(model.Specifications, dependencies)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, packages, err)
+		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
 	}
 	return nil
 
 }
-func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, packages ...applicationProject.Package) error {
+func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Package) error {
 	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
 
-	err = projectManager.RemovePackageFromProject(model.Specifications, packages)
+	err = projectManager.RemoveDependenciesFromProject(model.Specifications, dependencies)
 	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, packages, err)
+		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
 	}
 	return nil
 }
@@ -721,12 +732,12 @@ func (s *ApplicationProjectService) ValidateProjectDependency(model applicationp
 		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	packages, err := projectManager.ListPackagesFromProject(model.Specifications)
+	dependencies, err := projectManager.ListDependenciesFromProject(model.Specifications)
 	if err != nil {
 		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	for _, projectPackage := range packages {
+	for _, projectPackage := range dependencies {
 		if projectPackage.Name == _package.Name && projectPackage.Version == _package.Version {
 			return true, nil
 		}
@@ -743,7 +754,7 @@ func (s *ApplicationProjectService) ValidateProjectDependencies(model applicatio
 	}
 
 	for _, _package := range model.Specifications.Configuration.Dependencies {
-		isValid, err := projectManager.HasPackageOnProject(model.Specifications, _package)
+		isValid, err := projectManager.HasDependencyOnProject(model.Specifications, _package)
 		if err != nil {
 			return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 		}
@@ -887,18 +898,17 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 		}
-
-		_, err = s.DestroyProject(project)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Proje kaldırma işleminde hata oluştu \n%w", err)
-		}
-
 		logrus.Debugf("project (%v) information removing", project.Header.Name)
 		err = s.projectRespository.Delete(entity)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 		}
 		logrus.Debugf("project (%v) information removed", projectName)
+
+		_, err = s.DestroyProject(project)
+		if err != nil {
+			return nil, fmt.Errorf("xxx: Proje kaldırma işleminde hata oluştu \n%w", err)
+		}
 
 		return &project, nil
 	}
@@ -934,6 +944,7 @@ func (s *ApplicationProjectService) DestroyProject(project applicationproject.Pr
 
 	logrus.Debugf("project (%v) content removed", project.Header.Name)
 
+	//TODO: Burda proje dizini yoksa default project files/folders silinmeli csproj, node_modules vs, autogenerated file/folders silinmeli eğer varsa (obj, bin vs)
 	// if !_string.IsEmpty(project.Specifications.Group) && len(project.Specifications.Path) > 0 {
 	if len(project.Specifications.Path) > 0 {
 		logrus.Debugf("project (%v) files/folders (%v) removing", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath())
@@ -942,7 +953,14 @@ func (s *ApplicationProjectService) DestroyProject(project applicationproject.Pr
 		}
 		logrus.Debugf("project (%v) files/folders removed", project.Header.Name)
 	} else {
-		logrus.Debugf("You should delete project files for project (%v)", project.Header.Name)
+		if err := os.RemoveAll(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), projectManager.GetProjectFileName(project.Specifications))); err != nil {
+			return nil, fmt.Errorf("xxx: Application Project proje dosyası silinirken hata oluştu: '%s' Path: '%+v'\n%w", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath(), err)
+		}
+		if err := projectManager.RemoveDefaultFiles(project.Specifications); err != nil {
+			return nil, fmt.Errorf("xxx: Application Project default dosyas/klasörler silinirken hata oluştu: '%s' Path: '%+v'\n%w", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath(), err)
+		}
+
+		logrus.Debugf("You should check project files to be deleted for project (%v)", project.Header.Name)
 	}
 
 	if !_string.IsEmpty(project.Specifications.Group) {

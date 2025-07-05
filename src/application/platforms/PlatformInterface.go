@@ -30,7 +30,7 @@ type PlatformInterface[T schemas.SchemaInterface] interface {
 	RunProject(project T) error
 	PackageProject(project T) error
 
-	PrintPackage(packages []string) string
+	PrintDependencies(dependenciesdependencies []string) string
 	PrintDataType(dataType structs.DataType) string
 	PrintVisibility(visibility structs.VisibilityType) string
 
@@ -47,11 +47,11 @@ type PlatformInterface[T schemas.SchemaInterface] interface {
 	IsLayerFolderExists(project T, layer string) (bool, error)
 	IsLayerFoldersExists(project T) (bool, error)
 
-	AddPackageToProject(project T, packages []applicationProject.Package) error
-	RemovePackageFromProject(project T, packages []applicationProject.Package) error
-	ListPackagesFromProject(project T) ([]applicationProject.Package, error)
-	GetPackageFromProject(project T, _package applicationProject.Package) error
-	HasPackageOnProject(project T, _package applicationProject.Package) (bool, error)
+	AddDependenciesToProject(project T, packages []applicationProject.Package) error
+	RemoveDependenciesFromProject(project T, packages []applicationProject.Package) error
+	ListDependenciesFromProject(project T) ([]applicationProject.Package, error)
+	GetDependencyFromProject(project T, _package applicationProject.Package) error
+	HasDependencyOnProject(project T, _package applicationProject.Package) (bool, error)
 
 	AddReferenceToProject(project T, references []T) error
 	RemoveReferenceFromProject(project T, references []T) error

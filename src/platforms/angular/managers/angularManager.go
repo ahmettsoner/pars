@@ -279,8 +279,8 @@ func (s AngularManager) CreateProjectFolder(project applicationproject.ProjectSp
 	return foldePath, nil
 }
 
-func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
-	for _, _package := range packages {
+func (s AngularManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
+	for _, _package := range dependencies {
 
 		packageName := _package.Name
 
@@ -298,9 +298,9 @@ func (s AngularManager) AddPackageToProject(project applicationproject.ProjectSp
 	return nil
 }
 
-func (s AngularManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s AngularManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
-	for _, _package := range packages {
+	for _, _package := range dependencies {
 
 		err := providers.NPMExecute(project.GetAbsoluteProjectPath(), "uninstall", _package.Name)
 

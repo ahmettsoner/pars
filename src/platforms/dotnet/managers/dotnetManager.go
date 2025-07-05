@@ -47,8 +47,7 @@ func ProjectTypeToDotnetCLITypeString(c models.ProjectType) (string, error) {
 	case models.ProjectTypes.WebApp:
 		return "webapp", nil
 	default:
-		// return "", fmt.Errorf("error: %v is not defined for %v", c, models.ProjectTypes)
-		return "classlib", nil
+		return "", fmt.Errorf("error: %v is not defined for %v", c, models.ProjectTypes)
 	}
 }
 
@@ -241,6 +240,7 @@ func (s DotnetManager) RemoveDefaultFiles(project applicationproject.ProjectSpec
 	projectPath := project.GetAbsoluteProjectPath()
 
 	var projectType models.ProjectType = models.ProjectType(project.ProjectType)
+	paths = append(paths, filepath.Join(projectPath, "obj"))
 	if projectType == models.ProjectTypes.Library {
 		paths = append(paths, filepath.Join(projectPath, "Class1.cs"))
 	} else if projectType == models.ProjectTypes.WebApi {
@@ -510,9 +510,9 @@ func removeFolderFromItemProperty(xmlContent []byte, folderPath string) ([]byte,
 	return m.XmlIndent("", "    ")
 }
 
-func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s DotnetManager) AddDependenciesToProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
-	for _, _package := range packages {
+	for _, _package := range dependencies {
 
 		commandArgs := []string{"add", s.GetProjectFileRelativePath(project), "package", _package.Name}
 
@@ -530,7 +530,7 @@ func (s DotnetManager) AddPackageToProject(project applicationproject.ProjectSpe
 	return nil
 }
 
-func (s DotnetManager) ListPackagesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Package, error) {
+func (s DotnetManager) ListDependenciesFromProject(projectSpecification applicationproject.ProjectSpecification) ([]applicationProject.Package, error) {
 
 	commandArgs := []string{"list", s.GetProjectFileRelativePath(projectSpecification), "package"}
 
@@ -543,17 +543,17 @@ func (s DotnetManager) ListPackagesFromProject(projectSpecification applicationp
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	packages := make([]applicationProject.Package, 0)
+	dependencies := make([]applicationProject.Package, 0)
 	for _, match := range matches {
-		packages = append(packages, applicationProject.NewPackage(string(match[1]), string(match[2])))
+		dependencies = append(dependencies, applicationProject.NewPackage(string(match[1]), string(match[2])))
 	}
 
-	return packages, nil
+	return dependencies, nil
 }
 
-func (s DotnetManager) RemovePackageFromProject(project applicationproject.ProjectSpecification, packages []applicationProject.Package) error {
+func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.ProjectSpecification, dependencies []applicationProject.Package) error {
 
-	for _, _package := range packages {
+	for _, _package := range dependencies {
 		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Platform)), project.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "package", _package.Name)
 		if err != nil {
 			return err
@@ -640,16 +640,16 @@ func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectSpeci
 func (s DotnetManager) GetGroupFileName(project applicationproject.ProjectSpecification) string {
 	return fmt.Sprintf("%v.sln", project.GroupObject.Name)
 }
-func (s DotnetManager) HasPackageOnProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) (bool, error) {
+func (s DotnetManager) HasDependencyOnProject(project applicationproject.ProjectSpecification, _package applicationProject.Package) (bool, error) {
 
-	packages, err := s.ListPackagesFromProject(project)
+	dependencies, err := s.ListDependenciesFromProject(project)
 	if err != nil {
 		return false, err
 	}
 
 	packageState := false
 
-	for _, projectPackage := range packages {
+	for _, projectPackage := range dependencies {
 		if projectPackage.Name == _package.Name && (_string.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
 			packageState = true
 			break
@@ -829,9 +829,9 @@ func (s DotnetManager) HasLayerOnProject(project applicationproject.ProjectSpeci
 	return layerState, nil
 }
 
-func (s DotnetManager) PrintPackage(packages []string) string {
+func (s DotnetManager) PrintDependencies(dependencies []string) string {
 	var nonEmptyPackages []string
-	for _, pkg := range packages {
+	for _, pkg := range dependencies {
 		if pkg != "" {
 			nonEmptyPackages = append(nonEmptyPackages, pkg)
 		}
