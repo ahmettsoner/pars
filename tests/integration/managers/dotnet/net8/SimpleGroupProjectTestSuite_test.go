@@ -23,7 +23,7 @@ type SimpleGroupProjectTestSuite struct {
 	testArea      string
 	environment   string
 	workspace     string
-	manager       core.ManagerInterface
+	manager       core.ApplicationPlatformManagerInterface
 	group         string
 	faker         *faker.Faker
 	noCleanOnFail bool

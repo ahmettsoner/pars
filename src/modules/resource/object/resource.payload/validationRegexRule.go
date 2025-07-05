@@ -37,7 +37,7 @@ func (s *ValidationRegexRule) UnmarshalYAML(unmarshal func(interface{}) error) e
 			if err := unmarshal(&tempObject); err == nil {
 				s.Pattern = tempObject.Regex
 			} else {
-				return &errors.InvalidFormatForPackageError{Value: tempObject.Regex}
+				return &errors.InvalidFormatForDependencyError{Value: tempObject.Regex}
 			}
 
 			s.ValidationRule = NewValidationRule("Regex", "", Message{})

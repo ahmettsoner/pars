@@ -12,8 +12,6 @@ replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/providers => ../../providers
 
-replace parsdevkit.net/platforms/common => ../../platforms/common
-
 replace parsdevkit.net/platforms/core => ../../platforms/core
 
 replace parsdevkit.net/platforms/angular => ../../platforms/angular
@@ -30,7 +28,6 @@ replace parsdevkit.net/pkg => ../../pkg
 
 require (
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000
-	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 

@@ -31,7 +31,7 @@ type DotnetManager struct {
 	core.BaseManager
 }
 
-func NewDotnetManager() DotnetManager {
+func NewDotnetManager() core.ApplicationPlatformManagerInterface {
 	return DotnetManager{
 		core.BaseManagerNew(".")}
 }
@@ -62,6 +62,9 @@ func DotnetWebAppOptionToDotnetCLITypeString(c dotnetModels.DotnetWebAppOption) 
 	}
 }
 
+func (s DotnetManager) GetKey() models.PlatformType {
+	return models.PlatformTypes.Dotnet
+}
 func (s DotnetManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
 
 	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.Specifications.ProjectType))
@@ -510,7 +513,7 @@ func removeFolderFromItemProperty(xmlContent []byte, folderPath string) ([]byte,
 	return m.XmlIndent("", "    ")
 }
 
-func (s DotnetManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s DotnetManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 
@@ -530,7 +533,7 @@ func (s DotnetManager) AddDependenciesToProject(project applicationproject.Proje
 	return nil
 }
 
-func (s DotnetManager) ListDependenciesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Package, error) {
+func (s DotnetManager) ListDependenciesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Dependency, error) {
 
 	commandArgs := []string{"list", s.GetProjectFileRelativePath(project), "package"}
 
@@ -543,15 +546,15 @@ func (s DotnetManager) ListDependenciesFromProject(project applicationproject.Pr
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	dependencies := make([]applicationProject.Package, 0)
+	dependencies := make([]applicationProject.Dependency, 0)
 	for _, match := range matches {
-		dependencies = append(dependencies, applicationProject.NewPackage(string(match[1]), string(match[2])))
+		dependencies = append(dependencies, applicationProject.NewDependency(string(match[1]), string(match[2])))
 	}
 
 	return dependencies, nil
 }
 
-func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s DotnetManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 		err := providers.DotnetExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "remove", s.GetProjectFileRelativePath(project), "package", _package.Name)
@@ -640,7 +643,7 @@ func (s DotnetManager) IsGroupFileExists(project applicationproject.ProjectBaseS
 func (s DotnetManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
 	return fmt.Sprintf("%v.sln", project.Specifications.GroupObject.Name)
 }
-func (s DotnetManager) HasDependencyOnProject(project applicationproject.ProjectBaseStruct, _package applicationProject.Package) (bool, error) {
+func (s DotnetManager) HasDependencyOnProject(project applicationproject.ProjectBaseStruct, _package applicationProject.Dependency) (bool, error) {
 
 	dependencies, err := s.ListDependenciesFromProject(project)
 	if err != nil {
@@ -649,8 +652,8 @@ func (s DotnetManager) HasDependencyOnProject(project applicationproject.Project
 
 	packageState := false
 
-	for _, projectPackage := range dependencies {
-		if projectPackage.Name == _package.Name && (_string.IsEmpty(_package.Version) || (projectPackage.Version == _package.Version)) {
+	for _, projectDependency := range dependencies {
+		if projectDependency.Name == _package.Name && (_string.IsEmpty(_package.Version) || (projectDependency.Version == _package.Version)) {
 			packageState = true
 			break
 		}
@@ -832,13 +835,13 @@ func (s DotnetManager) HasLayerOnProject(project applicationproject.ProjectBaseS
 }
 
 func (s DotnetManager) PrintDependencies(dependencies []string) string {
-	var nonEmptyPackages []string
+	var nonEmptyDependencies []string
 	for _, pkg := range dependencies {
 		if pkg != "" {
-			nonEmptyPackages = append(nonEmptyPackages, pkg)
+			nonEmptyDependencies = append(nonEmptyDependencies, pkg)
 		}
 	}
-	return strings.Join(nonEmptyPackages, ".")
+	return strings.Join(nonEmptyDependencies, ".")
 }
 func (s DotnetManager) PrintDataType(dataType structs.DataType) string {
 	result := ""

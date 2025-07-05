@@ -20,8 +20,6 @@ replace parsdevkit.net/providers => ../providers
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 
-replace parsdevkit.net/platforms/common => ../platforms/common
-
 replace parsdevkit.net/platforms/nodejs => ../platforms/nodejs
 
 replace parsdevkit.net/platforms/angular => ../platforms/angular

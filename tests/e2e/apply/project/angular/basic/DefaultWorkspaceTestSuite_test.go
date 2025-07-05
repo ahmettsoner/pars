@@ -18,8 +18,6 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
-	platformsCommon "parsdevkit.net/platforms/common"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -91,7 +89,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
@@ -135,7 +133,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithLayer_NameOnl
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
@@ -193,7 +191,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject_WithReference_Nam
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name.")
 
@@ -241,7 +239,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject() {
 
 	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -289,7 +287,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateGroupProject_WithLayer_NameOnl
 
 	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fmt.Sprintf("%v/%v", structData.Group, structData.Name), suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 

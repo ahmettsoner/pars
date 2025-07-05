@@ -66,8 +66,6 @@ replace parsdevkit.net/persistence/contexts => ./data/contexts
 
 replace parsdevkit.net/platforms/core => ./platforms/core
 
-replace parsdevkit.net/platforms/common => ./platforms/common
-
 replace parsdevkit.net/platforms/angular => ./platforms/angular
 
 replace parsdevkit.net/platforms/nodejs => ./platforms/nodejs
@@ -163,7 +161,6 @@ require (
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/dotnet v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect

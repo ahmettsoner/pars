@@ -31,7 +31,7 @@ type NodeJSManager struct {
 	core.BaseManager
 }
 
-func NewNodeJSManager() NodeJSManager {
+func NewNodeJSManager() core.ApplicationPlatformManagerInterface {
 	return NodeJSManager{
 		core.BaseManagerNew("/"),
 	}
@@ -44,6 +44,9 @@ func ProjectTypeToNodeJSCLITypeString(c nodejsModels.NodeJSProjectType) (string,
 	default:
 		return "", fmt.Errorf("error: %v is not defined for %v", c, nodejsModels.NodeJSProjectTypes)
 	}
+}
+func (s NodeJSManager) GetKey() models.PlatformType {
+	return models.PlatformTypes.NodeJS
 }
 
 func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) nodejsModels.NodeJSPlatformVersion {
@@ -285,7 +288,7 @@ func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectBas
 	return foldePath, nil
 }
 
-func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		packageName := _package.Name
@@ -304,7 +307,7 @@ func (s NodeJSManager) AddDependenciesToProject(project applicationproject.Proje
 	return nil
 }
 
-func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "uninstall", _package.Name)

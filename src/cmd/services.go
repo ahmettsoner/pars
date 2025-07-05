@@ -5,6 +5,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
 
 	group "parsdevkit.net/modules/group/basic_group"
@@ -34,15 +35,21 @@ import (
 	objectResourceSchema "parsdevkit.net/modules/resource/object_resource_payload"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
-	platformsCommon "parsdevkit.net/platforms/common"
 	codeTemplateSchema "parsdevkit.net/structs/template/code-template"
 	fileTemplateSchema "parsdevkit.net/structs/template/file-template"
 	sharedTemplateSchema "parsdevkit.net/structs/template/shared-template"
+
+	angularManager "parsdevkit.net/platforms/angular/managers"
+	dotnetManager "parsdevkit.net/platforms/dotnet/managers"
+	goManager "parsdevkit.net/platforms/go/managers"
+	nodejsManager "parsdevkit.net/platforms/nodejs/managers"
+	parsManager "parsdevkit.net/platforms/pars/managers"
 )
 
 func RegisterServices() {
 	registerEngines()
 	registerSchemas()
+	registerPlatformManager()
 	registerContainers()
 }
 func registerSchemas() {
@@ -64,6 +71,13 @@ func registerEngines() {
 	engines.Register(&templateFile.FileTemplateEngine{})
 	engines.Register(&templateShared.SharedTemplateEngine{})
 	engines.Register(&taskCommon.BasicTaskEngine{})
+}
+func registerPlatformManager() {
+	platforms.Register(parsManager.NewParsManager())
+	platforms.Register(dotnetManager.NewDotnetManager())
+	platforms.Register(angularManager.NewAngularManager())
+	platforms.Register(nodejsManager.NewNodeJSManager())
+	platforms.Register(goManager.NewGoManager())
 }
 func registerContainers() {
 	dbContext := contexts.NewDbContext(application.GetEnvironment())
@@ -99,7 +113,7 @@ func registerContainers() {
 		return groupGroup.NewGroupService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[application_project_contract.ProjectInterface](func() application_project_contract.ProjectInterface {
-		return projectApplication.NewApplicationProjectService(application.GetEnvironment(), platformsCommon.Registry)
+		return projectApplication.NewApplicationProjectService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
 		return templateCode.NewCodeTemplateService(application.GetEnvironment())

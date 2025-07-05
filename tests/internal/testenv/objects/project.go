@@ -37,7 +37,7 @@ func BasicProject_WithName(name string, projectType models.ProjectType, platform
 			applicationproject.NewSchema(),
 			applicationproject.NewConfiguration(
 				[]applicationProject.Layer(nil),
-				[]applicationProject.Package(nil),
+				[]applicationProject.Dependency(nil),
 				[]applicationproject.ProjectBaseStruct(nil),
 				[]string(nil),
 				[]string(nil),

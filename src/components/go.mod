@@ -8,8 +8,6 @@ replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 
-replace parsdevkit.net/platforms/common => ../platforms/common
-
 replace parsdevkit.net/platforms/angular => ../platforms/angular
 
 replace parsdevkit.net/platforms/nodejs => ../platforms/nodejs
@@ -44,7 +42,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/angular v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/platforms/common v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/dotnet v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000 // indirect

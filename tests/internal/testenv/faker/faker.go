@@ -555,7 +555,7 @@ func (f *WorkspaceFaker) Name() string {
 type DotnetFaker struct {
 }
 
-func (f *DotnetFaker) Package(netVersion string) (string, string) {
+func (f *DotnetFaker) Dependency(netVersion string) (string, string) {
 	list := make(map[string]string, 0)
 	if netVersion == "Net8" {
 		list["Microsoft.Extensions.DependencyInjection"] = "8.0.0"

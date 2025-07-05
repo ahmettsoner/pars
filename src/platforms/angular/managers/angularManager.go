@@ -29,7 +29,7 @@ type AngularManager struct {
 	core.BaseManager
 }
 
-func NewAngularManager() AngularManager {
+func NewAngularManager() core.ApplicationPlatformManagerInterface {
 	return AngularManager{
 		core.BaseManagerNew("/"),
 	}
@@ -45,7 +45,9 @@ func ProjectTypeToAngularCLITypeString(c angularModels.AngularProjectType) (stri
 		return "", fmt.Errorf("error: %v is not defined for %v", c, angularModels.AngularProjectTypes)
 	}
 }
-
+func (s AngularManager) GetKey() models.PlatformType {
+	return models.PlatformTypes.Angular
+}
 func (s AngularManager) GetPlatformVersion(platform applicationproject.Platform) angularModels.AngularPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := angularModels.AngularPlatformVersions.V17
@@ -279,7 +281,7 @@ func (s AngularManager) CreateProjectFolder(project applicationproject.ProjectBa
 	return foldePath, nil
 }
 
-func (s AngularManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s AngularManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		packageName := _package.Name
@@ -298,7 +300,7 @@ func (s AngularManager) AddDependenciesToProject(project applicationproject.Proj
 	return nil
 }
 
-func (s AngularManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s AngularManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 

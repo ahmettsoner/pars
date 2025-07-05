@@ -24,8 +24,6 @@ replace parsdevkit.net/components => ../../../components
 
 replace parsdevkit.net/platforms/core => ../../../platforms/core
 
-replace parsdevkit.net/platforms/common => ../../../platforms/common
-
 replace parsdevkit.net/platforms/angular => ../../../platforms/angular
 
 replace parsdevkit.net/platforms/pars => ../../../platforms/pars

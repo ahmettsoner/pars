@@ -13,8 +13,9 @@ import (
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/pkg/utilities/file"
 
+	"parsdevkit.net/models"
 	"parsdevkit.net/platforms/core"
-	"parsdevkit.net/platforms/go/models"
+	goModels "parsdevkit.net/platforms/go/models"
 
 	"parsdevkit.net/providers"
 )
@@ -23,18 +24,21 @@ type GoManager struct {
 	core.BaseManager
 }
 
-func NewGoManager() GoManager {
+func NewGoManager() core.ApplicationPlatformManagerInterface {
 	return GoManager{
 		core.BaseManagerNew("/")}
 }
+func (s GoManager) GetKey() models.PlatformType {
+	return models.PlatformTypes.GO
+}
 
-func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) models.GoPlatformVersion {
+func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) goModels.GoPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
-		platformVersion := models.GoPlatformVersions.Go121
+		platformVersion := goModels.GoPlatformVersions.Go121
 
 		return platformVersion
 	} else {
-		platformVersion, err := models.GoPlatformVersionEnumFromString(platform.Version)
+		platformVersion, err := goModels.GoPlatformVersionEnumFromString(platform.Version)
 		if err != nil {
 			panic(err)
 		}
@@ -306,7 +310,7 @@ func (s GoManager) CreateProjectFolder(project applicationproject.ProjectBaseStr
 	return foldersRelativePath, nil
 }
 
-func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 		err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", _package.GetFullName())
@@ -318,7 +322,7 @@ func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBa
 	return nil
 }
 
-func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	fmt.Printf("remove package not implemented yet")
 	// for _, _package := range dependencies {
 	// }

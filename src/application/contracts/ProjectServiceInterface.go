@@ -55,8 +55,8 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 
 	//Dependency
 	ValidateProjectDependencies(model T) (bool, error)
-	AddDependenciesToProject(model T, packages ...project.Package) error
-	RemovePackageToProject(model T, packages ...project.Package) error
+	AddDependenciesToProject(model T, packages ...project.Dependency) error
+	RemoveDependencyFromProject(model T, packages ...project.Dependency) error
 	//ListPackages
 
 	// Actions

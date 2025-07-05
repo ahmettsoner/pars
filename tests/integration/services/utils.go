@@ -216,34 +216,34 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 	return project
 }
 
-func GetPackages(index int, count int, withVersion bool) []applicationProject.Package {
-	packages := []applicationProject.Package{
-		applicationProject.NewPackage("Microsoft.Extensions.DependencyInjection", "8.0.0"),
-		applicationProject.NewPackage("Microsoft.Extensions.Logging", "8.0.0"),
-		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
-		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
-		applicationProject.NewPackage("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
-		applicationProject.NewPackage("Newtonsoft.Json", "13.0.1"),
-		applicationProject.NewPackage("AutoMapper", "11.0.0"),
-		applicationProject.NewPackage("FluentValidation", "11.1.0"),
-		applicationProject.NewPackage("Moq", "4.16.1"),
-		applicationProject.NewPackage("Hangfire", "1.7.22"),
-		applicationProject.NewPackage("Serilog", "2.10.0"),
+func GetDependencies(index int, count int, withVersion bool) []applicationProject.Dependency {
+	packages := []applicationProject.Dependency{
+		applicationProject.NewDependency("Microsoft.Extensions.DependencyInjection", "8.0.0"),
+		applicationProject.NewDependency("Microsoft.Extensions.Logging", "8.0.0"),
+		applicationProject.NewDependency("Microsoft.EntityFrameworkCore.Design", "8.0.2"),
+		applicationProject.NewDependency("Microsoft.EntityFrameworkCore.InMemory", "8.0.2"),
+		applicationProject.NewDependency("Microsoft.EntityFrameworkCore.Sqlite", "8.0.2"),
+		applicationProject.NewDependency("Newtonsoft.Json", "13.0.1"),
+		applicationProject.NewDependency("AutoMapper", "11.0.0"),
+		applicationProject.NewDependency("FluentValidation", "11.1.0"),
+		applicationProject.NewDependency("Moq", "4.16.1"),
+		applicationProject.NewDependency("Hangfire", "1.7.22"),
+		applicationProject.NewDependency("Serilog", "2.10.0"),
 	}
 
 	if count <= 0 || count > len(packages) {
 		return nil
 	}
 
-	var selectedElements []applicationProject.Package
+	var selectedElements []applicationProject.Dependency
 	for _, _package := range packages[index : index+count] {
 		packageVersion := ""
 		if withVersion {
 			packageVersion = _package.Version
 		}
 
-		selectedPackage := applicationProject.NewPackage(_package.Name, packageVersion)
-		selectedElements = append(selectedElements, selectedPackage)
+		selectedDependency := applicationProject.NewDependency(_package.Name, packageVersion)
+		selectedElements = append(selectedElements, selectedDependency)
 	}
 
 	return selectedElements

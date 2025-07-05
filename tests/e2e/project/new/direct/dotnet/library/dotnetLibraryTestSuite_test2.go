@@ -16,7 +16,6 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type DotnetLibraryTestSuite struct {
@@ -77,7 +76,7 @@ func (suite *DotnetLibraryTestSuite) TestCreateBasicProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -121,7 +120,7 @@ func (suite *DotnetLibraryTestSuite) TestCreateGroupProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -168,7 +167,7 @@ func (suite *DotnetLibraryTestSuite) TestCreateGroupLayeredProject() {
 	_, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
 	require.NoError(suite.T(), err, "failed to create new project")
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(fullName, suite.workspace)
 	require.NoError(suite.T(), err, "Failed to get project by full name and workspace name in group.")
 
@@ -221,7 +220,7 @@ func (suite *DotnetLibraryTestSuite) TestCreateGroupNTierProject() {
 		fmt.Sprintf("%v.Core", fullName),
 	}
 
-	service := projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	service := projectApplication.NewApplicationProjectService(suite.environment)
 
 	for _, projectName := range projectNames {
 		project, err := service.GetByFullNameWorkspace(projectName, suite.workspace)

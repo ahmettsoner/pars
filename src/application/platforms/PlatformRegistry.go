@@ -2,12 +2,14 @@ package platforms
 
 import (
 	"fmt"
-	"sort"
+
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/models"
 )
 
-var platformRegistry = make(map[string]PlatformInterface)
+var platformRegistry = make(map[models.PlatformType]interface{})
 
-func Register(m PlatformInterface) {
+func Register[T schemas.SchemaInterface](m PlatformInterface[T]) {
 	name := m.GetKey()
 	if _, exists := platformRegistry[name]; exists {
 		panic(fmt.Sprintf("Platform %s already registered", name))
@@ -15,35 +17,19 @@ func Register(m PlatformInterface) {
 	platformRegistry[name] = m
 }
 
-func Get(name string) PlatformInterface {
+func Get[T schemas.SchemaInterface](name models.PlatformType) PlatformInterface[T] {
 	result, ok := platformRegistry[name]
 	if !ok {
 		panic(fmt.Errorf("no platform found for %s", name))
 	}
 
-	return result
+	return result.(PlatformInterface[T])
 }
 
-func All() []PlatformInterface {
-	all := []PlatformInterface{}
+func All[T schemas.SchemaInterface]() []PlatformInterface[T] {
+	all := []PlatformInterface[T]{}
 	for _, m := range platformRegistry {
-		all = append(all, m)
+		all = append(all, m.(PlatformInterface[T]))
 	}
-	return all
-}
-func AllSorted() []PlatformInterface {
-	all := All()
-	sort.SliceStable(all, func(i, j int) bool {
-		return all[i].GetConfig().Order < all[j].GetConfig().Order
-	})
-	return all
-}
-
-// Order’a göre büyükten küçüğe
-func AllSortedReverse() []PlatformInterface {
-	all := All()
-	sort.SliceStable(all, func(i, j int) bool {
-		return all[i].GetConfig().Order > all[j].GetConfig().Order
-	})
 	return all
 }

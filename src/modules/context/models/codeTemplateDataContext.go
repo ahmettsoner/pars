@@ -4,9 +4,9 @@ import (
 	objectResourceService "parsdevkit.net/components/template/services"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
-	platformsCommon "parsdevkit.net/platforms/common"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
+	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/components/template/models/objectResources"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 )
@@ -21,10 +21,8 @@ type CodeTemplateDataContext struct {
 }
 
 func NewCodeTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
-	manager, err := platformsCommon.GetPlatformManager(project.Specifications.Platform.Type, platformsCommon.Registry)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
+
+	manager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 	templateService := objectResourceService.NewObjectResourceService(manager)
 
 	return &CodeTemplateDataContext{

@@ -11,6 +11,7 @@ import (
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
@@ -26,7 +27,6 @@ import (
 	"github.com/sirupsen/logrus"
 	applicationProject "parsdevkit.net/application/structs/project"
 	projectComponent "parsdevkit.net/components/project"
-	"parsdevkit.net/platforms/core"
 )
 
 type ApplicationProjectService struct {
@@ -34,10 +34,9 @@ type ApplicationProjectService struct {
 	groupRespository     *repositories.GroupRepository
 	projectRespository   *repositories.ProjectRepository
 	settingsRespository  *repositories.SettingsRepository
-	platformRegistry     map[models.PlatformType]func() core.ManagerInterface
 }
 
-func NewApplicationProjectService(environment string, platformRegistry map[models.PlatformType]func() core.ManagerInterface) application_project_contract.ProjectInterface {
+func NewApplicationProjectService(environment string) application_project_contract.ProjectInterface {
 	workspaceRespository := ioc.Get[*repositories.WorkspaceRepository]()
 	groupRespository := ioc.Get[*repositories.GroupRepository]()
 	projectRespository := ioc.Get[*repositories.ProjectRepository]()
@@ -48,16 +47,12 @@ func NewApplicationProjectService(environment string, platformRegistry map[model
 		groupRespository:     groupRespository,
 		projectRespository:   projectRespository,
 		settingsRespository:  settingsRespository,
-		platformRegistry:     platformRegistry,
 	}
 }
 
 func (s *ApplicationProjectService) GetDefaultPlatformProjectType(model applicationproject.ProjectBaseStruct) (models.ProjectType, error) {
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return "", fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	return projectManager.GetDefaultPlatformProjectType(model), nil
 
@@ -113,14 +108,7 @@ func (s ApplicationProjectService) GetByName(name string) (*applicationproject.P
 
 	return template, nil
 }
-func (s *ApplicationProjectService) GetPlatformManager(platform models.PlatformType) (core.ManagerInterface, error) {
-	factory, ok := s.platformRegistry[platform]
-	if !ok {
-		return nil, fmt.Errorf("xxx: Platform Manager bulunamadı '%s'", platform)
-	}
-	manager := factory()
-	return manager, nil
-}
+
 func (s *ApplicationProjectService) GenerateProject(model applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
 	result, err := s.GetByName(model.Header.Name)
@@ -136,7 +124,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje klasörü hazırlama aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
@@ -188,36 +176,28 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 
 	return result, nil
 }
-func (s ApplicationProjectService) AddDependenciesToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Package) error {
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+func (s ApplicationProjectService) AddDependenciesToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
 
-	err = projectManager.AddDependenciesToProject(model, dependencies)
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	err := projectManager.AddDependenciesToProject(model, dependencies)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
 	}
 	return nil
 
 }
-func (s ApplicationProjectService) RemovePackageToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Package) error {
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return fmt.Errorf("xxx: Application Project Paket kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+func (s ApplicationProjectService) RemoveDependencyFromProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
-	err = projectManager.RemoveDependenciesFromProject(model, dependencies)
+	err := projectManager.RemoveDependenciesFromProject(model, dependencies)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
 	}
 	return nil
 }
 func (s ApplicationProjectService) AddReferenceToProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return fmt.Errorf("xxx: Application Project Reference eklerken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
 		err := projectManager.AddReferenceToProject(model, []applicationproject.ProjectBaseStruct{ref})
@@ -229,10 +209,8 @@ func (s ApplicationProjectService) AddReferenceToProject(model applicationprojec
 	return nil
 }
 func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return fmt.Errorf("xxx: Application Project Reference kaldırırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
 		err := projectManager.RemoveReferenceFromProject(model, []applicationproject.ProjectBaseStruct{ref})
@@ -254,10 +232,7 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 		return "", fmt.Errorf("xxx: Application Project proje klasörü oluştururken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü tanımlanırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	if len(paths) > 0 {
 		err := projectManager.AddFolderToProjectDefinition(model, paths...)
@@ -279,11 +254,7 @@ func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.
 		return "", fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return "", fmt.Errorf("xxx: Application Project proje klasörü kaldırılırken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
-	}
-
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if len(paths) > 0 {
 		err := projectManager.RemoveFolderFromProjectDefinition(model, paths...)
 
@@ -676,11 +647,7 @@ func (s *ApplicationProjectService) CheckIfWorkingOnProject() (*applicationproje
 // OK!
 func (s *ApplicationProjectService) ValidateProjectStructure(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project File Structure Validasyon, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
-	}
-
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if !_string.IsEmpty(model.Specifications.Group) {
 		state, err := projectManager.IsGroupFolderExists(model)
 		if err != nil {
@@ -725,20 +692,17 @@ func (s *ApplicationProjectService) ValidateProjectStructure(model applicationpr
 
 	return true, nil
 }
-func (s *ApplicationProjectService) ValidateProjectDependency(model applicationproject.ProjectBaseStruct, _package applicationProject.Package) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectDependency(model applicationproject.ProjectBaseStruct, _package applicationProject.Dependency) (bool, error) {
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	dependencies, err := projectManager.ListDependenciesFromProject(model)
 	if err != nil {
 		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında paket listesi alınırken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
 	}
 
-	for _, projectPackage := range dependencies {
-		if projectPackage.Name == _package.Name && projectPackage.Version == _package.Version {
+	for _, projectDependency := range dependencies {
+		if projectDependency.Name == _package.Name && projectDependency.Version == _package.Version {
 			return true, nil
 		}
 	}
@@ -747,11 +711,7 @@ func (s *ApplicationProjectService) ValidateProjectDependency(model applicationp
 }
 
 func (s *ApplicationProjectService) ValidateProjectDependencies(model applicationproject.ProjectBaseStruct) (bool, error) {
-
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, _package := range model.Specifications.Configuration.Dependencies {
 		isValid, err := projectManager.HasDependencyOnProject(model, _package)
@@ -768,10 +728,7 @@ func (s *ApplicationProjectService) ValidateProjectDependencies(model applicatio
 
 func (s *ApplicationProjectService) ValidateProjectReferences(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, reference := range model.Specifications.Configuration.References {
 		isValid, err := projectManager.HasReferenceOnProject(model, reference)
@@ -787,10 +744,8 @@ func (s *ApplicationProjectService) ValidateProjectReferences(model applicationp
 }
 func (s *ApplicationProjectService) IsProjectFileExists(model applicationproject.ProjectBaseStruct) (bool, error) {
 
-	projectManager, err := s.GetPlatformManager(model.Specifications.Platform.Type)
-	if err != nil {
-		return false, fmt.Errorf("xxx: Application Project proje dosyaları kontrolünde, Platform Manager bulunamadı '%s'\n%w", model.Specifications.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+
 	state, err := projectManager.IsProjectFileExists(model)
 	if err != nil {
 		return false, fmt.Errorf("xxx: Application Project proje dosyaları kontrolünde hata oluştu: '%s'\n%w", model.Specifications.Name, err)
@@ -915,13 +870,10 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 }
 func (s *ApplicationProjectService) DestroyProject(project applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında, Platform Manager bulunamadı '%s'\n%w", project.Header.Name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	logrus.Debugf("project (%v) content removing", project.Header.Name)
-	err = projectManager.RemoveProject(project)
+	err := projectManager.RemoveProject(project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project Silme aşamasında beklenmeyen hata oluştu '%s'\n%w", project.Header.Name, err)
 	}
@@ -1108,10 +1060,8 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Gruba ait Application Project Build aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.BuildProject(project)
 	if err != nil {
@@ -1186,10 +1136,7 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Clean aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.CleanProject(project)
 	if err != nil {
@@ -1264,10 +1211,7 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Clean aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.CleanProject(project)
 	if err != nil {
@@ -1342,10 +1286,7 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Install aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.InstallProject(project)
 	if err != nil {
@@ -1419,10 +1360,7 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Test aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.TestProject(project)
 	if err != nil {
@@ -1497,10 +1435,7 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Release aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.PackageProject(project)
 	if err != nil {
@@ -1575,10 +1510,7 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager, err := s.GetPlatformManager(project.Specifications.Platform.Type)
-	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project Run aşamasında, Platform Manager bulunamadı '%s'\n%w", name, err)
-	}
+	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.RunProject(project)
 	if err != nil {

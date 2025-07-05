@@ -1,6 +1,7 @@
 package models
 
 import (
+	"parsdevkit.net/application/platforms"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
 	filetemplate "parsdevkit.net/structs/template/file-template"
@@ -8,7 +9,6 @@ import (
 	"parsdevkit.net/components/template/models/objectResources"
 	objectResourceService "parsdevkit.net/components/template/services"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	platformsCommon "parsdevkit.net/platforms/common"
 )
 
 type FileTemplateDataContext struct {
@@ -21,10 +21,8 @@ type FileTemplateDataContext struct {
 }
 
 func NewFileTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer dataresource.Layer) *FileTemplateDataContext {
-	manager, err := platformsCommon.GetPlatformManager(project.Specifications.Platform.Type, platformsCommon.Registry)
-	if err != nil {
-		// return ObjectResourceService{}, fmt.Errorf("xxx: Yeni object resource init aşamasında, Platform Manager bulunamadı '%s'\n%w", err)
-	}
+
+	manager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
 	templateService := objectResourceService.NewObjectResourceService(manager)
 
 	return &FileTemplateDataContext{

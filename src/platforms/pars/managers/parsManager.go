@@ -10,28 +10,32 @@ import (
 
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
 
+	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
-	"parsdevkit.net/platforms/pars/models"
+	parsModels "parsdevkit.net/platforms/pars/models"
 )
 
 type ParsManager struct {
 	core.BaseManager
 }
 
-func NewParsManager() ParsManager {
+func NewParsManager() core.ApplicationPlatformManagerInterface {
 	return ParsManager{
 		core.BaseManagerNew(":"),
 	}
 }
+func (s ParsManager) GetKey() models.PlatformType {
+	return models.PlatformTypes.Pars
+}
 
-func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) models.ParsPlatformVersion {
+func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) parsModels.ParsPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
-		platformVersion := models.ParsPlatformVersions.BetaV1
+		platformVersion := parsModels.ParsPlatformVersions.BetaV1
 
 		return platformVersion
 	} else {
-		platformVersion, err := models.ParsPlatformVersionEnumFromString(platform.Version)
+		platformVersion, err := parsModels.ParsPlatformVersionEnumFromString(platform.Version)
 		if err != nil {
 			panic(err)
 		}
@@ -157,12 +161,12 @@ func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectBaseS
 	return foldersRelativePath, nil
 }
 
-func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Package) error {
+func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	return nil
 }

@@ -222,12 +222,12 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 		}
 
 		if !reflect.DeepEqual(project.Specifications.Configuration.Dependencies, existingProject.Specifications.Configuration.Dependencies) {
-			newItems := make([]applicationProject.Package, 0)
+			newItems := make([]applicationProject.Dependency, 0)
 			updatedItems := make([]struct {
-				Old applicationProject.Package
-				New applicationProject.Package
+				Old applicationProject.Dependency
+				New applicationProject.Dependency
 			}, 0)
-			deletedItems := make([]applicationProject.Package, 0)
+			deletedItems := make([]applicationProject.Dependency, 0)
 
 			for _, newItem := range project.Specifications.Configuration.Dependencies {
 				found := false
@@ -236,8 +236,8 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 						found = true
 						if !reflect.DeepEqual(newItem, existingItem) {
 							updatedItems = append(updatedItems, struct {
-								Old applicationProject.Package
-								New applicationProject.Package
+								Old applicationProject.Dependency
+								New applicationProject.Dependency
 							}{
 								Old: existingItem,
 								New: newItem,
@@ -273,7 +273,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}
 			if len(updatedItems) > 0 {
 				for _, item := range updatedItems {
-					err := projectService.RemovePackageToProject(project, item.Old)
+					err := projectService.RemoveDependencyFromProject(project, item.Old)
 					if err != nil {
 						return err
 					}
@@ -284,7 +284,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 				}
 			}
 			if len(deletedItems) > 0 {
-				err := projectService.RemovePackageToProject(project, deletedItems...)
+				err := projectService.RemoveDependencyFromProject(project, deletedItems...)
 				if err != nil {
 					return err
 				}

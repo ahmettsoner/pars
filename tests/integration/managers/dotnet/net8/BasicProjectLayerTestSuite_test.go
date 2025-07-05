@@ -21,7 +21,7 @@ type BasicProjectLayerTestSuite struct {
 	testArea      string
 	environment   string
 	workspace     string
-	manager       core.ManagerInterface
+	manager       core.ApplicationPlatformManagerInterface
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

@@ -10,7 +10,7 @@ import (
 
 type Configuration struct {
 	Layers       []applicationProject.Layer
-	Dependencies []applicationProject.Package
+	Dependencies []applicationProject.Dependency
 	References   []ProjectBaseStruct
 	Options      []string
 	Modules      []string
@@ -18,7 +18,7 @@ type Configuration struct {
 	Patterns     []string
 }
 
-func NewConfiguration(layers []applicationProject.Layer, dependencies []applicationProject.Package, references []ProjectBaseStruct, options, modules, components, patterns []string) Configuration {
+func NewConfiguration(layers []applicationProject.Layer, dependencies []applicationProject.Dependency, references []ProjectBaseStruct, options, modules, components, patterns []string) Configuration {
 	return Configuration{
 		Layers:       layers,
 		Dependencies: dependencies,
@@ -33,7 +33,7 @@ func NewConfiguration(layers []applicationProject.Layer, dependencies []applicat
 func NewConfiguration_Empty() Configuration {
 	return Configuration{
 		Layers:       []applicationProject.Layer(nil),
-		Dependencies: []applicationProject.Package(nil),
+		Dependencies: []applicationProject.Dependency(nil),
 		References:   []ProjectBaseStruct(nil),
 		Options:      []string(nil),
 		Modules:      []string(nil),
@@ -50,7 +50,7 @@ func (s *Configuration) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempObject struct {
 		Layers       []applicationProject.Layer             `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
-		Dependencies []applicationProject.Package           `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
+		Dependencies []applicationProject.Dependency        `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
 		References   []applicationProject.ProjectIdentifier `yaml:"References"`   //Burda inline defination eklenmeli, Workspace::Group/Name formatında "pars::core/utils, pars::service/project" gibi
 		Options      []string                               `yaml:"Options"`
 		Modules      []string                               `yaml:"Modules"`

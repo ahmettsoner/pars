@@ -24,7 +24,7 @@ type GroupProjectReferenceTestSuite struct {
 	environment   string
 	workspace     string
 	group         string
-	manager       core.ManagerInterface
+	manager       core.ApplicationPlatformManagerInterface
 	projects      []applicationproject.ProjectBaseStruct
 	faker         *faker.Faker
 	noCleanOnFail bool

@@ -95,7 +95,7 @@ func (s *Variable) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			s.Name = name
 			s.Type = structs.NewDataType(_type, structs.TypePackage{}, category, modifier, []structs.DataType(nil))
 		} else {
-			return &errors.InvalidFormatForPackageError{Value: value}
+			return &errors.InvalidFormatForDependencyError{Value: value}
 		}
 	}
 

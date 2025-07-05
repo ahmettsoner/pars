@@ -36,8 +36,8 @@ References:
 
 	expected := applicationproject.NewConfiguration(
 		[]applicationProject.Layer(nil),
-		[]applicationProject.Package{
-			applicationProject.NewPackage("gopkg.in/yaml.v3", "v3.0.1"),
+		[]applicationProject.Dependency{
+			applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
 		},
 		[]applicationproject.ProjectBaseStruct{
 			applicationproject.NewProjectBaseStruct(

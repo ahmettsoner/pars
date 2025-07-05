@@ -14,8 +14,6 @@ import (
 	"pars/tests/internal/testenv/faker"
 	"pars/tests/internal/testenv/objects"
 
-	platformsCommon "parsdevkit.net/platforms/common"
-
 	projectApplication "parsdevkit.net/modules/project/application_project"
 	"parsdevkit.net/modules/project/application_project_contract"
 
@@ -45,7 +43,7 @@ func (suite *ProjectServiceTestSuite) SetupSuite() {
 	testArea := application.GenerateTestArea()
 	suite.environment = common.GenerateEnvironment(suite.T(), testArea)
 	suite.workspaceName = suite.faker.Workspace.Name()
-	suite.service = projectApplication.NewApplicationProjectService(suite.environment, platformsCommon.Registry)
+	suite.service = projectApplication.NewApplicationProjectService(suite.environment)
 
 	tempWorkingDir, err := test.CreateTempTestDirectory(testArea)
 	require.NoError(suite.T(), err, "Create temporary directory failed")

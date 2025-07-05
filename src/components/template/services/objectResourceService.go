@@ -17,10 +17,10 @@ import (
 )
 
 type ObjectResourceService struct {
-	manager core.ManagerInterface
+	manager core.ApplicationPlatformManagerInterface
 }
 
-func NewObjectResourceService(manager core.ManagerInterface) ObjectResourceService {
+func NewObjectResourceService(manager core.ApplicationPlatformManagerInterface) ObjectResourceService {
 	return ObjectResourceService{
 		manager: manager,
 	}

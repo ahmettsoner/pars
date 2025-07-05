@@ -58,7 +58,7 @@ func (s *ValidationLengthRule) UnmarshalYAML(unmarshal func(interface{}) error) 
 						s.Max = intVal2
 					}
 				} else {
-					return &errors.InvalidFormatForPackageError{Value: tempObject.Length}
+					return &errors.InvalidFormatForDependencyError{Value: tempObject.Length}
 				}
 
 				s.ValidationRule = NewValidationRule("Length", "", Message{})
