@@ -41,6 +41,41 @@ func NewFileTemplateOperations(environment string) FileTemplateOperations {
 
 func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBaseStruct) error {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	layers := make([]string, 0)
+	for _, modelLayer := range model.Specifications.Layers {
+		layers = append(layers, modelLayer.Name)
+	}
+
+	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	templates, err := templateService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Template(s) found for layer '%v' \n", len(*templates), model.Header.Name)
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projects, err := projectService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Projcet(s) found for layer '%v' \n", len(*projects), model.Header.Name)
+
+	for _, layer := range model.Specifications.Layers {
+
+		for _, setProject := range *projects {
+			projectWorkspace, err := workspaceService.GetByName(setProject.Specifications.Workspace)
+			if err != nil {
+				return err
+			}
+
+			for _, template := range *templates {
+				err := s.GenerateContent(*projectWorkspace, setProject, model, template, layer.LayerIdentifier)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
 
 	for _, layer := range model.Specifications.Layers {
 		templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
@@ -77,37 +112,39 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 
 func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBaseStruct) error {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	layers := make([]string, 0)
+	for _, modelLayer := range model.Specifications.Layers {
+		layers = append(layers, modelLayer.Name)
+	}
+
+	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
+	resources, err := resourceService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Resource(s) found for layer '%v' \n", len(*resources), model.Header.Name)
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projects, err := projectService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Projcet(s) found for layer '%v' \n", len(*projects), model.Header.Name)
 
 	for _, modelLayer := range model.Specifications.Layers {
-		resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
-		setResources, err := resourceService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
-		if err != nil {
-			return err
-		}
-		logrus.Debugf("%d Resource(s) found for layer '%v' on Template %v\n", len(*setResources), modelLayer.Name, model.Header.Name)
-
-		projectService := ioc.Get[application_project_contract.ProjectInterface]()
-		setProjects, err := projectService.ListBySetAndLayers(model.Specifications.Set, modelLayer.Name)
-		if err != nil {
-			return err
-		}
-
-		//TODO: selector işlemleri bu noktada gerçekleştirilebilir?
-		for _, setProject := range *setProjects {
-			projectWorkspace, err := workspaceService.GetByName(setProject.Specifications.Workspace)
+		for _, project := range *projects {
+			projectWorkspace, err := workspaceService.GetByName(project.Specifications.Workspace)
 			if err != nil {
 				return err
 			}
 
-			for _, setResource := range *setResources {
-				err := s.GenerateContent(*projectWorkspace, setProject, setResource, model, modelLayer.LayerIdentifier)
+			for _, resource := range *resources {
+				err := s.GenerateContent(*projectWorkspace, project, resource, model, modelLayer.LayerIdentifier)
 				if err != nil {
 					return err
 				}
 			}
 		}
-
-		logrus.Debugf("%d Project(s) found for layer '%v' on Template %v\n", len(*setProjects), modelLayer.Name, model.Header.Name)
 	}
 	return nil
 }

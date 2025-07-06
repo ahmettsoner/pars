@@ -7,6 +7,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/models/label"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/persistence/repositories"
@@ -134,6 +135,24 @@ func (s FileTemplateService) ListByWorkspaceSetAndLayers(workspace, set string, 
 	return &templateList, nil
 }
 
+func (s FileTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]filetemplate.TemplateBaseStruct), error) {
+
+	entityList, err := s.templateRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
+	if err != nil {
+		return nil, err
+	}
+
+	templateList := make([]filetemplate.TemplateBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var template filetemplate.TemplateBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &template)
+
+		templateList = append(templateList, template)
+	}
+
+	return &templateList, nil
+}
 func (s FileTemplateService) Remove(name, workspace string, permanent bool) (*filetemplate.TemplateBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 

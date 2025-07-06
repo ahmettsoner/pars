@@ -12,6 +12,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
 
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
@@ -120,6 +121,24 @@ func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*
 func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
+	if err != nil {
+		return nil, err
+	}
+
+	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var template codetemplate.TemplateBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &template)
+
+		templateList = append(templateList, template)
+	}
+
+	return &templateList, nil
+}
+func (s CodeTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]codetemplate.TemplateBaseStruct), error) {
+
+	entityList, err := s.templateRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}

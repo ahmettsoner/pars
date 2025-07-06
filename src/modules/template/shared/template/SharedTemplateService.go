@@ -7,6 +7,7 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/models/label"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	"parsdevkit.net/persistence/repositories"
@@ -68,6 +69,24 @@ func (s SharedTemplateService) ListBySetAndLayers(set string, layers ...string) 
 	return &templateList, nil
 }
 
+func (s SharedTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]sharedtemplate.TemplateBaseStruct), error) {
+
+	entityList, err := s.templateRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
+	if err != nil {
+		return nil, err
+	}
+
+	templateList := make([]sharedtemplate.TemplateBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var template sharedtemplate.TemplateBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &template)
+
+		templateList = append(templateList, template)
+	}
+
+	return &templateList, nil
+}
 func (s SharedTemplateService) Save(model sharedtemplate.TemplateBaseStruct) (*sharedtemplate.TemplateBaseStruct, error) {
 
 	result, err := s.saveTemplateInformation(model)

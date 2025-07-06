@@ -172,7 +172,7 @@ func (s DataResourceService) ListByWorkspaceAndSetAndLayers(workspace, set strin
 }
 func (s DataResourceService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]dataresource.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
+	entityList, err := s.resourceRepository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}

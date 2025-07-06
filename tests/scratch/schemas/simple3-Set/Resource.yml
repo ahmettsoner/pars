@@ -1,0 +1,5 @@
+Type: Resource
+Kind: Object
+Name: Res1
+Specifications:
+  Set: S1

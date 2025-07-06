@@ -1,0 +1,9 @@
+Type: Template
+Kind: Code
+Name: Tmpl1
+Specifications:
+  Layers:
+    - L1
+  Template:
+    Code: |
+      Laboris nulla pariatur cillum adipisicing velit eiusmod dolor fugiat.
