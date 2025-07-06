@@ -3,6 +3,5 @@ Kind: Application
 Name: App1
 Specifications:
   Platform: Dotnet
-  Configurations:
-    Layers:
-      - L1
+  Layers:
+    - L1
