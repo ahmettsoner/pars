@@ -1,0 +1,7 @@
+Type: Project
+Kind: Application
+Name: App1
+Specifications:
+  Platform: Dotnet
+  Labels:
+  - K1

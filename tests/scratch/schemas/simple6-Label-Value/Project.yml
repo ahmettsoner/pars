@@ -1,0 +1,8 @@
+Type: Project
+Kind: Application
+Name: App1
+Specifications:
+  Platform: Dotnet
+  Labels:
+  - Key:
+    Value: V1
