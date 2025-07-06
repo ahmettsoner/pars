@@ -154,7 +154,7 @@ func (s *ProjectRepository) ListByFilter(set, workspace string, layers []string,
 
 	// Join'leri ihtiyaca göre ekle
 	if len(layers) > 0 {
-		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Layers') AS l")
+		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Configuration.Layers') AS l")
 	}
 	if len(tags) > 0 {
 		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Header.Metadata.Tags') AS t")

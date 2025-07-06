@@ -116,9 +116,9 @@ func (s *ResourceRepository) ListByFilter(set, workspace string, layers []string
 	if len(layers) > 0 {
 		joins = append(joins, "LEFT JOIN json_each(resources.document, '$.Specifications.Layers') AS l")
 	}
-	// if len(tags) > 0 {
-	// 	joins = append(joins, "LEFT JOIN json_each(resources.document, '$.Header.Metadata.Tags') AS t")
-	// }
+	if len(tags) > 0 {
+		joins = append(joins, "LEFT JOIN json_each(resources.document, '$.Header.Metadata.Tags') AS t")
+	}
 	if len(labels) > 0 {
 		joins = append(joins, "LEFT JOIN json_each(resources.document, '$.Specifications.Labels') AS lbl")
 	}
@@ -156,14 +156,14 @@ func (s *ResourceRepository) ListByFilter(set, workspace string, layers []string
 	}
 
 	// tags
-	// if len(tags) > 0 {
-	// 	tagPlaceholders := make([]string, len(tags))
-	// 	for i, tag := range tags {
-	// 		tagPlaceholders[i] = "?"
-	// 		args = append(args, tag)
-	// 	}
-	// 	where = append(where, fmt.Sprintf("t.value IN (%s)", strings.Join(tagPlaceholders, ",")))
-	// }
+	if len(tags) > 0 {
+		tagPlaceholders := make([]string, len(tags))
+		for i, tag := range tags {
+			tagPlaceholders[i] = "?"
+			args = append(args, tag)
+		}
+		where = append(where, fmt.Sprintf("t.value IN (%s)", strings.Join(tagPlaceholders, ",")))
+	}
 
 	// labels
 	if len(labels) > 0 {
