@@ -207,6 +207,9 @@ func (s DataResourceEngine) completeInformation(ctx *application.ApplicationCont
 	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
+	if len(model.Specifications.Layers) == 0 {
+		model.Specifications.Layers = append(model.Specifications.Layers, dataresourceStruct.Layer{})
+	}
 	return nil
 }
 

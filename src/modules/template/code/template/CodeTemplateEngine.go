@@ -217,6 +217,10 @@ func (s CodeTemplateEngine) completeInformation(ctx *application.ApplicationCont
 		model.Specifications.Output.File = model.Header.Name
 	}
 
+	if len(model.Specifications.Layers) == 0 {
+		model.Specifications.Layers = append(model.Specifications.Layers, codetemplate.Layer{})
+	}
+
 	return nil
 }
 

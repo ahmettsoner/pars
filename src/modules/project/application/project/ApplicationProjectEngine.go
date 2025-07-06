@@ -442,6 +442,7 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 		return err
 	}
 
+	model.Specifications.Configuration.Layers = append(model.Specifications.Configuration.Layers, applicationProject.Layer{})
 	model.Specifications.ProjectType = projectType
 	return nil
 }

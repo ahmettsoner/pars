@@ -217,6 +217,10 @@ func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationCont
 	if _string.IsEmpty(model.Specifications.Output.File) {
 		model.Specifications.Output.File = model.Header.Name
 	}
+
+	if len(model.Specifications.Layers) == 0 {
+		model.Specifications.Layers = append(model.Specifications.Layers, filetemplate.Layer{})
+	}
 	return nil
 }
 
