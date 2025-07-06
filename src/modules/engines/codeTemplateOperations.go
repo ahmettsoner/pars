@@ -115,6 +115,50 @@ func (s CodeTemplateOperations) GenerateByTemplate(model codetemplate.TemplateBa
 	return nil
 }
 
+func (s CodeTemplateOperations) GenerateByTemplateV2(model codetemplate.TemplateBaseStruct) error {
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	layers := make([]string, 0)
+	for _, modelLayer := range model.Specifications.Layers {
+		layers = append(layers, modelLayer.Name)
+	}
+
+	// set, workspace, group string, layers []string, tags []string, labels []label.Label
+	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
+	setResources, err := resourceService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Resource(s) found for layer '%v' \n", len(*setResources), model.Header.Name)
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projects, err := projectService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
+	if err != nil {
+		return err
+	}
+	logrus.Debugf("%d Projcet(s) found for layer '%v' \n", len(*setResources), model.Header.Name)
+
+	if len(model.Specifications.Layers) == 0 {
+		model.Specifications.Layers = append(model.Specifications.Layers, codetemplate.Layer{})
+	}
+	for _, modelLayer := range model.Specifications.Layers {
+
+		for _, project := range *projects {
+			projectWorkspace, err := workspaceService.GetByName(project.Specifications.Workspace)
+			if err != nil {
+				return err
+			}
+
+			for _, setResource := range *setResources {
+				err := s.GenerateContent(*projectWorkspace, project, setResource, model, modelLayer.LayerIdentifier)
+				if err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
+
 func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 

@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/modules/group/basic_group_contract"
+	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type GroupEngine struct{}
@@ -152,7 +153,9 @@ func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, mo
 
 	logrus.Debugf("filling group (%v) information", model.Header.Name)
 
-	model.Specifications.Name = model.Header.Name
+	if _string.IsEmpty(model.Specifications.Name) {
+		model.Specifications.Name = model.Header.Name
+	}
 
 	return nil
 }

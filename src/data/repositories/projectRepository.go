@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/pkg/utilities/encrypt"
@@ -139,6 +141,92 @@ func (s *ProjectRepository) GetByNameGroupAndWorkspaceName(name string, groupNam
 		return nil, result.Error
 	}
 	return entity, nil
+}
+
+func (s *ProjectRepository) ListByFilter(set, workspace string, layers []string, tags []string, labels []map[string]string) (*([]entities.Project), error) {
+	var projects []entities.Project
+	var args []interface{}
+	var joins []string
+	var where []string
+
+	sql := strings.Builder{}
+	sql.WriteString("SELECT DISTINCT projects.* FROM projects")
+
+	// Join'leri ihtiyaca göre ekle
+	if len(layers) > 0 {
+		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Layers') AS l")
+	}
+	if len(tags) > 0 {
+		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Header.Metadata.Tags') AS t")
+	}
+	if len(labels) > 0 {
+		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Labels') AS lbl")
+	}
+	if len(joins) > 0 {
+		sql.WriteString("\n" + strings.Join(joins, "\n"))
+	}
+
+	// workspace
+	where = append(where, "json_extract(projects.document, '$.Specifications.Workspace') = ?")
+	args = append(args, workspace)
+
+	// set
+	where = append(where, "json_extract(projects.document, '$.Specifications.Set') = ?")
+	args = append(args, set)
+
+	// layers
+	if len(layers) > 0 {
+		layerPlaceholders := make([]string, len(layers))
+		for i, layer := range layers {
+			layerPlaceholders[i] = "?"
+			args = append(args, layer)
+		}
+		where = append(where, fmt.Sprintf("json_extract(l.value, '$.Name') IN (%s)", strings.Join(layerPlaceholders, ",")))
+	}
+
+	// tags
+	if len(tags) > 0 {
+		tagPlaceholders := make([]string, len(tags))
+		for i, tag := range tags {
+			tagPlaceholders[i] = "?"
+			args = append(args, tag)
+		}
+		where = append(where, fmt.Sprintf("t.value IN (%s)", strings.Join(tagPlaceholders, ",")))
+	}
+
+	// labels
+	if len(labels) > 0 {
+		var labelConds []string
+		for _, lbl := range labels {
+			var condParts []string
+			if key, ok := lbl["Key"]; ok && key != "" {
+				condParts = append(condParts, "json_extract(lbl.value, '$.Key') = ?")
+				args = append(args, key)
+			}
+			if val, ok := lbl["Value"]; ok && val != "" {
+				condParts = append(condParts, "json_extract(lbl.value, '$.Value') = ?")
+				args = append(args, val)
+			}
+			if len(condParts) > 0 {
+				labelConds = append(labelConds, "("+strings.Join(condParts, " AND ")+")")
+			}
+		}
+		if len(labelConds) > 0 {
+			where = append(where, "("+strings.Join(labelConds, " OR ")+")")
+		}
+	}
+
+	// WHERE varsa ekle
+	if len(where) > 0 {
+		sql.WriteString("\nWHERE " + strings.Join(where, " AND "))
+	}
+
+	// Sorguyu çalıştır
+	result := s.DbContext.Database.Raw(sql.String(), args...).Scan(&projects)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &projects, nil
 }
 
 // func (s *ProjectRepository) ListBySet(set string) (*([]entities.Project), error) {

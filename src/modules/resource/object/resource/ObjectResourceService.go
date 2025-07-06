@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/models/label"
 	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
 
 	"parsdevkit.net/modules/resource/object_resource_contract"
@@ -155,6 +156,25 @@ func (s ObjectResourceService) ListBySetAndLayers(set string, layers ...string) 
 func (s ObjectResourceService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]objectresource.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
+	if err != nil {
+		return nil, err
+	}
+
+	templateList := make([]objectresource.ResourceBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var template objectresource.ResourceBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &template)
+
+		templateList = append(templateList, template)
+	}
+
+	return &templateList, nil
+}
+
+func (s ObjectResourceService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]objectresource.ResourceBaseStruct), error) {
+
+	entityList, err := s.resourceRepository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}

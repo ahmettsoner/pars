@@ -1,6 +1,7 @@
 package contracts
 
 import (
+	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
@@ -21,7 +22,7 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 
 	//Query
 	// GetByName(name string, workspaceName string) (*T, error)
-	// ListByFilter(set, workspace, group string, layers ...string) (*([]T), error)
+	ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]T), error)
 
 	GetByFullNameWorkspace(name string, workspaceName string) (*T, error) //GetByName olarak değişecek
 	ListBySet(set string) (*([]T), error)

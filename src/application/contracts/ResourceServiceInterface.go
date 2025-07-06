@@ -1,6 +1,9 @@
 package contracts
 
-import "parsdevkit.net/application/schemas"
+import (
+	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/schemas"
+)
 
 type ResourceServiceInterface[T schemas.SchemaInterface] interface {
 	GetByName(name string) (*T, error)
@@ -11,6 +14,7 @@ type ResourceServiceInterface[T schemas.SchemaInterface] interface {
 	ListByWorkspaceAndSet(workspace, set string) (*([]T), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]T), error)
 	ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]T), error)
+	ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]T), error)
 	Remove(name, workspace string, force, permanent bool) (*T, error)
 	IsExists(name, workspace string) (bool, error)
 	GetHash(name string) (string, error)

@@ -92,3 +92,19 @@ func (s *Label) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	return nil
 }
+func ConvertLabelsToMap(labels []Label) []map[string]string {
+	var result []map[string]string
+	for _, lbl := range labels {
+		item := map[string]string{}
+		if lbl.Key != "" {
+			item["Key"] = lbl.Key
+		}
+		if lbl.Value != "" {
+			item["Value"] = lbl.Value
+		}
+		if len(item) > 0 {
+			result = append(result, item)
+		}
+	}
+	return result
+}

@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"parsdevkit.net/application/models/label"
+
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"parsdevkit.net/application/ioc"
@@ -428,6 +430,28 @@ func (s *ApplicationProjectService) ListBySetAndLayers(set string, layers ...str
 	entityList, err := s.projectRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Set ve Layer'a ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s', '%s'\n%w", set, layers, err)
+	}
+
+	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+
+	for _, entity := range *entityList {
+		var project applicationproject.ProjectBaseStruct
+		err = json.Unmarshal([]byte(entity.Document), &project)
+		if err != nil {
+			return nil, fmt.Errorf("xxx: Set ve Layer'a ait Application Project data %+v is corrupted or not in the expected format, '%s', '%s'\n%w", entity.Document, set, layers, err)
+		}
+
+		projectList = append(projectList, project)
+	}
+
+	return &projectList, nil
+}
+
+func (s *ApplicationProjectService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]applicationproject.ProjectBaseStruct), error) {
+
+	entityList, err := s.projectRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Filtreye ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s', '%s'\n%w", set, layers, err)
 	}
 
 	projectList := make([]applicationproject.ProjectBaseStruct, 0)

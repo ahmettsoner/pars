@@ -167,7 +167,9 @@ func (s SharedTemplateEngine) completeInformation(ctx *application.ApplicationCo
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
-	model.Specifications.Name = model.Header.Name
+	if _string.IsEmpty(model.Specifications.Name) {
+		model.Specifications.Name = model.Header.Name
+	}
 
 	activeWorkspace, err := s.getWorkspace(ctx, *model)
 	if err != nil {

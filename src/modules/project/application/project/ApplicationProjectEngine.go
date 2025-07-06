@@ -47,7 +47,7 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 			return fmt.Errorf("invalid item type in Process: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
 		}
 
-		if err := s.completeProjectInformation(ctx, applicationproject); err != nil {
+		if err := s.completeInformation(ctx, applicationproject); err != nil {
 			return err
 		}
 		applicationprojects = append(applicationprojects, *applicationproject)
@@ -64,7 +64,7 @@ func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, d
 			return fmt.Errorf("invalid item type in Destroy: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
 		}
 
-		if err := s.completeProjectInformation(ctx, applicationproject); err != nil {
+		if err := s.completeInformation(ctx, applicationproject); err != nil {
 			return err
 		}
 		applicationprojects = append(applicationprojects, *applicationproject)
@@ -398,46 +398,51 @@ func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectSt
 	return nil
 }
 
-func (s ApplicationProjectEngine) completeProjectInformation(ctx *application.ApplicationContext, project *applicationprojectStruct.ProjectBaseStruct) error {
+func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *applicationprojectStruct.ProjectBaseStruct) error {
 
-	logrus.Debugf("filling project (%v) information", project.Header.Name)
+	logrus.Debugf("filling project (%v) information", model.Header.Name)
 
-	project.Specifications.Name = project.Header.Name
+	if _string.IsEmpty(model.Specifications.Name) {
+		model.Specifications.Name = model.Header.Name
+	}
+	if len(model.Specifications.ProjectIdentifier.Path) == 0 {
+		model.Specifications.ProjectIdentifier.Path = append(model.Specifications.ProjectIdentifier.Path, model.Specifications.Name)
+	}
 
-	activeWorkspace, err := s.getWorkspace(ctx, *project)
+	activeWorkspace, err := s.getWorkspace(ctx, *model)
 	if err != nil {
 		return err
 	}
 
 	//WARN: Doğru mu oldu?
-	project.Specifications.Workspace = activeWorkspace.Header.Name
-	project.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
-	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, project.Header.Name)
+	model.Specifications.Workspace = activeWorkspace.Header.Name
+	model.Specifications.WorkspaceObject = activeWorkspace.Specifications.WorkspaceIdentifier
+	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
-	group, err := s.getGroup(*project)
+	group, err := s.getGroup(*model)
 	if err != nil {
 		return err
 	}
 
 	//WARN: Doğru mu oldu?
-	project.Specifications.Group = group.Header.Name
-	project.Specifications.GroupObject = group.Specifications.GroupIdentifier
-	logrus.Debugf("group (%v) detected for (%v)", group.Header.Name, project.Header.Name)
+	model.Specifications.Group = group.Header.Name
+	model.Specifications.GroupObject = group.Specifications.GroupIdentifier
+	logrus.Debugf("group (%v) detected for (%v)", group.Header.Name, model.Header.Name)
 
-	projectReferences, err := s.getProjectReferences(*project)
+	projectReferences, err := s.getProjectReferences(*model)
 	if err != nil {
 		return err
 	}
-	project.Specifications.Configuration.References = projectReferences
-	logrus.Debugf("project references (%d) restored for (%v)", len(project.Specifications.Configuration.References), project.Specifications.Path)
+	model.Specifications.Configuration.References = projectReferences
+	logrus.Debugf("project references (%d) restored for (%v)", len(model.Specifications.Configuration.References), model.Specifications.Path)
 
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectType, err := projectService.GetDefaultPlatformProjectType(*project)
+	projectType, err := projectService.GetDefaultPlatformProjectType(*model)
 	if err != nil {
 		return err
 	}
 
-	project.Specifications.ProjectType = projectType
+	model.Specifications.ProjectType = projectType
 	return nil
 }
 
