@@ -77,7 +77,7 @@ func (suite *GroupProjectDependencyTestSuite) Test_AddNewDependencies_WithoutVer
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(0, 1, false)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 	}
@@ -91,7 +91,7 @@ func (suite *GroupProjectDependencyTestSuite) Test_AddNewDependencies_WithVersio
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(1, 1, true)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 	}
@@ -106,11 +106,11 @@ func (suite *GroupProjectDependencyTestSuite) Test_ValidateDependencies_WithoutV
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(2, 1, false)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 
-		for _, projectDependency := range groupProject.Specifications.Configuration.Dependencies {
+		for _, projectDependency := range groupProject.Specifications.Dependencies {
 			packageState, err := suite.manager.HasDependencyOnProject(groupProject, projectDependency)
 			require.NoError(suite.T(), err, "failed to check package on project")
 			assert.True(suite.T(), packageState)
@@ -127,11 +127,11 @@ func (suite *GroupProjectDependencyTestSuite) Test_ValidateDependencies_WithVers
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(3, 1, true)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 
-		for _, projectDependency := range groupProject.Specifications.Configuration.Dependencies {
+		for _, projectDependency := range groupProject.Specifications.Dependencies {
 			packageState, err := suite.manager.HasDependencyOnProject(groupProject, projectDependency)
 			require.NoError(suite.T(), err, "failed to check package on project")
 			assert.True(suite.T(), packageState)
@@ -148,14 +148,14 @@ func (suite *GroupProjectDependencyTestSuite) Test_ListDependencies_WithoutVersi
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(4, 1, false)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 
 		packages, err := suite.manager.ListDependenciesFromProject(groupProject)
 		require.NoError(suite.T(), err, "failed to list packages")
 
-		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Specifications.Configuration.Dependencies))
+		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Specifications.Dependencies))
 	}
 
 	suite.T().Cleanup(func() {
@@ -168,14 +168,14 @@ func (suite *GroupProjectDependencyTestSuite) Test_ListDependencies_WithVersion(
 	for _, groupProject := range suite.projects {
 		newDependencies := GetDependencies(5, 1, true)
 
-		groupProject.Specifications.Configuration.Dependencies = append(groupProject.Specifications.Configuration.Dependencies, newDependencies...)
+		groupProject.Specifications.Dependencies = append(groupProject.Specifications.Dependencies, newDependencies...)
 		err := suite.manager.AddDependenciesToProject(groupProject, newDependencies)
 		require.NoError(suite.T(), err, "failed to add packages")
 
 		packages, err := suite.manager.ListDependenciesFromProject(groupProject)
 		require.NoError(suite.T(), err, "failed to list packages")
 
-		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Specifications.Configuration.Dependencies))
+		assert.GreaterOrEqual(suite.T(), len(packages), len(groupProject.Specifications.Dependencies))
 	}
 
 	suite.T().Cleanup(func() {

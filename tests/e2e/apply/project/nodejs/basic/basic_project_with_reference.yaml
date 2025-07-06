@@ -8,7 +8,7 @@ Specifications:
   Platform: {{ .Platform }}
   ProjectType: {{ .Type }}
 
-  Configuration:
-    References:
-    {{range .References}}- {{.}}
-    {{end}}
+
+  References:
+  {{range .References}}- {{.}}
+  {{end}}

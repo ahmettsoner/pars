@@ -105,7 +105,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}
 		} else {
 			projectsReadyToCreate = append(projectsReadyToCreate, project)
-			// for _, reference := range applicationprojectStruct.Specifications.Configuration.References {
+			// for _, reference := range applicationprojectStruct.Specifications.References {
 			// 	if _, ok := projectReferenceMap[applicationprojectStruct.Specifications.GetUniqueKey()][reference.GetUniqueKey()]; ok {
 			// 		continue
 			// 	} else {
@@ -134,7 +134,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			return err
 		}
 
-		project.Specifications.Configuration.References = projectReferences
+		project.Specifications.References = projectReferences
 
 		logrus.Debugf("trying to create %v", project.Header.Name)
 		if _, err := projectService.Create(project, init); err != nil {
@@ -151,7 +151,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			return err
 		}
 
-		if !reflect.DeepEqual(project.Specifications.Configuration.Layers, existingProject.Specifications.Configuration.Layers) {
+		if !reflect.DeepEqual(project.Specifications.Layers, existingProject.Specifications.Layers) {
 			newItems := make([]applicationProject.Layer, 0)
 			updatedItems := make([]struct {
 				Old applicationProject.Layer
@@ -159,9 +159,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}, 0)
 			deletedItems := make([]applicationProject.Layer, 0)
 
-			for _, newLayer := range project.Specifications.Configuration.Layers {
+			for _, newLayer := range project.Specifications.Layers {
 				found := false
-				for _, existingLayer := range existingProject.Specifications.Configuration.Layers {
+				for _, existingLayer := range existingProject.Specifications.Layers {
 					if newLayer.Name == existingLayer.Name {
 						found = true
 						if !reflect.DeepEqual(newLayer, existingLayer) {
@@ -181,9 +181,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 				}
 			}
 
-			for _, existingLayer := range existingProject.Specifications.Configuration.Layers {
+			for _, existingLayer := range existingProject.Specifications.Layers {
 				found := false
-				for _, newLayer := range project.Specifications.Configuration.Layers {
+				for _, newLayer := range project.Specifications.Layers {
 					if newLayer.Name == existingLayer.Name {
 						found = true
 						break
@@ -221,7 +221,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}
 		}
 
-		if !reflect.DeepEqual(project.Specifications.Configuration.Dependencies, existingProject.Specifications.Configuration.Dependencies) {
+		if !reflect.DeepEqual(project.Specifications.Dependencies, existingProject.Specifications.Dependencies) {
 			newItems := make([]applicationProject.Dependency, 0)
 			updatedItems := make([]struct {
 				Old applicationProject.Dependency
@@ -229,9 +229,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}, 0)
 			deletedItems := make([]applicationProject.Dependency, 0)
 
-			for _, newItem := range project.Specifications.Configuration.Dependencies {
+			for _, newItem := range project.Specifications.Dependencies {
 				found := false
-				for _, existingItem := range existingProject.Specifications.Configuration.Dependencies {
+				for _, existingItem := range existingProject.Specifications.Dependencies {
 					if newItem.Name == existingItem.Name {
 						found = true
 						if !reflect.DeepEqual(newItem, existingItem) {
@@ -251,9 +251,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 				}
 			}
 
-			for _, existingItem := range existingProject.Specifications.Configuration.Dependencies {
+			for _, existingItem := range existingProject.Specifications.Dependencies {
 				found := false
-				for _, newItem := range project.Specifications.Configuration.Dependencies {
+				for _, newItem := range project.Specifications.Dependencies {
 					if newItem.Name == existingItem.Name {
 						found = true
 						break
@@ -291,7 +291,7 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}
 		}
 
-		if !reflect.DeepEqual(project.Specifications.Configuration.References, existingProject.Specifications.Configuration.References) {
+		if !reflect.DeepEqual(project.Specifications.References, existingProject.Specifications.References) {
 			newItems := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 			updatedItems := make([]struct {
 				Old applicationprojectStruct.ProjectBaseStruct
@@ -299,9 +299,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 			}, 0)
 			deletedItems := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 
-			for _, newRef := range project.Specifications.Configuration.References {
+			for _, newRef := range project.Specifications.References {
 				found := false
-				for _, existingRef := range existingProject.Specifications.Configuration.References {
+				for _, existingRef := range existingProject.Specifications.References {
 					if newRef.Header.Name == existingRef.Header.Name {
 						found = true
 						// if !reflect.DeepEqual(newRef, existingRef) {
@@ -322,9 +322,9 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 				}
 			}
 
-			for _, existingRef := range existingProject.Specifications.Configuration.References {
+			for _, existingRef := range existingProject.Specifications.References {
 				found := false
-				for _, newRef := range project.Specifications.Configuration.References {
+				for _, newRef := range project.Specifications.References {
 					if newRef.Header.Name == existingRef.Header.Name {
 						found = true
 						break
@@ -433,8 +433,8 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 	if err != nil {
 		return err
 	}
-	model.Specifications.Configuration.References = projectReferences
-	logrus.Debugf("project references (%d) restored for (%v)", len(model.Specifications.Configuration.References), model.Specifications.Path)
+	model.Specifications.References = projectReferences
+	logrus.Debugf("project references (%d) restored for (%v)", len(model.Specifications.References), model.Specifications.Path)
 
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	projectType, err := projectService.GetDefaultPlatformProjectType(*model)
@@ -442,7 +442,7 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 		return err
 	}
 
-	model.Specifications.Configuration.Layers = append(model.Specifications.Configuration.Layers, applicationProject.Layer{})
+	model.Specifications.Layers = append(model.Specifications.Layers, applicationProject.Layer{})
 	model.Specifications.ProjectType = projectType
 	return nil
 }
@@ -500,7 +500,7 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 
 	projectReferences := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 
-	for _, reference := range prj.Specifications.Configuration.References {
+	for _, reference := range prj.Specifications.References {
 		logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
 		selectedProject, err := s.getProjectReference(prj, reference)
@@ -573,7 +573,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 	for _, project := range projects {
 
 		logrus.Debugf("checking references for project (%v)", project.Header.Name)
-		for _, reference := range project.Specifications.Configuration.References {
+		for _, reference := range project.Specifications.References {
 			logrus.Debugf("validating reference (%v) for project (%v)", reference.Header.Name, project.Header.Name)
 			//TODO: kontrol edilecek, id checkler iptal ediliyor
 			if reference.Specifications.ID == 0 {
@@ -614,7 +614,7 @@ func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.Projec
 	for _, project := range projects {
 		logrus.Debugf("project '%v' processing for order", project.Header.Name)
 		if _, ok := sortedProjectMap[project.GetUniqueKey()]; !ok {
-			projectReferences := project.Specifications.Configuration.References
+			projectReferences := project.Specifications.References
 			logrus.Debugf("project '%v' has '%d' references with map key %v", project.Header.Name, len(projectReferences), project.GetUniqueKey())
 			if projectReferences == nil || len(projectReferences) == 0 {
 				logrus.Debugf("project '%v' has no reference", project.Header.Name)

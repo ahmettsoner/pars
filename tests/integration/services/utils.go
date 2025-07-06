@@ -88,7 +88,13 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -117,9 +123,13 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName str
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{
-				Layers: layers,
-			},
+			layers,
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -147,7 +157,13 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -175,9 +191,13 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspac
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{
-				Layers: layers,
-			},
+			layers,
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -206,7 +226,13 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()

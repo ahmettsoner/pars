@@ -18,7 +18,7 @@ Specifications:
   ProjectType: {{ .Type }}
   Group: {{ .Group }}
 
-  Configuration:
-    Layers:
-    {{range .Layers}}- {{.}}
-    {{end}}
+
+  Layers:
+  {{range .Layers}}- {{.}}
+  {{end}}

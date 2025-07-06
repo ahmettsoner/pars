@@ -20,13 +20,13 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-    - core
-    Options:
-    
-    Dependencies:
-    References:
+
+  Layers:
+  - core
+  Options:
+  
+  Dependencies:
+  References:
 
 
 ---
@@ -52,17 +52,17 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-    - service
-    - business:model
-    Options:
 
-    Dependencies:
-    References:
-    - Name: {{ .Name }}.Core
-      Group:  {{ .Group }}
-      Workspace: {{ .Workspace }}
+  Layers:
+  - service
+  - business:model
+  Options:
+
+  Dependencies:
+  References:
+  - Name: {{ .Name }}.Core
+    Group:  {{ .Group }}
+    Workspace: {{ .Workspace }}
 
 ---
 Type: Project
@@ -87,17 +87,17 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - presentation:controller
-      - presentation:view
-    Options:
 
-    Dependencies:
-    References:
-    - Name: {{ .Name }}.Core
-      Group:  {{ .Group }}
-      Workspace: {{ .Workspace }}
-    - Name: {{ .Name }}.Service
-      Group:  {{ .Group }}
-      Workspace: {{ .Workspace }}
+  Layers:
+    - presentation:controller
+    - presentation:view
+  Options:
+
+  Dependencies:
+  References:
+  - Name: {{ .Name }}.Core
+    Group:  {{ .Group }}
+    Workspace: {{ .Workspace }}
+  - Name: {{ .Name }}.Service
+    Group:  {{ .Group }}
+    Workspace: {{ .Workspace }}

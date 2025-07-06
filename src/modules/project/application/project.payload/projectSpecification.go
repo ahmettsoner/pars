@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/schemas"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
@@ -30,10 +31,16 @@ type ProjectSpecification struct {
 	Runtime         Runtime
 	Language        Language
 	Schema          Schema
-	Configuration   Configuration
+	Layers          []applicationProject.Layer
+	Dependencies    []applicationProject.Dependency
+	References      []ProjectBaseStruct
+	Options         []string
+	Modules         []string
+	Components      []string
+	Patterns        []string
 }
 
-func NewProjectSpecification(id int, name, group, workspace string, projectType models.ProjectType, groupObject applicationGroup.GroupIdentifier, set string, _package []string, labels []label.Label, path []string, workspaceObject applicationWorkspace.WorkspaceIdentifier, platform Platform, runtime Runtime, schema Schema, configuration Configuration) ProjectSpecification {
+func NewProjectSpecification(id int, name, group, workspace string, projectType models.ProjectType, groupObject applicationGroup.GroupIdentifier, set string, _package []string, labels []label.Label, path []string, workspaceObject applicationWorkspace.WorkspaceIdentifier, platform Platform, runtime Runtime, schema Schema, layers []applicationProject.Layer, dependencies []applicationProject.Dependency, references []ProjectBaseStruct, options, modules, components, patterns []string) ProjectSpecification {
 	return ProjectSpecification{
 		ProjectIdentifier: applicationProject.NewProjectIdentifier(id, name, path, group, workspace),
 		ProjectType:       projectType,
@@ -45,7 +52,13 @@ func NewProjectSpecification(id int, name, group, workspace string, projectType 
 		Platform:          platform,
 		Runtime:           runtime,
 		Schema:            schema,
-		Configuration:     configuration,
+		Layers:            layers,
+		Dependencies:      dependencies,
+		References:        references,
+		Options:           options,
+		Modules:           modules,
+		Components:        components,
+		Patterns:          patterns,
 	}
 }
 func (s ProjectSpecification) Validate() error {
@@ -57,6 +70,10 @@ func (s ProjectSpecification) Validate() error {
 	}
 	return nil
 }
+func (s *ProjectSpecification) AppendReferences(references ...ProjectBaseStruct) {
+	s.References = append(s.References, references...)
+}
+
 func (s *ProjectSpecification) GetAllPackage() []string {
 
 	projectPackages := []string{}
@@ -70,7 +87,7 @@ func (s *ProjectSpecification) GetAllPackageWithLayer(layer string) []string {
 	projectPackages := []string{}
 	projectPackages = append(projectPackages, s.GroupObject.Package...)
 	projectPackages = append(projectPackages, s.Package...)
-	for _, layerInProject := range s.Configuration.Layers {
+	for _, layerInProject := range s.Layers {
 		if layerInProject.Name == layer {
 			projectPackages = append(projectPackages, layerInProject.Package...)
 			break
@@ -170,7 +187,7 @@ func (s *ProjectSpecification) GetAbsoluteBaseProjectPath() string {
 }
 func (s *ProjectSpecification) GetRelativeProjectLayerPath(layer string) string {
 	var existingLayer *applicationProject.Layer = nil
-	for _, value := range s.Configuration.Layers {
+	for _, value := range s.Layers {
 		if value.Name == layer {
 			existingLayer = &value
 			break
@@ -185,7 +202,7 @@ func (s *ProjectSpecification) GetRelativeProjectLayerPath(layer string) string 
 }
 func (s *ProjectSpecification) GetAbsoluteProjectLayerPath(layer string) string {
 	var existingLayer *applicationProject.Layer = nil
-	for _, value := range s.Configuration.Layers {
+	for _, value := range s.Layers {
 		if value.Name == layer {
 			existingLayer = &value
 			break
@@ -212,17 +229,23 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	}
 
 	var tempObject struct {
-		Name          string             `yaml:"Name"`
-		Platform      Platform           `yaml:"Platform"`
-		ProjectType   models.ProjectType `yaml:"ProjectType"`
-		Set           string             `yaml:"Set"`
-		Path          string             `yaml:"Path"`
-		Package       interface{}        `yaml:"Package"`
-		Labels        []label.Label      `yaml:"Labels"`
-		Runtime       Runtime            `yaml:"Runtime"`
-		Language      Language           `yaml:"Language"`
-		Schema        Schema             `yaml:"Schema"`
-		Configuration Configuration      `yaml:"Configuration"`
+		Name         string                                 `yaml:"Name"`
+		Platform     Platform                               `yaml:"Platform"`
+		ProjectType  models.ProjectType                     `yaml:"ProjectType"`
+		Set          string                                 `yaml:"Set"`
+		Path         string                                 `yaml:"Path"`
+		Package      interface{}                            `yaml:"Package"`
+		Labels       []label.Label                          `yaml:"Labels"`
+		Runtime      Runtime                                `yaml:"Runtime"`
+		Language     Language                               `yaml:"Language"`
+		Schema       Schema                                 `yaml:"Schema"`
+		Layers       []applicationProject.Layer             `yaml:"Layers"`       //Burda inline defination eklenmeli, "Persistence:Data:Repository, Persistence:Data:Entity, Persistence:Data:Migration" gibi
+		Dependencies []applicationProject.Dependency        `yaml:"Dependencies"` //Burda inline defination eklenmeli, "gopkg.in/yaml.v3@v3.0.1, gopkg.in/gorm" gibi
+		References   []applicationProject.ProjectIdentifier `yaml:"References"`   //Burda inline defination eklenmeli, Workspace::Group/Name formatında "pars::core/utils, pars::service/project" gibi
+		Options      []string                               `yaml:"Options"`
+		Modules      []string                               `yaml:"Modules"`
+		Components   []string                               `yaml:"Components"`
+		Patterns     []string                               `yaml:"Patterns"`
 	}
 
 	err := unmarshal(&tempObject)
@@ -248,7 +271,42 @@ func (s *ProjectSpecification) UnmarshalYAML(unmarshal func(interface{}) error) 
 	s.Runtime = tempObject.Runtime
 	s.Language = tempObject.Language
 	s.Schema = tempObject.Schema
-	s.Configuration = tempObject.Configuration
+	s.Layers = tempObject.Layers
+	s.Dependencies = tempObject.Dependencies
+	for _, ref := range tempObject.References {
+		reference := NewProjectBaseStruct(
+			schemas.NewSchemaHeader(schemas.StructTypes.Project, PROJECT_KIND, ref.Name, schemas.Metadata{}),
+			NewProjectSpecification(
+				0,
+				"",
+				ref.Group,
+				ref.Workspace,
+				"",
+				applicationGroup.GroupIdentifier{},
+				"",
+				[]string(nil),
+				[]label.Label(nil),
+				[]string(nil),
+				applicationWorkspace.WorkspaceIdentifier{},
+				Platform{},
+				Runtime{},
+				Schema{},
+				[]applicationProject.Layer(nil),
+				[]applicationProject.Dependency(nil),
+				[]ProjectBaseStruct(nil),
+				[]string(nil),
+				[]string(nil),
+				[]string(nil),
+				[]string(nil),
+			),
+		)
+		s.AppendReferences(reference)
+	}
+
+	s.Options = tempObject.Options
+	s.Modules = tempObject.Modules
+	s.Components = tempObject.Components
+	s.Patterns = tempObject.Patterns
 
 	if len(s.Package) == 0 && !_string.IsEmpty(s.Name) {
 		s.AppendPackage(s.Name)

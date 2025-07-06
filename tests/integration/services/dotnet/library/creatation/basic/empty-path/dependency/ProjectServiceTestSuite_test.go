@@ -76,7 +76,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack, _ := suite.faker.Dotnet.Dependency("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationProject.Dependency{
+	project.Specifications.Dependencies = []applicationProject.Dependency{
 		applicationProject.NewDependency_Basic(pack),
 	}
 
@@ -104,7 +104,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleDependency_W
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack, packVersion := suite.faker.Dotnet.Dependency("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationProject.Dependency{
+	project.Specifications.Dependencies = []applicationProject.Dependency{
 		applicationProject.NewDependency(pack, packVersion),
 	}
 
@@ -133,7 +133,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, _ := suite.faker.Dotnet.Dependency("Net8")
 	pack2, _ := suite.faker.Dotnet.Dependency("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationProject.Dependency{
+	project.Specifications.Dependencies = []applicationProject.Dependency{
 		applicationProject.NewDependency_Basic(pack1),
 		applicationProject.NewDependency_Basic(pack2),
 	}
@@ -163,7 +163,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, packVersion1 := suite.faker.Dotnet.Dependency("Net8")
 	pack2, packVersion2 := suite.faker.Dotnet.Dependency("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationProject.Dependency{
+	project.Specifications.Dependencies = []applicationProject.Dependency{
 		applicationProject.NewDependency(pack1, packVersion1),
 		applicationProject.NewDependency(pack2, packVersion2),
 	}
@@ -193,7 +193,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleDependenci
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
 	pack1, packVersion1 := suite.faker.Dotnet.Dependency("Net8")
 	pack2, _ := suite.faker.Dotnet.Dependency("Net8")
-	project.Specifications.Configuration.Dependencies = []applicationProject.Dependency{
+	project.Specifications.Dependencies = []applicationProject.Dependency{
 		applicationProject.NewDependency(pack1, packVersion1),
 		applicationProject.NewDependency_Basic(pack2),
 	}

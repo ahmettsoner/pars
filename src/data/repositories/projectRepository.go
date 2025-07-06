@@ -154,7 +154,7 @@ func (s *ProjectRepository) ListByFilter(set, workspace string, layers []string,
 
 	// Join'leri ihtiyaca göre ekle
 	if len(layers) > 0 {
-		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Configuration.Layers') AS l")
+		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Specifications.Layers') AS l")
 	}
 	if len(tags) > 0 {
 		joins = append(joins, "LEFT JOIN json_each(projects.document, '$.Header.Metadata.Tags') AS t")
@@ -259,7 +259,7 @@ func (s *ProjectRepository) ListBySetAndLayers(set string, layers ...string) (*(
 	rawSQL := `
 	SELECT DISTINCT projects.*
 	FROM projects
-	JOIN json_each(projects.document, '$.Specifications.Configuration.Layers') AS json_each
+	JOIN json_each(projects.document, '$.Specifications.Layers') AS json_each
 	WHERE json_extract(projects.document, '$.Specifications.Set') = ? and json_extract(json_each.value, '$.Name') IN (?)
 `
 	result := s.DbContext.Database.Raw(rawSQL, set, layers).Scan(&entities)

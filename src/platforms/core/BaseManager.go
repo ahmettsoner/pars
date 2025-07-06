@@ -74,7 +74,7 @@ func (s BaseManager) IsLayerFolderExists(project applicationproject.ProjectBaseS
 }
 
 func (s BaseManager) IsLayerFoldersExists(project applicationproject.ProjectBaseStruct) (bool, error) {
-	for _, v := range project.Specifications.Configuration.Layers {
+	for _, v := range project.Specifications.Layers {
 		state, err := s.IsLayerFolderExists(project, v.Name)
 		if err != nil {
 			return false, err

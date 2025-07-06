@@ -397,7 +397,7 @@ func (s NodeJSManager) ListLayersFromProject(project applicationproject.ProjectB
 
 	layers := make([]applicationProject.Layer, 0)
 	for _, folder := range folders {
-		for _, projectLayer := range project.Specifications.Configuration.Layers {
+		for _, projectLayer := range project.Specifications.Layers {
 
 			if filepath.Join(folder) == filepath.Join(projectLayer.Path) {
 				layers = append(layers, projectLayer)
@@ -486,7 +486,7 @@ func (s NodeJSManager) ListReferencesFromProject(project applicationproject.Proj
 
 	references := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, match := range matches {
-		for _, projectReference := range project.Specifications.Configuration.References {
+		for _, projectReference := range project.Specifications.References {
 			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
 			if err != nil {
 				return nil, err

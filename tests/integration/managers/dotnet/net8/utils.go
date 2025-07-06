@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	"parsdevkit.net/application/structs/project"
+	applicationProject "parsdevkit.net/application/structs/project"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	applicationproject "parsdevkit.net/modules/project/application_project_payload"
@@ -61,7 +62,13 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -90,9 +97,13 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName s
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{
-				Layers: layers,
-			},
+			layers,
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -120,7 +131,13 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, 
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -153,9 +170,13 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, worksp
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{
-				Layers: layers,
-			},
+			layers,
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -188,7 +209,13 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, wo
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()
@@ -220,7 +247,13 @@ func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, worksp
 			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			applicationproject.Runtime{},
 			applicationproject.Schema{},
-			applicationproject.Configuration{},
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	manager := managers.NewDotnetManager()

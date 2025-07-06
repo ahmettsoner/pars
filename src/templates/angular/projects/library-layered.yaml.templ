@@ -19,16 +19,15 @@ Specifications:
     Type: nodejs
     Version: {{ .RuntimeVersion }}
 
-  Configuration:
-    Layers:
-      - Name: core
-        Path: Core
-      - Name: service
-        Path: Services
-      - Name: business:model
-        Path: Models
-    Options:
+  Layers:
+    - Name: core
+      Path: Core
+    - Name: service
+      Path: Services
+    - Name: business:model
+      Path: Models
+  Options:
 
-    Dependencies:
-    References:
+  Dependencies:
+  References:
 

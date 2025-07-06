@@ -77,7 +77,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithDe
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}
 
@@ -104,7 +104,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
 
@@ -131,7 +131,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Single
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
 	}
 
@@ -158,7 +158,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Multip
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 	}
 
@@ -185,7 +185,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}
@@ -213,7 +213,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
@@ -241,7 +241,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Sin
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
 	}
@@ -269,7 +269,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Mul
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(3), []string{}),
 	}
@@ -297,7 +297,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Var
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 		applicationProject.NewLayer_Basic(0, suite.faker.Project.Layer(), suite.faker.Project.Path(1), []string{}),
@@ -327,7 +327,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_Defaul
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
 	}
 
@@ -354,7 +354,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_SingleLayer_WithEm
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnly(suite.faker.Project.Layer()),
 	}
 
@@ -380,7 +380,7 @@ func (suite *ProjectServiceTestSuite) Test_CreateBasicProject_MultipleLayers_Wit
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.Layers = []applicationProject.Layer{
+	project.Specifications.Layers = []applicationProject.Layer{
 		applicationProject.NewLayer_NameOnlyDefaultPackage(suite.faker.Project.Layer()),
 		applicationProject.NewLayer_NameOnlyDefaultPath(suite.faker.Project.Layer()),
 	}

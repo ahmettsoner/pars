@@ -20,20 +20,20 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: core
-        Path: Core
-      - Name: service
-        Path: Services
-      - Name: business:model
-        Path: Models
-      - Name: persistence:database:entity
-        Path: Database/Entities
-      - Name: persistence:database:repository
-        Path: Database/Repositories
-    Options:
 
-    Dependencies:
-    References:
+  Layers:
+    - Name: core
+      Path: Core
+    - Name: service
+      Path: Services
+    - Name: business:model
+      Path: Models
+    - Name: persistence:database:entity
+      Path: Database/Entities
+    - Name: persistence:database:repository
+      Path: Database/Repositories
+  Options:
+
+  Dependencies:
+  References:
 

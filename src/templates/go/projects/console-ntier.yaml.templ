@@ -21,14 +21,14 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: core
-        Path: Core
-    Options:
 
-    Dependencies:
-    References:
+  Layers:
+    - Name: core
+      Path: Core
+  Options:
+
+  Dependencies:
+  References:
 
 
 ---
@@ -55,28 +55,28 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: service
-        Path: Services
-      - Name: business:model
-        Path: Models
-    Options:
 
-    Dependencies:
-    References:
-    - Name: {{ .Name }}.Core
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
-    - Name: {{ .Name }}.Database
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
-    - Name: {{ .Name }}.Service
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
+  Layers:
+    - Name: service
+      Path: Services
+    - Name: business:model
+      Path: Models
+  Options:
+
+  Dependencies:
+  References:
+  - Name: {{ .Name }}.Core
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}
+  - Name: {{ .Name }}.Database
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}
+  - Name: {{ .Name }}.Service
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}
 ---
 Type: Project
 Kind: Application
@@ -101,15 +101,15 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: persistence:database:entity
-        Path: Database/Entities
-      - Name: persistence:database:repository
-        Path: Database/Repositories
-    Options:
 
-    Dependencies:
+  Layers:
+    - Name: persistence:database:entity
+      Path: Database/Entities
+    - Name: persistence:database:repository
+      Path: Database/Repositories
+  Options:
+
+  Dependencies:
 
 ---
 Type: Project
@@ -135,23 +135,23 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: presentation:controller
-        Path: Controllers
-    Options:
 
-    Dependencies:
-    References:
-    - Name: {{ .Name }}.Core
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
-    - Name: {{ .Name }}.Service
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
-    - Name: {{ .Name }}.Database
-      Group:  {{ .Group }}
-      Workspace: 
-        Name: {{ .Workspace }}
+  Layers:
+    - Name: presentation:controller
+      Path: Controllers
+  Options:
+
+  Dependencies:
+  References:
+  - Name: {{ .Name }}.Core
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}
+  - Name: {{ .Name }}.Service
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}
+  - Name: {{ .Name }}.Database
+    Group:  {{ .Group }}
+    Workspace: 
+      Name: {{ .Workspace }}

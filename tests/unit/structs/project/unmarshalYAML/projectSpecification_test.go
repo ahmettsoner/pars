@@ -33,14 +33,14 @@ Package: pars
 Path: Utils
 Workspace: pars-project
 Platform: go@Go121
-Configuration:
-  Layers:
-  Dependencies:
-  - gopkg.in/yaml.v3@v3.0.1
-  References:
-  - Name: Logging
-    Group: Core
-    Workspace: pars-project
+
+Layers:
+Dependencies:
+- gopkg.in/yaml.v3@v3.0.1
+References:
+- Name: Logging
+  Group: Core
+  Workspace: pars-project
 `
 
 	// Act
@@ -63,38 +63,42 @@ Configuration:
 		applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 		applicationproject.Runtime{},
 		applicationproject.NewSchema(),
-		applicationproject.NewConfiguration(
-			[]applicationProject.Layer(nil),
-			[]applicationProject.Dependency{
-				applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
-			},
-			[]applicationproject.ProjectBaseStruct{
-				applicationproject.NewProjectBaseStruct(
-					schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
-					applicationproject.NewProjectSpecification(
-						0,
-						"",
-						"Core",
-						"pars-project",
-						"",
-						applicationGroup.GroupIdentifier{},
-						"",
-						[]string(nil),
-						[]label.Label(nil),
-						[]string(nil),
-						applicationWorkspace.WorkspaceIdentifier{},
-						applicationproject.Platform{},
-						applicationproject.Runtime{},
-						applicationproject.Schema{},
-						applicationproject.Configuration{},
-					),
+		[]applicationProject.Layer(nil),
+		[]applicationProject.Dependency{
+			applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
+		},
+		[]applicationproject.ProjectBaseStruct{
+			applicationproject.NewProjectBaseStruct(
+				schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
+				applicationproject.NewProjectSpecification(
+					0,
+					"",
+					"Core",
+					"pars-project",
+					"",
+					applicationGroup.GroupIdentifier{},
+					"",
+					[]string(nil),
+					[]label.Label(nil),
+					[]string(nil),
+					applicationWorkspace.WorkspaceIdentifier{},
+					applicationproject.Platform{},
+					applicationproject.Runtime{},
+					applicationproject.Schema{},
+					[]applicationProject.Layer(nil),
+					[]applicationProject.Dependency(nil),
+					[]applicationproject.ProjectBaseStruct(nil),
+					[]string(nil),
+					[]string(nil),
+					[]string(nil),
+					[]string(nil),
 				),
-			},
-			[]string(nil),
-			[]string(nil),
-			[]string(nil),
-			[]string(nil),
-		),
+			),
+		},
+		[]string(nil),
+		[]string(nil),
+		[]string(nil),
+		[]string(nil),
 	)
 
 	// Assert

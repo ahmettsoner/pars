@@ -35,15 +35,13 @@ func BasicProject_WithName(name string, projectType models.ProjectType, platform
 			applicationproject.NewPlatform_Basic(platform),
 			applicationproject.NewRuntime_Basic(runtime),
 			applicationproject.NewSchema(),
-			applicationproject.NewConfiguration(
-				[]applicationProject.Layer(nil),
-				[]applicationProject.Dependency(nil),
-				[]applicationproject.ProjectBaseStruct(nil),
-				[]string(nil),
-				[]string(nil),
-				[]string(nil),
-				[]string(nil),
-			),
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency(nil),
+			[]applicationproject.ProjectBaseStruct(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	)
 	return &project

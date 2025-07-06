@@ -40,17 +40,14 @@ Specifications:
   Platform: 
     Type: go
     Version: Go121
+  Layers:
 
-
-  Configuration:
-    Layers:
-
-    Dependencies:
-    - gopkg.in/yaml.v3@v3.0.1
-    References:
-    - Name: Logging
-      Group: Core
-      Workspace: pars-project
+  Dependencies:
+  - gopkg.in/yaml.v3@v3.0.1
+  References:
+  - Name: Logging
+    Group: Core
+    Workspace: pars-project
 `
 
 	// Act
@@ -78,38 +75,42 @@ Specifications:
 			applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 			applicationproject.NewRuntime("", ""),
 			applicationproject.NewSchema(),
-			applicationproject.NewConfiguration(
-				[]applicationProject.Layer(nil),
-				[]applicationProject.Dependency{
-					applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
-				},
-				[]applicationproject.ProjectBaseStruct{
-					applicationproject.NewProjectBaseStruct(
-						schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
-						applicationproject.NewProjectSpecification(
-							0,
-							"",
-							"Core",
-							"pars-project",
-							"",
-							applicationGroup.GroupIdentifier{},
-							"",
-							[]string(nil),
-							[]label.Label(nil),
-							[]string(nil),
-							applicationWorkspace.WorkspaceIdentifier{},
-							applicationproject.Platform{},
-							applicationproject.Runtime{},
-							applicationproject.Schema{},
-							applicationproject.Configuration{},
-						),
+			[]applicationProject.Layer(nil),
+			[]applicationProject.Dependency{
+				applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
+			},
+			[]applicationproject.ProjectBaseStruct{
+				applicationproject.NewProjectBaseStruct(
+					schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
+					applicationproject.NewProjectSpecification(
+						0,
+						"",
+						"Core",
+						"pars-project",
+						"",
+						applicationGroup.GroupIdentifier{},
+						"",
+						[]string(nil),
+						[]label.Label(nil),
+						[]string(nil),
+						applicationWorkspace.WorkspaceIdentifier{},
+						applicationproject.Platform{},
+						applicationproject.Runtime{},
+						applicationproject.Schema{},
+						[]applicationProject.Layer(nil),
+						[]applicationProject.Dependency(nil),
+						[]applicationproject.ProjectBaseStruct(nil),
+						[]string(nil),
+						[]string(nil),
+						[]string(nil),
+						[]string(nil),
 					),
-				},
-				[]string(nil),
-				[]string(nil),
-				[]string(nil),
-				[]string(nil),
-			),
+				),
+			},
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
+			[]string(nil),
 		),
 	}
 

@@ -84,7 +84,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
@@ -126,7 +126,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
@@ -166,7 +166,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
@@ -210,7 +210,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
@@ -250,7 +250,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 
@@ -297,7 +297,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName1, schemas.Metadata{}), referenceProject1.Specifications),
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName2, schemas.Metadata{}), referenceProject2.Specifications),
 	}
@@ -338,7 +338,7 @@ func (suite *ProjectServiceOneDefaultPathGroupProjectReferenceTestSuite) Test_Cr
 
 	projectName := suite.faker.Project.Name()
 	project := *objects.BasicProject_WithName(projectName, models.ProjectTypes.Library, models.PlatformTypes.Dotnet, models.RuntimeTypes.Dotnet, suite.workspace)
-	project.Specifications.Configuration.References = []applicationproject.ProjectBaseStruct{
+	project.Specifications.References = []applicationproject.ProjectBaseStruct{
 		applicationproject.NewProjectBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, referenceProjectName, schemas.Metadata{}), referenceProject.Specifications),
 	}
 

@@ -19,20 +19,20 @@ Specifications:
     Type: dotnet
     Version: {{ .RuntimeVersion }}
 
-  Configuration:
-    Layers:
-      - Name: core
-        Path: Core
-      - Name: service
-        Path: Services
-      - Name: business:model
-        Path: Models
-      - Name: persistence:database:entity
-        Path: Database/Entities
-      - Name: persistence:database:repository
-        Path: Database/Repositories
-      - Name: presentation:controller
-        Path: Controllers
-    Options:
-    References:
+
+  Layers:
+    - Name: core
+      Path: Core
+    - Name: service
+      Path: Services
+    - Name: business:model
+      Path: Models
+    - Name: persistence:database:entity
+      Path: Database/Entities
+    - Name: persistence:database:repository
+      Path: Database/Repositories
+    - Name: presentation:controller
+      Path: Controllers
+  Options:
+  References:
 

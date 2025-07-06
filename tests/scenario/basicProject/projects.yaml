@@ -9,15 +9,15 @@ Specifications:
   ProjectType: {{ .Type }}
   Set: {{ .Set }}
 
-  Configuration:
-    Layers:
-    {{range .Layers}}- {{.}}
-    {{end}}
-    {{ if gt (len .Dependencies) 0 }}
-    Dependencies:
-    {{range .Data.Dependencies}}- {{ . }}{{end}}
-    {{ end }}
-    {{ if gt (len .References) 0 }}
-    References:
-    {{range .References}}- {{ . }}{{end}}
-    {{ end }}
+
+  Layers:
+  {{range .Layers}}- {{.}}
+  {{end}}
+  {{ if gt (len .Dependencies) 0 }}
+  Dependencies:
+  {{range .Data.Dependencies}}- {{ . }}{{end}}
+  {{ end }}
+  {{ if gt (len .References) 0 }}
+  References:
+  {{range .References}}- {{ . }}{{end}}
+  {{ end }}

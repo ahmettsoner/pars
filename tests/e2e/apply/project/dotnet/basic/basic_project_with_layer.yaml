@@ -8,7 +8,7 @@ Specifications:
   Platform: {{ .Platform }}
   ProjectType: {{ .Type }}
 
-  Configuration:
-    Layers:
-    {{range .Layers}}- {{.}}
-    {{end}}
+
+  Layers:
+  {{range .Layers}}- {{.}}
+  {{end}}

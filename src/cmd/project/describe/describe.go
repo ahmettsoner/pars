@@ -83,7 +83,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		fmt.Println(projectType)
 		projectRuntime := fmt.Sprintf("\t Runtime: %v", e.Specifications.Runtime.Type.String())
 		fmt.Println(projectRuntime)
-		layers := fmt.Sprintf("\t Layers: %v", e.Specifications.Configuration.Layers)
+		layers := fmt.Sprintf("\t Layers: %v", e.Specifications.Layers)
 		fmt.Println(layers)
 	}
 	return nil

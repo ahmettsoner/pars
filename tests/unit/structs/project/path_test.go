@@ -132,14 +132,12 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 		GroupObject: applicationGroup.GroupIdentifier{
 			Path: fakeGroup,
 		},
-		Configuration: applicationproject.Configuration{
-			Layers: []applicationProject.Layer{
-				applicationProject.Layer{
-					LayerIdentifier: layerPkg.LayerIdentifier{
-						Name: "layer-identifier",
-					},
-					Path: fakeLayerPath,
+		Layers: []applicationProject.Layer{
+			applicationProject.Layer{
+				LayerIdentifier: layerPkg.LayerIdentifier{
+					Name: "layer-identifier",
 				},
+				Path: fakeLayerPath,
 			},
 		},
 	}
@@ -171,14 +169,12 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 		GroupObject: applicationGroup.GroupIdentifier{
 			Path: fakeGroup,
 		},
-		Configuration: applicationproject.Configuration{
-			Layers: []applicationProject.Layer{
-				applicationProject.Layer{
-					LayerIdentifier: layerPkg.LayerIdentifier{
-						Name: "layer-identifier",
-					},
-					Path: fakeLayerPath,
+		Layers: []applicationProject.Layer{
+			applicationProject.Layer{
+				LayerIdentifier: layerPkg.LayerIdentifier{
+					Name: "layer-identifier",
 				},
+				Path: fakeLayerPath,
 			},
 		},
 	}

@@ -80,12 +80,12 @@ func (s GoManager) CreateProject(project applicationproject.ProjectBaseStruct) e
 	// 	return err
 	// }
 
-	// if project.Specifications.Configuration.Dependencies != nil {
-	// 	s.AddDependenciesToProject(project, project.Specifications.Configuration.Dependencies)
+	// if project.Specifications.Dependencies != nil {
+	// 	s.AddDependenciesToProject(project, project.Specifications.Dependencies)
 	// }
 
-	// if project.Specifications.Configuration.References != nil {
-	// 	s.AddReferenceToProject(project, project.Specifications.Configuration.References)
+	// if project.Specifications.References != nil {
+	// 	s.AddReferenceToProject(project, project.Specifications.References)
 	// }
 
 	return nil

@@ -20,24 +20,24 @@ Specifications:
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-      - Name: core
-        Path: Core
-      - Name: service
-        Path: Services
-      - Name: business:model
-        Path: Models
-      - Name: persistence:database:entity
-        Path: Database/Entities
-      - Name: persistence:database:repository
-        Path: Database/Repositories
-      - Name: presentation:controller
-        Path: Controllers
-      - Name: presentation:view
-        Path: Views
-    Options:
 
-    Dependencies:
-    References:
+  Layers:
+    - Name: core
+      Path: Core
+    - Name: service
+      Path: Services
+    - Name: business:model
+      Path: Models
+    - Name: persistence:database:entity
+      Path: Database/Entities
+    - Name: persistence:database:repository
+      Path: Database/Repositories
+    - Name: presentation:controller
+      Path: Controllers
+    - Name: presentation:view
+      Path: Views
+  Options:
+
+  Dependencies:
+  References:
 

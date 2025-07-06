@@ -20,13 +20,12 @@ Specifications::
     Version: {{ .RuntimeVersion }}
 
 
-  Configuration:
-    Layers:
-    - core
-    Options:
+  Layers:
+  - core
+  Options:
 
-    Dependencies:
-    References:
+  Dependencies:
+  References:
 
 
 ---
@@ -54,14 +53,14 @@ Specifications::
   Schema:
     ProjectType: Library
 
-  Configuration:
-    Layers:
-    - service
-    - business:model
-    Options:
 
-    Dependencies:
-    References:
-    - Name: {{ .Name }}.Core
-      Group:  {{ .Group }}
-      Workspace: {{ .Workspace }}
+  Layers:
+  - service
+  - business:model
+  Options:
+
+  Dependencies:
+  References:
+  - Name: {{ .Name }}.Core
+    Group:  {{ .Group }}
+    Workspace: {{ .Workspace }}

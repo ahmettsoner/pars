@@ -151,7 +151,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 
 		if len(projectList) > 0 {
 			for _, projectObjFromDb := range projectList {
-				for _, objLayer := range projectObjFromDb.Specifications.Configuration.Layers {
+				for _, objLayer := range projectObjFromDb.Specifications.Layers {
 					if objLayer.Name == layer {
 						projectObj = &projectObjFromDb
 						break

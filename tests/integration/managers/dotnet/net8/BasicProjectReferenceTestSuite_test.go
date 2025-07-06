@@ -73,7 +73,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences() {
 	newReferences := []applicationproject.ProjectBaseStruct{
 		referenceProject,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
@@ -97,7 +97,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 		referenceProject,
 		referenceProject2,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
@@ -108,7 +108,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 	packages, err := suite.manager.ListReferencesFromProject(suite.project)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Configuration.Dependencies))
+	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Dependencies))
 
 	suite.T().Cleanup(func() {
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
@@ -122,7 +122,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences() {
 	newReferences := []applicationproject.ProjectBaseStruct{
 		referenceProject,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
@@ -130,7 +130,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences() {
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	for _, projectReference := range suite.project.Specifications.Configuration.References {
+	for _, projectReference := range suite.project.Specifications.References {
 		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference)
 		require.NoError(suite.T(), err, "failed to validate package on project")
 		assert.True(suite.T(), packageState)
@@ -150,7 +150,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences_GroupedProjec
 	newReferences := []applicationproject.ProjectBaseStruct{
 		referenceProject,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
@@ -175,7 +175,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 		referenceProject,
 		referenceProject2,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
@@ -186,7 +186,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 	packages, err := suite.manager.ListReferencesFromProject(suite.project)
 	require.NoError(suite.T(), err, "failed to list references")
 
-	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Configuration.Dependencies))
+	assert.GreaterOrEqual(suite.T(), len(packages), len(suite.project.Specifications.Dependencies))
 
 	suite.T().Cleanup(func() {
 		suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
@@ -202,7 +202,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences_GroupedProj
 	newReferences := []applicationproject.ProjectBaseStruct{
 		referenceProject,
 	}
-	suite.project.Specifications.Configuration.References = append(suite.project.Specifications.Configuration.References, newReferences...)
+	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
@@ -210,7 +210,7 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences_GroupedProj
 	err := suite.manager.AddReferenceToProject(suite.project, newReferencesSpecs)
 	require.NoError(suite.T(), err, "failed to add reference to project")
 
-	for _, projectReference := range suite.project.Specifications.Configuration.References {
+	for _, projectReference := range suite.project.Specifications.References {
 		packageState, err := suite.manager.HasReferenceOnProject(suite.project, projectReference)
 		require.NoError(suite.T(), err, "failed to validate package on project")
 		assert.True(suite.T(), packageState)

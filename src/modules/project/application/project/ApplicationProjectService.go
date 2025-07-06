@@ -162,15 +162,15 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin dizinleri oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 	}
 
-	if model.Specifications.Configuration.Dependencies != nil {
-		err := s.AddDependenciesToProject(model, model.Specifications.Configuration.Dependencies...)
+	if model.Specifications.Dependencies != nil {
+		err := s.AddDependenciesToProject(model, model.Specifications.Dependencies...)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
-	if model.Specifications.Configuration.References != nil {
-		err := s.AddReferenceToProject(model, model.Specifications.Configuration.References...)
+	if model.Specifications.References != nil {
+		err := s.AddReferenceToProject(model, model.Specifications.References...)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
@@ -290,7 +290,7 @@ func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.
 }
 func (s ApplicationProjectService) CreateAllProjectFolders(project applicationproject.ProjectBaseStruct) ([]string, error) {
 	folders := make([]string, 0)
-	for _, value := range project.Specifications.Configuration.Layers {
+	for _, value := range project.Specifications.Layers {
 
 		createdFolder, err := s.CreateProjectFolder(project, value.GetPathAsArray()...)
 		if err != nil {
@@ -306,7 +306,7 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Header.Name, layer)
 
 	var projectLayer *applicationProject.Layer = nil
-	for _, layerItem := range model.Specifications.Configuration.Layers {
+	for _, layerItem := range model.Specifications.Layers {
 		if layerItem.Name == layer {
 			projectLayer = &layerItem
 			break
@@ -737,7 +737,7 @@ func (s *ApplicationProjectService) ValidateProjectDependency(model applicationp
 func (s *ApplicationProjectService) ValidateProjectDependencies(model applicationproject.ProjectBaseStruct) (bool, error) {
 	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
-	for _, _package := range model.Specifications.Configuration.Dependencies {
+	for _, _package := range model.Specifications.Dependencies {
 		isValid, err := projectManager.HasDependencyOnProject(model, _package)
 		if err != nil {
 			return false, fmt.Errorf("xxx: Application Project Dependency Validasyon sırasında projede paket kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
@@ -754,7 +754,7 @@ func (s *ApplicationProjectService) ValidateProjectReferences(model applicationp
 
 	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
 
-	for _, reference := range model.Specifications.Configuration.References {
+	for _, reference := range model.Specifications.References {
 		isValid, err := projectManager.HasReferenceOnProject(model, reference)
 		if err != nil {
 			return false, fmt.Errorf("xxx: Application Project Reference Validasyon sırasında projede referans kontrol edilirken hata oluştu: '%s'\n%w", model.Specifications.Name, err)
