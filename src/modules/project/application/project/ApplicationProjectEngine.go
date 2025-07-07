@@ -596,7 +596,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 	}
 
 	sortedProjectMap := make(map[string]applicationprojectStruct.ProjectBaseStruct)
-	sortedProjects, err := sortUnOrderedProjectsByReference(projects, sortedProjectMap)
+	sortedProjects, err := s.sortUnOrderedProjectsByReference(projects, sortedProjectMap)
 	if err != nil {
 		return nil, err
 	}
@@ -605,7 +605,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 
 	return sortedProjects, nil
 }
-func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct, sortedProjectMap map[string]applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct, sortedProjectMap map[string]applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	var sortedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	var unOrderedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
@@ -655,7 +655,7 @@ func sortUnOrderedProjectsByReference(projects []applicationprojectStruct.Projec
 	logrus.Debugf("'%d' project(s) are not ordered", len(unOrderedProjects))
 
 	if len(unOrderedProjects) > 0 {
-		sortedChilds, err := sortUnOrderedProjectsByReference(unOrderedProjects, sortedProjectMap)
+		sortedChilds, err := s.sortUnOrderedProjectsByReference(unOrderedProjects, sortedProjectMap)
 		if err != nil {
 			return nil, err
 		}
