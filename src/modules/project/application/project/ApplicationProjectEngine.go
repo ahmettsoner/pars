@@ -38,96 +38,104 @@ func (s ApplicationProjectEngine) Validate(data []schemas.SchemaInterface) bool 
 
 	return true
 }
-func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+	r := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
 		applicationproject, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
 		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
 		}
 
-		if err := s.completeInformation(ctx, applicationproject); err != nil {
-			return err
-		}
-		applicationprojects = append(applicationprojects, *applicationproject)
+		r = append(r, *applicationproject)
 	}
 
-	return s.createProjects(applicationprojects, true)
+	return r, nil
+}
+
+func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	applicationprojects, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	return s.createProjects(ctx, applicationprojects, true)
 }
 func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	applicationprojects := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		applicationproject, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Destroy: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, applicationproject); err != nil {
-			return err
-		}
-		applicationprojects = append(applicationprojects, *applicationproject)
+	applicationprojects, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
 	}
 
-	return s.removeProjects(applicationprojects, true)
+	return s.removeProjects(ctx, applicationprojects, true)
 }
-func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Project.Application",
-		Order: 2000,
-	}
-}
+func (s ApplicationProjectEngine) prepareProjectsToCreate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 
-func (s ApplicationProjectEngine) createProjects(projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
-
-	projectsReadyToCreate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	projectsForUpdate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projectsReadyToCreate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
+		if err := s.completeInformation(ctx, &project); err != nil {
+			return nil, err
+		}
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
-			return err
+			return nil, err
+		}
+		if !ok {
+			projectsReadyToCreate = append(projectsReadyToCreate, project)
+		}
+	}
+	logrus.Debugf("'%d' project(s) detected that will create", len(projectsReadyToCreate))
+
+	projectsReadyToCreate, err := s.sortProjectsByReference(projectsReadyToCreate)
+	if err != nil {
+		return nil, err
+	}
+
+	return projectsReadyToCreate, nil
+}
+func (s ApplicationProjectEngine) prepareProjectsToUpdate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projectsForUpdate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+
+	for _, project := range projects {
+		if err := s.completeInformation(ctx, &project); err != nil {
+			return nil, err
+		}
+		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		if err != nil {
+			return nil, err
 		}
 		if ok {
 			newModelHash, err := encrypt.CalculateHashFromObject(project)
 			if err != nil {
-				return err
+				return nil, err
 			}
 			structHash, err := projectService.GetHash(project.GetFullName(), project.Specifications.Workspace)
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			if newModelHash != structHash {
 				projectsForUpdate = append(projectsForUpdate, project)
 			}
-		} else {
-			projectsReadyToCreate = append(projectsReadyToCreate, project)
-			// for _, reference := range applicationprojectStruct.Specifications.References {
-			// 	if _, ok := projectReferenceMap[applicationprojectStruct.Specifications.GetUniqueKey()][reference.GetUniqueKey()]; ok {
-			// 		continue
-			// 	} else {
-			// 		if ok := projectService.IsExists(reference.GetFullName(), reference.Workspace.Name); ok {
-			// 			projectReferenceMap[applicationprojectStruct.Specifications.GetUniqueKey()][reference.GetUniqueKey()] = reference
-			// 		}
-			// 	}
-			// }
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will create", len(projectsReadyToCreate))
 	logrus.Debugf("'%d' project(s) detected that will update", len(projectsForUpdate))
 
-	logrus.Debugf("'%d' project(s) creating", len(projectsReadyToCreate))
-	logrus.Debugf("updating %v project(s) ", len(projectsForUpdate))
-	orderedByReferenceProjects, err := s.sortProjectsByReference(projectsReadyToCreate)
+	return projectsForUpdate, nil
+}
+func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projectsReadyToCreate, err := s.prepareProjectsToCreate(ctx, projects)
 	if err != nil {
 		return err
 	}
 
-	logrus.Debugf("'%d' ordered project(s) processing", len(orderedByReferenceProjects))
-	for index, project := range orderedByReferenceProjects {
+	for index, project := range projectsReadyToCreate {
 
 		projectReferences, err := s.getProjectReferences(project)
 		if err != nil {
@@ -145,6 +153,10 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 
 	}
 
+	projectsForUpdate, err := s.prepareProjectsToUpdate(ctx, projects)
+	if err != nil {
+		return err
+	}
 	for _, project := range projectsForUpdate {
 		existingProject, err := projectService.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
@@ -367,12 +379,15 @@ func (s ApplicationProjectEngine) createProjects(projects []applicationprojectSt
 	}
 	return nil
 }
-func (s ApplicationProjectEngine) removeProjects(projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
+func (s ApplicationProjectEngine) removeProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
 
 	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	for _, project := range projects {
 
+		if err := s.completeInformation(ctx, &project); err != nil {
+			return err
+		}
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
 			return err
@@ -664,4 +679,11 @@ func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []ap
 	}
 
 	return sortedProjects, nil
+}
+
+func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Project.Application",
+		Order: 2000,
+	}
 }
