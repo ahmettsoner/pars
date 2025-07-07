@@ -2,9 +2,11 @@ package ioc
 
 import (
 	"reflect"
+
+	internalIOC "parsdevkit.net/internal/ioc"
 )
 
-var c = NewContainer()
+var c = internalIOC.NewContainer()
 
 func Register(provider interface{}) {
 	c.Register(provider)

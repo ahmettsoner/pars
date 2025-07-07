@@ -1,47 +1,35 @@
 package engines
 
 import (
-	"fmt"
 	"sort"
+
+	internalRegistry "parsdevkit.net/internal/registry"
 )
 
-var engineRegistry = make(map[string]EngineInterface)
+var registry = internalRegistry.New[string, EngineInterface]()
 
 func Register(m EngineInterface) {
 	name := m.GetConfig().Name
-	if _, exists := engineRegistry[name]; exists {
-		panic(fmt.Sprintf("Engine %s already registered", name))
-	}
-	engineRegistry[name] = m
+	registry.Register(name, m)
 }
 
 func Get(name string) EngineInterface {
-	result, ok := engineRegistry[name]
-	if !ok {
-		panic(fmt.Errorf("no engine found for %s", name))
-	}
-
-	return result
+	return registry.Get(name)
 }
 
 func All() []EngineInterface {
-	all := []EngineInterface{}
-	for _, m := range engineRegistry {
-		all = append(all, m)
-	}
-	return all
+	return registry.All()
 }
 func AllSorted() []EngineInterface {
-	all := All()
+	all := registry.All()
 	sort.SliceStable(all, func(i, j int) bool {
 		return all[i].GetConfig().Order < all[j].GetConfig().Order
 	})
 	return all
 }
 
-// Order’a göre büyükten küçüğe
 func AllSortedReverse() []EngineInterface {
-	all := All()
+	all := registry.All()
 	sort.SliceStable(all, func(i, j int) bool {
 		return all[i].GetConfig().Order > all[j].GetConfig().Order
 	})

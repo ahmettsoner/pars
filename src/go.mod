@@ -82,6 +82,8 @@ replace parsdevkit.net/context => ./modules/context
 
 replace parsdevkit.net/providers => ./providers
 
+replace parsdevkit.net/internal => ./internal
+
 replace parsdevkit.net/models => ./models
 
 replace parsdevkit.net/engines => ./modules/engines
@@ -136,6 +138,7 @@ require (
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/internal v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000 // indirect

@@ -1,38 +1,27 @@
 package providers
 
 import (
-	"fmt"
 	"sort"
+
+	internalRegistry "parsdevkit.net/internal/registry"
 )
 
-var providerRegistry = make(map[string]ProviderInterface)
+var registry = internalRegistry.New[string, ProviderInterface]()
 
 func Register(m ProviderInterface) {
 	name := m.GetKey()
-	if _, exists := providerRegistry[name]; exists {
-		panic(fmt.Sprintf("Provider %s already registered", name))
-	}
-	providerRegistry[name] = m
+	registry.Register(name, m)
 }
 
 func Get(name string) ProviderInterface {
-	result, ok := providerRegistry[name]
-	if !ok {
-		panic(fmt.Errorf("no provider found for %s", name))
-	}
-
-	return result, nil
+	return registry.Get(name)
 }
 
 func All() []ProviderInterface {
-	all := []ProviderInterface{}
-	for _, m := range providerRegistry {
-		all = append(all, m)
-	}
-	return all
+	return registry.All()
 }
 func AllSorted() []ProviderInterface {
-	all := All()
+	all := registry.All()
 	sort.SliceStable(all, func(i, j int) bool {
 		return all[i].GetConfig().Order < all[j].GetConfig().Order
 	})
@@ -41,7 +30,7 @@ func AllSorted() []ProviderInterface {
 
 // Order’a göre büyükten küçüğe
 func AllSortedReverse() []ProviderInterface {
-	all := All()
+	all := registry.All()
 	sort.SliceStable(all, func(i, j int) bool {
 		return all[i].GetConfig().Order > all[j].GetConfig().Order
 	})

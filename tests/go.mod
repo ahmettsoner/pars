@@ -40,6 +40,7 @@ replace parsdevkit.net/modules/resource/object_resource_contract => ../src/modul
 replace parsdevkit.net/modules/resource/object_resource_payload => ../src/modules/resource/object/resource.payload
 
 replace parsdevkit.net/application => ../src/application
+replace parsdevkit.net/internal => ../src/internal
 
 replace parsdevkit.net/persistence/entities => ../src/data/entities
 
@@ -78,6 +79,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/internal v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000

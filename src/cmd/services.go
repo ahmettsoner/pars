@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/bus"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
@@ -39,6 +40,8 @@ import (
 	fileTemplateSchema "parsdevkit.net/structs/template/file-template"
 	sharedTemplateSchema "parsdevkit.net/structs/template/shared-template"
 
+	application_project_handlers "parsdevkit.net/modules/project/application_project/handlers"
+	application_project_payload_commands "parsdevkit.net/modules/project/application_project_payload/commands"
 	angularManager "parsdevkit.net/platforms/angular/managers"
 	dotnetManager "parsdevkit.net/platforms/dotnet/managers"
 	goManager "parsdevkit.net/platforms/go/managers"
@@ -47,11 +50,29 @@ import (
 )
 
 func RegisterServices() {
+	registerCommandHandlers()
+	registerEventHandlers()
 	registerEngines()
 	registerSchemas()
 	registerPlatformManager()
 	registerContainers()
+
+	// Send command
+	// err := bus.SendCommand(application_project_payload_commands.CreateApplicationProject{})
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// // Publish event
+	// bus.PublishEvent(application_project_payload_events.CreateApplicationProjectCreated{})
 }
+func registerCommandHandlers() {
+	bus.RegisterCommandHandler[application_project_payload_commands.CreateApplicationProject](&application_project_handlers.CreateApplicationProjectHandler{})
+}
+func registerEventHandlers() {
+	// bus.RegisterEventHandler[CreateApplicationProjectCreated](&Logger{})
+}
+
 func registerSchemas() {
 	schemas.Register(&group_payload.GroupBaseStruct{})
 	schemas.Register(&applicationProjectSchema.ProjectBaseStruct{})

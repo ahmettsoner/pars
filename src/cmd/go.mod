@@ -17,7 +17,6 @@ require (
 	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/resource/data_resource_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource_payload v0.0.0-00010101000000-000000000000
@@ -44,6 +43,7 @@ require (
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000
+	parsdevkit.net/internal v0.0.0-00010101000000-000000000000
 	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
@@ -144,6 +144,8 @@ replace parsdevkit.net/persistence/repositories => ../data/repositories
 replace parsdevkit.net/persistence/contexts => ../data/contexts
 
 replace parsdevkit.net/providers => ../providers
+
+replace parsdevkit.net/internal => ../internal
 
 replace parsdevkit.net/platforms/core => ../platforms/core
 
