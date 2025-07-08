@@ -3,12 +3,12 @@ package shared_task
 import (
 	"fmt"
 
-	"parsdevkit.net/pkg/utilities/json"
 	sharedtemplateStruct "parsdevkit.net/structs/template/shared-template"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
@@ -16,8 +16,6 @@ import (
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
-
-	"parsdevkit.net/pkg/utilities/encrypt"
 )
 
 type SharedTemplateEngine struct{}
@@ -32,40 +30,6 @@ func (s SharedTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		sharedtemplate, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, sharedtemplate); err != nil {
-			return err
-		}
-		sharedtemplates = append(sharedtemplates, *sharedtemplate)
-	}
-
-	return s.createTemplates(sharedtemplates, true)
-}
-func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	sharedtemplates := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		sharedtemplate, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Destroy: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, sharedtemplate); err != nil {
-			return err
-		}
-		sharedtemplates = append(sharedtemplates, *sharedtemplate)
-	}
-
-	return s.removeTemplates(sharedtemplates, true)
-}
 
 func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
@@ -73,91 +37,166 @@ func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
 		Order: 4000,
 	}
 }
-func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
 
-	templatesReadyToCreate := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
-	templatesForUpdate := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
-	templateService := ioc.Get[shared_template_contract.TemplateInterface]()
-
-	for _, template := range templates {
-		if err := template.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(template)
-			return fmt.Errorf("template invalid data: '%s'\n%w", jsonObject, err)
-		}
+func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
 	}
 
+	err = s.create(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s SharedTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+	readyToCreateStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+
 	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
+			return nil, err
 		}
-
-		if ok {
-			newModelHash, err := encrypt.CalculateHashFromObject(template)
-			if err != nil {
-				return err
-			}
-			structHash, err := templateService.GetHash(template.Header.Name)
-			if err != nil {
-				return err
-			}
-
-			if newModelHash != structHash {
-				templatesForUpdate = append(templatesForUpdate, template)
-			}
-		} else {
-			templatesReadyToCreate = append(templatesReadyToCreate, template)
+		if !ok {
+			readyToCreateStructs = append(readyToCreateStructs, template)
 		}
 	}
-	logrus.Debugf("'%d' template(s) detected that will create", len(templatesReadyToCreate))
-	logrus.Debugf("'%d' template(s) detected that will update", len(templatesForUpdate))
+	logrus.Debugf("'%d' template(s) detected that will create", len(readyToCreateStructs))
 
-	logrus.Debugf("creating %v new templates ", len(templatesReadyToCreate))
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesReadyToCreate {
+	return readyToCreateStructs, nil
+}
+func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
 
-		fmt.Printf("Creating %v Template\n", template.Header.Name)
-		if _, err := templateService.Save(template); err != nil {
-			return err
-		}
-		fmt.Printf("%v Template created\n", template.Header.Name)
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
+	if err != nil {
+		return err
 	}
 
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesForUpdate {
+	for _, template := range readyToCreateStructs {
 
-		if _, err := templateService.Save(template); err != nil {
+		logrus.Debugf("trying to create %v", template.Header.Name)
+		if _, err := service.Save(template); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Template updated\n", template.Header.Name)
 	}
+
 	return nil
 }
 
-func (s SharedTemplateEngine) removeTemplates(templates []sharedtemplateStruct.TemplateBaseStruct, permanent bool) error {
+func (s SharedTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
 
-	templateService := ioc.Get[shared_template_contract.TemplateInterface]()
-	templatesReadyToDelete := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+	readyToUpdateStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+
 	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Shared template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
+			return nil, err
 		}
 		if ok {
-			templatesReadyToDelete = append(templatesReadyToDelete, template)
+			newModelHash, err := encrypt.CalculateHashFromObject(template)
+			if err != nil {
+				return nil, err
+			}
+			structHash, err := service.GetHash(template.Header.Name)
+			if err != nil {
+				return nil, err
+			}
+
+			if newModelHash != structHash {
+				readyToUpdateStructs = append(readyToUpdateStructs, template)
+			}
 		}
 	}
+	logrus.Debugf("'%d' template(s) detected that will update", len(readyToUpdateStructs))
 
-	for _, template := range templatesReadyToDelete {
+	return readyToUpdateStructs, nil
+}
+func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
 
-		if _, err := templateService.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, templates)
+	if err != nil {
+		return err
+	}
+	for _, template := range readyToUpdateStructs {
+		if _, err := service.Save(template); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (s SharedTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+	readyToRemoveStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+
+	for _, template := range templates {
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			readyToRemoveStructs = append(readyToRemoveStructs, template)
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
+func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, permanent bool) error {
+
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, templates)
+	if err != nil {
+		return err
+	}
+
+	for _, template := range readyToRemoveStructs {
+
+		if _, err := service.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Template deleted\n", template.Header.Name)
+		fmt.Printf("%v Shared Template deleted\n", template.Header.Name)
 
 	}
+
+	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }
@@ -206,4 +245,19 @@ func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, 
 	}
 
 	return result, nil
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+	r := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

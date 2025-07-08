@@ -109,7 +109,7 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 		if _, err := s.generate(resource); err != nil {
 			return err
 		}
-		fmt.Printf("%v (%d) Group created\n", resource.Header.Name, index)
+		fmt.Printf("%v (%d) Object Resource created\n", resource.Header.Name, index)
 
 	}
 

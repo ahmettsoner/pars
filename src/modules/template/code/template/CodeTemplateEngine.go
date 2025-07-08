@@ -110,7 +110,7 @@ func (s CodeTemplateEngine) create(ctx *application.ApplicationContext, template
 		if _, err := s.generate(template); err != nil {
 			return err
 		}
-		fmt.Printf("%v (%d) Group created\n", template.Header.Name, index)
+		fmt.Printf("%v (%d) Code Template created\n", template.Header.Name, index)
 
 	}
 

@@ -3,7 +3,6 @@ package file_template
 import (
 	"fmt"
 
-	"parsdevkit.net/pkg/utilities/json"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
@@ -35,24 +34,6 @@ func (s FileTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		filetemplate, ok := item.(*filetemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, filetemplate); err != nil {
-			return err
-		}
-
-		filetemplates = append(filetemplates, *filetemplate)
-	}
-
-	return s.createTemplates(filetemplates, true)
-}
 func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
 		Name:  "Template.File",
@@ -60,120 +41,177 @@ func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
+func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	err = s.create(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	filetemplates := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
 
-	for _, item := range data {
-		filetemplate, ok := item.(*filetemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Destroy: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
+	err = s.remove(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s FileTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+	readyToCreateStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
+
+	for _, template := range templates {
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
 		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			readyToCreateStructs = append(readyToCreateStructs, template)
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will create", len(readyToCreateStructs))
 
-		if err := s.completeInformation(ctx, filetemplate); err != nil {
+	return readyToCreateStructs, nil
+}
+func (s FileTemplateEngine) create(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, init bool) error {
+
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
+	if err != nil {
+		return err
+	}
+
+	for index, template := range readyToCreateStructs {
+
+		logrus.Debugf("trying to create %v", template.Header.Name)
+		if _, err := service.Save(template); err != nil {
 			return err
 		}
-		filetemplates = append(filetemplates, *filetemplate)
+
+		if _, err := s.generate(template); err != nil {
+			return err
+		}
+		fmt.Printf("%v (%d) File Template created\n", template.Header.Name, index)
+
 	}
 
-	return s.removeTemplates(filetemplates, true)
+	return nil
 }
 
-func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.TemplateBaseStruct, init bool) error {
+func (s FileTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
 
-	templatesReadyToCreate := make([]filetemplateStruct.TemplateBaseStruct, 0)
-	templatesForUpdate := make([]filetemplateStruct.TemplateBaseStruct, 0)
-	templateService := ioc.Get[file_template_contract.TemplateInterface]()
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+	readyToUpdateStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
-		if err := template.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(template)
-			return fmt.Errorf("template invalid data: '%s'\n%w", jsonObject, err)
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
 		}
-	}
-
-	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
+			return nil, err
 		}
 		if ok {
 			newModelHash, err := encrypt.CalculateHashFromObject(template)
 			if err != nil {
-				return err
+				return nil, err
 			}
-			structHash, err := templateService.GetHash(template.Header.Name)
+			structHash, err := service.GetHash(template.Header.Name)
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			if newModelHash != structHash {
-				templatesForUpdate = append(templatesForUpdate, template)
+				readyToUpdateStructs = append(readyToUpdateStructs, template)
 			}
-		} else {
-			templatesReadyToCreate = append(templatesReadyToCreate, template)
 		}
 	}
-	logrus.Debugf("'%d' template(s) detected that will create", len(templatesReadyToCreate))
-	logrus.Debugf("'%d' template(s) detected that will update", len(templatesForUpdate))
+	logrus.Debugf("'%d' template(s) detected that will update", len(readyToUpdateStructs))
 
-	logrus.Debugf("creating %v new templates ", len(templatesReadyToCreate))
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesReadyToCreate {
+	return readyToUpdateStructs, nil
+}
+func (s FileTemplateEngine) update(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, init bool) error {
 
-		fmt.Printf("Creating %v Template\n", template.Header.Name)
-		if _, err := templateService.Save(template); err != nil {
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, templates)
+	if err != nil {
+		return err
+	}
+	for _, template := range readyToUpdateStructs {
+		if _, err := service.Save(template); err != nil {
 			return err
 		}
-
 		if _, err := s.generate(template); err != nil {
 			return err
 		}
-
-		fmt.Printf("%v Template created\n", template.Header.Name)
-	}
-
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesForUpdate {
-
-		if _, err := templateService.Save(template); err != nil {
-			return err
-		}
-
-		if _, err := s.generate(template); err != nil {
-			return err
-		}
-
-		fmt.Printf("%v Template updated\n", template.Header.Name)
 	}
 	return nil
 }
+func (s FileTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
 
-func (s FileTemplateEngine) removeTemplates(templates []filetemplateStruct.TemplateBaseStruct, permanent bool) error {
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+	readyToRemoveStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
 
-	templateService := ioc.Get[file_template_contract.TemplateInterface]()
-	templatesReadyToDelete := make([]filetemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: File template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
+			return nil, err
 		}
 		if ok {
-			templatesReadyToDelete = append(templatesReadyToDelete, template)
+			readyToRemoveStructs = append(readyToRemoveStructs, template)
 		}
 	}
+	logrus.Debugf("'%d' template(s) detected that will remove", len(readyToRemoveStructs))
 
-	for _, template := range templatesReadyToDelete {
+	return readyToRemoveStructs, nil
+}
+func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, permanent bool) error {
 
-		if _, err := templateService.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
+	service := ioc.Get[file_template_contract.TemplateInterface]()
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, templates)
+	if err != nil {
+		return err
+	}
+
+	for _, template := range readyToRemoveStructs {
+
+		if _, err := service.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Template deleted\n", template.Header.Name)
+		fmt.Printf("%v Group deleted\n", template.Header.Name)
 
 	}
 
+	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
+
 	return nil
 }
+
 func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct) (*filetemplateStruct.TemplateBaseStruct, error) {
 
 	templateService := ioc.Get[file_template_contract.TemplateInterface]()
@@ -247,4 +285,19 @@ func (s FileTemplateEngine) getWorkspace(ctx *application.ApplicationContext, mo
 	}
 
 	return result, nil
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]filetemplateStruct.TemplateBaseStruct, error) {
+	r := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*filetemplateStruct.TemplateBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

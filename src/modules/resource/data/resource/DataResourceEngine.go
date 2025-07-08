@@ -109,7 +109,7 @@ func (s DataResourceEngine) create(ctx *application.ApplicationContext, resource
 		if _, err := s.generate(resource); err != nil {
 			return err
 		}
-		fmt.Printf("%v (%d) Group created\n", resource.Header.Name, index)
+		fmt.Printf("%v (%d) Data Resource created\n", resource.Header.Name, index)
 
 	}
 

@@ -109,7 +109,7 @@ func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []com
 		if _, err := s.execute(task); err != nil {
 			return err
 		}
-		fmt.Printf("%v (%d) Group created\n", task.Header.Name, index)
+		fmt.Printf("%v (%d) Basic Task created\n", task.Header.Name, index)
 
 	}
 
