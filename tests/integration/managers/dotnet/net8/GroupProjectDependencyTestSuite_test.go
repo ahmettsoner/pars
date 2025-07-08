@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
@@ -25,7 +25,7 @@ type GroupProjectDependencyTestSuite struct {
 	environment   string
 	workspace     string
 	manager       core.ApplicationPlatformManagerInterface
-	projects      []applicationproject.ProjectBaseStruct
+	projects      []application_project_payload_structs.ProjectBaseStruct
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

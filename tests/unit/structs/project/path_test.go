@@ -12,7 +12,7 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	layerPkg "parsdevkit.net/application/models/layer"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	applicationProject "parsdevkit.net/application/structs/project"
 
@@ -27,7 +27,7 @@ func Test_Project_Relative_Path(t *testing.T) {
 	a := assert.New(t)
 	testFaker := faker.NewFaker()
 	fakePath := testFaker.Project.Path(1)
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},
@@ -48,7 +48,7 @@ func Test_Project_Absolute_Path(t *testing.T) {
 	fakePath := testFaker.Project.Path(1)
 	fakeWorkspace := testFaker.Workspace.Name()
 
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},
@@ -72,7 +72,7 @@ func Test_Project_WithGroup_Relative_Path(t *testing.T) {
 	fakePath := testFaker.Project.Path(1)
 	fakeGroup := testFaker.Project.Group()
 
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},
@@ -97,7 +97,7 @@ func Test_Project_WithGroup_Absolute_Path(t *testing.T) {
 	fakeGroup := testFaker.Project.Group()
 	fakeWorkspace := testFaker.Workspace.Name()
 
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},
@@ -125,7 +125,7 @@ func Test_Project_WithGroup_Layer_Relative_Path(t *testing.T) {
 	fakeGroup := testFaker.Project.Group()
 	fakeLayerPath := testFaker.Project.Path(1)
 
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},
@@ -159,7 +159,7 @@ func Test_Project_WithGroup_Layer_Absolute_Path(t *testing.T) {
 	fakeLayerPath := testFaker.Project.Path(1)
 	fakeWorkspace := testFaker.Workspace.Name()
 
-	data := applicationproject.ProjectSpecification{
+	data := application_project_payload_structs.ProjectSpecification{
 		ProjectIdentifier: applicationProject.ProjectIdentifier{
 			Path: file.PathToArray(fakePath),
 		},

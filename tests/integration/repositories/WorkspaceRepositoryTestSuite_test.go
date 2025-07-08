@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
 type WorkspaceRepositoryTestSuite struct {
@@ -82,7 +82,7 @@ func (suite *WorkspaceRepositoryTestSuite) Test_GetByName() {
 	existingWorkspace, err := suite.repository.GetByName(workspaceName)
 	require.NoError(suite.T(), err, "Failed to retrieve workspace by name")
 
-	workspaceStructFromDB := &basic_workspace_payload.WorkspaceBaseStruct{}
+	workspaceStructFromDB := &basic_workspace_payload_structs.WorkspaceBaseStruct{}
 	err = json.Unmarshal([]byte(existingWorkspace.Document), workspaceStructFromDB)
 	require.NoError(suite.T(), err, "Failed unmarshal workspace entity")
 
@@ -117,7 +117,7 @@ func (suite *WorkspaceRepositoryTestSuite) Test_ListByPath() {
 	assert.Equal(suite.T(), 2, len(*existingWorkspaces))
 
 	for _, entity := range *existingWorkspaces {
-		workspaceStructFromDB := &basic_workspace_payload.WorkspaceBaseStruct{}
+		workspaceStructFromDB := &basic_workspace_payload_structs.WorkspaceBaseStruct{}
 		err = json.Unmarshal([]byte(entity.Document), workspaceStructFromDB)
 		require.NoError(suite.T(), err, "Failed unmarshal workspace entity")
 
@@ -140,7 +140,7 @@ func TestWorkspaceRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(WorkspaceRepositoryTestSuite))
 }
 
-func CreateNewSampleWorkspace(name string) (*entities.Workspace, *basic_workspace_payload.WorkspaceBaseStruct, error) {
+func CreateNewSampleWorkspace(name string) (*entities.Workspace, *basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspace := BasicWorkspace_WithName(name)
 	jsonData, err := json.Marshal(workspace)
@@ -156,7 +156,7 @@ func CreateNewSampleWorkspace(name string) (*entities.Workspace, *basic_workspac
 	return &workspaceEntity, workspace, nil
 }
 
-func CreateNewSampleWorkspaceWithSet(name, set string) (*entities.Workspace, *basic_workspace_payload.WorkspaceBaseStruct, error) {
+func CreateNewSampleWorkspaceWithSet(name, set string) (*entities.Workspace, *basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspace := BasicWorkspace_WithNamePath(name, set)
 
@@ -173,9 +173,9 @@ func CreateNewSampleWorkspaceWithSet(name, set string) (*entities.Workspace, *ba
 	return &workspaceEntity, workspace, nil
 }
 
-func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBaseStruct {
+func BasicWorkspace_WithName(name string) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -184,7 +184,7 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBase
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload.NewWorkspaceSpecification(0,
+		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
 			name,
 			"path",
 		),
@@ -192,9 +192,9 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBase
 	return &workspace
 }
 
-func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload.WorkspaceBaseStruct {
+func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -203,7 +203,7 @@ func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload.Wor
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload.NewWorkspaceSpecification(0,
+		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
 			name,
 			path,
 		),

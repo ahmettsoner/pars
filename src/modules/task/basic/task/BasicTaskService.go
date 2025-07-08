@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/contracts"
-	commontask "parsdevkit.net/structs/task/basic-task"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
@@ -22,7 +22,7 @@ type BasicTaskService struct {
 	environment                  string
 }
 
-func NewBasicTaskService(environment string) contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
+func NewBasicTaskService(environment string) contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct] {
 	taskRespository := ioc.Get[*repositories.TaskRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
@@ -33,8 +33,8 @@ func NewBasicTaskService(environment string) contracts.TaskServiceInterface[comm
 	}
 }
 
-func (s BasicTaskService) GetByName(name string) (*commontask.TaskBaseStruct, error) {
-	var task *commontask.TaskBaseStruct
+func (s BasicTaskService) GetByName(name string) (*basic_task_payload_structs.TaskBaseStruct, error) {
+	var task *basic_task_payload_structs.TaskBaseStruct
 
 	entity, err := s.taskRespository.GetByName(name)
 	if err != nil {
@@ -49,7 +49,7 @@ func (s BasicTaskService) GetByName(name string) (*commontask.TaskBaseStruct, er
 	return task, nil
 }
 
-func (s BasicTaskService) Save(model commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) Save(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
 
 	result, err := s.saveTaskInformation(model)
 	if err != nil {
@@ -59,17 +59,17 @@ func (s BasicTaskService) Save(model commontask.TaskBaseStruct) (*commontask.Tas
 	return result, nil
 }
 
-func (s BasicTaskService) List() (*([]commontask.TaskBaseStruct), error) {
+func (s BasicTaskService) List() (*([]basic_task_payload_structs.TaskBaseStruct), error) {
 
-	entityList, err := s.taskRespository.ListByKind(commontask.TASK_KIND)
+	entityList, err := s.taskRespository.ListByKind(basic_task_payload_structs.TASK_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	taskList := make([]commontask.TaskBaseStruct, 0)
+	taskList := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var task commontask.TaskBaseStruct
+		var task basic_task_payload_structs.TaskBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &task)
 
 		taskList = append(taskList, task)
@@ -78,17 +78,17 @@ func (s BasicTaskService) List() (*([]commontask.TaskBaseStruct), error) {
 	return &taskList, nil
 }
 
-func (s BasicTaskService) ListBySetAndLayers(set string, layers ...string) (*([]commontask.TaskBaseStruct), error) {
+func (s BasicTaskService) ListBySetAndLayers(set string, layers ...string) (*([]basic_task_payload_structs.TaskBaseStruct), error) {
 
 	entityList, err := s.taskRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	taskList := make([]commontask.TaskBaseStruct, 0)
+	taskList := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var task commontask.TaskBaseStruct
+		var task basic_task_payload_structs.TaskBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &task)
 
 		taskList = append(taskList, task)
@@ -97,7 +97,7 @@ func (s BasicTaskService) ListBySetAndLayers(set string, layers ...string) (*([]
 	return &taskList, nil
 }
 
-func (s BasicTaskService) Remove(name, workspace string, permanent bool) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) Remove(name, workspace string, permanent bool) (*basic_task_payload_structs.TaskBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	taskTaskEntity, err := s.taskRespository.GetByNameAndWorkspace(name, workspace)
@@ -111,7 +111,7 @@ func (s BasicTaskService) Remove(name, workspace string, permanent bool) (*commo
 	logrus.Debugf("task %v deleting...", taskTaskEntity.Name)
 
 	err = s.taskRespository.Delete(taskTaskEntity)
-	var task commontask.TaskBaseStruct
+	var task basic_task_payload_structs.TaskBaseStruct
 	err = json.Unmarshal([]byte(taskTaskEntity.Document), &task)
 	if err != nil {
 		return nil, err
@@ -145,7 +145,7 @@ func (s BasicTaskService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s BasicTaskService) saveTaskInformation(taskMommonl commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskService) saveTaskInformation(taskMommonl basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
 
 	jsonData, err := json.Marshal(taskMommonl)
 	if err != nil {

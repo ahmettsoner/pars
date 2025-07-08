@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Name: CMD
 
 	// Act
 
-	var data objectresource.MethodIdentifier
+	var data object_resource_payload_structs.MethodIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodIdentifier("CMD")
+	expected := object_resource_payload_structs.NewMethodIdentifier("CMD")
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ CMD
 
 	// Act
 
-	var data objectresource.MethodIdentifier
+	var data object_resource_payload_structs.MethodIdentifier
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodIdentifier("CMD")
+	expected := object_resource_payload_structs.NewMethodIdentifier("CMD")
 
 	// Assert
 	a.NoError(err)

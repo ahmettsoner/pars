@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/option"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -20,10 +20,10 @@ Name: CMD
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.Message{}, 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.Message{}, 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -40,10 +40,10 @@ CMD
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.Message{}, 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.Message{}, 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -61,10 +61,10 @@ Title: title_text
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.NewMessage("title_text", objectresource.NewDictionaryIdentifier("")), 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.NewMessage("title_text", object_resource_payload_structs.NewDictionaryIdentifier("")), 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -83,10 +83,10 @@ Title:
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("groups_patient_filter")), 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("groups_patient_filter")), 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -104,10 +104,10 @@ Order: 3
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.Message{}, 3, []option.Option(nil))
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.Message{}, 3, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -129,10 +129,10 @@ Options:
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.Message{}, 3, []option.Option{
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.Message{}, 3, []option.Option{
 		option.NewOption("foo", "bar"),
 		option.NewOption("foo2", "bar2"),
 	})
@@ -157,10 +157,10 @@ Options:
 
 	// Act
 
-	var data objectresource.Group
+	var data object_resource_payload_structs.Group
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewGroup("CMD", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("groups_patient_filter")), 3, []option.Option{
+	expected := object_resource_payload_structs.NewGroup("CMD", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("groups_patient_filter")), 3, []option.Option{
 		option.NewOption("foo", "bar"),
 	})
 

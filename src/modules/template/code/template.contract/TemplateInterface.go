@@ -2,8 +2,7 @@ package code_template_contract
 
 import (
 	"parsdevkit.net/application/contracts"
-	// template_payload "parsdevkit.net/modules/template/code_template_payload"
-	template_payload "parsdevkit.net/structs/template/code-template"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 )
 
-type TemplateInterface contracts.TemplateServiceInterface[template_payload.TemplateBaseStruct]
+type TemplateInterface contracts.TemplateServiceInterface[code_template_payload_structs.TemplateBaseStruct]

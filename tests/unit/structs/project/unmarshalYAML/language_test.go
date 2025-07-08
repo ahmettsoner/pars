@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
 	"github.com/stretchr/testify/assert"
@@ -20,10 +20,10 @@ Type: csharp
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
+	expected := application_project_payload_structs.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
 
 	// Assert
 	a.NoError(err)
@@ -39,10 +39,10 @@ Type: CSHARP
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
+	expected := application_project_payload_structs.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
 
 	// Assert
 	a.NoError(err)
@@ -58,10 +58,10 @@ Type: CSharp
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
+	expected := application_project_payload_structs.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
 
 	// Assert
 	a.NoError(err)
@@ -77,7 +77,7 @@ Type: unknown_type
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	// Assert
@@ -92,10 +92,10 @@ csharp
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
+	expected := application_project_payload_structs.NewLanguage_LanguageOnly(models.LanguageTypes.CSharp)
 
 	// Assert
 	a.NoError(err)
@@ -110,10 +110,10 @@ csharp@V8
 `
 
 	// Act
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
+	expected := application_project_payload_structs.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
 
 	// Assert
 	a.NoError(err)
@@ -131,10 +131,10 @@ Version: V8
 
 	// Act
 
-	var data applicationproject.Language
+	var data application_project_payload_structs.Language
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
+	expected := application_project_payload_structs.NewLanguage(models.LanguageTypes.CSharp, string(dotnetModels.CSharpVersions.V8))
 
 	// Assert
 	a.NoError(err)

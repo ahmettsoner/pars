@@ -3,8 +3,7 @@ package file_template
 import (
 	"fmt"
 
-	filetemplate "parsdevkit.net/structs/template/file-template"
-	filetemplateStruct "parsdevkit.net/structs/template/file-template"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
 	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/modules/template/file_template_contract"
@@ -13,7 +12,8 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/schemas"
@@ -26,7 +26,7 @@ type FileTemplateEngine struct{}
 
 func (s FileTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*filetemplateStruct.TemplateBaseStruct)
+		_, ok := item.(*file_template_payload_structs.TemplateBaseStruct)
 		if !ok {
 			return false
 		}
@@ -65,10 +65,10 @@ func (s FileTemplateEngine) Destroy(ctx *application.ApplicationContext, data []
 
 	return nil
 }
-func (s FileTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
+func (s FileTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct) ([]file_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
-	readyToCreateStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
+	readyToCreateStructs := make([]file_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -86,7 +86,7 @@ func (s FileTemplateEngine) prepareToCreate(ctx *application.ApplicationContext,
 
 	return readyToCreateStructs, nil
 }
-func (s FileTemplateEngine) create(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, init bool) error {
+func (s FileTemplateEngine) create(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, init bool) error {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
@@ -111,10 +111,10 @@ func (s FileTemplateEngine) create(ctx *application.ApplicationContext, template
 	return nil
 }
 
-func (s FileTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
+func (s FileTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct) ([]file_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
-	readyToUpdateStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
+	readyToUpdateStructs := make([]file_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -143,7 +143,7 @@ func (s FileTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext,
 
 	return readyToUpdateStructs, nil
 }
-func (s FileTemplateEngine) update(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, init bool) error {
+func (s FileTemplateEngine) update(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, init bool) error {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
 
@@ -161,10 +161,10 @@ func (s FileTemplateEngine) update(ctx *application.ApplicationContext, template
 	}
 	return nil
 }
-func (s FileTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct) ([]filetemplateStruct.TemplateBaseStruct, error) {
+func (s FileTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct) ([]file_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
-	readyToRemoveStructs := make([]filetemplateStruct.TemplateBaseStruct, 0)
+	readyToRemoveStructs := make([]file_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -182,7 +182,7 @@ func (s FileTemplateEngine) prepareToRemove(ctx *application.ApplicationContext,
 
 	return readyToRemoveStructs, nil
 }
-func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, templates []filetemplateStruct.TemplateBaseStruct, permanent bool) error {
+func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, permanent bool) error {
 
 	service := ioc.Get[file_template_contract.TemplateInterface]()
 
@@ -206,7 +206,7 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 	return nil
 }
 
-func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct) (*filetemplateStruct.TemplateBaseStruct, error) {
+func (s FileTemplateEngine) generate(model file_template_payload_structs.TemplateBaseStruct) (*file_template_payload_structs.TemplateBaseStruct, error) {
 
 	templateService := ioc.Get[file_template_contract.TemplateInterface]()
 
@@ -228,7 +228,7 @@ func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct
 	return result, nil
 }
 
-func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *filetemplateStruct.TemplateBaseStruct) error {
+func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *file_template_payload_structs.TemplateBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -251,19 +251,19 @@ func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationCont
 	}
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, filetemplate.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, file_template_payload_structs.Layer{})
 	}
 	return nil
 }
 
-func (s FileTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model filetemplateStruct.TemplateBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s FileTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model file_template_payload_structs.TemplateBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -287,13 +287,13 @@ func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
 		Order: 4000,
 	}
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]filetemplateStruct.TemplateBaseStruct, error) {
-	r := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]file_template_payload_structs.TemplateBaseStruct, error) {
+	r := make([]file_template_payload_structs.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*filetemplateStruct.TemplateBaseStruct)
+		model, ok := item.(*file_template_payload_structs.TemplateBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected filetemplateStruct.TemplateBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected file_template_payload_structs.TemplateBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

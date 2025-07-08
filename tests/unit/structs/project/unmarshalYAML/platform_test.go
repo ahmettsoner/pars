@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	parsModels "parsdevkit.net/platforms/pars/models"
 
@@ -21,10 +21,10 @@ Type: pars
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform_Basic(models.PlatformTypes.Pars)
+	expected := application_project_payload_structs.NewPlatform_Basic(models.PlatformTypes.Pars)
 
 	// Assert
 	a.NoError(err)
@@ -40,10 +40,10 @@ Type: PARS
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform_Basic(models.PlatformTypes.Pars)
+	expected := application_project_payload_structs.NewPlatform_Basic(models.PlatformTypes.Pars)
 
 	// Assert
 	a.NoError(err)
@@ -59,10 +59,10 @@ Type: Pars
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform_Basic(models.PlatformTypes.Pars)
+	expected := application_project_payload_structs.NewPlatform_Basic(models.PlatformTypes.Pars)
 
 	// Assert
 	a.NoError(err)
@@ -78,7 +78,7 @@ Type: unknown_type
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	// Assert
@@ -93,10 +93,10 @@ pars
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform_Basic(models.PlatformTypes.Pars)
+	expected := application_project_payload_structs.NewPlatform_Basic(models.PlatformTypes.Pars)
 
 	// Assert
 	a.NoError(err)
@@ -111,10 +111,10 @@ pars@BetaV1
 `
 
 	// Act
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform(models.PlatformTypes.Pars, parsModels.ParsPlatformVersions.BetaV1.String())
+	expected := application_project_payload_structs.NewPlatform(models.PlatformTypes.Pars, parsModels.ParsPlatformVersions.BetaV1.String())
 
 	// Assert
 	a.NoError(err)
@@ -132,10 +132,10 @@ Version: BetaV1
 
 	// Act
 
-	var data applicationproject.Platform
+	var data application_project_payload_structs.Platform
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewPlatform(models.PlatformTypes.Pars, parsModels.ParsPlatformVersions.BetaV1.String())
+	expected := application_project_payload_structs.NewPlatform(models.PlatformTypes.Pars, parsModels.ParsPlatformVersions.BetaV1.String())
 
 	// Assert
 	a.NoError(err)

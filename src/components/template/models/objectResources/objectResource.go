@@ -2,17 +2,19 @@ package objectResources
 
 import (
 	"parsdevkit.net/application/models/class"
-	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
-	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
-	codetemplate "parsdevkit.net/structs/template/code-template"
-	filetemplate "parsdevkit.net/structs/template/file-template"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
+
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 )
 
 type WorkspaceComposite struct {
 	Workspace
-	Original basic_workspace_payload.WorkspaceBaseStruct
+	Original basic_workspace_payload_structs.WorkspaceBaseStruct
 }
 
 type Workspace struct {
@@ -21,7 +23,7 @@ type Workspace struct {
 
 type ApplicationProjectComposite struct {
 	ApplicationProject
-	Original applicationProjectSchema.ProjectBaseStruct
+	Original application_project_payload_structs.ProjectBaseStruct
 }
 
 type ApplicationProject struct {
@@ -34,7 +36,7 @@ type ApplicationProject struct {
 
 type ObjectResourceComposite struct {
 	ObjectResource
-	Original objectresource.ResourceBaseStruct
+	Original object_resource_payload_structs.ResourceBaseStruct
 }
 
 type ObjectResource struct {
@@ -51,7 +53,7 @@ type ObjectResource struct {
 
 type DataResourceComposite struct {
 	DataResource
-	Original dataresource.ResourceBaseStruct
+	Original data_resource_payload_structs.ResourceBaseStruct
 }
 
 type DataResource struct {
@@ -136,7 +138,7 @@ type ObjectLayer struct {
 
 type FileTemplateComposite struct {
 	FileTemplate
-	Original filetemplate.TemplateBaseStruct
+	Original file_template_payload_structs.TemplateBaseStruct
 }
 
 type FileTemplate struct {
@@ -149,7 +151,7 @@ type FileTemplate struct {
 
 type CodeTemplateComposite struct {
 	CodeTemplate
-	Original codetemplate.TemplateBaseStruct
+	Original code_template_payload_structs.TemplateBaseStruct
 }
 
 type CodeTemplate struct {
@@ -162,7 +164,7 @@ type CodeTemplate struct {
 
 type DataLayerComposite struct {
 	DataLayer
-	Original dataresource.Layer
+	Original data_resource_payload_structs.Layer
 }
 
 type DataLayer struct {
@@ -172,7 +174,7 @@ type DataLayer struct {
 
 type DataSectionComposite struct {
 	DataSection
-	Original dataresource.Section
+	Original data_resource_payload_structs.Section
 }
 
 type DataSection struct {
@@ -185,10 +187,10 @@ type DataSection struct {
 
 type ObjectLayerComposite struct {
 	ObjectLayer
-	Original objectresource.Layer
+	Original object_resource_payload_structs.Layer
 }
 
 type ObjectSectionComposite struct {
 	ObjectSection
-	Original objectresource.Section
+	Original object_resource_payload_structs.Section
 }

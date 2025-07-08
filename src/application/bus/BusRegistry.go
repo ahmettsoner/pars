@@ -6,6 +6,14 @@ import (
 
 var b = internalBus.NewBus()
 
+// func RegisterMessageHandler[T internalBus.Message](handler internalBus.MessageHandler[T]) {
+// 	internalBus.RegisterMessageHandler(b, handler)
+// }
+
+// func SendMessage[T internalBus.Message](command T) error {
+// 	return internalBus.SendMessage(b, command)
+// }
+
 func RegisterCommandHandler[T internalBus.Command](handler internalBus.CommandHandler[T]) {
 	internalBus.RegisterCommandHandler(b, handler)
 }

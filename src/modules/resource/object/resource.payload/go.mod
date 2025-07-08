@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/resource/object_resource_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/pkg => ../../../../pkg
 
 go 1.23.7

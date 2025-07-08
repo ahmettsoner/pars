@@ -15,8 +15,9 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -52,16 +53,16 @@ func NewApplicationProjectService(environment string) application_project_contra
 	}
 }
 
-func (s *ApplicationProjectService) GetDefaultPlatformProjectType(model applicationproject.ProjectBaseStruct) (models.ProjectType, error) {
+func (s *ApplicationProjectService) GetDefaultPlatformProjectType(model application_project_payload_structs.ProjectBaseStruct) (models.ProjectType, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	return projectManager.GetDefaultPlatformProjectType(model), nil
 
 }
 
 // OK!
-func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseStruct, init bool) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Create(model application_project_payload_structs.ProjectBaseStruct, init bool) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v creating", model.Header.Name)
 
@@ -92,8 +93,8 @@ func (s *ApplicationProjectService) Create(model applicationproject.ProjectBaseS
 	return &model, nil
 }
 
-func (s ApplicationProjectService) GetByName(name string) (*applicationproject.ProjectBaseStruct, error) {
-	var template *applicationproject.ProjectBaseStruct
+func (s ApplicationProjectService) GetByName(name string) (*application_project_payload_structs.ProjectBaseStruct, error) {
+	var template *application_project_payload_structs.ProjectBaseStruct
 
 	entity, err := s.projectRespository.GetByName(name)
 	if err != nil {
@@ -111,7 +112,7 @@ func (s ApplicationProjectService) GetByName(name string) (*applicationproject.P
 	return template, nil
 }
 
-func (s *ApplicationProjectService) GenerateProject(model applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) GenerateProject(model application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	result, err := s.GetByName(model.Header.Name)
 	if err != nil {
@@ -126,7 +127,7 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje klasörü hazırlama aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project oluştururken, Platform Manager bulunamadı '%s'\n%w", model.Header.Name, err)
 	}
@@ -178,9 +179,9 @@ func (s *ApplicationProjectService) GenerateProject(model applicationproject.Pro
 
 	return result, nil
 }
-func (s ApplicationProjectService) AddDependenciesToProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
+func (s ApplicationProjectService) AddDependenciesToProject(model application_project_payload_structs.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 	err := projectManager.AddDependenciesToProject(model, dependencies)
 	if err != nil {
 		return fmt.Errorf("xxx: Application Project Paket eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
@@ -188,8 +189,8 @@ func (s ApplicationProjectService) AddDependenciesToProject(model applicationpro
 	return nil
 
 }
-func (s ApplicationProjectService) RemoveDependencyFromProject(model applicationproject.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+func (s ApplicationProjectService) RemoveDependencyFromProject(model application_project_payload_structs.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	err := projectManager.RemoveDependenciesFromProject(model, dependencies)
 	if err != nil {
@@ -197,12 +198,12 @@ func (s ApplicationProjectService) RemoveDependencyFromProject(model application
 	}
 	return nil
 }
-func (s ApplicationProjectService) AddReferenceToProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
+func (s ApplicationProjectService) AddReferenceToProject(model application_project_payload_structs.ProjectBaseStruct, references ...application_project_payload_structs.ProjectBaseStruct) error {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
-		err := projectManager.AddReferenceToProject(model, []applicationproject.ProjectBaseStruct{ref})
+		err := projectManager.AddReferenceToProject(model, []application_project_payload_structs.ProjectBaseStruct{ref})
 		if err != nil {
 			return fmt.Errorf("xxx: Application Project Reference eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
@@ -210,12 +211,12 @@ func (s ApplicationProjectService) AddReferenceToProject(model applicationprojec
 
 	return nil
 }
-func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationproject.ProjectBaseStruct, references ...applicationproject.ProjectBaseStruct) error {
+func (s ApplicationProjectService) RemoveReferenceFromProject(model application_project_payload_structs.ProjectBaseStruct, references ...application_project_payload_structs.ProjectBaseStruct) error {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
-		err := projectManager.RemoveReferenceFromProject(model, []applicationproject.ProjectBaseStruct{ref})
+		err := projectManager.RemoveReferenceFromProject(model, []application_project_payload_structs.ProjectBaseStruct{ref})
 		if err != nil {
 			return fmt.Errorf("xxx: Application Project Reference kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
@@ -224,7 +225,7 @@ func (s ApplicationProjectService) RemoveReferenceFromProject(model applicationp
 	return nil
 }
 
-func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s ApplicationProjectService) CreateProjectFolder(model application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	folders := file.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
 	foldersRelative := file.CombinePaths(paths)
 
@@ -234,7 +235,7 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 		return "", fmt.Errorf("xxx: Application Project proje klasörü oluştururken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	if len(paths) > 0 {
 		err := projectManager.AddFolderToProjectDefinition(model, paths...)
@@ -245,7 +246,7 @@ func (s ApplicationProjectService) CreateProjectFolder(model applicationproject.
 	foldersRelativePath := filepath.Join(foldersRelative...)
 	return foldersRelativePath, nil
 }
-func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s ApplicationProjectService) DeleteProjectFolder(model application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	folders := file.CombinePaths([]string{model.Specifications.GetAbsoluteProjectPath()}, paths)
 	foldersRelative := file.CombinePaths(paths)
 
@@ -256,7 +257,7 @@ func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.
 		return "", fmt.Errorf("xxx: Application Project proje klasörü silinirken hata oluştu: '%s' Path: '%+v'\n%w", model.Header.Name, folderPath, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if len(paths) > 0 {
 		err := projectManager.RemoveFolderFromProjectDefinition(model, paths...)
 
@@ -268,7 +269,7 @@ func (s ApplicationProjectService) DeleteProjectFolder(model applicationproject.
 	return foldersRelativePath, nil
 }
 
-func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationProject.Layer) error {
+func (s ApplicationProjectService) CreateLayerFolder(project application_project_payload_structs.ProjectBaseStruct, layers ...applicationProject.Layer) error {
 	for _, layer := range layers {
 		_, err := s.CreateProjectFolder(project, layer.Path)
 		if err != nil {
@@ -278,7 +279,7 @@ func (s ApplicationProjectService) CreateLayerFolder(project applicationproject.
 
 	return nil
 }
-func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.ProjectBaseStruct, layers ...applicationProject.Layer) error {
+func (s ApplicationProjectService) DeleteLayerFolder(project application_project_payload_structs.ProjectBaseStruct, layers ...applicationProject.Layer) error {
 	for _, layer := range layers {
 		_, err := s.DeleteProjectFolder(project, layer.Path)
 		if err != nil {
@@ -288,7 +289,7 @@ func (s ApplicationProjectService) DeleteLayerFolder(project applicationproject.
 
 	return nil
 }
-func (s ApplicationProjectService) CreateAllProjectFolders(project applicationproject.ProjectBaseStruct) ([]string, error) {
+func (s ApplicationProjectService) CreateAllProjectFolders(project application_project_payload_structs.ProjectBaseStruct) ([]string, error) {
 	folders := make([]string, 0)
 	for _, value := range project.Specifications.Layers {
 
@@ -301,7 +302,7 @@ func (s ApplicationProjectService) CreateAllProjectFolders(project applicationpr
 	}
 	return folders, nil
 }
-func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.ProjectBaseStruct, layer string, paths []string, filename string, content string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) AddFileToLayer(model application_project_payload_structs.ProjectBaseStruct, layer string, paths []string, filename string, content string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Header.Name, layer)
 
@@ -356,17 +357,17 @@ func (s *ApplicationProjectService) AddFileToLayer(model applicationproject.Proj
 }
 
 // OK!
-func (s *ApplicationProjectService) List() (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) List() (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
-	entityList, err := s.projectRespository.ListByKind(applicationproject.PROJECT_KIND)
+	entityList, err := s.projectRespository.ListByKind(application_project_payload_structs.PROJECT_KIND)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -379,17 +380,17 @@ func (s *ApplicationProjectService) List() (*([]applicationproject.ProjectBaseSt
 }
 
 // OK!
-func (s *ApplicationProjectService) ListBySet(set string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListBySet(set string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
 	entityList, err := s.projectRespository.ListBySet(set)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Set'a ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s'\n%w", set, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Set'a ait Application Project data %+v is corrupted or not in the expected format, '%s'\n%w", entity.Document, set, err)
@@ -402,17 +403,17 @@ func (s *ApplicationProjectService) ListBySet(set string) (*([]applicationprojec
 }
 
 // OK!
-func (s *ApplicationProjectService) ListByGroupName(group string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListByGroupName(group string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
 	entityList, err := s.projectRespository.ListByGroupName(group)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Group'a ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s'\n%w", group, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Group'a ait Application Project data %+v is corrupted or not in the expected format, '%s'\n%w", entity.Document, group, err)
@@ -425,17 +426,17 @@ func (s *ApplicationProjectService) ListByGroupName(group string) (*([]applicati
 }
 
 // OK!
-func (s *ApplicationProjectService) ListBySetAndLayers(set string, layers ...string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListBySetAndLayers(set string, layers ...string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
 	entityList, err := s.projectRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Set ve Layer'a ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s', '%s'\n%w", set, layers, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Set ve Layer'a ait Application Project data %+v is corrupted or not in the expected format, '%s', '%s'\n%w", entity.Document, set, layers, err)
@@ -447,17 +448,17 @@ func (s *ApplicationProjectService) ListBySetAndLayers(set string, layers ...str
 	return &projectList, nil
 }
 
-func (s *ApplicationProjectService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
 	entityList, err := s.projectRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Filtreye ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s', '%s'\n%w", set, layers, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Set ve Layer'a ait Application Project data %+v is corrupted or not in the expected format, '%s', '%s'\n%w", entity.Document, set, layers, err)
@@ -470,17 +471,17 @@ func (s *ApplicationProjectService) ListByFilter(set, workspace string, layers [
 }
 
 // OK!
-func (s *ApplicationProjectService) ListByWorkspace(workspaceName string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListByWorkspace(workspaceName string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
 	entityList, err := s.projectRespository.ListByWorkspace(workspaceName)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Workspace'a ait Application Project listeleme aşamasında beklenmeyen hata oluştu, '%s'\n%w", workspaceName, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Workspace'a ait Application Project data %+v is corrupted or not in the expected format, '%s'\n%w", entity.Document, workspaceName, err)
@@ -493,9 +494,9 @@ func (s *ApplicationProjectService) ListByWorkspace(workspaceName string) (*([]a
 
 }
 
-func (s *ApplicationProjectService) ListIndividualByWorkspace(workspaceName string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListIndividualByWorkspace(workspaceName string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
-	var projectList []applicationproject.ProjectBaseStruct = []applicationproject.ProjectBaseStruct{}
+	var projectList []application_project_payload_structs.ProjectBaseStruct = []application_project_payload_structs.ProjectBaseStruct{}
 
 	projectWorkspaceEntity, err := s.workspaceRespository.GetByName(workspaceName)
 	if err != nil {
@@ -512,7 +513,7 @@ func (s *ApplicationProjectService) ListIndividualByWorkspace(workspaceName stri
 
 	if entity != nil {
 
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Workspace'a ait Bağımsız Application Project data %+v is corrupted or not in the expected format, '%s'\n%w", entity.Document, workspaceName, err)
@@ -525,9 +526,9 @@ func (s *ApplicationProjectService) ListIndividualByWorkspace(workspaceName stri
 }
 
 // OK!
-func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspaceName string) (*([]applicationproject.ProjectBaseStruct), error) {
+func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspaceName string) (*([]application_project_payload_structs.ProjectBaseStruct), error) {
 
-	var projectList []applicationproject.ProjectBaseStruct = []applicationproject.ProjectBaseStruct{}
+	var projectList []application_project_payload_structs.ProjectBaseStruct = []application_project_payload_structs.ProjectBaseStruct{}
 
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
@@ -570,7 +571,7 @@ func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspa
 		// }
 
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -588,7 +589,7 @@ func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspa
 		if entity == nil {
 			return nil, nil
 		}
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -601,9 +602,9 @@ func (s *ApplicationProjectService) ListByFullNameWorkspace(name string, workspa
 }
 
 // OK!
-func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
-	var result applicationproject.ProjectBaseStruct = applicationproject.ProjectBaseStruct{}
+	var result application_project_payload_structs.ProjectBaseStruct = application_project_payload_structs.ProjectBaseStruct{}
 	logrus.Debugf("trying to find project with fullname (%v)", name)
 
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
@@ -643,7 +644,7 @@ func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspac
 			return nil, nil
 		}
 
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -654,7 +655,7 @@ func (s *ApplicationProjectService) GetByFullNameWorkspace(name string, workspac
 	}
 	return &result, nil
 }
-func (s *ApplicationProjectService) CheckIfWorkingOnProject() (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) CheckIfWorkingOnProject() (*application_project_payload_structs.ProjectBaseStruct, error) {
 	workingDir, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Geçerli dizinin tespiti sırasında hata oluştu! \n%w", err)
@@ -669,9 +670,9 @@ func (s *ApplicationProjectService) CheckIfWorkingOnProject() (*applicationproje
 }
 
 // OK!
-func (s *ApplicationProjectService) ValidateProjectStructure(model applicationproject.ProjectBaseStruct) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectStructure(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 	if !_string.IsEmpty(model.Specifications.Group) {
 		state, err := projectManager.IsGroupFolderExists(model)
 		if err != nil {
@@ -716,9 +717,9 @@ func (s *ApplicationProjectService) ValidateProjectStructure(model applicationpr
 
 	return true, nil
 }
-func (s *ApplicationProjectService) ValidateProjectDependency(model applicationproject.ProjectBaseStruct, _package applicationProject.Dependency) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectDependency(model application_project_payload_structs.ProjectBaseStruct, _package applicationProject.Dependency) (bool, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	dependencies, err := projectManager.ListDependenciesFromProject(model)
 	if err != nil {
@@ -734,8 +735,8 @@ func (s *ApplicationProjectService) ValidateProjectDependency(model applicationp
 	return false, nil
 }
 
-func (s *ApplicationProjectService) ValidateProjectDependencies(model applicationproject.ProjectBaseStruct) (bool, error) {
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+func (s *ApplicationProjectService) ValidateProjectDependencies(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, _package := range model.Specifications.Dependencies {
 		isValid, err := projectManager.HasDependencyOnProject(model, _package)
@@ -750,9 +751,9 @@ func (s *ApplicationProjectService) ValidateProjectDependencies(model applicatio
 	return true, nil
 }
 
-func (s *ApplicationProjectService) ValidateProjectReferences(model applicationproject.ProjectBaseStruct) (bool, error) {
+func (s *ApplicationProjectService) ValidateProjectReferences(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, reference := range model.Specifications.References {
 		isValid, err := projectManager.HasReferenceOnProject(model, reference)
@@ -766,9 +767,9 @@ func (s *ApplicationProjectService) ValidateProjectReferences(model applicationp
 
 	return true, nil
 }
-func (s *ApplicationProjectService) IsProjectFileExists(model applicationproject.ProjectBaseStruct) (bool, error) {
+func (s *ApplicationProjectService) IsProjectFileExists(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](model.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	state, err := projectManager.IsProjectFileExists(model)
 	if err != nil {
@@ -777,7 +778,7 @@ func (s *ApplicationProjectService) IsProjectFileExists(model applicationproject
 	return state, err
 }
 
-func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	directories := s.getDirectories(path)
 
 	entityList, err := s.projectRespository.ListByStartWithPath(directories)
@@ -785,7 +786,7 @@ func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicati
 		return nil, fmt.Errorf("xxx: Application Project reserve dizin dosyaları kontrolünde, belirtilen dizinde bulunan projeler listelenirken hata oluştu: '%s'\n%w", path, err)
 	}
 
-	projectList := make([]applicationproject.ProjectBaseStruct, 0)
+	projectList := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	// for _, entity := range *entityList {
 	// 	var project = s.projectMapper.ProjectEntityToStruct(entity)
@@ -794,7 +795,7 @@ func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicati
 	// }
 
 	for _, entity := range *entityList {
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Application Project reserve dizin dosyaları kontrolünde Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -810,7 +811,7 @@ func (s *ApplicationProjectService) IsDirectoryReserved(path string) (*applicati
 	}
 }
 
-func (s *ApplicationProjectService) Remove(name string, workspaceName string, force bool, permanent bool) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Remove(name string, workspaceName string, force bool, permanent bool) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	logrus.Debugf("project(s) will be %v removing", name)
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
@@ -845,9 +846,9 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -872,7 +873,7 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 		}
 		// entity.Workspace = projectWorkspaceEntity
 
-		var project applicationproject.ProjectBaseStruct
+		var project application_project_payload_structs.ProjectBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &project)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -892,9 +893,9 @@ func (s *ApplicationProjectService) Remove(name string, workspaceName string, fo
 		return &project, nil
 	}
 }
-func (s *ApplicationProjectService) DestroyProject(project applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) DestroyProject(project application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	logrus.Debugf("project (%v) content removing", project.Header.Name)
 	err := projectManager.RemoveProject(project)
@@ -1021,7 +1022,7 @@ func (s ApplicationProjectService) GetHash(name string, workspaceName string) (s
 	return entity.Hash, nil
 }
 
-func (s *ApplicationProjectService) Build(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Build(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Full proje id çözümlenemedi: '%s'\n%w", name, err)
@@ -1055,9 +1056,9 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 			return nil, fmt.Errorf("xxx: Gruba ait Application Project Listeleme aşamasında beklenmeyen hata oluştu '%s'\n%w", projectGroup, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1079,13 +1080,13 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 		return nil, fmt.Errorf("xxx: Proje tanımlı değil '%s' Build edilemiyor", name)
 	}
 	// entity.Workspace = projectWorkspaceEntity
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.BuildProject(project)
 	if err != nil {
@@ -1095,7 +1096,7 @@ func (s *ApplicationProjectService) Build(name string, workspaceName string) (*a
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1129,9 +1130,9 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1154,13 +1155,13 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 	}
 	// entity.Workspace = workspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.CleanProject(project)
 	if err != nil {
@@ -1170,7 +1171,7 @@ func (s *ApplicationProjectService) CleanV2(name string, workspaceName string) (
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1204,9 +1205,9 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Gruba ait Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1229,13 +1230,13 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 	}
 	// entity.Workspace = projectWorkspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.CleanProject(project)
 	if err != nil {
@@ -1245,7 +1246,7 @@ func (s *ApplicationProjectService) Clean(name string, workspaceName string) (*a
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) Install(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Install(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1279,9 +1280,9 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1304,13 +1305,13 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 	}
 	// entity.Workspace = projectWorkspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.InstallProject(project)
 	if err != nil {
@@ -1320,7 +1321,7 @@ func (s *ApplicationProjectService) Install(name string, workspaceName string) (
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) Test(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Test(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1353,9 +1354,9 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1378,13 +1379,13 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 	}
 	// entity.Workspace = projectWorkspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.TestProject(project)
 	if err != nil {
@@ -1394,7 +1395,7 @@ func (s *ApplicationProjectService) Test(name string, workspaceName string) (*ap
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) Release(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Release(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1428,9 +1429,9 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1453,13 +1454,13 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 	}
 	// entity.Workspace = projectWorkspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.PackageProject(project)
 	if err != nil {
@@ -1469,7 +1470,7 @@ func (s *ApplicationProjectService) Release(name string, workspaceName string) (
 	return &project, nil
 }
 
-func (s *ApplicationProjectService) Run(name string, workspaceName string) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) Run(name string, workspaceName string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 	projectGroup, projectName, err := projectComponent.ParseProjectFullName(name)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse full project name '%s'\n%w", name, err)
@@ -1503,9 +1504,9 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 			return nil, fmt.Errorf("failed to get project for group '%s' in workspace '%s'\n%w", projectGroup, workspaceName, err)
 		}
 
-		var latestValue *applicationproject.ProjectBaseStruct
+		var latestValue *application_project_payload_structs.ProjectBaseStruct
 		for _, entity := range *projectEntities {
-			var project applicationproject.ProjectBaseStruct
+			var project application_project_payload_structs.ProjectBaseStruct
 			err = json.Unmarshal([]byte(entity.Document), &project)
 			if err != nil {
 				return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -1528,13 +1529,13 @@ func (s *ApplicationProjectService) Run(name string, workspaceName string) (*app
 	}
 	// entity.Workspace = projectWorkspaceEntity
 
-	var project applicationproject.ProjectBaseStruct
+	var project application_project_payload_structs.ProjectBaseStruct
 	err = json.Unmarshal([]byte(entity.Document), &project)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Application Project data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
 	}
 
-	projectManager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 
 	err = projectManager.RunProject(project)
 	if err != nil {
@@ -1601,7 +1602,7 @@ func (s *ApplicationProjectService) getProject(name string, group string, worksp
 
 	return entity, nil
 }
-func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*basic_workspace_payload.WorkspaceSpecification, error) {
+func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*basic_workspace_payload_structs.WorkspaceSpecification, error) {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	workspace, err := workspaceService.GetByName(workspaceName)
@@ -1622,7 +1623,7 @@ func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*
 	return &workspace.Specifications, nil
 }
 
-func (s *ApplicationProjectService) saveProjectInformation(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) saveProjectInformation(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v information saving", projectModel.Header.Name)
 
@@ -1645,7 +1646,7 @@ func (s *ApplicationProjectService) saveProjectInformation(projectModel applicat
 	return &projectModel, nil
 }
 
-func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v information rolling back", projectModel.Header.Name)
 
@@ -1658,7 +1659,7 @@ func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel 
 	return &projectModel, nil
 }
 
-func (s *ApplicationProjectService) rollbackProjectGeneration(projectModel applicationproject.ProjectBaseStruct) (*applicationproject.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) rollbackProjectGeneration(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v dosya rolling back", projectModel.Header.Name)
 

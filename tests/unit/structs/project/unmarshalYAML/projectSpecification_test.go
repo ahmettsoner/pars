@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/application/schemas"
 	goModels "parsdevkit.net/platforms/go/models"
@@ -45,10 +45,10 @@ References:
 
 	// Act
 
-	var data applicationproject.ProjectSpecification
+	var data application_project_payload_structs.ProjectSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewProjectSpecification(
+	expected := application_project_payload_structs.NewProjectSpecification(
 		0,
 		"Utils",
 		"Common",
@@ -60,17 +60,17 @@ References:
 		[]label.Label(nil),
 		file.PathToArray("Utils"),
 		applicationWorkspace.WorkspaceIdentifier{},
-		applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
-		applicationproject.Runtime{},
-		applicationproject.NewSchema(),
+		application_project_payload_structs.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
+		application_project_payload_structs.Runtime{},
+		application_project_payload_structs.NewSchema(),
 		[]applicationProject.Layer(nil),
 		[]applicationProject.Dependency{
 			applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
 		},
-		[]applicationproject.ProjectBaseStruct{
-			applicationproject.NewProjectBaseStruct(
-				schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
-				applicationproject.NewProjectSpecification(
+		[]application_project_payload_structs.ProjectBaseStruct{
+			application_project_payload_structs.NewProjectBaseStruct(
+				schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, "Logging", schemas.Metadata{}),
+				application_project_payload_structs.NewProjectSpecification(
 					0,
 					"",
 					"Core",
@@ -82,12 +82,12 @@ References:
 					[]label.Label(nil),
 					[]string(nil),
 					applicationWorkspace.WorkspaceIdentifier{},
-					applicationproject.Platform{},
-					applicationproject.Runtime{},
-					applicationproject.Schema{},
+					application_project_payload_structs.Platform{},
+					application_project_payload_structs.Runtime{},
+					application_project_payload_structs.Schema{},
 					[]applicationProject.Layer(nil),
 					[]applicationProject.Dependency(nil),
-					[]applicationproject.ProjectBaseStruct(nil),
+					[]application_project_payload_structs.ProjectBaseStruct(nil),
 					[]string(nil),
 					[]string(nil),
 					[]string(nil),

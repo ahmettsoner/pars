@@ -3,7 +3,7 @@ package services
 import (
 	"testing"
 
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/application/models/label"
@@ -11,8 +11,8 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	group "parsdevkit.net/modules/group/basic_group"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 
@@ -25,9 +25,9 @@ import (
 	"parsdevkit.net/application/schemas"
 )
 
-func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) basic_workspace_payload.WorkspaceBaseStruct {
+func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -36,7 +36,7 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		basic_workspace_payload_structs.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
 	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)
@@ -52,7 +52,7 @@ func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 	_, err := workspaceService.Remove(workspaceName, true, true)
 	require.NoError(t, err, "Failed to delete workspace")
 }
-func CreateGroup(t *testing.T, groupName, path, environment string) group_payload.GroupBaseStruct {
+func CreateGroup(t *testing.T, groupName, path, environment string) basic_group_payload_structs.GroupBaseStruct {
 
 	groupStruct := *BasicGroup_WithNamePath(groupName, path)
 
@@ -69,11 +69,11 @@ func RemoveGroup(t *testing.T, groupName, environment string) {
 	require.NoError(t, err, "Failed to delete group")
 }
 
-func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) applicationproject.ProjectBaseStruct {
+func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
-		applicationproject.NewProjectSpecification(
+	project := application_project_payload_structs.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
+		application_project_payload_structs.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -85,12 +85,12 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
-			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-			applicationproject.Runtime{},
-			applicationproject.Schema{},
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			application_project_payload_structs.Runtime{},
+			application_project_payload_structs.Schema{},
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
@@ -104,11 +104,11 @@ func CreateNewTestProject(t *testing.T, name, wsPath, workspaceName string) appl
 	return project
 }
 
-func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName string, layers []applicationProject.Layer) applicationproject.ProjectBaseStruct {
+func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName string, layers []applicationProject.Layer) application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
-		applicationproject.NewProjectSpecification(
+	project := application_project_payload_structs.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
+		application_project_payload_structs.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -120,12 +120,12 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName str
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
-			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-			applicationproject.Runtime{},
-			applicationproject.Schema{},
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			application_project_payload_structs.Runtime{},
+			application_project_payload_structs.Schema{},
 			layers,
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
@@ -138,11 +138,11 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, wsPath, workspaceName str
 
 	return project
 }
-func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string) applicationproject.ProjectBaseStruct {
+func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string) application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
-		applicationproject.NewProjectSpecification(
+	project := application_project_payload_structs.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
+		application_project_payload_structs.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -154,12 +154,12 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
-			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-			applicationproject.Runtime{},
-			applicationproject.Schema{},
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			application_project_payload_structs.Runtime{},
+			application_project_payload_structs.Schema{},
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
@@ -172,11 +172,11 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, wsPath, workspaceName, gr
 
 	return project
 }
-func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string, layers []applicationProject.Layer) applicationproject.ProjectBaseStruct {
+func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspaceName, groupName, groupPath string, layers []applicationProject.Layer) application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
-		applicationproject.NewProjectSpecification(
+	project := application_project_payload_structs.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
+		application_project_payload_structs.NewProjectSpecification(
 			0,
 			name,
 			groupName,
@@ -188,12 +188,12 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspac
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
-			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-			applicationproject.Runtime{},
-			applicationproject.Schema{},
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			application_project_payload_structs.Runtime{},
+			application_project_payload_structs.Schema{},
 			layers,
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
@@ -207,11 +207,11 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, wsPath, workspac
 	return project
 }
 
-func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, workspaceName, groupName, groupPath string) applicationproject.ProjectBaseStruct {
+func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, workspaceName, groupName, groupPath string) application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, name, schemas.Metadata{}),
-		applicationproject.NewProjectSpecification(
+	project := application_project_payload_structs.NewProjectBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
+		application_project_payload_structs.NewProjectSpecification(
 			0,
 			name,
 			groupName,
@@ -223,12 +223,12 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, wsPath, work
 			[]label.Label(nil),
 			file.PathToArray(path),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, wsPath),
-			applicationproject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
-			applicationproject.Runtime{},
-			applicationproject.Schema{},
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			application_project_payload_structs.Runtime{},
+			application_project_payload_structs.Schema{},
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
@@ -275,9 +275,9 @@ func GetDependencies(index int, count int, withVersion bool) []applicationProjec
 	return selectedElements
 }
 
-func BasicGroup_WithNamePath(name, path string) *group_payload.GroupBaseStruct {
+func BasicGroup_WithNamePath(name, path string) *basic_group_payload_structs.GroupBaseStruct {
 
-	group := group_payload.NewGroupBaseStruct(
+	group := basic_group_payload_structs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -286,7 +286,7 @@ func BasicGroup_WithNamePath(name, path string) *group_payload.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group_payload.NewGroupSpecification(0,
+		basic_group_payload_structs.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/task/basic_task_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/basic => ../../../../basic
 
 replace parsdevkit.net/pkg => ../../../../pkg

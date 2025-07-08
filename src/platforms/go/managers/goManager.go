@@ -10,7 +10,7 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	applicationProject "parsdevkit.net/application/structs/project"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/models"
@@ -32,7 +32,7 @@ func (s GoManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.GO
 }
 
-func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) goModels.GoPlatformVersion {
+func (s GoManager) GetPlatformVersion(platform application_project_payload_structs.Platform) goModels.GoPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := goModels.GoPlatformVersions.Go121
 
@@ -45,7 +45,7 @@ func (s GoManager) GetPlatformVersion(platform applicationproject.Platform) goMo
 		return platformVersion
 	}
 }
-func (s GoManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	if _, err := s.CreateProjectFolder(project); err != nil {
 		return err
@@ -91,7 +91,7 @@ func (s GoManager) CreateProject(project applicationproject.ProjectBaseStruct) e
 	return nil
 }
 
-func (s GoManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) RemoveProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -111,7 +111,7 @@ func (s GoManager) RemoveProject(project applicationproject.ProjectBaseStruct) e
 	return nil
 }
 
-func (s GoManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) BuildProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -135,7 +135,7 @@ func (s GoManager) BuildProject(project applicationproject.ProjectBaseStruct) er
 	return nil
 }
 
-func (s GoManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) CleanProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -159,7 +159,7 @@ func (s GoManager) CleanProject(project applicationproject.ProjectBaseStruct) er
 	return nil
 }
 
-func (s GoManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) InstallProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -183,7 +183,7 @@ func (s GoManager) InstallProject(project applicationproject.ProjectBaseStruct) 
 	return nil
 }
 
-func (s GoManager) TestProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) TestProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -207,7 +207,7 @@ func (s GoManager) TestProject(project applicationproject.ProjectBaseStruct) err
 	return nil
 }
 
-func (s GoManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) PackageProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -231,7 +231,7 @@ func (s GoManager) PackageProject(project applicationproject.ProjectBaseStruct) 
 	return nil
 }
 
-func (s GoManager) RunProject(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) RunProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	if !_string.IsEmpty(project.Specifications.Group) {
 		groupStatus, err := s.IsGroupFileExists(project)
 		if err != nil {
@@ -251,7 +251,7 @@ func (s GoManager) RunProject(project applicationproject.ProjectBaseStruct) erro
 	return nil
 }
 
-func (s GoManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) CreateGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "init", s.GetGroupPackage(project))
 	if err != nil {
@@ -261,10 +261,10 @@ func (s GoManager) CreateGroup(project applicationproject.ProjectBaseStruct) err
 	return nil
 }
 
-func (s GoManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
+func (s GoManager) DeleteGroup(project application_project_payload_structs.ProjectBaseStruct) {
 }
 
-func (s GoManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) AddToGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	relativeProjectPath, err := file.FindRelativePath(project.Specifications.GetAbsoluteGroupPath(), project.Specifications.GetAbsoluteProjectPath())
 	if err != nil {
@@ -283,7 +283,7 @@ func (s GoManager) AddToGroup(project applicationproject.ProjectBaseStruct) erro
 	return nil
 }
 
-func (s GoManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+func (s GoManager) RemoveFromGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "tidy")
 	if err != nil {
 		return err
@@ -292,7 +292,7 @@ func (s GoManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s GoManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s GoManager) CreateProjectFolder(project application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	var foldersRelative []string = []string{}
 	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
@@ -310,7 +310,7 @@ func (s GoManager) CreateProjectFolder(project applicationproject.ProjectBaseStr
 	return foldersRelativePath, nil
 }
 
-func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s GoManager) AddDependenciesToProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 		err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", _package.GetFullName())
@@ -322,7 +322,7 @@ func (s GoManager) AddDependenciesToProject(project applicationproject.ProjectBa
 	return nil
 }
 
-func (s GoManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s GoManager) RemoveDependenciesFromProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	fmt.Printf("remove package not implemented yet")
 	// for _, _package := range dependencies {
 	// }
@@ -330,7 +330,7 @@ func (s GoManager) RemoveDependenciesFromProject(project applicationproject.Proj
 	return nil
 }
 
-func (s GoManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s GoManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
@@ -352,14 +352,14 @@ func (s GoManager) AddReferenceToProject(project applicationproject.ProjectBaseS
 	return nil
 }
 
-func (s GoManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s GoManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 	fmt.Printf("Remove reference not implemented yet")
 	// for _, reference := range references {
 	// }
 
 	return nil
 }
-func (s GoManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s GoManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
 
@@ -371,11 +371,11 @@ func (s GoManager) IsProjectFileExists(project applicationproject.ProjectBaseStr
 		return !stat.IsDir(), nil
 	}
 }
-func (s GoManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
+func (s GoManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return fmt.Sprintf("go.mod")
 }
 
-func (s GoManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s GoManager) IsGroupFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
@@ -387,6 +387,6 @@ func (s GoManager) IsGroupFileExists(project applicationproject.ProjectBaseStruc
 		return !stat.IsDir(), nil
 	}
 }
-func (s GoManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
+func (s GoManager) GetGroupFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return fmt.Sprintf("go.mod")
 }

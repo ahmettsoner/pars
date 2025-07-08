@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
@@ -25,7 +25,7 @@ type BasicProjectReferenceTestSuite struct {
 	environment   string
 	workspace     string
 	manager       core.ApplicationPlatformManagerInterface
-	project       applicationproject.ProjectBaseStruct
+	project       application_project_payload_structs.ProjectBaseStruct
 	faker         *faker.Faker
 	noCleanOnFail bool
 }
@@ -70,12 +70,12 @@ func (suite *BasicProjectReferenceTestSuite) TearDownTest() {
 func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences() {
 	projectName := suite.faker.Project.Name()
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
 
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
@@ -93,12 +93,12 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences() {
 	projectName2 := suite.faker.Project.Name()
 	referenceProject := CreateNewTestProject(suite.T(), projectName1, suite.testArea, suite.workspace)
 	referenceProject2 := CreateNewTestProject(suite.T(), projectName2, suite.testArea, suite.workspace)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 		referenceProject2,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
@@ -119,11 +119,11 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences() {
 
 	projectName := suite.faker.Project.Name()
 	referenceProject := CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
@@ -147,11 +147,11 @@ func (suite *BasicProjectReferenceTestSuite) Test_AddNewReferences_GroupedProjec
 	groupName := suite.faker.Project.Group()
 	CreateNewTestProjectGroupAndPath(suite.T(), groupName, groupName, suite.testArea, suite.workspace)
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
@@ -171,12 +171,12 @@ func (suite *BasicProjectReferenceTestSuite) Test_ListReferences_GroupedProject(
 	CreateNewTestProjectGroupAndPath(suite.T(), groupName, groupName, suite.testArea, suite.workspace)
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName1, suite.testArea, suite.workspace, groupName, groupName)
 	referenceProject2 := CreateNewTestProjectWithGroup(suite.T(), projectName2, suite.testArea, suite.workspace, groupName, groupName)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 		referenceProject2,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}
@@ -199,11 +199,11 @@ func (suite *BasicProjectReferenceTestSuite) Test_ValidateReferences_GroupedProj
 	groupName := suite.faker.Project.Group()
 	CreateNewTestProjectGroupAndPath(suite.T(), groupName, groupName, suite.testArea, suite.workspace)
 	referenceProject := CreateNewTestProjectWithGroup(suite.T(), projectName, suite.testArea, suite.workspace, groupName, groupName)
-	newReferences := []applicationproject.ProjectBaseStruct{
+	newReferences := []application_project_payload_structs.ProjectBaseStruct{
 		referenceProject,
 	}
 	suite.project.Specifications.References = append(suite.project.Specifications.References, newReferences...)
-	newReferencesSpecs := make([]applicationproject.ProjectBaseStruct, 0)
+	newReferencesSpecs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, ref := range newReferences {
 		newReferencesSpecs = append(newReferencesSpecs, ref)
 	}

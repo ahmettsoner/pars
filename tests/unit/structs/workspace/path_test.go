@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +14,7 @@ func Test_Workspace_Absolute_Path(t *testing.T) {
 
 	// Arrange
 	a := assert.New(t)
-	data := basic_workspace_payload.WorkspaceSpecification{
+	data := basic_workspace_payload_structs.WorkspaceSpecification{
 		WorkspaceIdentifier: applicationWorkspace.WorkspaceIdentifier{
 			Path: "workspace",
 		},
@@ -31,7 +31,7 @@ func Test_Workspace_Absolute_CodeBase_Path(t *testing.T) {
 
 	// Arrange
 	a := assert.New(t)
-	data := basic_workspace_payload.WorkspaceSpecification{
+	data := basic_workspace_payload_structs.WorkspaceSpecification{
 		WorkspaceIdentifier: applicationWorkspace.WorkspaceIdentifier{
 			Path: "workspace",
 		},
@@ -48,7 +48,7 @@ func Test_Workspace_Absolute_Templates_Path(t *testing.T) {
 
 	// Arrange
 	a := assert.New(t)
-	data := basic_workspace_payload.WorkspaceSpecification{
+	data := basic_workspace_payload_structs.WorkspaceSpecification{
 		WorkspaceIdentifier: applicationWorkspace.WorkspaceIdentifier{
 			Path: "workspace",
 		},
@@ -65,7 +65,7 @@ func Test_Workspace_Absolute_Resources_Path(t *testing.T) {
 
 	// Arrange
 	a := assert.New(t)
-	data := basic_workspace_payload.WorkspaceSpecification{
+	data := basic_workspace_payload_structs.WorkspaceSpecification{
 		WorkspaceIdentifier: applicationWorkspace.WorkspaceIdentifier{
 			Path: "workspace",
 		},

@@ -6,7 +6,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/modules/template/code_template_contract"
-	codetemplate "parsdevkit.net/structs/template/code-template"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/persistence/repositories"
@@ -34,8 +34,8 @@ func NewCodeTemplateService(environment string) code_template_contract.TemplateI
 	}
 }
 
-func (s CodeTemplateService) GetByName(name string) (*codetemplate.TemplateBaseStruct, error) {
-	var template *codetemplate.TemplateBaseStruct
+func (s CodeTemplateService) GetByName(name string) (*code_template_payload_structs.TemplateBaseStruct, error) {
+	var template *code_template_payload_structs.TemplateBaseStruct
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
@@ -50,7 +50,7 @@ func (s CodeTemplateService) GetByName(name string) (*codetemplate.TemplateBaseS
 	return template, nil
 }
 
-func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codetemplate.TemplateBaseStruct, error) {
+func (s CodeTemplateService) Save(model code_template_payload_structs.TemplateBaseStruct) (*code_template_payload_structs.TemplateBaseStruct, error) {
 
 	result, err := s.saveTemplateInformation(model)
 	if err != nil {
@@ -60,17 +60,17 @@ func (s CodeTemplateService) Save(model codetemplate.TemplateBaseStruct) (*codet
 	return result, nil
 }
 
-func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error) {
+func (s CodeTemplateService) List() (*([]code_template_payload_structs.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(codetemplate.TEMPLATE_KIND)
+	entityList, err := s.templateRespository.ListByKind(code_template_payload_structs.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]code_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template code_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -79,17 +79,17 @@ func (s CodeTemplateService) List() (*([]codetemplate.TemplateBaseStruct), error
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]code_template_payload_structs.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, codetemplate.TEMPLATE_KIND)
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, code_template_payload_structs.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]code_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template code_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -98,17 +98,17 @@ func (s CodeTemplateService) ListByWorkspace(workspace string) (*([]codetemplate
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]code_template_payload_structs.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]code_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template code_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -117,17 +117,17 @@ func (s CodeTemplateService) ListBySetAndLayers(set string, layers ...string) (*
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]code_template_payload_structs.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]code_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template code_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -135,17 +135,17 @@ func (s CodeTemplateService) ListByWorkspaceAndSetAndLayers(workspace, set strin
 
 	return &templateList, nil
 }
-func (s CodeTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]codetemplate.TemplateBaseStruct), error) {
+func (s CodeTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]code_template_payload_structs.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]codetemplate.TemplateBaseStruct, 0)
+	templateList := make([]code_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template codetemplate.TemplateBaseStruct
+		var template code_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -154,7 +154,7 @@ func (s CodeTemplateService) ListByFilter(set, workspace string, layers []string
 	return &templateList, nil
 }
 
-func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*codetemplate.TemplateBaseStruct, error) {
+func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*code_template_payload_structs.TemplateBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
@@ -168,7 +168,7 @@ func (s CodeTemplateService) Remove(name, workspace string, permanent bool) (*co
 	logrus.Debugf("template %v deleting...", templateTemplateEntity.Name)
 
 	err = s.templateRespository.Delete(templateTemplateEntity)
-	var template codetemplate.TemplateBaseStruct
+	var template code_template_payload_structs.TemplateBaseStruct
 	err = json.Unmarshal([]byte(templateTemplateEntity.Document), &template)
 	if err != nil {
 		return nil, err
@@ -207,7 +207,7 @@ func (s CodeTemplateService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s CodeTemplateService) saveTemplateInformation(templateModel codetemplate.TemplateBaseStruct) (*codetemplate.TemplateBaseStruct, error) {
+func (s CodeTemplateService) saveTemplateInformation(templateModel code_template_payload_structs.TemplateBaseStruct) (*code_template_payload_structs.TemplateBaseStruct, error) {
 
 	jsonData, err := json.Marshal(templateModel)
 	if err != nil {

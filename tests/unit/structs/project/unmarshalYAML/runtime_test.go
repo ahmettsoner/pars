@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
@@ -21,10 +21,10 @@ Type: dotnet
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, "")
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, "")
 
 	// Assert
 	a.NoError(err)
@@ -40,10 +40,10 @@ Type: DOTNET
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, "")
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, "")
 
 	// Assert
 	a.NoError(err)
@@ -59,10 +59,10 @@ Type: Dotnet
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, "")
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, "")
 
 	// Assert
 	a.NoError(err)
@@ -78,7 +78,7 @@ Type: unknown_type
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
 	// Assert
@@ -93,10 +93,10 @@ dotnet
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, "")
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, "")
 	// Assert
 	a.NoError(err)
 	a.Equal(expected, data)
@@ -110,10 +110,10 @@ dotnet@Net8
 `
 
 	// Act
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, dotnetModels.DotnetRuntimeVersions.Net8.String())
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, dotnetModels.DotnetRuntimeVersions.Net8.String())
 
 	// Assert
 	a.NoError(err)
@@ -131,10 +131,10 @@ Version: Net8
 
 	// Act
 
-	var data applicationproject.Runtime
+	var data application_project_payload_structs.Runtime
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.NewRuntime(models.RuntimeTypes.Dotnet, dotnetModels.DotnetRuntimeVersions.Net8.String())
+	expected := application_project_payload_structs.NewRuntime(models.RuntimeTypes.Dotnet, dotnetModels.DotnetRuntimeVersions.Net8.String())
 
 	// Assert
 	a.NoError(err)

@@ -6,7 +6,7 @@ import (
 
 	"parsdevkit.net/application"
 
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/persistence/contexts"
@@ -82,7 +82,7 @@ func (suite *GroupRepositoryTestSuite) Test_GetByName() {
 	existingGroup, err := suite.repository.GetByName(groupName)
 	require.NoError(suite.T(), err, "Failed to retrieve group by name")
 
-	groupStructFromDB := &group_payload.GroupBaseStruct{}
+	groupStructFromDB := &basic_group_payload_structs.GroupBaseStruct{}
 	err = json.Unmarshal([]byte(existingGroup.Document), groupStructFromDB)
 	require.NoError(suite.T(), err, "Failed unmarshal group entity")
 
@@ -117,7 +117,7 @@ func (suite *GroupRepositoryTestSuite) Test_ListByPath() {
 	assert.Equal(suite.T(), 2, len(*existingGroups))
 
 	for _, entity := range *existingGroups {
-		groupStructFromDB := &group_payload.GroupBaseStruct{}
+		groupStructFromDB := &basic_group_payload_structs.GroupBaseStruct{}
 		err = json.Unmarshal([]byte(entity.Document), groupStructFromDB)
 		require.NoError(suite.T(), err, "Failed unmarshal group entity")
 
@@ -140,7 +140,7 @@ func TestGroupRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(GroupRepositoryTestSuite))
 }
 
-func CreateNewSampleGroup(name string) (*entities.Group, *group_payload.GroupBaseStruct, error) {
+func CreateNewSampleGroup(name string) (*entities.Group, *basic_group_payload_structs.GroupBaseStruct, error) {
 
 	group := BasicGroup_WithName(name)
 	jsonData, err := json.Marshal(group)
@@ -156,7 +156,7 @@ func CreateNewSampleGroup(name string) (*entities.Group, *group_payload.GroupBas
 	return &groupEntity, group, nil
 }
 
-func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *group_payload.GroupBaseStruct, error) {
+func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *basic_group_payload_structs.GroupBaseStruct, error) {
 
 	group := BasicGroup_WithNamePath(name, set)
 
@@ -173,9 +173,9 @@ func CreateNewSampleGroupWithSet(name, set string) (*entities.Group, *group_payl
 	return &groupEntity, group, nil
 }
 
-func BasicGroup_WithName(name string) *group_payload.GroupBaseStruct {
+func BasicGroup_WithName(name string) *basic_group_payload_structs.GroupBaseStruct {
 
-	group := group_payload.NewGroupBaseStruct(
+	group := basic_group_payload_structs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -184,7 +184,7 @@ func BasicGroup_WithName(name string) *group_payload.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group_payload.NewGroupSpecification(0,
+		basic_group_payload_structs.NewGroupSpecification(0,
 			name,
 			"path",
 			[]string{"foo", "bar"},
@@ -193,9 +193,9 @@ func BasicGroup_WithName(name string) *group_payload.GroupBaseStruct {
 	return &group
 }
 
-func BasicGroup_WithNamePath(name, path string) *group_payload.GroupBaseStruct {
+func BasicGroup_WithNamePath(name, path string) *basic_group_payload_structs.GroupBaseStruct {
 
-	group := group_payload.NewGroupBaseStruct(
+	group := basic_group_payload_structs.NewGroupBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Group,
 			"",
@@ -204,7 +204,7 @@ func BasicGroup_WithNamePath(name, path string) *group_payload.GroupBaseStruct {
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		group_payload.NewGroupSpecification(0,
+		basic_group_payload_structs.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

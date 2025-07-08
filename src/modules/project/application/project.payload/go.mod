@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/project/application_project_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/application => ../../../../application
 
 replace parsdevkit.net/models => ../../../../models

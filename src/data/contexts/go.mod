@@ -25,13 +25,10 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace parsdevkit.net/persistence/entities => ../entities
 
 replace parsdevkit.net/application => ../../application
-
-replace parsdevkit.net/structs => ../../modules/structs
 
 replace parsdevkit.net/pkg => ../../pkg

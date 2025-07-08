@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Type: auth.annotation
 
 	// Act
 
-	var data objectresource.Annotation
+	var data object_resource_payload_structs.Annotation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument(nil))
+	expected := object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument(nil))
 
 	// Assert
 	a.NoError(err)
@@ -42,12 +42,12 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Annotation
+	var data object_resource_payload_structs.Annotation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument{
-		objectresource.NewMethodArgument("", "foo"),
-		objectresource.NewMethodArgument("", "bar"),
+	expected := object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("", "foo"),
+		object_resource_payload_structs.NewMethodArgument("", "bar"),
 	})
 
 	// Assert
@@ -70,12 +70,12 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Annotation
+	var data object_resource_payload_structs.Annotation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument{
-		objectresource.NewMethodArgument("param1", "foo"),
-		objectresource.NewMethodArgument("param2", "bar"),
+	expected := object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("param1", "foo"),
+		object_resource_payload_structs.NewMethodArgument("param2", "bar"),
 	})
 
 	// Assert
@@ -96,12 +96,12 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Annotation
+	var data object_resource_payload_structs.Annotation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument{
-		objectresource.NewMethodArgument("", "foo"),
-		objectresource.NewMethodArgument("", "bar"),
+	expected := object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("", "foo"),
+		object_resource_payload_structs.NewMethodArgument("", "bar"),
 	})
 
 	// Assert

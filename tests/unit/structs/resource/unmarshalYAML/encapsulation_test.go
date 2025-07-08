@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/structs"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Getter: true
 `
 
 	// Act
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{}, true), objectresource.EncapsulationSetter{})
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.NewEncapsulationGetter("", "", object_resource_payload_structs.MethodIdentifier{}, true), object_resource_payload_structs.EncapsulationSetter{})
 
 	// Assert
 	a.NoError(err)
@@ -38,10 +38,10 @@ Getter: GetName
 `
 
 	// Act
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{Name: "GetName"}, true), objectresource.EncapsulationSetter{})
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.NewEncapsulationGetter("", "", object_resource_payload_structs.MethodIdentifier{Name: "GetName"}, true), object_resource_payload_structs.EncapsulationSetter{})
 
 	// Assert
 	a.NoError(err)
@@ -59,10 +59,10 @@ Getter:
 
 	// Act
 
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", structs.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true), objectresource.EncapsulationSetter{})
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.NewEncapsulationGetter("", structs.VisibilityTypeTypes.Protected, object_resource_payload_structs.MethodIdentifier{}, true), object_resource_payload_structs.EncapsulationSetter{})
 
 	// Assert
 	a.NoError(err)
@@ -80,10 +80,10 @@ Getter:
 
 	// Act
 
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{Name: "GetName"}, true), objectresource.EncapsulationSetter{})
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.NewEncapsulationGetter("", "", object_resource_payload_structs.MethodIdentifier{Name: "GetName"}, true), object_resource_payload_structs.EncapsulationSetter{})
 
 	// Assert
 	a.NoError(err)
@@ -101,10 +101,10 @@ Setter: true
 `
 
 	// Act
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", "", objectresource.MethodIdentifier{}, true))
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.EncapsulationGetter{}, object_resource_payload_structs.NewEncapsulationSetter("", "", object_resource_payload_structs.MethodIdentifier{}, true))
 
 	// Assert
 	a.NoError(err)
@@ -120,10 +120,10 @@ Setter: SetName
 `
 
 	// Act
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", "", objectresource.MethodIdentifier{Name: "SetName"}, true))
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.EncapsulationGetter{}, object_resource_payload_structs.NewEncapsulationSetter("", "", object_resource_payload_structs.MethodIdentifier{Name: "SetName"}, true))
 
 	// Assert
 	a.NoError(err)
@@ -141,10 +141,10 @@ Setter:
 
 	// Act
 
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Protected, objectresource.MethodIdentifier{}, true))
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.EncapsulationGetter{}, object_resource_payload_structs.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Protected, object_resource_payload_structs.MethodIdentifier{}, true))
 
 	// Assert
 	a.NoError(err)
@@ -162,10 +162,10 @@ Setter:
 
 	// Act
 
-	var data objectresource.Encapsulation
+	var data object_resource_payload_structs.Encapsulation
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewEncapsulation(objectresource.EncapsulationGetter{}, objectresource.NewEncapsulationSetter("", "", objectresource.MethodIdentifier{Name: "SetName"}, true))
+	expected := object_resource_payload_structs.NewEncapsulation(object_resource_payload_structs.EncapsulationGetter{}, object_resource_payload_structs.NewEncapsulationSetter("", "", object_resource_payload_structs.MethodIdentifier{Name: "SetName"}, true))
 
 	// Assert
 	a.NoError(err)

@@ -14,7 +14,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
 type InitOptions struct {
@@ -87,7 +87,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	workspace, err := workspaceService.Save(basic_workspace_payload.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), basic_workspace_payload.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
+	workspace, err := workspaceService.Save(basic_workspace_payload_structs.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), basic_workspace_payload_structs.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
 	if err != nil {
 		return fmt.Errorf("Failed to initialize workspace '%s'\n%w", commandOptions.Name, err)
 	}

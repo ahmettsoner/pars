@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	templateStruct "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	templateStruct "parsdevkit.net/structs/template"
-	codetemplate "parsdevkit.net/structs/template/code-template"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -26,20 +26,20 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(
+	expected := code_template_payload_structs.NewTemplateSpecification(
 		0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -62,19 +62,19 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -97,20 +97,20 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(
+	expected := code_template_payload_structs.NewTemplateSpecification(
 		0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "code_sample"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "code_sample"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -134,19 +134,19 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -169,19 +169,19 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -206,19 +206,19 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -243,22 +243,22 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]codetemplate.Layer{
-			codetemplate.NewLayer(0, "layer1", []templateStruct.Section(nil)),
-			codetemplate.NewLayer(0, "layer2", []templateStruct.Section(nil)),
+		[]code_template_payload_structs.Layer{
+			code_template_payload_structs.NewLayer(0, "layer1", []templateStruct.Section(nil)),
+			code_template_payload_structs.NewLayer(0, "layer2", []templateStruct.Section(nil)),
 		},
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -283,22 +283,22 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label{
 			label.NewLabel_KeyOnly("label1"),
 			label.NewLabel("label2", "value2"),
 		},
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -324,22 +324,22 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label{
 			label.NewLabel_KeyOnly("label1"),
 			label.NewLabel("label2", "value2"),
 		},
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -363,19 +363,19 @@ Template:
 
 	// Act
 
-	var data codetemplate.TemplateSpecification
+	var data code_template_payload_structs.TemplateSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateSpecification(0,
 		"CMD",
 		"",
 		"Set",
 		"",
-		codetemplate.NewOutput("filename.ext"),
+		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]codetemplate.Layer(nil),
-		codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+		[]code_template_payload_structs.Layer(nil),
+		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 

@@ -6,7 +6,7 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/group/basic_group_contract"
-	"parsdevkit.net/modules/group/basic_group_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -31,8 +31,8 @@ func NewGroupService(environment string) basic_group_contract.GroupInterface {
 	}
 }
 
-func (s GroupService) GetByName(name string) (*basic_group_payload.GroupBaseStruct, error) {
-	var group *basic_group_payload.GroupBaseStruct
+func (s GroupService) GetByName(name string) (*basic_group_payload_structs.GroupBaseStruct, error) {
+	var group *basic_group_payload_structs.GroupBaseStruct
 
 	entity, err := s.groupRespository.GetByName(name)
 	if err != nil {
@@ -50,7 +50,7 @@ func (s GroupService) GetByName(name string) (*basic_group_payload.GroupBaseStru
 	return group, nil
 }
 
-func (s GroupService) Save(model basic_group_payload.GroupBaseStruct) (*basic_group_payload.GroupBaseStruct, error) {
+func (s GroupService) Save(model basic_group_payload_structs.GroupBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
 
 	result, err := s.saveGroupInformation(model)
 	if err != nil {
@@ -60,17 +60,17 @@ func (s GroupService) Save(model basic_group_payload.GroupBaseStruct) (*basic_gr
 	return result, nil
 }
 
-func (s GroupService) List() (*([]basic_group_payload.GroupBaseStruct), error) {
+func (s GroupService) List() (*([]basic_group_payload_structs.GroupBaseStruct), error) {
 
 	entityList, err := s.groupRespository.List()
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Group listeleme aşamasında beklenmeyen hata oluştu\n%w", err)
 	}
 
-	groupList := make([]basic_group_payload.GroupBaseStruct, 0)
+	groupList := make([]basic_group_payload_structs.GroupBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var group basic_group_payload.GroupBaseStruct
+		var group basic_group_payload_structs.GroupBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &group)
 		if err != nil {
 			return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", entity.Document, err)
@@ -81,7 +81,7 @@ func (s GroupService) List() (*([]basic_group_payload.GroupBaseStruct), error) {
 
 	return &groupList, nil
 }
-func (s GroupService) Remove(name string, permanent bool) (*basic_group_payload.GroupBaseStruct, error) {
+func (s GroupService) Remove(name string, permanent bool) (*basic_group_payload_structs.GroupBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	groupGroupEntity, err := s.groupRespository.GetByName(name)
@@ -108,7 +108,7 @@ func (s GroupService) Remove(name string, permanent bool) (*basic_group_payload.
 		return nil, fmt.Errorf("xxx: Group silme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}
 
-	var group basic_group_payload.GroupBaseStruct
+	var group basic_group_payload_structs.GroupBaseStruct
 	err = json.Unmarshal([]byte(groupGroupEntity.Document), &group)
 	if err != nil {
 		return nil, fmt.Errorf("xxx: Group data %+v is corrupted or not in the expected format\n%w", groupGroupEntity.Document, err)
@@ -152,7 +152,7 @@ func (s GroupService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s GroupService) saveGroupInformation(groupModel basic_group_payload.GroupBaseStruct) (*basic_group_payload.GroupBaseStruct, error) {
+func (s GroupService) saveGroupInformation(groupModel basic_group_payload_structs.GroupBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
 
 	jsonData, err := json.Marshal(groupModel)
 	if err != nil {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	actionBase "parsdevkit.net/structs/task/actions"
+	actionBase "parsdevkit.net/application/structs/task/actions"
 )
 
 type ExecuterContext struct {

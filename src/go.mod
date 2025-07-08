@@ -76,8 +76,6 @@ replace parsdevkit.net/platforms/go => ./platforms/go
 
 replace parsdevkit.net/platforms/pars => ./platforms/pars
 
-replace parsdevkit.net/structs => ./modules/structs
-
 replace parsdevkit.net/context => ./modules/context
 
 replace parsdevkit.net/providers => ./providers
@@ -154,12 +152,16 @@ require (
 	parsdevkit.net/modules/resource/object_resource_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/task/basic_task_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/code_template_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/code_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/file_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/shared_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000 // indirect
@@ -174,7 +176,6 @@ require (
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000 // indirect
 )
 
 replace parsdevkit.net/pkg => ./pkg

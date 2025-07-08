@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/modules/task/basic_task_contract"
-	commontask "parsdevkit.net/structs/task/basic-task"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
@@ -13,7 +13,7 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
@@ -24,7 +24,7 @@ type BasicTaskEngine struct{}
 
 func (s BasicTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*commontask.TaskBaseStruct)
+		_, ok := item.(*basic_task_payload_structs.TaskBaseStruct)
 		if !ok {
 			return false
 		}
@@ -63,10 +63,10 @@ func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []sch
 
 	return nil
 }
-func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
+func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct) ([]basic_task_payload_structs.TaskBaseStruct, error) {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
-	readyToCreateStructs := make([]commontask.TaskBaseStruct, 0)
+	readyToCreateStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, task := range tasks {
 		if err := s.completeInformation(ctx, &task); err != nil {
@@ -84,7 +84,7 @@ func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, ta
 
 	return readyToCreateStructs, nil
 }
-func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, init bool) error {
+func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, tasks)
@@ -109,10 +109,10 @@ func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []com
 	return nil
 }
 
-func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
+func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct) ([]basic_task_payload_structs.TaskBaseStruct, error) {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
-	readyToUpdateStructs := make([]commontask.TaskBaseStruct, 0)
+	readyToUpdateStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, task := range tasks {
 		if err := s.completeInformation(ctx, &task); err != nil {
@@ -141,7 +141,7 @@ func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, ta
 
 	return readyToUpdateStructs, nil
 }
-func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, init bool) error {
+func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
 
@@ -159,10 +159,10 @@ func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []com
 	}
 	return nil
 }
-func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
+func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct) ([]basic_task_payload_structs.TaskBaseStruct, error) {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
-	readyToRemoveStructs := make([]commontask.TaskBaseStruct, 0)
+	readyToRemoveStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, task := range tasks {
 		if err := s.completeInformation(ctx, &task); err != nil {
@@ -180,7 +180,7 @@ func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, ta
 
 	return readyToRemoveStructs, nil
 }
-func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, permanent bool) error {
+func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, permanent bool) error {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
 
@@ -204,9 +204,9 @@ func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []com
 	return nil
 }
 
-func (s BasicTaskEngine) execute(model commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
+func (s BasicTaskEngine) execute(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
 
-	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
+	taskService := ioc.Get[contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct]]()
 
 	result, err := taskService.GetByName(model.Header.Name)
 	if err != nil {
@@ -220,7 +220,7 @@ func (s BasicTaskEngine) execute(model commontask.TaskBaseStruct) (*commontask.T
 	return result, nil
 }
 
-func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext, model *commontask.TaskBaseStruct) error {
+func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext, model *basic_task_payload_structs.TaskBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -241,14 +241,14 @@ func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext
 	return nil
 }
 
-func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model commontask.TaskBaseStruct) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
+func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model basic_task_payload_structs.TaskBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *basic_workspace_payload.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -272,13 +272,13 @@ func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
 		Order: 5000,
 	}
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]commontask.TaskBaseStruct, error) {
-	r := make([]commontask.TaskBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_task_payload_structs.TaskBaseStruct, error) {
+	r := make([]basic_task_payload_structs.TaskBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*commontask.TaskBaseStruct)
+		model, ok := item.(*basic_task_payload_structs.TaskBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected commontask.TaskBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected basic_task_payload_structs.TaskBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

@@ -13,7 +13,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	angularModels "parsdevkit.net/platforms/angular/models"
 	"parsdevkit.net/platforms/core"
@@ -48,7 +48,7 @@ func ProjectTypeToAngularCLITypeString(c angularModels.AngularProjectType) (stri
 func (s AngularManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.Angular
 }
-func (s AngularManager) GetPlatformVersion(platform applicationproject.Platform) angularModels.AngularPlatformVersion {
+func (s AngularManager) GetPlatformVersion(platform application_project_payload_structs.Platform) angularModels.AngularPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := angularModels.AngularPlatformVersions.V17
 
@@ -62,7 +62,7 @@ func (s AngularManager) GetPlatformVersion(platform applicationproject.Platform)
 	}
 }
 
-func (s AngularManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	_, err := ProjectTypeToAngularCLITypeString(angularModels.AngularProjectType(project.Specifications.ProjectType))
 	if err != nil {
 		return err
@@ -95,7 +95,7 @@ func (s AngularManager) CreateProject(project applicationproject.ProjectBaseStru
 	return nil
 }
 
-func (s AngularManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) RemoveProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -116,7 +116,7 @@ func (s AngularManager) RemoveProject(project applicationproject.ProjectBaseStru
 	return nil
 }
 
-func (s AngularManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) BuildProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -140,11 +140,11 @@ func (s AngularManager) BuildProject(project applicationproject.ProjectBaseStruc
 	return nil
 }
 
-func (s AngularManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) CleanProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	return nil
 }
 
-func (s AngularManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) InstallProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -168,7 +168,7 @@ func (s AngularManager) InstallProject(project applicationproject.ProjectBaseStr
 	return nil
 }
 
-func (s AngularManager) TestProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) TestProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -192,7 +192,7 @@ func (s AngularManager) TestProject(project applicationproject.ProjectBaseStruct
 	return nil
 }
 
-func (s AngularManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) PackageProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -216,7 +216,7 @@ func (s AngularManager) PackageProject(project applicationproject.ProjectBaseStr
 	return nil
 }
 
-func (s AngularManager) RunProject(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) RunProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -240,7 +240,7 @@ func (s AngularManager) RunProject(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s AngularManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) CreateGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 	err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", "--name", project.Specifications.GroupObject.Name, "--create-application", "false", "--skip-install", "true", "--skip-git", "true", "--skip-tests", "true", "--routing", "--new-project-root", "")
 	if err != nil {
 		return err
@@ -248,16 +248,16 @@ func (s AngularManager) CreateGroup(project applicationproject.ProjectBaseStruct
 	return nil
 }
 
-func (s AngularManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
+func (s AngularManager) DeleteGroup(project application_project_payload_structs.ProjectBaseStruct) {
 	fmt.Println("Please remove group manually")
 }
 
-func (s AngularManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) AddToGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s AngularManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) RemoveFromGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 	// err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", "--name", project.Specifications.GroupObject.Name, "--create-application", "false", "--skip-install", "true", "--skip-git", "true", "--skip-tests", "true", "--routing", "--new-project-root", "")
 	// if err != nil {
 	// 	return err
@@ -266,7 +266,7 @@ func (s AngularManager) RemoveFromGroup(project applicationproject.ProjectBaseSt
 	return nil
 }
 
-func (s AngularManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s AngularManager) CreateProjectFolder(project application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
 	for _, path := range paths {
@@ -281,7 +281,7 @@ func (s AngularManager) CreateProjectFolder(project applicationproject.ProjectBa
 	return foldePath, nil
 }
 
-func (s AngularManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s AngularManager) AddDependenciesToProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		packageName := _package.Name
@@ -300,7 +300,7 @@ func (s AngularManager) AddDependenciesToProject(project applicationproject.Proj
 	return nil
 }
 
-func (s AngularManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s AngularManager) RemoveDependenciesFromProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	for _, _package := range dependencies {
 
@@ -314,7 +314,7 @@ func (s AngularManager) RemoveDependenciesFromProject(project applicationproject
 	return nil
 }
 
-func (s AngularManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
@@ -332,7 +332,7 @@ func (s AngularManager) AddReferenceToProject(project applicationproject.Project
 	return nil
 }
 
-func (s AngularManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
@@ -351,7 +351,7 @@ func (s AngularManager) RemoveReferenceFromProject(project applicationproject.Pr
 	return nil
 }
 
-func (s AngularManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s AngularManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
 
@@ -363,11 +363,11 @@ func (s AngularManager) IsProjectFileExists(project applicationproject.ProjectBa
 		return !stat.IsDir(), nil
 	}
 }
-func (s AngularManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
+func (s AngularManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return fmt.Sprintf("tsconfig.app.json")
 }
 
-func (s AngularManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s AngularManager) IsGroupFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
@@ -379,11 +379,11 @@ func (s AngularManager) IsGroupFileExists(project applicationproject.ProjectBase
 		return !stat.IsDir(), nil
 	}
 }
-func (s AngularManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
+func (s AngularManager) GetGroupFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return fmt.Sprintf("package.json")
 }
 
-func (s AngularManager) ListLayersFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Layer, error) {
+func (s AngularManager) ListLayersFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]applicationProject.Layer, error) {
 
 	folders, err := s.ListFoldersFromProjectDefinition(project)
 	if err != nil {
@@ -405,7 +405,7 @@ func (s AngularManager) ListLayersFromProject(project applicationproject.Project
 	return layers, nil
 }
 
-func (s AngularManager) HasLayerOnProject(project applicationproject.ProjectBaseStruct, layer string) (bool, error) {
+func (s AngularManager) HasLayerOnProject(project application_project_payload_structs.ProjectBaseStruct, layer string) (bool, error) {
 
 	layers, err := s.ListLayersFromProject(project)
 	if err != nil {
@@ -424,7 +424,7 @@ func (s AngularManager) HasLayerOnProject(project applicationproject.ProjectBase
 	return layerState, nil
 }
 
-func (s AngularManager) RemoveDefaultFiles(project applicationproject.ProjectBaseStruct) error {
+func (s AngularManager) RemoveDefaultFiles(project application_project_payload_structs.ProjectBaseStruct) error {
 	var paths []string = []string{}
 	// projectPath := project.Specifications.GetAbsoluteProjectPath()
 
@@ -436,19 +436,19 @@ func (s AngularManager) RemoveDefaultFiles(project applicationproject.ProjectBas
 	return s.FileRemover(paths...)
 }
 
-func (s AngularManager) AddFolderToProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
+func (s AngularManager) AddFolderToProjectDefinition(project application_project_payload_structs.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
-func (s AngularManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
+func (s AngularManager) RemoveFolderFromProjectDefinition(project application_project_payload_structs.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
 
-func (s AngularManager) GetProjectFileRelativePath(project applicationproject.ProjectBaseStruct) string {
+func (s AngularManager) GetProjectFileRelativePath(project application_project_payload_structs.ProjectBaseStruct) string {
 
 	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
 }
 
-func (s AngularManager) HasReferenceOnProject(project applicationproject.ProjectBaseStruct, reference applicationproject.ProjectBaseStruct) (bool, error) {
+func (s AngularManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -468,7 +468,7 @@ func (s AngularManager) HasReferenceOnProject(project applicationproject.Project
 	return referenceState, nil
 }
 
-func (s AngularManager) ListReferencesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
+func (s AngularManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	output, err := providers.NPMExecuteWithOutput(project.Specifications.GetAbsoluteProjectPath(), "list", "--link")
 	if err != nil {
@@ -479,7 +479,7 @@ func (s AngularManager) ListReferencesFromProject(project applicationproject.Pro
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]applicationproject.ProjectBaseStruct, 0)
+	references := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, match := range matches {
 		for _, projectReference := range project.Specifications.References {
 			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
@@ -500,7 +500,7 @@ func (s AngularManager) ListReferencesFromProject(project applicationproject.Pro
 	return references, nil
 }
 
-func (s AngularManager) IsProjectFolderExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s AngularManager) IsProjectFolderExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(project.Specifications.GetAbsoluteProjectPath()) // check if the project directory exists
 

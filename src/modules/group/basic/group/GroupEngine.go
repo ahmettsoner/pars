@@ -5,7 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"parsdevkit.net/modules/group/basic_group_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/application"
@@ -20,7 +20,7 @@ type GroupEngine struct{}
 
 func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*basic_group_payload.GroupBaseStruct)
+		_, ok := item.(*basic_group_payload_structs.GroupBaseStruct)
 		if !ok {
 			return false
 		}
@@ -58,10 +58,10 @@ func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas
 
 	return nil
 }
-func (s GroupEngine) prepareToCreate(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
+func (s GroupEngine) prepareToCreate(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct) ([]basic_group_payload_structs.GroupBaseStruct, error) {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
-	readyToCreateStructs := make([]basic_group_payload.GroupBaseStruct, 0)
+	readyToCreateStructs := make([]basic_group_payload_structs.GroupBaseStruct, 0)
 
 	for _, group := range groups {
 		if err := s.completeInformation(ctx, &group); err != nil {
@@ -79,7 +79,7 @@ func (s GroupEngine) prepareToCreate(ctx *application.ApplicationContext, groups
 
 	return readyToCreateStructs, nil
 }
-func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, init bool) error {
+func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, init bool) error {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, groups)
@@ -101,10 +101,10 @@ func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_
 	return nil
 }
 
-func (s GroupEngine) prepareToUpdate(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
+func (s GroupEngine) prepareToUpdate(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct) ([]basic_group_payload_structs.GroupBaseStruct, error) {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
-	readyToUpdateStructs := make([]basic_group_payload.GroupBaseStruct, 0)
+	readyToUpdateStructs := make([]basic_group_payload_structs.GroupBaseStruct, 0)
 
 	for _, group := range groups {
 		if err := s.completeInformation(ctx, &group); err != nil {
@@ -133,7 +133,7 @@ func (s GroupEngine) prepareToUpdate(ctx *application.ApplicationContext, groups
 
 	return readyToUpdateStructs, nil
 }
-func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, init bool) error {
+func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, init bool) error {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
 
@@ -148,10 +148,10 @@ func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_
 	}
 	return nil
 }
-func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
+func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct) ([]basic_group_payload_structs.GroupBaseStruct, error) {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
-	readyToRemoveStructs := make([]basic_group_payload.GroupBaseStruct, 0)
+	readyToRemoveStructs := make([]basic_group_payload_structs.GroupBaseStruct, 0)
 
 	for _, group := range groups {
 		if err := s.completeInformation(ctx, &group); err != nil {
@@ -169,7 +169,7 @@ func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, groups
 
 	return readyToRemoveStructs, nil
 }
-func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, permanent bool) error {
+func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, permanent bool) error {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
 
@@ -193,7 +193,7 @@ func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_
 	return nil
 }
 
-func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, model *basic_group_payload.GroupBaseStruct) error {
+func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, model *basic_group_payload_structs.GroupBaseStruct) error {
 
 	logrus.Debugf("filling group (%v) information", model.Header.Name)
 
@@ -210,13 +210,13 @@ func (s GroupEngine) GetConfig() engines.EngineConfig {
 		Order: 1000,
 	}
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_group_payload.GroupBaseStruct, error) {
-	r := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_group_payload_structs.GroupBaseStruct, error) {
+	r := make([]basic_group_payload_structs.GroupBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*basic_group_payload.GroupBaseStruct)
+		model, ok := item.(*basic_group_payload_structs.GroupBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected basic_group_payload.GroupBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected basic_group_payload_structs.GroupBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

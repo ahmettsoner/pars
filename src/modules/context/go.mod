@@ -2,8 +2,6 @@ module parsdevkit.net/context
 
 go 1.23.7
 
-replace parsdevkit.net/structs => ../structs
-
 replace parsdevkit.net/components => ../../components
 
 replace parsdevkit.net/application => ../../application
@@ -28,7 +26,6 @@ replace parsdevkit.net/pkg => ../../pkg
 
 require (
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

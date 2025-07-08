@@ -3,18 +3,18 @@ package engines
 import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/context/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
-	filetemplate "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/data_resource_contract"
 	"parsdevkit.net/modules/template/file_template_contract"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"parsdevkit.net/persistence/contexts"
 
@@ -39,7 +39,7 @@ func NewFileTemplateOperations(environment string) FileTemplateOperations {
 	}
 }
 
-func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBaseStruct) error {
+func (s FileTemplateOperations) GenerateByResource(model data_resource_payload_structs.ResourceBaseStruct) error {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	layers := make([]string, 0)
 	for _, modelLayer := range model.Specifications.Layers {
@@ -110,7 +110,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 	return nil
 }
 
-func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBaseStruct) error {
+func (s FileTemplateOperations) GenerateByTemplate(model file_template_payload_structs.TemplateBaseStruct) error {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	layers := make([]string, 0)
 	for _, modelLayer := range model.Specifications.Layers {
@@ -149,10 +149,10 @@ func (s FileTemplateOperations) GenerateByTemplate(model filetemplate.TemplateBa
 	return nil
 }
 
-func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
+func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
-	resourceLayer := dataresource.Layer{}
+	resourceLayer := data_resource_payload_structs.Layer{}
 
 	for _, selectedResourceLayer := range resource.Specifications.Layers {
 		if selectedResourceLayer.LayerIdentifier == layer {
@@ -160,7 +160,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 		}
 	}
 
-	generate, newResourceModelHash, newResourceSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, dataresource.Section{}, resourceLayer)
+	generate, newResourceModelHash, newResourceSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, data_resource_payload_structs.Section{}, resourceLayer)
 	if err != nil {
 		return err
 	}
@@ -201,7 +201,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 	return nil
 }
 
-func (s FileTemplateOperations) CheckGeneration(project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, section dataresource.Section, layer dataresource.Layer) (bool, string, string, string, error) {
+func (s FileTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, section data_resource_payload_structs.Section, layer data_resource_payload_structs.Layer) (bool, string, string, string, error) {
 	var generate = true
 
 	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)
@@ -224,11 +224,11 @@ func (s FileTemplateOperations) CheckGeneration(project applicationproject.Proje
 		return false, "", "", "", err
 	}
 
-	if resource.Configurations.Generate == dataresource.ChangeTrackers.Never || template.Configurations.Generate == filetemplate.ChangeTrackers.Never {
+	if resource.Configurations.Generate == data_resource_payload_structs.ChangeTrackers.Never || template.Configurations.Generate == file_template_payload_structs.ChangeTrackers.Never {
 		generate = false
-	} else if resource.Configurations.Generate == dataresource.ChangeTrackers.Always && template.Configurations.Generate == filetemplate.ChangeTrackers.Always {
+	} else if resource.Configurations.Generate == data_resource_payload_structs.ChangeTrackers.Always && template.Configurations.Generate == file_template_payload_structs.ChangeTrackers.Always {
 		generate = true
-	} else if resource.Configurations.Generate == dataresource.ChangeTrackers.OnCreate || template.Configurations.Generate == filetemplate.ChangeTrackers.OnCreate {
+	} else if resource.Configurations.Generate == data_resource_payload_structs.ChangeTrackers.OnCreate || template.Configurations.Generate == file_template_payload_structs.ChangeTrackers.OnCreate {
 		if history != nil {
 			generate = false
 		}

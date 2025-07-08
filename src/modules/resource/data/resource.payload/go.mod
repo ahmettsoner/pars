@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/resource/data_resource_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/application => ../../../../application
 
 replace parsdevkit.net/models => ../../../../models

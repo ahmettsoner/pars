@@ -6,12 +6,11 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/models/label"
+	templateStruct "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	"parsdevkit.net/structs/template"
-	templateStruct "parsdevkit.net/structs/template"
-	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	"parsdevkit.net/application/schemas"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
@@ -85,7 +84,7 @@ func (suite *TemplateRepositoryTestSuite) Test_GetByName() {
 	existingTemplate, err := suite.repository.GetByName(templateName)
 	require.NoError(suite.T(), err, "Failed to retrieve template by name")
 
-	templateStructFromDB := &codetemplate.TemplateBaseStruct{}
+	templateStructFromDB := &code_template_payload_structs.TemplateBaseStruct{}
 	err = json.Unmarshal([]byte(existingTemplate.Document), templateStructFromDB)
 	require.NoError(suite.T(), err, "Failed unmarshal template entity")
 
@@ -120,7 +119,7 @@ func (suite *TemplateRepositoryTestSuite) Test_ListBySetAndLayers() {
 	assert.Equal(suite.T(), 2, len(*existingTemplates))
 
 	for _, entity := range *existingTemplates {
-		templateStructFromDB := &codetemplate.TemplateBaseStruct{}
+		templateStructFromDB := &code_template_payload_structs.TemplateBaseStruct{}
 		err = json.Unmarshal([]byte(entity.Document), templateStructFromDB)
 		require.NoError(suite.T(), err, "Failed unmarshal template entity")
 
@@ -143,7 +142,7 @@ func TestTemplateRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(TemplateRepositoryTestSuite))
 }
 
-func CreateNewSampleTemplate(name string) (*entities.Template, *codetemplate.TemplateBaseStruct, error) {
+func CreateNewSampleTemplate(name string) (*entities.Template, *code_template_payload_structs.TemplateBaseStruct, error) {
 
 	template := BasicTemplate_WithName(name)
 
@@ -160,7 +159,7 @@ func CreateNewSampleTemplate(name string) (*entities.Template, *codetemplate.Tem
 	return &templateEntity, template, nil
 }
 
-func CreateNewSampleTemplateWithSet(name, set string) (*entities.Template, *codetemplate.TemplateBaseStruct, error) {
+func CreateNewSampleTemplateWithSet(name, set string) (*entities.Template, *code_template_payload_structs.TemplateBaseStruct, error) {
 
 	template := BasicTemplate_WithNameSet(name, set)
 
@@ -177,63 +176,63 @@ func CreateNewSampleTemplateWithSet(name, set string) (*entities.Template, *code
 	return &templateEntity, template, nil
 }
 
-func BasicTemplate_WithName(name string) *codetemplate.TemplateBaseStruct {
+func BasicTemplate_WithName(name string) *code_template_payload_structs.TemplateBaseStruct {
 
-	template := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, name, schemas.Metadata{}),
-		codetemplate.NewTemplateSpecification(
+	template := code_template_payload_structs.NewTemplateBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, name, schemas.Metadata{}),
+		code_template_payload_structs.NewTemplateSpecification(
 			0,
 			name,
 			"",
 			"bar",
 			"sample_template",
-			codetemplate.NewOutput("sample.cs"),
+			code_template_payload_structs.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
-			[]codetemplate.Layer{
-				codetemplate.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "service", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
+			[]code_template_payload_structs.Layer{
+				code_template_payload_structs.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "service", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
 			},
-			codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "test-code-content"),
+			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
-		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
 	)
 
 	return &template
 }
 
-func BasicTemplate_WithNameSet(name, set string) *codetemplate.TemplateBaseStruct {
+func BasicTemplate_WithNameSet(name, set string) *code_template_payload_structs.TemplateBaseStruct {
 
-	template := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, name, schemas.Metadata{}),
-		codetemplate.NewTemplateSpecification(
+	template := code_template_payload_structs.NewTemplateBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, name, schemas.Metadata{}),
+		code_template_payload_structs.NewTemplateSpecification(
 			0,
 			name,
 			"",
 			set,
 			"sample_template",
-			codetemplate.NewOutput("sample.cs"),
+			code_template_payload_structs.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
-			[]codetemplate.Layer{
-				codetemplate.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "service", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
-				codetemplate.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
+			[]code_template_payload_structs.Layer{
+				code_template_payload_structs.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "service", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
+				code_template_payload_structs.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
 			},
-			codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.Code, "test-code-content"),
+			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
-		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
 	)
 
 	return &template

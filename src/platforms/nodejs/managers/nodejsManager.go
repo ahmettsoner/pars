@@ -15,7 +15,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/platforms/core"
 	nodejsModels "parsdevkit.net/platforms/nodejs/models"
@@ -49,7 +49,7 @@ func (s NodeJSManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.NodeJS
 }
 
-func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) nodejsModels.NodeJSPlatformVersion {
+func (s NodeJSManager) GetPlatformVersion(platform application_project_payload_structs.Platform) nodejsModels.NodeJSPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := nodejsModels.NodeJSPlatformVersions.V17
 
@@ -63,7 +63,7 @@ func (s NodeJSManager) GetPlatformVersion(platform applicationproject.Platform) 
 	}
 }
 
-func (s NodeJSManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	if _string.IsEmpty(project.Specifications.Group) {
 		if len(project.Specifications.Package) > 0 {
 			err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "init", "--scope", fmt.Sprintf("@%v", project.Specifications.Package[len(project.Specifications.Package)-1]), "--yes")
@@ -93,7 +93,7 @@ func (s NodeJSManager) CreateProject(project applicationproject.ProjectBaseStruc
 	return nil
 }
 
-func (s NodeJSManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) RemoveProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -114,7 +114,7 @@ func (s NodeJSManager) RemoveProject(project applicationproject.ProjectBaseStruc
 	return nil
 }
 
-func (s NodeJSManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) BuildProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -138,11 +138,11 @@ func (s NodeJSManager) BuildProject(project applicationproject.ProjectBaseStruct
 	return nil
 }
 
-func (s NodeJSManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) CleanProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	return nil
 }
 
-func (s NodeJSManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) InstallProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -166,7 +166,7 @@ func (s NodeJSManager) InstallProject(project applicationproject.ProjectBaseStru
 	return nil
 }
 
-func (s NodeJSManager) TestProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) TestProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -190,7 +190,7 @@ func (s NodeJSManager) TestProject(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s NodeJSManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) PackageProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -214,7 +214,7 @@ func (s NodeJSManager) PackageProject(project applicationproject.ProjectBaseStru
 	return nil
 }
 
-func (s NodeJSManager) RunProject(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) RunProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -238,7 +238,7 @@ func (s NodeJSManager) RunProject(project applicationproject.ProjectBaseStruct) 
 	return nil
 }
 
-func (s NodeJSManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) CreateGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 	if !_string.IsEmpty(project.Specifications.Group) {
 		if len(project.Specifications.GroupObject.Package) > 0 {
 			err := providers.NPMExecute(project.Specifications.GetAbsoluteGroupPath(), "init", "--scope", fmt.Sprintf("@%v", project.Specifications.GroupObject.Package[len(project.Specifications.GroupObject.Package)-1]), "--yes")
@@ -255,16 +255,16 @@ func (s NodeJSManager) CreateGroup(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s NodeJSManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
+func (s NodeJSManager) DeleteGroup(project application_project_payload_structs.ProjectBaseStruct) {
 	fmt.Println("Please remove group manually")
 }
 
-func (s NodeJSManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) AddToGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s NodeJSManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) RemoveFromGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 	// err := providers.NGExecute(string(s.GetPlatformVersion(project.Specifications.Platform)), project.Specifications.GetCodeBasePath(), "new", "--name", project.Specifications.GroupObject.Name, "--create-application", "false", "--skip-install", "true", "--skip-git", "true", "--skip-tests", "true", "--routing", "--new-project-root", "")
 	// if err != nil {
 	// 	return err
@@ -273,7 +273,7 @@ func (s NodeJSManager) RemoveFromGroup(project applicationproject.ProjectBaseStr
 	return nil
 }
 
-func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s NodeJSManager) CreateProjectFolder(project application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
 	for _, path := range paths {
@@ -288,7 +288,7 @@ func (s NodeJSManager) CreateProjectFolder(project applicationproject.ProjectBas
 	return foldePath, nil
 }
 
-func (s NodeJSManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s NodeJSManager) AddDependenciesToProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		packageName := _package.Name
@@ -307,7 +307,7 @@ func (s NodeJSManager) AddDependenciesToProject(project applicationproject.Proje
 	return nil
 }
 
-func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s NodeJSManager) RemoveDependenciesFromProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 	for _, _package := range dependencies {
 
 		err := providers.NPMExecute(project.Specifications.GetAbsoluteProjectPath(), "uninstall", _package.Name)
@@ -319,7 +319,7 @@ func (s NodeJSManager) RemoveDependenciesFromProject(project applicationproject.
 	return nil
 }
 
-func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
@@ -337,7 +337,7 @@ func (s NodeJSManager) AddReferenceToProject(project applicationproject.ProjectB
 	return nil
 }
 
-func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	for _, reference := range references {
 
@@ -356,7 +356,7 @@ func (s NodeJSManager) RemoveReferenceFromProject(project applicationproject.Pro
 	return nil
 }
 
-func (s NodeJSManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s NodeJSManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
 
@@ -368,11 +368,11 @@ func (s NodeJSManager) IsProjectFileExists(project applicationproject.ProjectBas
 		return !stat.IsDir(), nil
 	}
 }
-func (s NodeJSManager) GetProjectFileName(project applicationproject.ProjectBaseStruct) string {
+func (s NodeJSManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return "package.json"
 }
 
-func (s NodeJSManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s NodeJSManager) IsGroupFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteGroupPath(), s.GetGroupFileName(project))) // check if the project file exists
 
@@ -384,11 +384,11 @@ func (s NodeJSManager) IsGroupFileExists(project applicationproject.ProjectBaseS
 		return !stat.IsDir(), nil
 	}
 }
-func (s NodeJSManager) GetGroupFileName(project applicationproject.ProjectBaseStruct) string {
+func (s NodeJSManager) GetGroupFileName(project application_project_payload_structs.ProjectBaseStruct) string {
 	return "package.json"
 }
 
-func (s NodeJSManager) ListLayersFromProject(project applicationproject.ProjectBaseStruct) ([]applicationProject.Layer, error) {
+func (s NodeJSManager) ListLayersFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]applicationProject.Layer, error) {
 
 	folders, err := s.ListFoldersFromProjectDefinition(project)
 	if err != nil {
@@ -410,7 +410,7 @@ func (s NodeJSManager) ListLayersFromProject(project applicationproject.ProjectB
 	return layers, nil
 }
 
-func (s NodeJSManager) HasLayerOnProject(project applicationproject.ProjectBaseStruct, layer string) (bool, error) {
+func (s NodeJSManager) HasLayerOnProject(project application_project_payload_structs.ProjectBaseStruct, layer string) (bool, error) {
 
 	layers, err := s.ListLayersFromProject(project)
 	if err != nil {
@@ -429,7 +429,7 @@ func (s NodeJSManager) HasLayerOnProject(project applicationproject.ProjectBaseS
 	return layerState, nil
 }
 
-func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectBaseStruct) error {
+func (s NodeJSManager) RemoveDefaultFiles(project application_project_payload_structs.ProjectBaseStruct) error {
 	var paths []string = []string{}
 	// projectPath := project.Specifications.GetAbsoluteProjectPath()
 
@@ -441,19 +441,19 @@ func (s NodeJSManager) RemoveDefaultFiles(project applicationproject.ProjectBase
 	return s.FileRemover(paths...)
 }
 
-func (s NodeJSManager) AddFolderToProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
+func (s NodeJSManager) AddFolderToProjectDefinition(project application_project_payload_structs.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
-func (s NodeJSManager) RemoveFolderFromProjectDefinition(project applicationproject.ProjectBaseStruct, paths ...string) error {
+func (s NodeJSManager) RemoveFolderFromProjectDefinition(project application_project_payload_structs.ProjectBaseStruct, paths ...string) error {
 	return nil
 }
 
-func (s NodeJSManager) GetProjectFileRelativePath(project applicationproject.ProjectBaseStruct) string {
+func (s NodeJSManager) GetProjectFileRelativePath(project application_project_payload_structs.ProjectBaseStruct) string {
 
 	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
 }
 
-func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectBaseStruct, reference applicationproject.ProjectBaseStruct) (bool, error) {
+func (s NodeJSManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -473,7 +473,7 @@ func (s NodeJSManager) HasReferenceOnProject(project applicationproject.ProjectB
 	return referenceState, nil
 }
 
-func (s NodeJSManager) ListReferencesFromProject(project applicationproject.ProjectBaseStruct) ([]applicationproject.ProjectBaseStruct, error) {
+func (s NodeJSManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	output, err := providers.NPMExecuteWithOutput(project.Specifications.GetAbsoluteProjectPath(), "list", "--link")
 	if err != nil {
@@ -484,7 +484,7 @@ func (s NodeJSManager) ListReferencesFromProject(project applicationproject.Proj
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]applicationproject.ProjectBaseStruct, 0)
+	references := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 	for _, match := range matches {
 		for _, projectReference := range project.Specifications.References {
 			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())
@@ -505,7 +505,7 @@ func (s NodeJSManager) ListReferencesFromProject(project applicationproject.Proj
 	return references, nil
 }
 
-func (s NodeJSManager) IsProjectFolderExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s NodeJSManager) IsProjectFolderExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(project.Specifications.GetAbsoluteProjectPath()) // check if the project directory exists
 

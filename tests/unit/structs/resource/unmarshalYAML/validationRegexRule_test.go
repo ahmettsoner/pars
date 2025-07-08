@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -21,10 +21,10 @@ import (
 
 // 	// Act
 
-// 	var data objectresource.ValidationRegexRule
+// 	var data object_resource_payload_structs.ValidationRegexRule
 // 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-// 	expected := objectresource.NewValidationRegexRule("", "CMD", objectresource.Message{})
+// 	expected := object_resource_payload_structs.NewValidationRegexRule("", "CMD", object_resource_payload_structs.Message{})
 
 // 	// Assert
 // 	a.NoError(err)
@@ -42,10 +42,10 @@ Pattern: CMD
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("", "CMD", objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationRegexRule("", "CMD", object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -62,10 +62,10 @@ Regex: CMD
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("", "CMD", objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationRegexRule("", "CMD", object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -84,10 +84,10 @@ Pattern: CMD
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("test", "CMD", objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationRegexRule("test", "CMD", object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -106,10 +106,10 @@ Message: message_text
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("", "CMD", objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")))
+	expected := object_resource_payload_structs.NewValidationRegexRule("", "CMD", object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")))
 
 	// Assert
 	a.NoError(err)
@@ -129,10 +129,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("", "CMD", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRegexRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationRegexRule("", "CMD", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRegexRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)
@@ -153,10 +153,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationRegexRule
+	var data object_resource_payload_structs.ValidationRegexRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRegexRule("test", "CMD", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRegexRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationRegexRule("test", "CMD", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRegexRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)

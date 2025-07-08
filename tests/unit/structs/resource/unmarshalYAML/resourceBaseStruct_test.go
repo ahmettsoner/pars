@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -49,19 +49,19 @@ Specifications:
 
 	// Act
 
-	var data objectresource.ResourceBaseStruct
+	var data object_resource_payload_structs.ResourceBaseStruct
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewResourceBaseStruct(
+	expected := object_resource_payload_structs.NewResourceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Resource,
-			objectresource.RESOURCE_KIND,
+			object_resource_payload_structs.RESOURCE_KIND,
 			"Pars.CMD",
 			schemas.Metadata{
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		objectresource.NewResourceSpecification(0,
+		object_resource_payload_structs.NewResourceSpecification(0,
 			"foo",
 			"",
 			"/foo",
@@ -70,34 +70,34 @@ Specifications:
 			[]label.Label{
 				label.NewLabel("foo", "bar"),
 			},
-			[]objectresource.Layer{objectresource.NewLayer(0, "layer1", []objectresource.Section(nil)), objectresource.NewLayer(0, "layer2", []objectresource.Section(nil))},
-			[]objectresource.Attribute{
-				objectresource.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
+			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "layer1", []object_resource_payload_structs.Section(nil)), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section(nil))},
+			[]object_resource_payload_structs.Attribute{
+				object_resource_payload_structs.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
 					structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-					0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true),
-				objectresource.NewAttribute("hoo", structs.VisibilityTypeTypes.Public,
+					0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true),
+				object_resource_payload_structs.NewAttribute("hoo", structs.VisibilityTypeTypes.Public,
 					structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-					0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true),
+					0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true),
 			},
-			[]objectresource.Method{
-				objectresource.NewMethod("soe", structs.VisibilityTypeTypes.Public,
-					[]objectresource.MethodParameter{
-						objectresource.NewMethodParameter("ID", structs.New_Int(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
-						objectresource.NewMethodParameter("Name", structs.New_String(), 0, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil)),
+			[]object_resource_payload_structs.Method{
+				object_resource_payload_structs.NewMethod("soe", structs.VisibilityTypeTypes.Public,
+					[]object_resource_payload_structs.MethodParameter{
+						object_resource_payload_structs.NewMethodParameter("ID", structs.New_Int(), 0, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil)),
+						object_resource_payload_structs.NewMethodParameter("Name", structs.New_String(), 0, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil)),
 					},
 					[]structs.DataType(nil),
-					objectresource.Message{},
-					objectresource.Message{},
+					object_resource_payload_structs.Message{},
+					object_resource_payload_structs.Message{},
 					[]option.Option(nil),
 					[]label.Label(nil),
-					[]objectresource.Annotation(nil),
+					[]object_resource_payload_structs.Annotation(nil),
 					"",
 					true,
 				),
 			},
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
-		objectresource.NewResourceConfiguration(objectresource.ChangeTrackers.OnChange),
+		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
 	)
 
 	// Assert

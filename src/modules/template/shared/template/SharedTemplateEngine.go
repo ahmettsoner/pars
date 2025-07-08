@@ -3,7 +3,7 @@ package shared_task
 import (
 	"fmt"
 
-	sharedtemplateStruct "parsdevkit.net/structs/template/shared-template"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
@@ -14,7 +14,8 @@ import (
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/modules/template/shared_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
@@ -22,7 +23,7 @@ type SharedTemplateEngine struct{}
 
 func (s SharedTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
+		_, ok := item.(*shared_template_payload_structs.TemplateBaseStruct)
 		if !ok {
 			return false
 		}
@@ -61,10 +62,10 @@ func (s SharedTemplateEngine) Destroy(ctx *application.ApplicationContext, data 
 
 	return nil
 }
-func (s SharedTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+func (s SharedTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct) ([]shared_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
-	readyToCreateStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+	readyToCreateStructs := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -82,7 +83,7 @@ func (s SharedTemplateEngine) prepareToCreate(ctx *application.ApplicationContex
 
 	return readyToCreateStructs, nil
 }
-func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
+func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, init bool) error {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
@@ -102,10 +103,10 @@ func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templa
 	return nil
 }
 
-func (s SharedTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+func (s SharedTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct) ([]shared_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
-	readyToUpdateStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+	readyToUpdateStructs := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -134,7 +135,7 @@ func (s SharedTemplateEngine) prepareToUpdate(ctx *application.ApplicationContex
 
 	return readyToUpdateStructs, nil
 }
-func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, init bool) error {
+func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, init bool) error {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
 
@@ -149,10 +150,10 @@ func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templa
 	}
 	return nil
 }
-func (s SharedTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
+func (s SharedTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct) ([]shared_template_payload_structs.TemplateBaseStruct, error) {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
-	readyToRemoveStructs := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
+	readyToRemoveStructs := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, template := range templates {
 		if err := s.completeInformation(ctx, &template); err != nil {
@@ -170,7 +171,7 @@ func (s SharedTemplateEngine) prepareToRemove(ctx *application.ApplicationContex
 
 	return readyToRemoveStructs, nil
 }
-func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templates []sharedtemplateStruct.TemplateBaseStruct, permanent bool) error {
+func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, permanent bool) error {
 
 	service := ioc.Get[shared_template_contract.TemplateInterface]()
 
@@ -194,7 +195,7 @@ func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templa
 	return nil
 }
 
-func (s SharedTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *sharedtemplateStruct.TemplateBaseStruct) error {
+func (s SharedTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *shared_template_payload_structs.TemplateBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -215,14 +216,14 @@ func (s SharedTemplateEngine) completeInformation(ctx *application.ApplicationCo
 	return nil
 }
 
-func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model sharedtemplateStruct.TemplateBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, model shared_template_payload_structs.TemplateBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -246,13 +247,13 @@ func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
 		Order: 4000,
 	}
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
-	r := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]shared_template_payload_structs.TemplateBaseStruct, error) {
+	r := make([]shared_template_payload_structs.TemplateBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*sharedtemplateStruct.TemplateBaseStruct)
+		model, ok := item.(*shared_template_payload_structs.TemplateBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected sharedtemplateStruct.TemplateBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected shared_template_payload_structs.TemplateBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

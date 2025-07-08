@@ -10,13 +10,13 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/modules/project/application_project_contract"
-	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 	"parsdevkit.net/modules/template/code_template_contract"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
-	codetemplate "parsdevkit.net/structs/template/code-template"
 )
 
 type ContextFuncs struct{}
@@ -122,7 +122,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		return models.CodeTemplateDataContext{}
 	}
 
-	var layerObj *objectresource.Layer = nil
+	var layerObj *object_resource_payload_structs.Layer = nil
 	if resourceObj != nil {
 		for _, resourceLayer := range resourceObj.Specifications.Layers {
 			if resourceLayer.Name == layer {
@@ -132,9 +132,9 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		}
 	}
 
-	var projectObj *applicationProjectSchema.ProjectBaseStruct = nil
+	var projectObj *application_project_payload_structs.ProjectBaseStruct = nil
 	if layerObj != nil {
-		var projectList []applicationProjectSchema.ProjectBaseStruct = make([]applicationProjectSchema.ProjectBaseStruct, 0)
+		var projectList []application_project_payload_structs.ProjectBaseStruct = make([]application_project_payload_structs.ProjectBaseStruct, 0)
 		if _string.IsEmpty(project) {
 			projectListFromDb, err := applicationProjectService.ListBySetAndLayers(set, layer)
 			if err != nil {
@@ -167,9 +167,9 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 
 	if layerObj != nil {
 
-		var templateObj *codetemplate.TemplateBaseStruct = nil
+		var templateObj *code_template_payload_structs.TemplateBaseStruct = nil
 
-		var templatelist []codetemplate.TemplateBaseStruct = make([]codetemplate.TemplateBaseStruct, 0)
+		var templatelist []code_template_payload_structs.TemplateBaseStruct = make([]code_template_payload_structs.TemplateBaseStruct, 0)
 		if _string.IsEmpty(template) {
 			templateListFromDb, err := codeTemplateService.ListBySetAndLayers(set, layer)
 			if err != nil {
@@ -222,7 +222,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				return selectedContext
 			} else {
 
-				selectedContext := *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objectresource.Section{})
+				selectedContext := *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, object_resource_payload_structs.Section{})
 				tempPackages := templateObj.Specifications.Package
 				packageStr, err := TemplateEngine(strings.Join(tempPackages, "/"), selectedContext)
 				if err != nil {
@@ -230,7 +230,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				}
 				templateObj.Specifications.Package = file.PathToArray(packageStr)
 
-				selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objectresource.Section{})
+				selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, object_resource_payload_structs.Section{})
 				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {
 					return models.CodeTemplateDataContext{}
 				}

@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/modules/resource/data_resource_contract"
-	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -34,8 +34,8 @@ func NewDataResourceService(environment string) data_resource_contract.ResourceI
 	}
 }
 
-func (s DataResourceService) GetByName(name string) (*dataresource.ResourceBaseStruct, error) {
-	var resource *dataresource.ResourceBaseStruct
+func (s DataResourceService) GetByName(name string) (*data_resource_payload_structs.ResourceBaseStruct, error) {
+	var resource *data_resource_payload_structs.ResourceBaseStruct
 
 	entity, err := s.resourceRepository.GetByName(name)
 	if err != nil {
@@ -50,7 +50,7 @@ func (s DataResourceService) GetByName(name string) (*dataresource.ResourceBaseS
 	return resource, nil
 }
 
-func (s DataResourceService) Save(model dataresource.ResourceBaseStruct) (*dataresource.ResourceBaseStruct, error) {
+func (s DataResourceService) Save(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	result, err := s.saveResourceInformation(model)
 	if err != nil {
@@ -60,17 +60,17 @@ func (s DataResourceService) Save(model dataresource.ResourceBaseStruct) (*datar
 	return result, nil
 }
 
-func (s DataResourceService) List() (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) List() (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByKind(dataresource.RESOURCE_KIND)
+	entityList, err := s.resourceRepository.ListByKind(data_resource_payload_structs.RESOURCE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	resourceList := make([]dataresource.ResourceBaseStruct, 0)
+	resourceList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var resource dataresource.ResourceBaseStruct
+		var resource data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &resource)
 
 		resourceList = append(resourceList, resource)
@@ -78,17 +78,17 @@ func (s DataResourceService) List() (*([]dataresource.ResourceBaseStruct), error
 
 	return &resourceList, nil
 }
-func (s DataResourceService) ListByWorkspace(workspace string) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListByWorkspace(workspace string) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
-	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, dataresource.RESOURCE_KIND)
+	entityList, err := s.resourceRepository.ListByWorkspaceAndKind(workspace, data_resource_payload_structs.RESOURCE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	resourceList := make([]dataresource.ResourceBaseStruct, 0)
+	resourceList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var resource dataresource.ResourceBaseStruct
+		var resource data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &resource)
 
 		resourceList = append(resourceList, resource)
@@ -97,17 +97,17 @@ func (s DataResourceService) ListByWorkspace(workspace string) (*([]dataresource
 	return &resourceList, nil
 }
 
-func (s DataResourceService) ListBySet(set string) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListBySet(set string) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListBySet(set)
 	if err != nil {
 		return nil, err
 	}
 
-	resourceList := make([]dataresource.ResourceBaseStruct, 0)
+	resourceList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var resource dataresource.ResourceBaseStruct
+		var resource data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &resource)
 
 		resourceList = append(resourceList, resource)
@@ -115,17 +115,17 @@ func (s DataResourceService) ListBySet(set string) (*([]dataresource.ResourceBas
 
 	return &resourceList, nil
 }
-func (s DataResourceService) ListByWorkspaceAndSet(workspace, set string) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListByWorkspaceAndSet(workspace, set string) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListByWorkspaceAndSet(workspace, set)
 	if err != nil {
 		return nil, err
 	}
 
-	resourceList := make([]dataresource.ResourceBaseStruct, 0)
+	resourceList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var resource dataresource.ResourceBaseStruct
+		var resource data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &resource)
 
 		resourceList = append(resourceList, resource)
@@ -134,17 +134,17 @@ func (s DataResourceService) ListByWorkspaceAndSet(workspace, set string) (*([]d
 	return &resourceList, nil
 }
 
-func (s DataResourceService) ListBySetAndLayers(set string, layers ...string) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListBySetAndLayers(set string, layers ...string) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]dataresource.ResourceBaseStruct, 0)
+	templateList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template dataresource.ResourceBaseStruct
+		var template data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -152,17 +152,17 @@ func (s DataResourceService) ListBySetAndLayers(set string, layers ...string) (*
 
 	return &templateList, nil
 }
-func (s DataResourceService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListByWorkspaceAndSetAndLayers(workspace, set string, layers ...string) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListByWorkspaceSetAndLayers(workspace, set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]dataresource.ResourceBaseStruct, 0)
+	templateList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template dataresource.ResourceBaseStruct
+		var template data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -170,17 +170,17 @@ func (s DataResourceService) ListByWorkspaceAndSetAndLayers(workspace, set strin
 
 	return &templateList, nil
 }
-func (s DataResourceService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]dataresource.ResourceBaseStruct), error) {
+func (s DataResourceService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]data_resource_payload_structs.ResourceBaseStruct), error) {
 
 	entityList, err := s.resourceRepository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]dataresource.ResourceBaseStruct, 0)
+	templateList := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template dataresource.ResourceBaseStruct
+		var template data_resource_payload_structs.ResourceBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -189,7 +189,7 @@ func (s DataResourceService) ListByFilter(set, workspace string, layers []string
 	return &templateList, nil
 }
 
-func (s DataResourceService) Remove(name, workspace string, force, permanent bool) (*dataresource.ResourceBaseStruct, error) {
+func (s DataResourceService) Remove(name, workspace string, force, permanent bool) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	resourceResourceEntity, err := s.resourceRepository.GetByNameAndWorkspace(name, workspace)
@@ -203,7 +203,7 @@ func (s DataResourceService) Remove(name, workspace string, force, permanent boo
 	logrus.Debugf("resource %v deleting...", resourceResourceEntity.Name)
 
 	err = s.resourceRepository.Delete(resourceResourceEntity)
-	var resource dataresource.ResourceBaseStruct
+	var resource data_resource_payload_structs.ResourceBaseStruct
 	err = json.Unmarshal([]byte(resourceResourceEntity.Document), &resource)
 	if err != nil {
 		return nil, err
@@ -242,7 +242,7 @@ func (s DataResourceService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s DataResourceService) saveResourceInformation(resourceModel dataresource.ResourceBaseStruct) (*dataresource.ResourceBaseStruct, error) {
+func (s DataResourceService) saveResourceInformation(resourceModel data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	jsonData, err := json.Marshal(resourceModel)
 	if err != nil {

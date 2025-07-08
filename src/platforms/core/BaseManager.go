@@ -7,7 +7,7 @@ import (
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
 type BaseManager struct {
@@ -21,7 +21,7 @@ func BaseManagerNew(packageDelimiter string) BaseManager {
 	}
 }
 
-func (s BaseManager) GetDefaultPlatformProjectType(model applicationproject.ProjectBaseStruct) models.ProjectType {
+func (s BaseManager) GetDefaultPlatformProjectType(model application_project_payload_structs.ProjectBaseStruct) models.ProjectType {
 	return models.ProjectTypes.Library
 }
 func (s *BaseManager) FileRemover(paths ...string) error {
@@ -33,7 +33,7 @@ func (s *BaseManager) FileRemover(paths ...string) error {
 	return nil
 }
 
-func (s BaseManager) IsProjectFolderExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s BaseManager) IsProjectFolderExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(project.Specifications.GetAbsoluteProjectPath()) // check if the project directory exists
 
@@ -46,7 +46,7 @@ func (s BaseManager) IsProjectFolderExists(project applicationproject.ProjectBas
 	}
 }
 
-func (s BaseManager) IsGroupFolderExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s BaseManager) IsGroupFolderExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	stat, err := os.Stat(project.Specifications.GetAbsoluteGroupPath()) // check if the project directory exists
 
@@ -59,7 +59,7 @@ func (s BaseManager) IsGroupFolderExists(project applicationproject.ProjectBaseS
 	}
 }
 
-func (s BaseManager) IsLayerFolderExists(project applicationproject.ProjectBaseStruct, layer string) (bool, error) {
+func (s BaseManager) IsLayerFolderExists(project application_project_payload_structs.ProjectBaseStruct, layer string) (bool, error) {
 
 	layerPath := project.Specifications.GetAbsoluteProjectLayerPath(layer)
 	stat, err := os.Stat(layerPath)
@@ -73,7 +73,7 @@ func (s BaseManager) IsLayerFolderExists(project applicationproject.ProjectBaseS
 	}
 }
 
-func (s BaseManager) IsLayerFoldersExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s BaseManager) IsLayerFoldersExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 	for _, v := range project.Specifications.Layers {
 		state, err := s.IsLayerFolderExists(project, v.Name)
 		if err != nil {
@@ -87,7 +87,7 @@ func (s BaseManager) IsLayerFoldersExists(project applicationproject.ProjectBase
 	return true, nil
 }
 
-func (s BaseManager) IsGroupExists(project applicationproject.ProjectBaseStruct, controlFile string) (bool, error) {
+func (s BaseManager) IsGroupExists(project application_project_payload_structs.ProjectBaseStruct, controlFile string) (bool, error) {
 	if _string.IsEmpty(project.Specifications.Group) {
 		return false, nil
 	}
@@ -103,14 +103,14 @@ func (s BaseManager) IsGroupExists(project applicationproject.ProjectBaseStruct,
 	}
 }
 
-func (s *BaseManager) GetGroupPackage(project applicationproject.ProjectBaseStruct) string {
+func (s *BaseManager) GetGroupPackage(project application_project_payload_structs.ProjectBaseStruct) string {
 
 	result := strings.Join(project.Specifications.GroupObject.Package, s.PackageDelimiter)
 
 	return result
 }
 
-func (s *BaseManager) GetProjectPackage(project applicationproject.ProjectBaseStruct) string {
+func (s *BaseManager) GetProjectPackage(project application_project_payload_structs.ProjectBaseStruct) string {
 
 	result := strings.Join(project.Specifications.GetAllPackage(), s.PackageDelimiter)
 

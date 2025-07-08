@@ -18,8 +18,6 @@ replace parsdevkit.net/platforms/go => ../../platforms/go
 
 replace parsdevkit.net/platforms/pars => ../../platforms/pars
 
-replace parsdevkit.net/structs => ../structs
-
 replace parsdevkit.net/modules/project/application_project => ../project/application/project
 replace parsdevkit.net/modules/project/application_project_contract => ../project/application/project.contract
 
@@ -64,7 +62,6 @@ require (
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

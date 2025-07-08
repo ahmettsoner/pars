@@ -2,13 +2,13 @@ package models
 
 import (
 	"parsdevkit.net/application/platforms"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
-	filetemplate "parsdevkit.net/structs/template/file-template"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
 	"parsdevkit.net/components/template/models/objectResources"
 	objectResourceService "parsdevkit.net/components/template/services"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
 type FileTemplateDataContext struct {
@@ -20,9 +20,9 @@ type FileTemplateDataContext struct {
 	Section   objectResources.DataSectionComposite
 }
 
-func NewFileTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource dataresource.ResourceBaseStruct, template filetemplate.TemplateBaseStruct, layer dataresource.Layer) *FileTemplateDataContext {
+func NewFileTemplateDataContext(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, layer data_resource_payload_structs.Layer) *FileTemplateDataContext {
 
-	manager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 	templateService := objectResourceService.NewObjectResourceService(manager)
 
 	return &FileTemplateDataContext{
@@ -47,8 +47,8 @@ func NewFileTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseS
 			Original:  layer,
 		},
 		Section: objectResources.DataSectionComposite{
-			DataSection: templateService.DataSectionToModel(resource.Specifications, project.Specifications, layer.Name, template.Specifications, dataresource.Section{}),
-			Original:    dataresource.Section{},
+			DataSection: templateService.DataSectionToModel(resource.Specifications, project.Specifications, layer.Name, template.Specifications, data_resource_payload_structs.Section{}),
+			Original:    data_resource_payload_structs.Section{},
 		},
 	}
 }

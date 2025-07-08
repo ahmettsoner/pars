@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -20,10 +20,10 @@ Min: 10
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 10, 0, objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 10, 0, object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -40,10 +40,10 @@ Length: 10
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 10, 0, objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 10, 0, object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -61,10 +61,10 @@ Length: 10
 
 // 	// Act
 
-// 	var data objectresource.ValidationLengthRule
+// 	var data object_resource_payload_structs.ValidationLengthRule
 // 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-// 	expected := objectresource.NewValidationLengthRule("", 10, 0, objectresource.Message{})
+// 	expected := object_resource_payload_structs.NewValidationLengthRule("", 10, 0, object_resource_payload_structs.Message{})
 
 // 	// Assert
 // 	a.NoError(err)
@@ -82,10 +82,10 @@ Max: 10
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 0, 10, objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 0, 10, object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -102,10 +102,10 @@ Length: :10
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 0, 10, objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 0, 10, object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -124,10 +124,10 @@ Min: 10
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("test", 10, 0, objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationLengthRule("test", 10, 0, object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -146,10 +146,10 @@ Message: message_text
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 10, 0, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")))
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 10, 0, object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")))
 
 	// Assert
 	a.NoError(err)
@@ -169,10 +169,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("", 10, 0, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationLengthRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationLengthRule("", 10, 0, object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationLengthRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)
@@ -194,10 +194,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationLengthRule
+	var data object_resource_payload_structs.ValidationLengthRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationLengthRule("test", 10, 50, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationLengthRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationLengthRule("test", 10, 50, object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationLengthRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)

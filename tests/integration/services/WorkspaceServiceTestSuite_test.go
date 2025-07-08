@@ -10,7 +10,7 @@ import (
 
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
@@ -90,9 +90,9 @@ func TestWorkspaceServiceTestSuite(t *testing.T) {
 	suite.Run(t, new(WorkspaceServiceTestSuite))
 }
 
-func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBaseStruct {
+func BasicWorkspace_WithName(name string) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -101,7 +101,7 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBase
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload.NewWorkspaceSpecification(0,
+		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
 			name,
 			"path",
 		),
@@ -109,9 +109,9 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload.WorkspaceBase
 	return &workspace
 }
 
-func BasicWorkspace_WithSpecification(specifications basic_workspace_payload.WorkspaceSpecification) *basic_workspace_payload.WorkspaceBaseStruct {
+func BasicWorkspace_WithSpecification(specifications basic_workspace_payload_structs.WorkspaceSpecification) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -125,9 +125,9 @@ func BasicWorkspace_WithSpecification(specifications basic_workspace_payload.Wor
 	return &workspace
 }
 
-func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload.WorkspaceBaseStruct {
+func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
-	workspace := basic_workspace_payload.NewWorkspaceBaseStruct(
+	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Workspace,
 			"",
@@ -136,7 +136,7 @@ func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload.Wor
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload.NewWorkspaceSpecification(0,
+		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
 			name,
 			path,
 		),

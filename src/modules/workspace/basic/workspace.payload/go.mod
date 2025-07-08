@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/workspace/basic_workspace_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/application => ../../../../application
 
 replace parsdevkit.net/pkg => ../../../../pkg

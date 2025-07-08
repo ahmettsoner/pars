@@ -6,8 +6,6 @@ replace parsdevkit.net/application => ../../../application
 
 replace parsdevkit.net/pkg => ../../../pkg
 
-replace parsdevkit.net/structs => ../../structs
-
 replace parsdevkit.net/models => ../../../models
 
 replace parsdevkit.net/persistence/contexts => ../../../data/contexts
@@ -43,7 +41,6 @@ require (
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

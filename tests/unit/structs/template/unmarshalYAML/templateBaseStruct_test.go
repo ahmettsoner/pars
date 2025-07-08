@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
-	"parsdevkit.net/structs/template"
-	codetemplate "parsdevkit.net/structs/template/code-template"
+	templateStruct "parsdevkit.net/application/structs/template"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -36,23 +36,23 @@ Specifications:
 
 	// Act
 
-	var data codetemplate.TemplateBaseStruct
+	var data code_template_payload_structs.TemplateBaseStruct
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := codetemplate.NewTemplateBaseStruct(
-		schemas.NewSchemaHeader(schemas.StructTypes.Template, codetemplate.TEMPLATE_KIND, "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
-		codetemplate.NewTemplateSpecification(0,
+	expected := code_template_payload_structs.NewTemplateBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
+		code_template_payload_structs.NewTemplateSpecification(0,
 			"Entity",
 			"",
 			"Set",
 			"",
-			codetemplate.NewOutput("{{ .Name }}.cs"),
+			code_template_payload_structs.NewOutput("{{ .Name }}.cs"),
 			[]string{"pars", "cmd"},
 			[]label.Label(nil),
-			[]codetemplate.Layer(nil), codetemplate.NewTemplate(codetemplate.TemplateSourceTypes.File, "path"),
+			[]code_template_payload_structs.Layer(nil), code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
-		codetemplate.NewTemplateConfiguration(codetemplate.ChangeTrackers.OnChange, template.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
 	)
 
 	// Assert

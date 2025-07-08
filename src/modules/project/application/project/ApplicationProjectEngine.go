@@ -12,10 +12,10 @@ import (
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
-	"parsdevkit.net/modules/project/application_project_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application"
@@ -31,7 +31,7 @@ type ApplicationProjectEngine struct{}
 
 func (s ApplicationProjectEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*application_project_payload.ProjectBaseStruct)
+		_, ok := item.(*application_project_payload_structs.ProjectBaseStruct)
 		if !ok {
 			return false
 		}
@@ -70,10 +70,10 @@ func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, d
 
 	return nil
 }
-func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToCreateStructs := make([]application_project_payload.ProjectBaseStruct, 0)
+	readyToCreateStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
@@ -96,7 +96,7 @@ func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationCo
 
 	return readyToCreateStructs, nil
 }
-func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, projects)
@@ -118,10 +118,10 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 	return nil
 }
 
-func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToUpdateStructs := make([]application_project_payload.ProjectBaseStruct, 0)
+	readyToUpdateStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
@@ -150,7 +150,7 @@ func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationCo
 
 	return readyToUpdateStructs, nil
 }
-func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
@@ -261,10 +261,10 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 	return nil
 }
 
-func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToRemoveStructs := make([]application_project_payload.ProjectBaseStruct, 0)
+	readyToRemoveStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
@@ -282,7 +282,7 @@ func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationCo
 
 	return readyToRemoveStructs, nil
 }
-func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, permanent bool) error {
+func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, permanent bool) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
@@ -306,7 +306,7 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 	return nil
 }
 
-func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *application_project_payload.ProjectBaseStruct) error {
+func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *application_project_payload_structs.ProjectBaseStruct) error {
 
 	logrus.Debugf("filling project (%v) information", model.Header.Name)
 
@@ -355,7 +355,7 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 	return nil
 }
 
-func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationContext, project application_project_payload.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationContext, project application_project_payload_structs.ProjectBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 	//TODO: Bu şekilde interface'ten tip dönüşümü tamamlanamadı, yapı buna dönüştürülmeli
 	// if projectStruct, ok := project.(project.ProjectBaseStruct); !ok {
 	// 	return nil, fmt.Errorf("incompatible model type: expected %T, got %T", project, projectStruct)
@@ -367,7 +367,7 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -384,8 +384,8 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 
 	return result, nil
 }
-func (s ApplicationProjectEngine) getGroup(project application_project_payload.ProjectBaseStruct) (*group_payload.GroupBaseStruct, error) {
-	result := group_payload.GroupBaseStruct{}
+func (s ApplicationProjectEngine) getGroup(project application_project_payload_structs.ProjectBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
+	result := basic_group_payload_structs.GroupBaseStruct{}
 
 	groupName := project.Specifications.Group
 
@@ -404,9 +404,9 @@ func (s ApplicationProjectEngine) getGroup(project application_project_payload.P
 	return &result, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReferences(prj application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReferences(prj application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
-	projectReferences := make([]application_project_payload.ProjectBaseStruct, 0)
+	projectReferences := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, reference := range prj.Specifications.References {
 		logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
@@ -426,11 +426,11 @@ func (s ApplicationProjectEngine) getProjectReferences(prj application_project_p
 	return projectReferences, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReference(prj application_project_payload.ProjectBaseStruct, reference application_project_payload.ProjectBaseStruct) (*application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReference(prj application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	var projectReference *application_project_payload.ProjectBaseStruct = nil
+	var projectReference *application_project_payload_structs.ProjectBaseStruct = nil
 
 	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
@@ -467,12 +467,12 @@ func (s ApplicationProjectEngine) getProjectReference(prj application_project_pa
 	return projectReference, nil
 }
 
-func (s ApplicationProjectEngine) sortProjectsByReference(projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) sortProjectsByReference(projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
 	logrus.Debugf("'%d' projects preparing for ordering", len(projects))
-	projectMap := make(map[string]application_project_payload.ProjectSpecification)
+	projectMap := make(map[string]application_project_payload_structs.ProjectSpecification)
 	for _, project := range projects {
 		projectMap[project.GetUniqueKey()] = project.Specifications
 	}
@@ -503,7 +503,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 		}
 	}
 
-	sortedProjectMap := make(map[string]application_project_payload.ProjectBaseStruct)
+	sortedProjectMap := make(map[string]application_project_payload_structs.ProjectBaseStruct)
 	sortedProjects, err := s.sortUnOrderedProjectsByReference(projects, sortedProjectMap)
 	if err != nil {
 		return nil, err
@@ -513,10 +513,10 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 
 	return sortedProjects, nil
 }
-func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []application_project_payload.ProjectBaseStruct, sortedProjectMap map[string]application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []application_project_payload_structs.ProjectBaseStruct, sortedProjectMap map[string]application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	var sortedProjects []application_project_payload.ProjectBaseStruct = make([]application_project_payload.ProjectBaseStruct, 0)
-	var unOrderedProjects []application_project_payload.ProjectBaseStruct = make([]application_project_payload.ProjectBaseStruct, 0)
+	var sortedProjects []application_project_payload_structs.ProjectBaseStruct = make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	var unOrderedProjects []application_project_payload_structs.ProjectBaseStruct = make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	logrus.Debugf("'%d' projects ordering", len(projects))
 	for _, project := range projects {
@@ -581,13 +581,13 @@ func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]application_project_payload.ProjectBaseStruct, error) {
-	r := make([]application_project_payload.ProjectBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+	r := make([]application_project_payload_structs.ProjectBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*application_project_payload.ProjectBaseStruct)
+		model, ok := item.(*application_project_payload_structs.ProjectBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected application_project_payload.ProjectBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected application_project_payload_structs.ProjectBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

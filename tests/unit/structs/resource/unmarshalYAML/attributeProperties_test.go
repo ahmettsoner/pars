@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -24,10 +24,10 @@ Format: ddd
 
 	// Act
 
-	var data objectresource.AttributeProperties
+	var data object_resource_payload_structs.AttributeProperties
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttributeProperties(true, true, true, true, "123", "ddd")
+	expected := object_resource_payload_structs.NewAttributeProperties(true, true, true, true, "123", "ddd")
 
 	// Assert
 	a.NoError(err)

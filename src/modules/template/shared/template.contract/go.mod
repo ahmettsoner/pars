@@ -2,8 +2,6 @@ module parsdevkit.net/modules/template/shared_template_contract
 
 replace parsdevkit.net/modules/template/shared_template_payload => ../template.payload
 
-replace parsdevkit.net/structs => ../../../structs
-
 replace parsdevkit.net/shared => ../../../../shared
 
 replace parsdevkit.net/pkg => ../../../../pkg

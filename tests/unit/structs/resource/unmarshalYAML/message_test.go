@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Text: CMD
 
 	// Act
 
-	var data objectresource.Message
+	var data object_resource_payload_structs.Message
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMessage("CMD", objectresource.DictionaryIdentifier{})
+	expected := object_resource_payload_structs.NewMessage("CMD", object_resource_payload_structs.DictionaryIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -39,10 +39,10 @@ CMD
 
 	// Act
 
-	var data objectresource.Message
+	var data object_resource_payload_structs.Message
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMessage("CMD", objectresource.DictionaryIdentifier{})
+	expected := object_resource_payload_structs.NewMessage("CMD", object_resource_payload_structs.DictionaryIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -59,10 +59,10 @@ RefMessage: dictionary
 
 	// Act
 
-	var data objectresource.Message
+	var data object_resource_payload_structs.Message
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("dictionary"))
+	expected := object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("dictionary"))
 
 	// Assert
 	a.NoError(err)

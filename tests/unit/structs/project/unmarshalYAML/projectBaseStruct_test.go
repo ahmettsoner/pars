@@ -11,7 +11,7 @@ import (
 	"parsdevkit.net/pkg/utilities/file"
 
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	goModels "parsdevkit.net/platforms/go/models"
 
@@ -52,15 +52,15 @@ Specifications:
 
 	// Act
 
-	var data applicationproject.ProjectBaseStruct
+	var data application_project_payload_structs.ProjectBaseStruct
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := applicationproject.ProjectBaseStruct{
-		Header: schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Pars.CMD", schemas.Metadata{
+	expected := application_project_payload_structs.ProjectBaseStruct{
+		Header: schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, "Pars.CMD", schemas.Metadata{
 			Tags: []string{"tag1", "tag2"},
 		},
 		),
-		Specifications: applicationproject.NewProjectSpecification(
+		Specifications: application_project_payload_structs.NewProjectSpecification(
 			0,
 			"Utils",
 			"Common",
@@ -72,17 +72,17 @@ Specifications:
 			[]label.Label(nil),
 			file.PathToArray("Utils"),
 			applicationWorkspace.WorkspaceIdentifier{},
-			applicationproject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
-			applicationproject.NewRuntime("", ""),
-			applicationproject.NewSchema(),
+			application_project_payload_structs.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
+			application_project_payload_structs.NewRuntime("", ""),
+			application_project_payload_structs.NewSchema(),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency{
 				applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
 			},
-			[]applicationproject.ProjectBaseStruct{
-				applicationproject.NewProjectBaseStruct(
-					schemas.NewSchemaHeader(schemas.StructTypes.Project, applicationproject.PROJECT_KIND, "Logging", schemas.Metadata{}),
-					applicationproject.NewProjectSpecification(
+			[]application_project_payload_structs.ProjectBaseStruct{
+				application_project_payload_structs.NewProjectBaseStruct(
+					schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, "Logging", schemas.Metadata{}),
+					application_project_payload_structs.NewProjectSpecification(
 						0,
 						"",
 						"Core",
@@ -94,12 +94,12 @@ Specifications:
 						[]label.Label(nil),
 						[]string(nil),
 						applicationWorkspace.WorkspaceIdentifier{},
-						applicationproject.Platform{},
-						applicationproject.Runtime{},
-						applicationproject.Schema{},
+						application_project_payload_structs.Platform{},
+						application_project_payload_structs.Runtime{},
+						application_project_payload_structs.Schema{},
 						[]applicationProject.Layer(nil),
 						[]applicationProject.Dependency(nil),
-						[]applicationproject.ProjectBaseStruct(nil),
+						[]application_project_payload_structs.ProjectBaseStruct(nil),
 						[]string(nil),
 						[]string(nil),
 						[]string(nil),

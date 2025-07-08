@@ -5,7 +5,9 @@ import (
 
 	"parsdevkit.net/application/bus"
 	"parsdevkit.net/modules/resource/object_resource_contract"
-	"parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+
+	object_resource_payload_commands "parsdevkit.net/modules/resource/object_resource_payload/commands"
 	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 
 	"parsdevkit.net/application/engines"
@@ -13,7 +15,7 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application"
@@ -25,7 +27,7 @@ type ObjectResourceEngine struct{}
 
 func (s ObjectResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*object_resource_payload.ResourceBaseStruct)
+		_, ok := item.(*object_resource_payload_structs.ResourceBaseStruct)
 		if !ok {
 			return false
 		}
@@ -64,10 +66,10 @@ func (s ObjectResourceEngine) Destroy(ctx *application.ApplicationContext, data 
 
 	return nil
 }
-func (s ObjectResourceEngine) prepareToCreate(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct) ([]object_resource_payload.ResourceBaseStruct, error) {
+func (s ObjectResourceEngine) prepareToCreate(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct) ([]object_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
-	readyToCreateStructs := make([]object_resource_payload.ResourceBaseStruct, 0)
+	readyToCreateStructs := make([]object_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -85,7 +87,7 @@ func (s ObjectResourceEngine) prepareToCreate(ctx *application.ApplicationContex
 
 	return readyToCreateStructs, nil
 }
-func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct, init bool) error {
+func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, resources)
@@ -102,22 +104,20 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 
 		fmt.Printf("%v (%d) Object Resource created\n", resource.Header.Name, index)
 
-		// err := bus.SendCommand(application_project_payload_commands.CreateApplicationProject{})
-		// if err != nil {
-		// 	panic(err)
-		// }
-		bus.PublishEvent(object_resource_payload_events.ResourceCreated{
-			Data: resource,
-		})
+		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
+		if err != nil {
+			return err
+		}
+		bus.PublishEvent(object_resource_payload_events.ResourceCreated{Data: resource})
 	}
 
 	return nil
 }
 
-func (s ObjectResourceEngine) prepareToUpdate(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct) ([]object_resource_payload.ResourceBaseStruct, error) {
+func (s ObjectResourceEngine) prepareToUpdate(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct) ([]object_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
-	readyToUpdateStructs := make([]object_resource_payload.ResourceBaseStruct, 0)
+	readyToUpdateStructs := make([]object_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -146,7 +146,7 @@ func (s ObjectResourceEngine) prepareToUpdate(ctx *application.ApplicationContex
 
 	return readyToUpdateStructs, nil
 }
-func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct, init bool) error {
+func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
 
@@ -159,16 +159,17 @@ func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resour
 			return err
 		}
 
-		bus.PublishEvent(object_resource_payload_events.ResourceCreated{
-			Data: resource,
-		})
+		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
-func (s ObjectResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct) ([]object_resource_payload.ResourceBaseStruct, error) {
+func (s ObjectResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct) ([]object_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
-	readyToRemoveStructs := make([]object_resource_payload.ResourceBaseStruct, 0)
+	readyToRemoveStructs := make([]object_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -186,7 +187,7 @@ func (s ObjectResourceEngine) prepareToRemove(ctx *application.ApplicationContex
 
 	return readyToRemoveStructs, nil
 }
-func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resources []object_resource_payload.ResourceBaseStruct, permanent bool) error {
+func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, permanent bool) error {
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
 
@@ -210,7 +211,7 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resour
 	return nil
 }
 
-func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationContext, model *object_resource_payload.ResourceBaseStruct) error {
+func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationContext, model *object_resource_payload_structs.ResourceBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -229,20 +230,20 @@ func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationCo
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, object_resource_payload.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, object_resource_payload_structs.Layer{})
 	}
 
 	return nil
 }
 
-func (s ObjectResourceEngine) getWorkspace(ctx *application.ApplicationContext, model object_resource_payload.ResourceBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s ObjectResourceEngine) getWorkspace(ctx *application.ApplicationContext, model object_resource_payload_structs.ResourceBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -266,13 +267,13 @@ func (s ObjectResourceEngine) GetConfig() engines.EngineConfig {
 		Order: 3000,
 	}
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]object_resource_payload.ResourceBaseStruct, error) {
-	r := make([]object_resource_payload.ResourceBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]object_resource_payload_structs.ResourceBaseStruct, error) {
+	r := make([]object_resource_payload_structs.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*object_resource_payload.ResourceBaseStruct)
+		model, ok := item.(*object_resource_payload_structs.ResourceBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected object_resource_payload.ResourceBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected object_resource_payload_structs.ResourceBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

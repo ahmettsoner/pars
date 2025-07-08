@@ -2,8 +2,7 @@ package basic_task_contract
 
 import (
 	"parsdevkit.net/application/contracts"
-	// task_payload "parsdevkit.net/modules/task/basic_task_payload"
-	task_payload "parsdevkit.net/structs/task/basic-task"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 )
 
-type TaskInterface contracts.TaskServiceInterface[task_payload.TaskBaseStruct]
+type TaskInterface contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct]

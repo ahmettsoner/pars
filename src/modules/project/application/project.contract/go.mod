@@ -2,8 +2,6 @@ module parsdevkit.net/modules/project/application_project_contract
 
 replace parsdevkit.net/modules/project/application_project_payload => ../project.payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/application => ../../../../application
 
 replace parsdevkit.net/pkg => ../../../../pkg

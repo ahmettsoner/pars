@@ -3,8 +3,8 @@ package data_resource
 import (
 	"fmt"
 
-	"parsdevkit.net/modules/resource/data_resource_payload"
 	data_resource_payload_events "parsdevkit.net/modules/resource/data_resource_payload/events"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 
 	"parsdevkit.net/application/bus"
 	"parsdevkit.net/application/ioc"
@@ -13,7 +13,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	engineOperations "parsdevkit.net/engines"
@@ -27,7 +27,7 @@ type DataResourceEngine struct{}
 
 func (s DataResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*data_resource_payload.ResourceBaseStruct)
+		_, ok := item.(*data_resource_payload_structs.ResourceBaseStruct)
 		if !ok {
 			return false
 		}
@@ -66,10 +66,10 @@ func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []
 
 	return nil
 }
-func (s DataResourceEngine) prepareToCreate(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct) ([]data_resource_payload.ResourceBaseStruct, error) {
+func (s DataResourceEngine) prepareToCreate(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
-	readyToCreateStructs := make([]data_resource_payload.ResourceBaseStruct, 0)
+	readyToCreateStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -87,7 +87,7 @@ func (s DataResourceEngine) prepareToCreate(ctx *application.ApplicationContext,
 
 	return readyToCreateStructs, nil
 }
-func (s DataResourceEngine) create(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct, init bool) error {
+func (s DataResourceEngine) create(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, resources)
@@ -117,10 +117,10 @@ func (s DataResourceEngine) create(ctx *application.ApplicationContext, resource
 	return nil
 }
 
-func (s DataResourceEngine) prepareToUpdate(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct) ([]data_resource_payload.ResourceBaseStruct, error) {
+func (s DataResourceEngine) prepareToUpdate(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
-	readyToUpdateStructs := make([]data_resource_payload.ResourceBaseStruct, 0)
+	readyToUpdateStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -149,7 +149,7 @@ func (s DataResourceEngine) prepareToUpdate(ctx *application.ApplicationContext,
 
 	return readyToUpdateStructs, nil
 }
-func (s DataResourceEngine) update(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct, init bool) error {
+func (s DataResourceEngine) update(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
 
@@ -171,10 +171,10 @@ func (s DataResourceEngine) update(ctx *application.ApplicationContext, resource
 
 	return nil
 }
-func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct) ([]data_resource_payload.ResourceBaseStruct, error) {
+func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
-	readyToRemoveStructs := make([]data_resource_payload.ResourceBaseStruct, 0)
+	readyToRemoveStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -192,7 +192,7 @@ func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext,
 
 	return readyToRemoveStructs, nil
 }
-func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct, permanent bool) error {
+func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, permanent bool) error {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
 
@@ -216,7 +216,7 @@ func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resource
 	return nil
 }
 
-func (s DataResourceEngine) generate(model data_resource_payload.ResourceBaseStruct) (*data_resource_payload.ResourceBaseStruct, error) {
+func (s DataResourceEngine) generate(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
 
@@ -238,7 +238,7 @@ func (s DataResourceEngine) generate(model data_resource_payload.ResourceBaseStr
 	return result, nil
 }
 
-func (s DataResourceEngine) completeInformation(ctx *application.ApplicationContext, model *data_resource_payload.ResourceBaseStruct) error {
+func (s DataResourceEngine) completeInformation(ctx *application.ApplicationContext, model *data_resource_payload_structs.ResourceBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -257,18 +257,18 @@ func (s DataResourceEngine) completeInformation(ctx *application.ApplicationCont
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, data_resource_payload.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, data_resource_payload_structs.Layer{})
 	}
 	return nil
 }
 
-func (s DataResourceEngine) getWorkspace(ctx *application.ApplicationContext, model data_resource_payload.ResourceBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s DataResourceEngine) getWorkspace(ctx *application.ApplicationContext, model data_resource_payload_structs.ResourceBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload_structs.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -292,13 +292,13 @@ func (s DataResourceEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]data_resource_payload.ResourceBaseStruct, error) {
-	r := make([]data_resource_payload.ResourceBaseStruct, 0, len(data))
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
+	r := make([]data_resource_payload_structs.ResourceBaseStruct, 0, len(data))
 
 	for _, item := range data {
-		model, ok := item.(*data_resource_payload.ResourceBaseStruct)
+		model, ok := item.(*data_resource_payload_structs.ResourceBaseStruct)
 		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected data_resource_payload.ResourceBaseStruct, got %T", item)
+			return nil, fmt.Errorf("invalid item type: expected data_resource_payload_structs.ResourceBaseStruct, got %T", item)
 		}
 
 		r = append(r, *model)

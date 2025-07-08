@@ -6,22 +6,22 @@ import (
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
-func BasicProject_WithName(name string, projectType models.ProjectType, platform models.PlatformType, runtime models.RuntimeType, workspace basic_workspace_payload.WorkspaceSpecification) *applicationproject.ProjectBaseStruct {
+func BasicProject_WithName(name string, projectType models.ProjectType, platform models.PlatformType, runtime models.RuntimeType, workspace basic_workspace_payload_structs.WorkspaceSpecification) *application_project_payload_structs.ProjectBaseStruct {
 
-	project := applicationproject.NewProjectBaseStruct(
+	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(
 			schemas.StructTypes.Project,
-			applicationproject.PROJECT_KIND,
+			application_project_payload_structs.PROJECT_KIND,
 			name,
 			schemas.Metadata{
 				Tags: []string(nil),
 			},
 		),
-		applicationproject.NewProjectSpecification(0,
+		application_project_payload_structs.NewProjectSpecification(0,
 			name,
 			"",
 			workspace.Name,
@@ -32,12 +32,12 @@ func BasicProject_WithName(name string, projectType models.ProjectType, platform
 			[]label.Label(nil),
 			[]string(nil),
 			workspace.WorkspaceIdentifier,
-			applicationproject.NewPlatform_Basic(platform),
-			applicationproject.NewRuntime_Basic(runtime),
-			applicationproject.NewSchema(),
+			application_project_payload_structs.NewPlatform_Basic(platform),
+			application_project_payload_structs.NewRuntime_Basic(runtime),
+			application_project_payload_structs.NewSchema(),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]applicationproject.ProjectBaseStruct(nil),
+			[]application_project_payload_structs.ProjectBaseStruct(nil),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),

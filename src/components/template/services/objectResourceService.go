@@ -4,14 +4,16 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	dataresource "parsdevkit.net/modules/resource/data_resource_payload"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
+
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 	"parsdevkit.net/platforms/core"
-	codetemplate "parsdevkit.net/structs/template/code-template"
-	filetemplate "parsdevkit.net/structs/template/file-template"
 
 	"parsdevkit.net/components/template/models/objectResources"
 )
@@ -59,7 +61,7 @@ func (s *ObjectResourceService) DataTypeToImport(_type structs.DataType, imports
 	return importsMap
 }
 
-func (s *ObjectResourceService) ResourceToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template codetemplate.TemplateSpecification) objectResources.ObjectResource {
+func (s *ObjectResourceService) ResourceToModel(resource object_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template code_template_payload_structs.TemplateSpecification) objectResources.ObjectResource {
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -139,7 +141,7 @@ func (s *ObjectResourceService) ResourceToModel(resource objectresource.Resource
 	}
 }
 
-func (s *ObjectResourceService) DataResourceToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template filetemplate.TemplateSpecification) objectResources.DataResource {
+func (s *ObjectResourceService) DataResourceToModel(resource data_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template file_template_payload_structs.TemplateSpecification) objectResources.DataResource {
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -165,7 +167,7 @@ func (s *ObjectResourceService) DataResourceToModel(resource dataresource.Resour
 	}
 }
 
-func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template codetemplate.TemplateSpecification, section objectresource.Section) objectResources.ObjectSection {
+func (s *ObjectResourceService) ObjectSectionToModel(resource object_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template code_template_payload_structs.TemplateSpecification, section object_resource_payload_structs.Section) objectResources.ObjectSection {
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -253,7 +255,7 @@ func (s *ObjectResourceService) ObjectSectionToModel(resource objectresource.Res
 	}
 }
 
-func (s *ObjectResourceService) DataSectionToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template filetemplate.TemplateSpecification, section dataresource.Section) objectResources.DataSection {
+func (s *ObjectResourceService) DataSectionToModel(resource data_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template file_template_payload_structs.TemplateSpecification, section data_resource_payload_structs.Section) objectResources.DataSection {
 	var importsMap map[string][]string = make(map[string][]string)
 
 	packages := project.GetAllPackageWithLayer(layer)
@@ -276,7 +278,7 @@ func (s *ObjectResourceService) DataSectionToModel(resource dataresource.Resourc
 	}
 }
 
-func (s *ObjectResourceService) ObjectSectionListToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template codetemplate.TemplateSpecification, sections ...objectresource.Section) []objectResources.ObjectSection {
+func (s *ObjectResourceService) ObjectSectionListToModel(resource object_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template code_template_payload_structs.TemplateSpecification, sections ...object_resource_payload_structs.Section) []objectResources.ObjectSection {
 
 	var result []objectResources.ObjectSection = make([]objectResources.ObjectSection, 0)
 
@@ -287,7 +289,7 @@ func (s *ObjectResourceService) ObjectSectionListToModel(resource objectresource
 	return result
 }
 
-func (s *ObjectResourceService) DataSectionListToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, layer string, template filetemplate.TemplateSpecification, sections ...dataresource.Section) []objectResources.DataSection {
+func (s *ObjectResourceService) DataSectionListToModel(resource data_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, layer string, template file_template_payload_structs.TemplateSpecification, sections ...data_resource_payload_structs.Section) []objectResources.DataSection {
 
 	var result []objectResources.DataSection = make([]objectResources.DataSection, 0)
 
@@ -298,7 +300,7 @@ func (s *ObjectResourceService) DataSectionListToModel(resource dataresource.Res
 	return result
 }
 
-func (s *ObjectResourceService) LayerListToModel(resource objectresource.ResourceSpecification, project applicationproject.ProjectSpecification, template codetemplate.TemplateSpecification, layers ...objectresource.Layer) []objectResources.ObjectLayer {
+func (s *ObjectResourceService) LayerListToModel(resource object_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, template code_template_payload_structs.TemplateSpecification, layers ...object_resource_payload_structs.Layer) []objectResources.ObjectLayer {
 
 	var result []objectResources.ObjectLayer = make([]objectResources.ObjectLayer, 0)
 
@@ -312,7 +314,7 @@ func (s *ObjectResourceService) LayerListToModel(resource objectresource.Resourc
 	return result
 }
 
-func (s *ObjectResourceService) DataLayerListToModel(resource dataresource.ResourceSpecification, project applicationproject.ProjectSpecification, template filetemplate.TemplateSpecification, layers ...dataresource.Layer) []objectResources.DataLayer {
+func (s *ObjectResourceService) DataLayerListToModel(resource data_resource_payload_structs.ResourceSpecification, project application_project_payload_structs.ProjectSpecification, template file_template_payload_structs.TemplateSpecification, layers ...data_resource_payload_structs.Layer) []objectResources.DataLayer {
 
 	var result []objectResources.DataLayer = make([]objectResources.DataLayer, 0)
 
@@ -354,7 +356,7 @@ func (s *ObjectResourceService) OptionListToModel(options ...option.Option) []ob
 	return result
 }
 
-func (s *ObjectResourceService) DictionaryListToModel(dictionaries ...objectresource.Dictionary) []objectResources.ObjectDictionary {
+func (s *ObjectResourceService) DictionaryListToModel(dictionaries ...object_resource_payload_structs.Dictionary) []objectResources.ObjectDictionary {
 
 	var result []objectResources.ObjectDictionary = make([]objectResources.ObjectDictionary, 0)
 
@@ -368,7 +370,7 @@ func (s *ObjectResourceService) DictionaryListToModel(dictionaries ...objectreso
 	return result
 }
 
-func (s *ObjectResourceService) GroupListToModel(groups ...objectresource.Group) []objectResources.ObjectGroup {
+func (s *ObjectResourceService) GroupListToModel(groups ...object_resource_payload_structs.Group) []objectResources.ObjectGroup {
 
 	var result []objectResources.ObjectGroup = make([]objectResources.ObjectGroup, 0)
 
@@ -383,7 +385,7 @@ func (s *ObjectResourceService) GroupListToModel(groups ...objectresource.Group)
 	return result
 }
 
-func (s *ObjectResourceService) MessageToModel(message objectresource.Message) objectResources.ObjectMessage {
+func (s *ObjectResourceService) MessageToModel(message object_resource_payload_structs.Message) objectResources.ObjectMessage {
 
 	var result objectResources.ObjectMessage = objectResources.ObjectMessage{
 		Text:       message.Text,
@@ -393,7 +395,7 @@ func (s *ObjectResourceService) MessageToModel(message objectresource.Message) o
 	return result
 }
 
-func (s *ObjectResourceService) WorkspaceToModel(workspace basic_workspace_payload.WorkspaceBaseStruct) objectResources.Workspace {
+func (s *ObjectResourceService) WorkspaceToModel(workspace basic_workspace_payload_structs.WorkspaceBaseStruct) objectResources.Workspace {
 
 	var result objectResources.Workspace = objectResources.Workspace{
 		Name: workspace.Header.Name,
@@ -402,7 +404,7 @@ func (s *ObjectResourceService) WorkspaceToModel(workspace basic_workspace_paylo
 	return result
 }
 
-func (s *ObjectResourceService) ApplicationProjectToModel(project applicationproject.ProjectBaseStruct) objectResources.ApplicationProject {
+func (s *ObjectResourceService) ApplicationProjectToModel(project application_project_payload_structs.ProjectBaseStruct) objectResources.ApplicationProject {
 	dependencies := project.Specifications.GetAllPackage()
 
 	var result objectResources.ApplicationProject = objectResources.ApplicationProject{
@@ -414,7 +416,7 @@ func (s *ObjectResourceService) ApplicationProjectToModel(project applicationpro
 	return result
 }
 
-func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.TemplateBaseStruct) objectResources.FileTemplate {
+func (s *ObjectResourceService) FileTemplateToModel(template file_template_payload_structs.TemplateBaseStruct) objectResources.FileTemplate {
 	dependencies := template.Specifications.Package
 
 	var result objectResources.FileTemplate = objectResources.FileTemplate{
@@ -426,7 +428,7 @@ func (s *ObjectResourceService) FileTemplateToModel(template filetemplate.Templa
 	return result
 }
 
-func (s *ObjectResourceService) CodeTemplateToModel(template codetemplate.TemplateBaseStruct) objectResources.CodeTemplate {
+func (s *ObjectResourceService) CodeTemplateToModel(template code_template_payload_structs.TemplateBaseStruct) objectResources.CodeTemplate {
 	dependencies := template.Specifications.Package
 
 	var result objectResources.CodeTemplate = objectResources.CodeTemplate{
@@ -438,7 +440,7 @@ func (s *ObjectResourceService) CodeTemplateToModel(template codetemplate.Templa
 	return result
 }
 
-func (s *ObjectResourceService) DataLayerToModel(layer dataresource.Layer) objectResources.DataLayer {
+func (s *ObjectResourceService) DataLayerToModel(layer data_resource_payload_structs.Layer) objectResources.DataLayer {
 
 	var result objectResources.DataLayer = objectResources.DataLayer{
 		Name: layer.Name,
@@ -447,7 +449,7 @@ func (s *ObjectResourceService) DataLayerToModel(layer dataresource.Layer) objec
 	return result
 }
 
-func (s *ObjectResourceService) ObjectLayerToModel(layer objectresource.Layer) objectResources.ObjectLayer {
+func (s *ObjectResourceService) ObjectLayerToModel(layer object_resource_payload_structs.Layer) objectResources.ObjectLayer {
 
 	var result objectResources.ObjectLayer = objectResources.ObjectLayer{
 		Name: layer.Name,

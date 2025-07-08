@@ -2,8 +2,6 @@ module parsdevkit.net/modules/group/basic_group_contract
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../group.payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/application => ../../../../application
 
 replace parsdevkit.net/pkg => ../../../../pkg

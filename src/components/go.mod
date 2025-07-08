@@ -18,8 +18,6 @@ replace parsdevkit.net/platforms/go => ../platforms/go
 
 replace parsdevkit.net/platforms/pars => ../platforms/pars
 
-replace parsdevkit.net/structs => ../modules/structs
-
 replace parsdevkit.net/models => ../models
 
 replace parsdevkit.net/providers => ../providers
@@ -31,7 +29,6 @@ require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

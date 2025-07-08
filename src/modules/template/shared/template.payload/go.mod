@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/template/shared_template_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/shared => ../../../../shared
 
 replace parsdevkit.net/pkg => ../../../../pkg

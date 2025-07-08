@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
 type ProjectServiceTestSuite struct {
@@ -30,7 +30,7 @@ type ProjectServiceTestSuite struct {
 	environment   string
 	testArea      string
 	workspaceName string
-	workspace     basic_workspace_payload.WorkspaceSpecification
+	workspace     basic_workspace_payload_structs.WorkspaceSpecification
 	faker         *faker.Faker
 	noCleanOnFail bool
 }

@@ -60,8 +60,6 @@ replace parsdevkit.net/platforms/go => ../src/platforms/go
 
 replace parsdevkit.net/platforms/pars => ../src/platforms/pars
 
-replace parsdevkit.net/structs => ../src/modules/structs
-
 replace parsdevkit.net/context => ../src/modules/context
 
 replace parsdevkit.net/providers => ../src/providers
@@ -104,7 +102,6 @@ require (
 	parsdevkit.net/platforms/dotnet v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/go v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/pars v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

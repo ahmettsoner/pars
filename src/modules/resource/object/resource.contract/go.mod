@@ -2,8 +2,6 @@ module parsdevkit.net/modules/resource/object_resource_contract
 
 replace parsdevkit.net/modules/resource/object_resource_payload => ../resource.payload
 
-replace parsdevkit.net/structs => ../../../structs
-
 replace parsdevkit.net/object => ../../../../object
 
 replace parsdevkit.net/pkg => ../../../../pkg

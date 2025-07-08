@@ -7,7 +7,7 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
-	sharedtemplate "parsdevkit.net/structs/template/shared-template"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -34,8 +34,8 @@ func NewSharedTemplateService(environment string) shared_template_contract.Templ
 	}
 }
 
-func (s SharedTemplateService) GetByName(name string) (*sharedtemplate.TemplateBaseStruct, error) {
-	var template *sharedtemplate.TemplateBaseStruct
+func (s SharedTemplateService) GetByName(name string) (*shared_template_payload_structs.TemplateBaseStruct, error) {
+	var template *shared_template_payload_structs.TemplateBaseStruct
 
 	entity, err := s.templateRespository.GetByName(name)
 	if err != nil {
@@ -50,17 +50,17 @@ func (s SharedTemplateService) GetByName(name string) (*sharedtemplate.TemplateB
 	return template, nil
 }
 
-func (s SharedTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]sharedtemplate.TemplateBaseStruct), error) {
+func (s SharedTemplateService) ListBySetAndLayers(set string, layers ...string) (*([]shared_template_payload_structs.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListBySetAndLayers(set, layers...)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]sharedtemplate.TemplateBaseStruct, 0)
+	templateList := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template sharedtemplate.TemplateBaseStruct
+		var template shared_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -69,17 +69,17 @@ func (s SharedTemplateService) ListBySetAndLayers(set string, layers ...string) 
 	return &templateList, nil
 }
 
-func (s SharedTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]sharedtemplate.TemplateBaseStruct), error) {
+func (s SharedTemplateService) ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]shared_template_payload_structs.TemplateBaseStruct), error) {
 
 	entityList, err := s.templateRespository.ListByFilter(set, workspace, layers, tags, label.ConvertLabelsToMap(labels))
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]sharedtemplate.TemplateBaseStruct, 0)
+	templateList := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template sharedtemplate.TemplateBaseStruct
+		var template shared_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -87,7 +87,7 @@ func (s SharedTemplateService) ListByFilter(set, workspace string, layers []stri
 
 	return &templateList, nil
 }
-func (s SharedTemplateService) Save(model sharedtemplate.TemplateBaseStruct) (*sharedtemplate.TemplateBaseStruct, error) {
+func (s SharedTemplateService) Save(model shared_template_payload_structs.TemplateBaseStruct) (*shared_template_payload_structs.TemplateBaseStruct, error) {
 
 	result, err := s.saveTemplateInformation(model)
 	if err != nil {
@@ -97,17 +97,17 @@ func (s SharedTemplateService) Save(model sharedtemplate.TemplateBaseStruct) (*s
 	return result, nil
 }
 
-func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), error) {
+func (s SharedTemplateService) List() (*([]shared_template_payload_structs.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByKind(sharedtemplate.TEMPLATE_KIND)
+	entityList, err := s.templateRespository.ListByKind(shared_template_payload_structs.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]sharedtemplate.TemplateBaseStruct, 0)
+	templateList := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template sharedtemplate.TemplateBaseStruct
+		var template shared_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -115,17 +115,17 @@ func (s SharedTemplateService) List() (*([]sharedtemplate.TemplateBaseStruct), e
 
 	return &templateList, nil
 }
-func (s SharedTemplateService) ListByWorkspace(workspace string) (*([]sharedtemplate.TemplateBaseStruct), error) {
+func (s SharedTemplateService) ListByWorkspace(workspace string) (*([]shared_template_payload_structs.TemplateBaseStruct), error) {
 
-	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, sharedtemplate.TEMPLATE_KIND)
+	entityList, err := s.templateRespository.ListByWorkspaceAndKind(workspace, shared_template_payload_structs.TEMPLATE_KIND)
 	if err != nil {
 		return nil, err
 	}
 
-	templateList := make([]sharedtemplate.TemplateBaseStruct, 0)
+	templateList := make([]shared_template_payload_structs.TemplateBaseStruct, 0)
 
 	for _, entity := range *entityList {
-		var template sharedtemplate.TemplateBaseStruct
+		var template shared_template_payload_structs.TemplateBaseStruct
 		err = json.Unmarshal([]byte(entity.Document), &template)
 
 		templateList = append(templateList, template)
@@ -134,7 +134,7 @@ func (s SharedTemplateService) ListByWorkspace(workspace string) (*([]sharedtemp
 	return &templateList, nil
 }
 
-func (s SharedTemplateService) Remove(name, workspace string, permanent bool) (*sharedtemplate.TemplateBaseStruct, error) {
+func (s SharedTemplateService) Remove(name, workspace string, permanent bool) (*shared_template_payload_structs.TemplateBaseStruct, error) {
 	//TODO: Geçici olarak tanımlandı, düzenlenecek
 
 	templateTemplateEntity, err := s.templateRespository.GetByNameAndWorkspace(name, workspace)
@@ -148,7 +148,7 @@ func (s SharedTemplateService) Remove(name, workspace string, permanent bool) (*
 	logrus.Debugf("template %v deleting...", templateTemplateEntity.Name)
 
 	err = s.templateRespository.Delete(templateTemplateEntity)
-	var template sharedtemplate.TemplateBaseStruct
+	var template shared_template_payload_structs.TemplateBaseStruct
 	err = json.Unmarshal([]byte(templateTemplateEntity.Document), &template)
 	if err != nil {
 		return nil, err
@@ -182,7 +182,7 @@ func (s SharedTemplateService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s SharedTemplateService) saveTemplateInformation(templateModel sharedtemplate.TemplateBaseStruct) (*sharedtemplate.TemplateBaseStruct, error) {
+func (s SharedTemplateService) saveTemplateInformation(templateModel shared_template_payload_structs.TemplateBaseStruct) (*shared_template_payload_structs.TemplateBaseStruct, error) {
 
 	jsonData, err := json.Marshal(templateModel)
 	if err != nil {

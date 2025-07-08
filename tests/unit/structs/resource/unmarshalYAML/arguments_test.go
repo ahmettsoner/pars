@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -21,13 +21,13 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument{
-		objectresource.NewMethodArgument("", "foo"),
-		objectresource.NewMethodArgument("", "bar"),
-	}, objectresource.MethodIdentifier{})
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("", "foo"),
+		object_resource_payload_structs.NewMethodArgument("", "bar"),
+	}, object_resource_payload_structs.MethodIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -46,13 +46,13 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument{
-		objectresource.NewMethodArgument("", "foo"),
-		objectresource.NewMethodArgument("", "bar"),
-	}, objectresource.MethodIdentifier{})
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("", "foo"),
+		object_resource_payload_structs.NewMethodArgument("", "bar"),
+	}, object_resource_payload_structs.MethodIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -69,12 +69,12 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument{
-		objectresource.NewMethodArgument("foo", "bar"),
-	}, objectresource.MethodIdentifier{})
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("foo", "bar"),
+	}, object_resource_payload_structs.MethodIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -90,14 +90,14 @@ foo bar, hoo, faust poe
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument{
-		objectresource.NewMethodArgument("foo", "bar"),
-		objectresource.NewMethodArgument("", "hoo"),
-		objectresource.NewMethodArgument("faust", "poe"),
-	}, objectresource.MethodIdentifier{})
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("foo", "bar"),
+		object_resource_payload_structs.NewMethodArgument("", "hoo"),
+		object_resource_payload_structs.NewMethodArgument("faust", "poe"),
+	}, object_resource_payload_structs.MethodIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -115,12 +115,12 @@ Arguments:
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument{
-		objectresource.NewMethodArgument("foo", "bar"),
-	}, objectresource.MethodIdentifier{})
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument{
+		object_resource_payload_structs.NewMethodArgument("foo", "bar"),
+	}, object_resource_payload_structs.MethodIdentifier{})
 
 	// Assert
 	a.NoError(err)
@@ -138,10 +138,10 @@ Reference:
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument(nil), objectresource.NewMethodIdentifier("CMD"))
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument(nil), object_resource_payload_structs.NewMethodIdentifier("CMD"))
 
 	// Assert
 	a.NoError(err)
@@ -158,10 +158,10 @@ Reference: CMD
 
 	// Act
 
-	var data objectresource.Arguments
+	var data object_resource_payload_structs.Arguments
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewArgument([]objectresource.MethodArgument(nil), objectresource.NewMethodIdentifier("CMD"))
+	expected := object_resource_payload_structs.NewArgument([]object_resource_payload_structs.MethodArgument(nil), object_resource_payload_structs.NewMethodIdentifier("CMD"))
 
 	// Assert
 	a.NoError(err)

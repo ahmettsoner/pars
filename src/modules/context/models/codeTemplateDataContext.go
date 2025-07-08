@@ -2,13 +2,14 @@ package models
 
 import (
 	objectResourceService "parsdevkit.net/components/template/services"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
-	codetemplate "parsdevkit.net/structs/template/code-template"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/components/template/models/objectResources"
-	"parsdevkit.net/modules/workspace/basic_workspace_payload"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
 type CodeTemplateDataContext struct {
@@ -20,9 +21,9 @@ type CodeTemplateDataContext struct {
 	Section   objectResources.ObjectSectionComposite
 }
 
-func NewCodeTemplateDataContext(workspace basic_workspace_payload.WorkspaceBaseStruct, project applicationproject.ProjectBaseStruct, resource objectresource.ResourceBaseStruct, template codetemplate.TemplateBaseStruct, layer objectresource.Layer, section objectresource.Section) *CodeTemplateDataContext {
+func NewCodeTemplateDataContext(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, layer object_resource_payload_structs.Layer, section object_resource_payload_structs.Section) *CodeTemplateDataContext {
 
-	manager := platforms.Get[applicationproject.ProjectBaseStruct](project.Specifications.Platform.Type)
+	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
 	templateService := objectResourceService.NewObjectResourceService(manager)
 
 	return &CodeTemplateDataContext{

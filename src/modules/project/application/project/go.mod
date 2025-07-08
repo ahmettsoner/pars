@@ -2,8 +2,6 @@ module parsdevkit.net/modules/project/application_project
 
 go 1.23.7
 
-replace parsdevkit.net/structs => ../../structs
-
 replace parsdevkit.net/components => ../../../components
 
 replace parsdevkit.net/application => ../../../application
@@ -34,7 +32,6 @@ require (
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

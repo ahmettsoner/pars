@@ -1,7 +1,5 @@
 module parsdevkit.net/modules/template/code_template_payload
 
-replace parsdevkit.net/structs => ../../../../structs
-
 replace parsdevkit.net/code => ../../../../code
 
 replace parsdevkit.net/pkg => ../../../../pkg

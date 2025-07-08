@@ -6,7 +6,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -22,17 +22,17 @@ Name: foo
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(
 			string(structs.ValueTypes.String),
 			structs.TypePackage{},
 			structs.DataTypeCategories.Value,
 			structs.ModifierTypes.Object,
 			[]structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -49,12 +49,12 @@ foo
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -72,12 +72,12 @@ Type: Int
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -94,12 +94,12 @@ foo Int
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -116,12 +116,12 @@ foo Int[]
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Array, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -139,12 +139,12 @@ Visibility: private
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Private,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Private,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -161,12 +161,12 @@ Order: 3
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		3, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		3, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -183,14 +183,14 @@ Group: CMD
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
-		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 0, []option.Option(nil)),
-		objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 0, []option.Option(nil)),
+		object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -209,14 +209,14 @@ Group:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
-		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
-		objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
+		object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -236,17 +236,17 @@ Encapsulation:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{},
-		objectresource.NewEncapsulation(
-			objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{}, true),
-			objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
+		0, object_resource_payload_structs.AttributeGroup{},
+		object_resource_payload_structs.NewEncapsulation(
+			object_resource_payload_structs.NewEncapsulationGetter("", "", object_resource_payload_structs.MethodIdentifier{}, true),
+			object_resource_payload_structs.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, object_resource_payload_structs.MethodIdentifier{}, true),
 		),
-		objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -269,14 +269,14 @@ Properties:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		0,
-		objectresource.AttributeGroup{},
-		objectresource.Encapsulation{}, objectresource.NewAttributeProperties(true, true, true, true, "123", "ddd"), objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		object_resource_payload_structs.AttributeGroup{},
+		object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.NewAttributeProperties(true, true, true, true, "123", "ddd"), object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -293,11 +293,11 @@ Hint: message_text
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")), object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -316,12 +316,12 @@ Hint:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo",
+	expected := object_resource_payload_structs.NewAttribute("foo",
 		structs.VisibilityTypeTypes.Public, structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRules_patient_filter")), object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -338,11 +338,11 @@ Description: message_text
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")), []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -361,12 +361,12 @@ Description:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")), []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRules_patient_filter")), []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -386,15 +386,15 @@ Options:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option{
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option{
 			option.NewOption("row", "1"),
 			option.NewOption("column", "3"),
-		}, []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		}, []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -413,14 +413,14 @@ Labels:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label{
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label{
 			label.NewLabel("foo", "bar"),
-		}, objectresource.Validation{}, []objectresource.Annotation(nil), true)
+		}, object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -439,15 +439,15 @@ Validation:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil),
-		objectresource.NewValidation(
-			objectresource.NewValidationLengthRule("", 10, 150, objectresource.Message{}),
-		), []objectresource.Annotation(nil), true)
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil),
+		object_resource_payload_structs.NewValidation(
+			object_resource_payload_structs.NewValidationLengthRule("", 10, 150, object_resource_payload_structs.Message{}),
+		), []object_resource_payload_structs.Annotation(nil), true)
 
 	// Assert
 	a.NoError(err)
@@ -465,13 +465,13 @@ Annotations:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
+	expected := object_resource_payload_structs.NewAttribute("foo", structs.VisibilityTypeTypes.Public,
 		structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
-		0, objectresource.AttributeGroup{}, objectresource.Encapsulation{}, objectresource.AttributeProperties{}, objectresource.Message{}, objectresource.Message{}, []option.Option(nil), []label.Label(nil), objectresource.Validation{}, []objectresource.Annotation{
-			objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument(nil)),
+		0, object_resource_payload_structs.AttributeGroup{}, object_resource_payload_structs.Encapsulation{}, object_resource_payload_structs.AttributeProperties{}, object_resource_payload_structs.Message{}, object_resource_payload_structs.Message{}, []option.Option(nil), []label.Label(nil), object_resource_payload_structs.Validation{}, []object_resource_payload_structs.Annotation{
+			object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument(nil)),
 		}, true)
 
 	// Assert
@@ -517,22 +517,22 @@ Properties:
 
 	// Act
 
-	var data objectresource.Attribute
+	var data object_resource_payload_structs.Attribute
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttribute(
+	expected := object_resource_payload_structs.NewAttribute(
 		"foo",
 		structs.VisibilityTypeTypes.Private,
 		structs.NewDataType(string(structs.ValueTypes.Int), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
 		3,
-		objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
-		objectresource.NewEncapsulation(
-			objectresource.NewEncapsulationGetter("", "", objectresource.MethodIdentifier{}, true),
-			objectresource.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, objectresource.MethodIdentifier{}, true),
+		object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 2, []option.Option(nil)),
+		object_resource_payload_structs.NewEncapsulation(
+			object_resource_payload_structs.NewEncapsulationGetter("", "", object_resource_payload_structs.MethodIdentifier{}, true),
+			object_resource_payload_structs.NewEncapsulationSetter("", structs.VisibilityTypeTypes.Private, object_resource_payload_structs.MethodIdentifier{}, true),
 		),
-		objectresource.NewAttributeProperties(true, true, true, true, "123", "ddd"),
-		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
-		objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")),
+		object_resource_payload_structs.NewAttributeProperties(true, true, true, true, "123", "ddd"),
+		object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")),
+		object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")),
 		[]option.Option{
 			option.NewOption("row", "1"),
 			option.NewOption("column", "3"),
@@ -540,11 +540,11 @@ Properties:
 		[]label.Label{
 			label.NewLabel("foo", "bar"),
 		},
-		objectresource.NewValidation(
-			objectresource.NewValidationLengthRule("", 10, 150, objectresource.Message{}),
+		object_resource_payload_structs.NewValidation(
+			object_resource_payload_structs.NewValidationLengthRule("", 10, 150, object_resource_payload_structs.Message{}),
 		),
-		[]objectresource.Annotation{
-			objectresource.NewAnnotation("auth.annotation", []objectresource.MethodArgument(nil)),
+		[]object_resource_payload_structs.Annotation{
+			object_resource_payload_structs.NewAnnotation("auth.annotation", []object_resource_payload_structs.MethodArgument(nil)),
 		},
 		true,
 	)

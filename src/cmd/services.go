@@ -9,6 +9,7 @@ import (
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
 	object_resource_handler "parsdevkit.net/modules/resource/object_resource/handlers"
+	object_resource_payload_commands "parsdevkit.net/modules/resource/object_resource_payload/commands"
 	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/template/file_template_contract"
@@ -22,25 +23,25 @@ import (
 	"parsdevkit.net/modules/resource/data_resource_contract"
 	resourceObject "parsdevkit.net/modules/resource/object_resource"
 	"parsdevkit.net/modules/resource/object_resource_contract"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
 	groupGroup "parsdevkit.net/modules/group/basic_group"
 	taskCommon "parsdevkit.net/modules/task/basic_task"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 	templateCode "parsdevkit.net/modules/template/code_template"
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	commontask "parsdevkit.net/structs/task/basic-task"
 
-	group_payload "parsdevkit.net/modules/group/basic_group_payload"
-	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
-	dataResourceSchema "parsdevkit.net/modules/resource/data_resource_payload"
-	objectResourceSchema "parsdevkit.net/modules/resource/object_resource_payload"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/repositories"
-	codeTemplateSchema "parsdevkit.net/structs/template/code-template"
-	fileTemplateSchema "parsdevkit.net/structs/template/file-template"
-	sharedTemplateSchema "parsdevkit.net/structs/template/shared-template"
 
 	application_project_handlers "parsdevkit.net/modules/project/application_project/handlers"
 	application_project_payload_commands "parsdevkit.net/modules/project/application_project_payload/commands"
@@ -70,19 +71,20 @@ func RegisterServices() {
 }
 func registerCommandHandlers() {
 	bus.RegisterCommandHandler[application_project_payload_commands.CreateApplicationProject](&application_project_handlers.CreateApplicationProjectHandler{})
+	bus.RegisterCommandHandler[object_resource_payload_commands.GenerateResourceContents](&object_resource_handler.GenerateResourceContentsCommandHandler{})
 }
 func registerEventHandlers() {
 	bus.RegisterEventHandler[object_resource_payload_events.ResourceCreated](&object_resource_handler.ResourceCreatedEventHandler{})
 }
 
 func registerSchemas() {
-	schemas.Register(&group_payload.GroupBaseStruct{})
-	schemas.Register(&applicationProjectSchema.ProjectBaseStruct{})
-	schemas.Register(&dataResourceSchema.ResourceBaseStruct{})
-	schemas.Register(&objectResourceSchema.ResourceBaseStruct{})
-	schemas.Register(&codeTemplateSchema.TemplateBaseStruct{})
-	schemas.Register(&fileTemplateSchema.TemplateBaseStruct{})
-	schemas.Register(&sharedTemplateSchema.TemplateBaseStruct{})
+	schemas.Register(&basic_group_payload_structs.GroupBaseStruct{})
+	schemas.Register(&application_project_payload_structs.ProjectBaseStruct{})
+	schemas.Register(&data_resource_payload_structs.ResourceBaseStruct{})
+	schemas.Register(&object_resource_payload_structs.ResourceBaseStruct{})
+	schemas.Register(&code_template_payload_structs.TemplateBaseStruct{})
+	schemas.Register(&file_template_payload_structs.TemplateBaseStruct{})
+	schemas.Register(&shared_template_payload_structs.TemplateBaseStruct{})
 }
 
 func registerEngines() {
@@ -153,7 +155,7 @@ func registerContainers() {
 	ioc.RegisterInterface[object_resource_contract.ResourceInterface](func() object_resource_contract.ResourceInterface {
 		return resourceObject.NewObjectResourceService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.TaskServiceInterface[commontask.TaskBaseStruct]](func() contracts.TaskServiceInterface[commontask.TaskBaseStruct] {
+	ioc.RegisterInterface[contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct]](func() contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct] {
 		return taskCommon.NewBasicTaskService(application.GetEnvironment())
 	})
 

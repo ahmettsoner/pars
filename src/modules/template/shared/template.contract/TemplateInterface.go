@@ -1,9 +1,8 @@
 package shared_template_contract
 
 import (
-	// template_payload "parsdevkit.net/modules/template/shared_template_payload"
 	"parsdevkit.net/application/contracts"
-	template_payload "parsdevkit.net/structs/template/shared-template"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 )
 
-type TemplateInterface contracts.TemplateServiceInterface[template_payload.TemplateBaseStruct]
+type TemplateInterface contracts.TemplateServiceInterface[shared_template_payload_structs.TemplateBaseStruct]

@@ -3,12 +3,12 @@ package handlers
 import (
 	"fmt"
 
-	"parsdevkit.net/modules/project/application_project_payload/commands"
+	application_project_payload_commands "parsdevkit.net/modules/project/application_project_payload/commands"
 )
 
 type CreateApplicationProjectHandler struct{}
 
-func (h *CreateApplicationProjectHandler) Handle(cmd commands.CreateApplicationProject) error {
+func (h *CreateApplicationProjectHandler) Handle(cmd application_project_payload_commands.CreateApplicationProject) error {
 	fmt.Println("[CommandHandler] User created:")
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/platforms/core"
 	"parsdevkit.net/platforms/dotnet/managers"
@@ -25,7 +25,7 @@ type GroupProjectReferenceTestSuite struct {
 	workspace     string
 	group         string
 	manager       core.ApplicationPlatformManagerInterface
-	projects      []applicationproject.ProjectBaseStruct
+	projects      []application_project_payload_structs.ProjectBaseStruct
 	faker         *faker.Faker
 	noCleanOnFail bool
 }
@@ -78,7 +78,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProject(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -97,7 +97,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProject(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -122,7 +122,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	projectName := suite.faker.Project.Name()
 // 	for index, groupProject := range suite.projects {
 // 		referenceProject := CreateNewTestProject(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -146,7 +146,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, suite.group, suite.group)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -165,7 +165,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, suite.group, suite.group)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -190,7 +190,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, suite.group, suite.group)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -215,7 +215,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, groupName, groupName)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -235,7 +235,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, groupName, groupName)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 
@@ -261,7 +261,7 @@ func (suite *GroupProjectReferenceTestSuite) TearDownTest() {
 // 	for index, groupProject := range suite.projects {
 // 		projectName := suite.faker.Project.Name()
 // 		referenceProject := CreateNewTestProjectWithGroup(suite.T(), fmt.Sprintf("%v_%v", projectName, index), suite.testArea, suite.workspace, groupName, groupName)
-// 		newReferences := []applicationproject.ProjectSpecification{
+// 		newReferences := []application_project_payload_structs.ProjectSpecification{
 // 			referenceProject,
 // 		}
 

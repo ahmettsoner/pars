@@ -1,6 +1,5 @@
 module parsdevkit.net/modules/group/basic_group
 
-replace parsdevkit.net/structs => ../../../structs
 
 replace parsdevkit.net/application => ../../../../application
 
@@ -44,5 +43,4 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000 // indirect
 )

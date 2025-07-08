@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ Key: username_summary
 
 	// Act
 
-	var data objectresource.Dictionary
+	var data object_resource_payload_structs.Dictionary
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDictionary("username_summary", map[string]string(nil))
+	expected := object_resource_payload_structs.NewDictionary("username_summary", map[string]string(nil))
 
 	// Assert
 	a.NoError(err)
@@ -43,10 +43,10 @@ Translates:
 
 	// Act
 
-	var data objectresource.Dictionary
+	var data object_resource_payload_structs.Dictionary
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewDictionary("username_summary", map[string]string{
+	expected := object_resource_payload_structs.NewDictionary("username_summary", map[string]string{
 		"tr": "Turkish",
 		"en": "English",
 		"de": "Deutsche",

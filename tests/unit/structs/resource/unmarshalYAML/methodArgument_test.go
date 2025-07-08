@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -18,10 +18,10 @@ Value: bar
 `
 
 	// Act
-	var data objectresource.MethodArgument
+	var data object_resource_payload_structs.MethodArgument
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodArgument("", "bar")
+	expected := object_resource_payload_structs.NewMethodArgument("", "bar")
 
 	// Assert
 	a.NoError(err)
@@ -37,10 +37,10 @@ bar
 `
 
 	// Act
-	var data objectresource.MethodArgument
+	var data object_resource_payload_structs.MethodArgument
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodArgument("", "bar")
+	expected := object_resource_payload_structs.NewMethodArgument("", "bar")
 
 	// Assert
 	a.NoError(err)
@@ -56,10 +56,10 @@ foo bar
 `
 
 	// Act
-	var data objectresource.MethodArgument
+	var data object_resource_payload_structs.MethodArgument
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodArgument("foo", "bar")
+	expected := object_resource_payload_structs.NewMethodArgument("foo", "bar")
 
 	// Assert
 	a.NoError(err)
@@ -77,10 +77,10 @@ Value: bar
 
 	// Act
 
-	var data objectresource.MethodArgument
+	var data object_resource_payload_structs.MethodArgument
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewMethodArgument("foo", "bar")
+	expected := object_resource_payload_structs.NewMethodArgument("foo", "bar")
 
 	// Assert
 	a.NoError(err)

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/option"
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -20,10 +20,10 @@ RefGroup: CMD
 
 	// Act
 
-	var data objectresource.AttributeGroup
+	var data object_resource_payload_structs.AttributeGroup
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -41,10 +41,10 @@ RefGroup:
 
 	// Act
 
-	var data objectresource.AttributeGroup
+	var data object_resource_payload_structs.AttributeGroup
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 0, []option.Option(nil))
+	expected := object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 0, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -62,10 +62,10 @@ Order: 3
 
 	// Act
 
-	var data objectresource.AttributeGroup
+	var data object_resource_payload_structs.AttributeGroup
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 3, []option.Option(nil))
+	expected := object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 3, []option.Option(nil))
 
 	// Assert
 	a.NoError(err)
@@ -85,10 +85,10 @@ Options:
 
 	// Act
 
-	var data objectresource.AttributeGroup
+	var data object_resource_payload_structs.AttributeGroup
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewAttributeGroup(objectresource.NewGroupIdentifier("CMD"), 0, []option.Option{
+	expected := object_resource_payload_structs.NewAttributeGroup(object_resource_payload_structs.NewGroupIdentifier("CMD"), 0, []option.Option{
 		option.NewOption("row", "1"),
 		option.NewOption("column", "3"),
 	})

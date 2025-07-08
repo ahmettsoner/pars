@@ -4,8 +4,6 @@ go 1.23.7
 
 replace parsdevkit.net/pkg => ../../pkg
 
-replace parsdevkit.net/structs => ../../modules/structs
-
 replace parsdevkit.net/models => ../../models
 
 replace parsdevkit.net/application => ../../application
@@ -13,7 +11,6 @@ replace parsdevkit.net/application => ../../application
 require (
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
-	parsdevkit.net/structs v0.0.0-00010101000000-000000000000
 )
 
 require (

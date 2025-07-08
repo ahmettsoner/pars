@@ -3,7 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
-	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
@@ -19,10 +19,10 @@ regex
 
 	// Act
 
-	var data objectresource.ValidationRule
+	var data object_resource_payload_structs.ValidationRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRule("regex", "", objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationRule("regex", "", object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -40,10 +40,10 @@ Name: "test"
 
 	// Act
 
-	var data objectresource.ValidationRule
+	var data object_resource_payload_structs.ValidationRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRule("regex", "test", objectresource.Message{})
+	expected := object_resource_payload_structs.NewValidationRule("regex", "test", object_resource_payload_structs.Message{})
 
 	// Assert
 	a.NoError(err)
@@ -61,10 +61,10 @@ Message: message_text
 
 	// Act
 
-	var data objectresource.ValidationRule
+	var data object_resource_payload_structs.ValidationRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRule("regex", "", objectresource.NewMessage("message_text", objectresource.NewDictionaryIdentifier("")))
+	expected := object_resource_payload_structs.NewValidationRule("regex", "", object_resource_payload_structs.NewMessage("message_text", object_resource_payload_structs.NewDictionaryIdentifier("")))
 
 	// Assert
 	a.NoError(err)
@@ -83,10 +83,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationRule
+	var data object_resource_payload_structs.ValidationRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRule("regex", "", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationRule("regex", "", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)
@@ -106,10 +106,10 @@ Message:
 
 	// Act
 
-	var data objectresource.ValidationRule
+	var data object_resource_payload_structs.ValidationRule
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := objectresource.NewValidationRule("regex", "test", objectresource.NewMessage("", objectresource.NewDictionaryIdentifier("validationRules_patient_filter")))
+	expected := object_resource_payload_structs.NewValidationRule("regex", "test", object_resource_payload_structs.NewMessage("", object_resource_payload_structs.NewDictionaryIdentifier("validationRules_patient_filter")))
 
 	// Assert
 	a.NoError(err)

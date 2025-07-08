@@ -8,7 +8,7 @@ import (
 
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	applicationproject "parsdevkit.net/modules/project/application_project_payload"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -29,7 +29,7 @@ func (s ParsManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.Pars
 }
 
-func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) parsModels.ParsPlatformVersion {
+func (s ParsManager) GetPlatformVersion(platform application_project_payload_structs.Platform) parsModels.ParsPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := parsModels.ParsPlatformVersions.BetaV1
 
@@ -43,7 +43,7 @@ func (s ParsManager) GetPlatformVersion(platform applicationproject.Platform) pa
 	}
 }
 
-func (s ParsManager) CreateProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	if _, err := s.CreateProjectFolder(project); err != nil {
 		return err
@@ -69,7 +69,7 @@ func (s ParsManager) CreateProject(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s ParsManager) RemoveProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) RemoveProject(project application_project_payload_structs.ProjectBaseStruct) error {
 	groupStatus, err := s.IsGroupFileExists(project)
 	if err != nil {
 		return err
@@ -89,61 +89,61 @@ func (s ParsManager) RemoveProject(project applicationproject.ProjectBaseStruct)
 	return nil
 }
 
-func (s ParsManager) BuildProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) BuildProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) CleanProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) CleanProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) InstallProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) InstallProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) TestProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) TestProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) PackageProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) PackageProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RunProject(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) RunProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s *ParsManager) removeClassLibraryDefaultFiles(project applicationproject.ProjectBaseStruct) error {
+func (s *ParsManager) removeClassLibraryDefaultFiles(project application_project_payload_structs.ProjectBaseStruct) error {
 	var paths []string = []string{}
 
 	return s.FileRemover(paths...)
 }
 
-func (s ParsManager) CreateGroup(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) CreateGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) DeleteGroup(project applicationproject.ProjectBaseStruct) {
+func (s ParsManager) DeleteGroup(project application_project_payload_structs.ProjectBaseStruct) {
 }
 
-func (s ParsManager) AddToGroup(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) AddToGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveFromGroup(project applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) RemoveFromGroup(project application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectBaseStruct, paths ...string) (string, error) {
+func (s ParsManager) CreateProjectFolder(project application_project_payload_structs.ProjectBaseStruct, paths ...string) (string, error) {
 	var folders []string
 	var foldersRelative []string = []string{}
 	folders = append(folders, project.Specifications.GetAbsoluteProjectPath())
@@ -161,31 +161,31 @@ func (s ParsManager) CreateProjectFolder(project applicationproject.ProjectBaseS
 	return foldersRelativePath, nil
 }
 
-func (s ParsManager) AddDependenciesToProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s ParsManager) AddDependenciesToProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveDependenciesFromProject(project applicationproject.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
+func (s ParsManager) RemoveDependenciesFromProject(project application_project_payload_structs.ProjectBaseStruct, dependencies []applicationProject.Dependency) error {
 
 	return nil
 }
 
-func (s ParsManager) AddReferenceToProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveReferenceFromProject(project applicationproject.ProjectBaseStruct, references []applicationproject.ProjectBaseStruct) error {
+func (s ParsManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
 
 	return nil
 }
 
-func (s ParsManager) IsProjectFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s ParsManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 	return s.IsProjectFolderExists(project)
 }
 
-func (s ParsManager) IsGroupFileExists(project applicationproject.ProjectBaseStruct) (bool, error) {
+func (s ParsManager) IsGroupFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	return s.IsGroupFolderExists(project)
 }
