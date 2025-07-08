@@ -4,9 +4,8 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/pkg/utilities/json"
+	"parsdevkit.net/modules/task/basic_task_contract"
 	commontask "parsdevkit.net/structs/task/basic-task"
-	commontaskStruct "parsdevkit.net/structs/task/basic-task"
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
@@ -14,7 +13,7 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
@@ -25,48 +24,13 @@ type BasicTaskEngine struct{}
 
 func (s BasicTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*commontaskStruct.TaskBaseStruct)
+		_, ok := item.(*commontask.TaskBaseStruct)
 		if !ok {
 			return false
 		}
 	}
 
 	return true
-}
-func (s BasicTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		commontask, ok := item.(*commontaskStruct.TaskBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected commontaskStruct.TaskBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, commontask); err != nil {
-			return err
-		}
-		commontasks = append(commontasks, *commontask)
-	}
-
-	return s.createTasks(commontasks, true)
-}
-
-func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	commontasks := make([]commontaskStruct.TaskBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		commontask, ok := item.(*commontaskStruct.TaskBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in ProcDestroyess: expected commontaskStruct.TaskBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, commontask); err != nil {
-			return err
-		}
-		commontasks = append(commontasks, *commontask)
-	}
-
-	return s.removeTasks(commontasks, true)
 }
 
 func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
@@ -76,102 +40,178 @@ func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
 	}
 }
 
-func (s BasicTaskEngine) createTasks(tasks []commontaskStruct.TaskBaseStruct, init bool) error {
-
-	tasksReadyToCreate := make([]commontaskStruct.TaskBaseStruct, 0)
-	tasksForUpdate := make([]commontaskStruct.TaskBaseStruct, 0)
-	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
-
-	for _, task := range tasks {
-		if err := task.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(task)
-			return fmt.Errorf("task invalid data: '%s'\n%w", jsonObject, err)
-		}
+func (s BasicTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
 	}
 
+	err = s.create(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+	readyToCreateStructs := make([]commontask.TaskBaseStruct, 0)
+
 	for _, task := range tasks {
-		ok, err := taskService.IsExists(task.Header.Name, task.Specifications.Workspace)
+		if err := s.completeInformation(ctx, &task); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(task.Header.Name, task.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Common task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
+			return nil, err
 		}
-		if ok {
-			newMommonlHash, err := encrypt.CalculateHashFromObject(task)
-			if err != nil {
-				return err
-			}
-			structHash, err := taskService.GetHash(task.Header.Name)
-			if err != nil {
-				return err
-			}
-
-			if newMommonlHash != structHash {
-				tasksForUpdate = append(tasksForUpdate, task)
-			}
-		} else {
-			tasksReadyToCreate = append(tasksReadyToCreate, task)
+		if !ok {
+			readyToCreateStructs = append(readyToCreateStructs, task)
 		}
 	}
-	logrus.Debugf("'%d' task(s) detected that will create", len(tasksReadyToCreate))
-	logrus.Debugf("'%d' task(s) detected that will update", len(tasksForUpdate))
+	logrus.Debugf("'%d' task(s) detected that will create", len(readyToCreateStructs))
 
-	logrus.Debugf("creating %v new tasks ", len(tasksReadyToCreate))
-	logrus.Debugf("updating %v tasks ", len(tasksForUpdate))
-	for _, task := range tasksReadyToCreate {
+	return readyToCreateStructs, nil
+}
+func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, init bool) error {
 
-		if _, err := taskService.Save(task); err != nil {
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, tasks)
+	if err != nil {
+		return err
+	}
+
+	for index, task := range readyToCreateStructs {
+
+		logrus.Debugf("trying to create %v", task.Header.Name)
+		if _, err := service.Save(task); err != nil {
 			return err
 		}
 
 		if _, err := s.execute(task); err != nil {
 			return err
 		}
+		fmt.Printf("%v (%d) Group created\n", task.Header.Name, index)
 
-		fmt.Printf("%v Task created\n", task.Header.Name)
 	}
 
-	logrus.Debugf("updating %v tasks ", len(tasksForUpdate))
-	for _, task := range tasksForUpdate {
+	return nil
+}
 
-		if _, err := taskService.Save(task); err != nil {
+func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+	readyToUpdateStructs := make([]commontask.TaskBaseStruct, 0)
+
+	for _, task := range tasks {
+		if err := s.completeInformation(ctx, &task); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(task.Header.Name, task.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			newModelHash, err := encrypt.CalculateHashFromObject(task)
+			if err != nil {
+				return nil, err
+			}
+			structHash, err := service.GetHash(task.Header.Name)
+			if err != nil {
+				return nil, err
+			}
+
+			if newModelHash != structHash {
+				readyToUpdateStructs = append(readyToUpdateStructs, task)
+			}
+		}
+	}
+	logrus.Debugf("'%d' task(s) detected that will update", len(readyToUpdateStructs))
+
+	return readyToUpdateStructs, nil
+}
+func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, init bool) error {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, tasks)
+	if err != nil {
+		return err
+	}
+	for _, task := range readyToUpdateStructs {
+		if _, err := service.Save(task); err != nil {
 			return err
 		}
-
 		if _, err := s.execute(task); err != nil {
 			return err
 		}
-
-		fmt.Printf("%v Task updated\n", task.Header.Name)
 	}
-
 	return nil
 }
-func (s BasicTaskEngine) removeTasks(tasks []commontaskStruct.TaskBaseStruct, permanent bool) error {
+func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct) ([]commontask.TaskBaseStruct, error) {
 
-	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
-	tasksReadyToDelete := make([]commontaskStruct.TaskBaseStruct, 0)
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+	readyToRemoveStructs := make([]commontask.TaskBaseStruct, 0)
+
 	for _, task := range tasks {
-		ok, err := taskService.IsExists(task.Header.Name, task.Specifications.Workspace)
+		if err := s.completeInformation(ctx, &task); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(task.Header.Name, task.Specifications.Workspace)
 		if err != nil {
-			return fmt.Errorf("xxx: Code task ('%s') kontrolünde hata oluştu\n%w", task.Header.Name, err)
+			return nil, err
 		}
 		if ok {
-			tasksReadyToDelete = append(tasksReadyToDelete, task)
+			readyToRemoveStructs = append(readyToRemoveStructs, task)
 		}
 	}
+	logrus.Debugf("'%d' task(s) detected that will remove", len(readyToRemoveStructs))
 
-	for _, task := range tasksReadyToDelete {
+	return readyToRemoveStructs, nil
+}
+func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []commontask.TaskBaseStruct, permanent bool) error {
 
-		if _, err := taskService.Remove(task.Header.Name, task.Specifications.Workspace, permanent); err != nil {
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, tasks)
+	if err != nil {
+		return err
+	}
+
+	for _, task := range readyToRemoveStructs {
+
+		if _, err := service.Remove(task.Header.Name, task.Specifications.Workspace, permanent); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Task deleted\n", task.Header.Name)
+		fmt.Printf("%v Group deleted\n", task.Header.Name)
 
 	}
 
+	logrus.Debugf("'%d' task(s) deleting", len(readyToRemoveStructs))
+
 	return nil
 }
-func (s BasicTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*commontaskStruct.TaskBaseStruct, error) {
+
+func (s BasicTaskEngine) execute(model commontask.TaskBaseStruct) (*commontask.TaskBaseStruct, error) {
 
 	taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
@@ -187,7 +227,7 @@ func (s BasicTaskEngine) execute(model commontaskStruct.TaskBaseStruct) (*common
 	return result, nil
 }
 
-func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext, model *commontaskStruct.TaskBaseStruct) error {
+func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext, model *commontask.TaskBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)
 
@@ -208,14 +248,14 @@ func (s BasicTaskEngine) completeInformation(ctx *application.ApplicationContext
 	return nil
 }
 
-func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model commontaskStruct.TaskBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model commontask.TaskBaseStruct) (*basic_workspace_payload.WorkspaceBaseStruct, error) {
 
 	workspaceName := model.Specifications.Workspace
 	if _string.IsEmpty(workspaceName) {
 		workspaceName = ctx.CurrentWorkspace.Name
 	}
 
-	var result *workspaceStruct.WorkspaceBaseStruct = nil
+	var result *basic_workspace_payload.WorkspaceBaseStruct = nil
 
 	if !_string.IsEmpty(workspaceName) {
 		workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
@@ -231,4 +271,19 @@ func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model
 	}
 
 	return result, nil
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]commontask.TaskBaseStruct, error) {
+	r := make([]commontask.TaskBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*commontask.TaskBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected commontask.TaskBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

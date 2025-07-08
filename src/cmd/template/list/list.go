@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/modules/template/code_template_contract"
+	"parsdevkit.net/modules/template/file_template_contract"
+	"parsdevkit.net/modules/template/shared_template_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
-	codetemplate "parsdevkit.net/structs/template/code-template"
-	filetemplate "parsdevkit.net/structs/template/file-template"
-	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -47,9 +46,9 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 	checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
-	fileTemplateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
-	sharedTemplateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
+	codeTemplateService := ioc.Get[code_template_contract.TemplateInterface]()
+	fileTemplateService := ioc.Get[file_template_contract.TemplateInterface]()
+	sharedTemplateService := ioc.Get[shared_template_contract.TemplateInterface]()
 
 	if checkGlobals {
 		fmt.Println("*** Global Templates ***")

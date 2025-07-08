@@ -7,12 +7,12 @@ import (
 
 	"parsdevkit.net/modules/resource/object_resource_contract"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/context/models"
 	"parsdevkit.net/modules/project/application_project_contract"
 	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
 	objectresource "parsdevkit.net/modules/resource/object_resource_payload"
+	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -28,7 +28,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	applicationProjectService := ioc.Get[application_project_contract.ProjectInterface]()
 	objectResourceService := ioc.Get[object_resource_contract.ResourceInterface]()
-	codeTemplateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
+	codeTemplateService := ioc.Get[code_template_contract.TemplateInterface]()
 
 	/*
 		Eğer set tanımlı değilse

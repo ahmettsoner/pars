@@ -3,12 +3,12 @@ package engines
 import (
 	"strings"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	layerPkg "parsdevkit.net/application/models/layer"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/object_resource_contract"
+	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
 	"parsdevkit.net/pkg/utilities/file"
 
@@ -49,7 +49,7 @@ func (s CodeTemplateOperations) GenerateByResource(model objectresource.Resource
 		layers = append(layers, modelLayer.Name)
 	}
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[code_template_contract.TemplateInterface]()
 	templates, err := templateService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
 	if err != nil {
 		return err

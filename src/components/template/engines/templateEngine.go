@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"text/template"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/components/template/engines/functions"
-	sharedtemplate "parsdevkit.net/structs/template/shared-template"
+	"parsdevkit.net/modules/template/shared_template_contract"
 )
 
 func TemplateEngine(templateFile string, data any) (string, error) {
@@ -58,7 +57,7 @@ func TemplateEngine(templateFile string, data any) (string, error) {
 
 	tmpl := template.New("ResourceFromContent").Funcs(funcMap)
 
-	sharedTemplateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
+	sharedTemplateService := ioc.Get[shared_template_contract.TemplateInterface]()
 	sharedTemplateList, err := sharedTemplateService.List()
 	if err != nil {
 		return "", err

@@ -4,16 +4,15 @@ import (
 	"fmt"
 
 	"parsdevkit.net/pkg/utilities/json"
-	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 	sharedtemplateStruct "parsdevkit.net/structs/template/shared-template"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/template/shared_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -78,7 +77,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 
 	templatesReadyToCreate := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
 	templatesForUpdate := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
-	templateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[shared_template_contract.TemplateInterface]()
 
 	for _, template := range templates {
 		if err := template.Validate(); err != nil {
@@ -138,7 +137,7 @@ func (s SharedTemplateEngine) createTemplates(templates []sharedtemplateStruct.T
 
 func (s SharedTemplateEngine) removeTemplates(templates []sharedtemplateStruct.TemplateBaseStruct, permanent bool) error {
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[shared_template_contract.TemplateInterface]()
 	templatesReadyToDelete := make([]sharedtemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
 		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)

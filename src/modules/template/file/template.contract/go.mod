@@ -1,4 +1,4 @@
-module parsdevkit.net/modules/template/code_template_contract
+module parsdevkit.net/modules/template/file_template_contract
 
 replace parsdevkit.net/modules/template/code_template_payload => ../template.payload
 

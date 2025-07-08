@@ -1,4 +1,4 @@
-package code_template_contract
+package file_template_contract
 
 import (
 	"parsdevkit.net/application/contracts"

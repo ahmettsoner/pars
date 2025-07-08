@@ -3,22 +3,21 @@ package code_template
 import (
 	"fmt"
 
-	"parsdevkit.net/pkg/utilities/json"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 	codetemplateStruct "parsdevkit.net/structs/template/code-template"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
 	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
+	"parsdevkit.net/pkg/utilities/encrypt"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
@@ -34,42 +33,6 @@ func (s CodeTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		codetemplate, ok := item.(*codetemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected codetemplateStruct.TemplateBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, codetemplate); err != nil {
-			return err
-		}
-
-		codetemplates = append(codetemplates, *codetemplate)
-	}
-
-	return s.createTemplates(codetemplates, true)
-}
-func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	codetemplates := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		codetemplate, ok := item.(*codetemplateStruct.TemplateBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Destroy: expected codetemplateStruct.TemplateBaseStruct, got %T", item)
-		}
-
-		if err := s.completeInformation(ctx, codetemplate); err != nil {
-			return err
-		}
-
-		codetemplates = append(codetemplates, *codetemplate)
-	}
-
-	return s.removeTemplates(codetemplates, true)
-}
 
 func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
@@ -77,105 +40,180 @@ func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
 		Order: 4000,
 	}
 }
-func (s CodeTemplateEngine) createTemplates(templates []codetemplateStruct.TemplateBaseStruct, init bool) error {
 
-	templatesReadyToCreate := make([]codetemplateStruct.TemplateBaseStruct, 0)
-	templatesForUpdate := make([]codetemplateStruct.TemplateBaseStruct, 0)
-	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
-
-	for _, template := range templates {
-		if err := template.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(template)
-			return fmt.Errorf("template invalid data: '%s'\n%w", jsonObject, err)
-		}
+func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
 	}
 
-	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
-		if err != nil {
-			return fmt.Errorf("xxx: Code template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
-		}
-		if ok {
-			newModelHash, err := encrypt.CalculateHashFromObject(template)
-			if err != nil {
-				return err
-			}
-			structHash, err := templateService.GetHash(template.Header.Name)
-			if err != nil {
-				return err
-			}
-
-			if newModelHash != structHash {
-				templatesForUpdate = append(templatesForUpdate, template)
-			}
-		} else {
-			templatesReadyToCreate = append(templatesReadyToCreate, template)
-		}
+	err = s.create(ctx, dataStruct, true)
+	if err != nil {
+		return err
 	}
-	logrus.Debugf("'%d' template(s) detected that will create", len(templatesReadyToCreate))
-	logrus.Debugf("'%d' template(s) detected that will update", len(templatesForUpdate))
-
-	logrus.Debugf("creating %v new templates ", len(templatesReadyToCreate))
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesReadyToCreate {
-
-		fmt.Printf("Creating %v Template\n", template.Header.Name)
-
-		if _, err := templateService.Save(template); err != nil {
-			return err
-		}
-
-		if _, err := s.generate(template); err != nil {
-			return err
-		}
-
-		fmt.Printf("%v Template created\n", template.Header.Name)
-	}
-
-	logrus.Debugf("updating %v templates ", len(templatesForUpdate))
-	for _, template := range templatesForUpdate {
-
-		if _, err := templateService.Save(template); err != nil {
-			return err
-		}
-
-		if _, err := s.generate(template); err != nil {
-			return err
-		}
-
-		fmt.Printf("%v Template updated\n", template.Header.Name)
+	err = s.update(ctx, dataStruct, true)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
-func (s CodeTemplateEngine) removeTemplates(templates []codetemplateStruct.TemplateBaseStruct, permanent bool) error {
-
-	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
-	templatesReadyToDelete := make([]codetemplateStruct.TemplateBaseStruct, 0)
-	for _, template := range templates {
-		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
-		if err != nil {
-			return fmt.Errorf("xxx: Code template ('%s') kontrolünde hata oluştu\n%w", template.Header.Name, err)
-		}
-		if ok {
-			templatesReadyToDelete = append(templatesReadyToDelete, template)
-		}
+func (s CodeTemplateEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
 	}
 
-	for _, template := range templatesReadyToDelete {
-		if _, err := templateService.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
+	err = s.remove(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s CodeTemplateEngine) prepareToCreate(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct) ([]codetemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+	readyToCreateStructs := make([]codetemplateStruct.TemplateBaseStruct, 0)
+
+	for _, template := range templates {
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			readyToCreateStructs = append(readyToCreateStructs, template)
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will create", len(readyToCreateStructs))
+
+	return readyToCreateStructs, nil
+}
+func (s CodeTemplateEngine) create(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct, init bool) error {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
+	if err != nil {
+		return err
+	}
+
+	for index, template := range readyToCreateStructs {
+
+		logrus.Debugf("trying to create %v", template.Header.Name)
+		if _, err := service.Save(template); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Template deleted\n", template.Header.Name)
+		if _, err := s.generate(template); err != nil {
+			return err
+		}
+		fmt.Printf("%v (%d) Group created\n", template.Header.Name, index)
 
 	}
+
+	return nil
+}
+
+func (s CodeTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct) ([]codetemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+	readyToUpdateStructs := make([]codetemplateStruct.TemplateBaseStruct, 0)
+
+	for _, template := range templates {
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			newModelHash, err := encrypt.CalculateHashFromObject(template)
+			if err != nil {
+				return nil, err
+			}
+			structHash, err := service.GetHash(template.Header.Name)
+			if err != nil {
+				return nil, err
+			}
+
+			if newModelHash != structHash {
+				readyToUpdateStructs = append(readyToUpdateStructs, template)
+			}
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will update", len(readyToUpdateStructs))
+
+	return readyToUpdateStructs, nil
+}
+func (s CodeTemplateEngine) update(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct, init bool) error {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, templates)
+	if err != nil {
+		return err
+	}
+	for _, template := range readyToUpdateStructs {
+		if _, err := service.Save(template); err != nil {
+			return err
+		}
+		if _, err := s.generate(template); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (s CodeTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct) ([]codetemplateStruct.TemplateBaseStruct, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+	readyToRemoveStructs := make([]codetemplateStruct.TemplateBaseStruct, 0)
+
+	for _, template := range templates {
+		if err := s.completeInformation(ctx, &template); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(template.Header.Name, template.Specifications.Workspace)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			readyToRemoveStructs = append(readyToRemoveStructs, template)
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
+func (s CodeTemplateEngine) remove(ctx *application.ApplicationContext, templates []codetemplateStruct.TemplateBaseStruct, permanent bool) error {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, templates)
+	if err != nil {
+		return err
+	}
+
+	for _, template := range readyToRemoveStructs {
+
+		if _, err := service.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
+			return err
+		}
+
+		fmt.Printf("%v Group deleted\n", template.Header.Name)
+
+	}
+
+	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }
 func (s CodeTemplateEngine) generate(model codetemplateStruct.TemplateBaseStruct) (*codetemplateStruct.TemplateBaseStruct, error) {
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[code_template_contract.TemplateInterface]()
 
 	result, err := templateService.GetByName(model.Header.Name)
 	if err != nil {
@@ -247,4 +285,19 @@ func (s CodeTemplateEngine) getWorkspace(ctx *application.ApplicationContext, mo
 	}
 
 	return result, nil
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]codetemplateStruct.TemplateBaseStruct, error) {
+	r := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*codetemplateStruct.TemplateBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected codetemplateStruct.TemplateBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

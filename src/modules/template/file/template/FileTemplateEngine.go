@@ -8,9 +8,9 @@ import (
 	filetemplateStruct "parsdevkit.net/structs/template/file-template"
 
 	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/modules/template/file_template_contract"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
@@ -82,7 +82,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 
 	templatesReadyToCreate := make([]filetemplateStruct.TemplateBaseStruct, 0)
 	templatesForUpdate := make([]filetemplateStruct.TemplateBaseStruct, 0)
-	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[file_template_contract.TemplateInterface]()
 
 	for _, template := range templates {
 		if err := template.Validate(); err != nil {
@@ -150,7 +150,7 @@ func (s FileTemplateEngine) createTemplates(templates []filetemplateStruct.Templ
 
 func (s FileTemplateEngine) removeTemplates(templates []filetemplateStruct.TemplateBaseStruct, permanent bool) error {
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[file_template_contract.TemplateInterface]()
 	templatesReadyToDelete := make([]filetemplateStruct.TemplateBaseStruct, 0)
 	for _, template := range templates {
 		ok, err := templateService.IsExists(template.Header.Name, template.Specifications.Workspace)
@@ -176,7 +176,7 @@ func (s FileTemplateEngine) removeTemplates(templates []filetemplateStruct.Templ
 }
 func (s FileTemplateEngine) generate(model filetemplateStruct.TemplateBaseStruct) (*filetemplateStruct.TemplateBaseStruct, error) {
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[file_template_contract.TemplateInterface]()
 
 	result, err := templateService.GetByName(model.Header.Name)
 	if err != nil {

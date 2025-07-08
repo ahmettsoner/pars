@@ -9,11 +9,11 @@ import (
 	"parsdevkit.net/pkg/utilities/encrypt"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/data_resource_contract"
+	"parsdevkit.net/modules/template/file_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_payload"
 
 	"parsdevkit.net/persistence/contexts"
@@ -46,7 +46,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 		layers = append(layers, modelLayer.Name)
 	}
 
-	templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+	templateService := ioc.Get[file_template_contract.TemplateInterface]()
 	templates, err := templateService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
 	if err != nil {
 		return err
@@ -78,7 +78,7 @@ func (s FileTemplateOperations) GenerateByResource(model dataresource.ResourceBa
 	}
 
 	for _, layer := range model.Specifications.Layers {
-		templateService := ioc.Get[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]]()
+		templateService := ioc.Get[file_template_contract.TemplateInterface]()
 		setTemplates, err := templateService.ListBySetAndLayers(model.Specifications.Set, layer.Name)
 		if err != nil {
 			return err

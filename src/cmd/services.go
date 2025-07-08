@@ -8,6 +8,9 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/modules/template/code_template_contract"
+	"parsdevkit.net/modules/template/file_template_contract"
+	"parsdevkit.net/modules/template/shared_template_contract"
 
 	group "parsdevkit.net/modules/group/basic_group"
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -26,9 +29,6 @@ import (
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	commontask "parsdevkit.net/structs/task/basic-task"
-	codetemplate "parsdevkit.net/structs/template/code-template"
-	filetemplate "parsdevkit.net/structs/template/file-template"
-	sharedtemplate "parsdevkit.net/structs/template/shared-template"
 
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
 	applicationProjectSchema "parsdevkit.net/modules/project/application_project_payload"
@@ -136,13 +136,13 @@ func registerContainers() {
 	ioc.RegisterInterface[application_project_contract.ProjectInterface](func() application_project_contract.ProjectInterface {
 		return projectApplication.NewApplicationProjectService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
+	ioc.RegisterInterface[code_template_contract.TemplateInterface](func() code_template_contract.TemplateInterface {
 		return templateCode.NewCodeTemplateService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct] {
+	ioc.RegisterInterface[file_template_contract.TemplateInterface](func() file_template_contract.TemplateInterface {
 		return templateFile.NewFileTemplateService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct]](func() contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
+	ioc.RegisterInterface[shared_template_contract.TemplateInterface](func() shared_template_contract.TemplateInterface {
 		return templateShared.NewSharedTemplateService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[data_resource_contract.ResourceInterface](func() data_resource_contract.ResourceInterface {

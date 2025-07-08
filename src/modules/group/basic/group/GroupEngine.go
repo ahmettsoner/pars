@@ -28,123 +28,173 @@ func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		group, ok := item.(*basic_group_payload.GroupBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Process: expected GroupBaseStruct, got %T", item)
-		}
-		if err := s.completeInformation(ctx, group); err != nil {
-			return err
-		}
-		groups = append(groups, *group)
-	}
-
-	return s.createGroups(groups, false)
-}
-func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	groups := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		group, ok := item.(*basic_group_payload.GroupBaseStruct)
-		if !ok {
-			return fmt.Errorf("invalid item type in Destroy: expected GroupBaseStruct, got %T", item)
-		}
-		if err := s.completeInformation(ctx, group); err != nil {
-			return err
-		}
-		groups = append(groups, *group)
-	}
-
-	return s.removeGroups(groups, false)
-}
 func (s GroupEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
 		Name:  "Group",
 		Order: 1000,
 	}
 }
+func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
 
-func (s GroupEngine) createGroups(groups []basic_group_payload.GroupBaseStruct, init bool) error {
+	err = s.create(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
 
-	groupsReadyToCreate := make([]basic_group_payload.GroupBaseStruct, 0)
-	groupsForUpdate := make([]basic_group_payload.GroupBaseStruct, 0)
-	groupService := ioc.Get[basic_group_contract.GroupInterface]()
+	return nil
+}
+func (s GroupEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s GroupEngine) prepareToCreate(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
+
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+	readyToCreateStructs := make([]basic_group_payload.GroupBaseStruct, 0)
 
 	for _, group := range groups {
-		ok, err := groupService.IsExists(group.Header.Name)
+		if err := s.completeInformation(ctx, &group); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(group.Header.Name)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		if ok {
-			newModelHash, err := encrypt.CalculateHashFromObject(group)
-			if err != nil {
-				return err
-			}
-			structHash, err := groupService.GetHash(group.Header.Name)
-			if err != nil {
-				return err
-			}
-
-			if newModelHash != structHash {
-				groupsForUpdate = append(groupsForUpdate, group)
-			}
-		} else {
-			groupsReadyToCreate = append(groupsReadyToCreate, group)
+		if !ok {
+			readyToCreateStructs = append(readyToCreateStructs, group)
 		}
 	}
-	logrus.Debugf("'%d' group(s) detected that will create", len(groupsReadyToCreate))
-	logrus.Debugf("'%d' group(s) detected that will update", len(groupsForUpdate))
+	logrus.Debugf("'%d' group(s) detected that will create", len(readyToCreateStructs))
 
-	logrus.Debugf("creating %v new groups ", len(groupsReadyToCreate))
-	logrus.Debugf("updating %v groups ", len(groupsForUpdate))
-	for _, group := range groupsReadyToCreate {
+	return readyToCreateStructs, nil
+}
+func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, init bool) error {
 
-		if _, err := groupService.Save(group); err != nil {
-			return err
-		}
-
-		fmt.Printf("%v Group created\n", group.Header.Name)
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, groups)
+	if err != nil {
+		return err
 	}
 
-	logrus.Debugf("updating %v groups ", len(groupsForUpdate))
-	for _, group := range groupsForUpdate {
+	for index, group := range readyToCreateStructs {
 
-		if _, err := groupService.Save(group); err != nil {
+		logrus.Debugf("trying to create %v", group.Header.Name)
+		if _, err := service.Save(group); err != nil {
 			return err
 		}
 
-		fmt.Printf("%v Group updated\n", group.Header.Name)
+		fmt.Printf("%v (%d) Group created\n", group.Header.Name, index)
+
 	}
 
 	return nil
 }
 
-func (s GroupEngine) removeGroups(groups []basic_group_payload.GroupBaseStruct, permanent bool) error {
+func (s GroupEngine) prepareToUpdate(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
 
-	GroupEngine := ioc.Get[basic_group_contract.GroupInterface]()
-	groupsReadyToDelete := make([]basic_group_payload.GroupBaseStruct, 0)
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+	readyToUpdateStructs := make([]basic_group_payload.GroupBaseStruct, 0)
+
 	for _, group := range groups {
-		ok, err := GroupEngine.IsExists(group.Header.Name)
+		if err := s.completeInformation(ctx, &group); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(group.Header.Name)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if ok {
-			groupsReadyToDelete = append(groupsReadyToDelete, group)
+			newModelHash, err := encrypt.CalculateHashFromObject(group)
+			if err != nil {
+				return nil, err
+			}
+			structHash, err := service.GetHash(group.Header.Name)
+			if err != nil {
+				return nil, err
+			}
+
+			if newModelHash != structHash {
+				readyToUpdateStructs = append(readyToUpdateStructs, group)
+			}
 		}
 	}
+	logrus.Debugf("'%d' group(s) detected that will update", len(readyToUpdateStructs))
 
-	for _, group := range groupsReadyToDelete {
+	return readyToUpdateStructs, nil
+}
+func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, init bool) error {
 
-		if _, err := GroupEngine.Remove(group.Header.Name, permanent); err != nil {
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, groups)
+	if err != nil {
+		return err
+	}
+	for _, group := range readyToUpdateStructs {
+		if _, err := service.Save(group); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct) ([]basic_group_payload.GroupBaseStruct, error) {
+
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+	readyToRemoveStructs := make([]basic_group_payload.GroupBaseStruct, 0)
+
+	for _, group := range groups {
+		if err := s.completeInformation(ctx, &group); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(group.Header.Name)
+		if err != nil {
+			return nil, err
+		}
+		if ok {
+			readyToRemoveStructs = append(readyToRemoveStructs, group)
+		}
+	}
+	logrus.Debugf("'%d' group(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
+func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_group_payload.GroupBaseStruct, permanent bool) error {
+
+	service := ioc.Get[basic_group_contract.GroupInterface]()
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, groups)
+	if err != nil {
+		return err
+	}
+
+	for _, group := range readyToRemoveStructs {
+
+		if _, err := service.Remove(group.Header.Name, permanent); err != nil {
 			return err
 		}
 
 		fmt.Printf("%v Group deleted\n", group.Header.Name)
 
 	}
+
+	logrus.Debugf("'%d' group(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }
@@ -158,4 +208,19 @@ func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, mo
 	}
 
 	return nil
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_group_payload.GroupBaseStruct, error) {
+	r := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*basic_group_payload.GroupBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected basic_group_payload.GroupBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

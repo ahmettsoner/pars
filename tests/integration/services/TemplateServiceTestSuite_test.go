@@ -13,6 +13,7 @@ import (
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	templateCode "parsdevkit.net/modules/template/code_template"
+	"parsdevkit.net/modules/template/code_template_contract"
 
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
@@ -22,12 +23,11 @@ import (
 	"github.com/magiconair/properties/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	"parsdevkit.net/application/contracts"
 )
 
 type TemplateServiceTestSuite struct {
 	suite.Suite
-	service       contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct]
+	service       code_template_contract.TemplateInterface
 	environment   string
 	faker         *faker.Faker
 	noCleanOnFail bool

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
 	sharedtemplate "parsdevkit.net/structs/template/shared-template"
@@ -15,6 +14,7 @@ import (
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/modules/template/shared_template_contract"
 )
 
 type SharedTemplateService struct {
@@ -23,7 +23,7 @@ type SharedTemplateService struct {
 	environment                  string
 }
 
-func NewSharedTemplateService(environment string) contracts.TemplateServiceInterface[sharedtemplate.TemplateBaseStruct] {
+func NewSharedTemplateService(environment string) shared_template_contract.TemplateInterface {
 	templateRespository := ioc.Get[*repositories.TemplateRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 

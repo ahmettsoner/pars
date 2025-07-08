@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
 	filetemplate "parsdevkit.net/structs/template/file-template"
 
+	"parsdevkit.net/modules/template/file_template_contract"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
@@ -23,7 +23,7 @@ type FileTemplateService struct {
 	environment                  string
 }
 
-func NewFileTemplateService(environment string) contracts.TemplateServiceInterface[filetemplate.TemplateBaseStruct] {
+func NewFileTemplateService(environment string) file_template_contract.TemplateInterface {
 	templateRespository := ioc.Get[*repositories.TemplateRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 

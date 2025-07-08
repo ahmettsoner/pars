@@ -13,7 +13,7 @@ import (
 
 	"parsdevkit.net/modules/group/basic_group_contract"
 	group_payload "parsdevkit.net/modules/group/basic_group_payload"
-	applicationprojectStruct "parsdevkit.net/modules/project/application_project_payload"
+	"parsdevkit.net/modules/project/application_project_payload"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	workspaceStruct "parsdevkit.net/modules/workspace/basic_workspace_payload"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -31,7 +31,7 @@ type ApplicationProjectEngine struct{}
 
 func (s ApplicationProjectEngine) Validate(data []schemas.SchemaInterface) bool {
 	for _, item := range data {
-		_, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
+		_, ok := item.(*application_project_payload.ProjectBaseStruct)
 		if !ok {
 			return false
 		}
@@ -39,32 +39,18 @@ func (s ApplicationProjectEngine) Validate(data []schemas.SchemaInterface) bool 
 
 	return true
 }
-func CastArrayToConcrate(data []schemas.SchemaInterface) ([]applicationprojectStruct.ProjectBaseStruct, error) {
-	r := make([]applicationprojectStruct.ProjectBaseStruct, 0, len(data))
-
-	for _, item := range data {
-		applicationproject, ok := item.(*applicationprojectStruct.ProjectBaseStruct)
-		if !ok {
-			return nil, fmt.Errorf("invalid item type: expected applicationprojectStruct.ProjectBaseStruct, got %T", item)
-		}
-
-		r = append(r, *applicationproject)
-	}
-
-	return r, nil
-}
 
 func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	applicationprojects, err := CastArrayToConcrate(data)
+	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
 		return err
 	}
 
-	err = s.createProjects(ctx, applicationprojects, true)
+	err = s.create(ctx, dataStruct, true)
 	if err != nil {
 		return err
 	}
-	err = s.updateProjects(ctx, applicationprojects, true)
+	err = s.update(ctx, dataStruct, true)
 	if err != nil {
 		return err
 	}
@@ -72,56 +58,56 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 	return nil
 }
 func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	applicationprojects, err := CastArrayToConcrate(data)
+	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
 		return err
 	}
 
-	err = s.removeProjects(ctx, applicationprojects, true)
+	err = s.remove(ctx, dataStruct, true)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-func (s ApplicationProjectEngine) prepareProjectsToCreate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectsReadyToCreate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToCreateStructs := make([]application_project_payload.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
 			return nil, err
 		}
-		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		ok, err := service.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
 			return nil, err
 		}
 		if !ok {
-			projectsReadyToCreate = append(projectsReadyToCreate, project)
+			readyToCreateStructs = append(readyToCreateStructs, project)
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will create", len(projectsReadyToCreate))
+	logrus.Debugf("'%d' project(s) detected that will create", len(readyToCreateStructs))
 
-	projectsReadyToCreate, err := s.sortProjectsByReference(projectsReadyToCreate)
+	readyToCreateStructs, err := s.sortProjectsByReference(readyToCreateStructs)
 	if err != nil {
 		return nil, err
 	}
 
-	return projectsReadyToCreate, nil
+	return readyToCreateStructs, nil
 }
-func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, init bool) error {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectsReadyToCreate, err := s.prepareProjectsToCreate(ctx, projects)
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToCreateStructs, err := s.prepareToCreate(ctx, projects)
 	if err != nil {
 		return err
 	}
 
-	for index, project := range projectsReadyToCreate {
+	for index, project := range readyToCreateStructs {
 
 		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := projectService.Create(project, init); err != nil {
+		if _, err := service.Create(project, init); err != nil {
 			return err
 		}
 
@@ -132,16 +118,16 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 	return nil
 }
 
-func (s ApplicationProjectEngine) prepareProjectsToUpdate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectsForUpdate := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToUpdateStructs := make([]application_project_payload.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
 			return nil, err
 		}
-		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		ok, err := service.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
 			return nil, err
 		}
@@ -150,30 +136,30 @@ func (s ApplicationProjectEngine) prepareProjectsToUpdate(ctx *application.Appli
 			if err != nil {
 				return nil, err
 			}
-			structHash, err := projectService.GetHash(project.GetFullName(), project.Specifications.Workspace)
+			structHash, err := service.GetHash(project.GetFullName(), project.Specifications.Workspace)
 			if err != nil {
 				return nil, err
 			}
 
 			if newModelHash != structHash {
-				projectsForUpdate = append(projectsForUpdate, project)
+				readyToUpdateStructs = append(readyToUpdateStructs, project)
 			}
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will update", len(projectsForUpdate))
+	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
 
-	return projectsForUpdate, nil
+	return readyToUpdateStructs, nil
 }
-func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, init bool) error {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	service := ioc.Get[application_project_contract.ProjectInterface]()
 
-	projectsForUpdate, err := s.prepareProjectsToUpdate(ctx, projects)
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, projects)
 	if err != nil {
 		return err
 	}
-	for _, project := range projectsForUpdate {
-		existingProject, err := projectService.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
+	for _, project := range readyToUpdateStructs {
+		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
 			return err
 		}
@@ -183,7 +169,7 @@ func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationCon
 			result := diffx.DiffSlice(existingProject.Specifications.Layers, project.Specifications.Layers)
 
 			if len(result.Created) > 0 {
-				err := projectService.CreateLayerFolder(project, result.Created...)
+				err := service.CreateLayerFolder(project, result.Created...)
 				if err != nil {
 					return err
 				}
@@ -191,18 +177,18 @@ func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationCon
 			if len(result.Updated) > 0 {
 				//TODO Burda değişiklik tespit edilerek eğer move ve rename yapılabilir dosya ve klasörlere, silmekten daha güvenli
 				for _, item := range result.Updated {
-					err := projectService.DeleteLayerFolder(project, item.Old)
+					err := service.DeleteLayerFolder(project, item.Old)
 					if err != nil {
 						return err
 					}
-					err = projectService.CreateLayerFolder(project, item.New)
+					err = service.CreateLayerFolder(project, item.New)
 					if err != nil {
 						return err
 					}
 				}
 			}
 			if len(result.Deleted) > 0 {
-				err := projectService.DeleteLayerFolder(project, result.Deleted...)
+				err := service.DeleteLayerFolder(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
@@ -213,7 +199,7 @@ func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationCon
 			result := diffx.DiffSlice(existingProject.Specifications.Dependencies, project.Specifications.Dependencies)
 
 			if len(result.Created) > 0 {
-				err := projectService.AddDependenciesToProject(project, result.Created...)
+				err := service.AddDependenciesToProject(project, result.Created...)
 				if err != nil {
 					return err
 				}
@@ -221,18 +207,18 @@ func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationCon
 			}
 			if len(result.Updated) > 0 {
 				for _, item := range result.Updated {
-					err := projectService.RemoveDependencyFromProject(project, item.Old)
+					err := service.RemoveDependencyFromProject(project, item.Old)
 					if err != nil {
 						return err
 					}
-					err = projectService.AddDependenciesToProject(project, item.New)
+					err = service.AddDependenciesToProject(project, item.New)
 					if err != nil {
 						return err
 					}
 				}
 			}
 			if len(result.Deleted) > 0 {
-				err := projectService.RemoveDependencyFromProject(project, result.Deleted...)
+				err := service.RemoveDependencyFromProject(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
@@ -243,72 +229,71 @@ func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationCon
 			result := diffx.DiffSlice(existingProject.Specifications.References, project.Specifications.References)
 
 			if len(result.Created) > 0 {
-				err := projectService.AddReferenceToProject(project, result.Created...)
+				err := service.AddReferenceToProject(project, result.Created...)
 				if err != nil {
 					return err
 				}
 			}
 			if len(result.Updated) > 0 {
 				for _, item := range result.Updated {
-					err := projectService.RemoveReferenceFromProject(project, item.Old)
+					err := service.RemoveReferenceFromProject(project, item.Old)
 					if err != nil {
 						return err
 					}
-					err = projectService.AddReferenceToProject(project, item.New)
+					err = service.AddReferenceToProject(project, item.New)
 					if err != nil {
 						return err
 					}
 				}
 			}
 			if len(result.Deleted) > 0 {
-				err := projectService.RemoveReferenceFromProject(project, result.Deleted...)
+				err := service.RemoveReferenceFromProject(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
 			}
 		}
 
-		if _, err := projectService.Create(project, false); err != nil {
+		if _, err := service.Create(project, false); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (s ApplicationProjectEngine) prepareProjectsToRemove(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToRemoveStructs := make([]application_project_payload.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
 			return nil, err
 		}
-		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
+		ok, err := service.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
 			return nil, err
 		}
 		if ok {
-			projectsReadyToDelete = append(projectsReadyToDelete, project)
+			readyToRemoveStructs = append(readyToRemoveStructs, project)
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will remove", len(projectsReadyToDelete))
+	logrus.Debugf("'%d' project(s) detected that will remove", len(readyToRemoveStructs))
 
-	return projectsReadyToDelete, nil
+	return readyToRemoveStructs, nil
 }
+func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload.ProjectBaseStruct, permanent bool) error {
 
-func (s ApplicationProjectEngine) removeProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
+	service := ioc.Get[application_project_contract.ProjectInterface]()
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-
-	projectsReadyToDelete, err := s.prepareProjectsToRemove(ctx, projects)
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, projects)
 	if err != nil {
 		return err
 	}
 
-	for _, project := range projectsReadyToDelete {
+	for _, project := range readyToRemoveStructs {
 
-		if _, err := projectService.Remove(project.GetFullName(), project.Specifications.Workspace, false, permanent); err != nil {
+		if _, err := service.Remove(project.GetFullName(), project.Specifications.Workspace, false, permanent); err != nil {
 			return err
 		}
 
@@ -316,12 +301,12 @@ func (s ApplicationProjectEngine) removeProjects(ctx *application.ApplicationCon
 
 	}
 
-	logrus.Debugf("'%d' project(s) deleting", len(projectsReadyToDelete))
+	logrus.Debugf("'%d' project(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }
 
-func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *applicationprojectStruct.ProjectBaseStruct) error {
+func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *application_project_payload.ProjectBaseStruct) error {
 
 	logrus.Debugf("filling project (%v) information", model.Header.Name)
 
@@ -359,8 +344,8 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 	model.Specifications.References = projectReferences
 	logrus.Debugf("project references (%d) restored for (%v)", len(model.Specifications.References), model.Specifications.Path)
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectType, err := projectService.GetDefaultPlatformProjectType(*model)
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	projectType, err := service.GetDefaultPlatformProjectType(*model)
 	if err != nil {
 		return err
 	}
@@ -370,7 +355,7 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 	return nil
 }
 
-func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationContext, project applicationprojectStruct.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
+func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationContext, project application_project_payload.ProjectBaseStruct) (*workspaceStruct.WorkspaceBaseStruct, error) {
 	//TODO: Bu şekilde interface'ten tip dönüşümü tamamlanamadı, yapı buna dönüştürülmeli
 	// if projectStruct, ok := project.(project.ProjectBaseStruct); !ok {
 	// 	return nil, fmt.Errorf("incompatible model type: expected %T, got %T", project, projectStruct)
@@ -399,7 +384,7 @@ func (s ApplicationProjectEngine) getWorkspace(ctx *application.ApplicationConte
 
 	return result, nil
 }
-func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.ProjectBaseStruct) (*group_payload.GroupBaseStruct, error) {
+func (s ApplicationProjectEngine) getGroup(project application_project_payload.ProjectBaseStruct) (*group_payload.GroupBaseStruct, error) {
 	result := group_payload.GroupBaseStruct{}
 
 	groupName := project.Specifications.Group
@@ -419,9 +404,9 @@ func (s ApplicationProjectEngine) getGroup(project applicationprojectStruct.Proj
 	return &result, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReferences(prj application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
 
-	projectReferences := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+	projectReferences := make([]application_project_payload.ProjectBaseStruct, 0)
 
 	for _, reference := range prj.Specifications.References {
 		logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
@@ -441,11 +426,11 @@ func (s ApplicationProjectEngine) getProjectReferences(prj applicationprojectStr
 	return projectReferences, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStruct.ProjectBaseStruct, reference applicationprojectStruct.ProjectBaseStruct) (*applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReference(prj application_project_payload.ProjectBaseStruct, reference application_project_payload.ProjectBaseStruct) (*application_project_payload.ProjectBaseStruct, error) {
 
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	var projectReference *applicationprojectStruct.ProjectBaseStruct = nil
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	var projectReference *application_project_payload.ProjectBaseStruct = nil
 
 	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
@@ -467,7 +452,7 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 			logrus.Debugf("different workspace (%v) for reference (%v)", reference.Specifications.Workspace, reference.Header.Name)
 		}
 
-		selectedProject, err := projectService.GetByFullNameWorkspace(reference.GetFullName(), reference.Specifications.Workspace)
+		selectedProject, err := service.GetByFullNameWorkspace(reference.GetFullName(), reference.Specifications.Workspace)
 		if err != nil {
 			return nil, err
 		}
@@ -482,12 +467,12 @@ func (s ApplicationProjectEngine) getProjectReference(prj applicationprojectStru
 	return projectReference, nil
 }
 
-func (s ApplicationProjectEngine) sortProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) sortProjectsByReference(projects []application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	service := ioc.Get[application_project_contract.ProjectInterface]()
 
 	logrus.Debugf("'%d' projects preparing for ordering", len(projects))
-	projectMap := make(map[string]applicationprojectStruct.ProjectSpecification)
+	projectMap := make(map[string]application_project_payload.ProjectSpecification)
 	for _, project := range projects {
 		projectMap[project.GetUniqueKey()] = project.Specifications
 	}
@@ -506,7 +491,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 						return nil, err
 					}
 
-					ok, err := projectService.IsExists(referenceInformation.GetFullName(), referenceInformation.Specifications.Workspace)
+					ok, err := service.IsExists(referenceInformation.GetFullName(), referenceInformation.Specifications.Workspace)
 					if err != nil {
 						return nil, err
 					}
@@ -518,7 +503,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 		}
 	}
 
-	sortedProjectMap := make(map[string]applicationprojectStruct.ProjectBaseStruct)
+	sortedProjectMap := make(map[string]application_project_payload.ProjectBaseStruct)
 	sortedProjects, err := s.sortUnOrderedProjectsByReference(projects, sortedProjectMap)
 	if err != nil {
 		return nil, err
@@ -528,10 +513,10 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 
 	return sortedProjects, nil
 }
-func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []applicationprojectStruct.ProjectBaseStruct, sortedProjectMap map[string]applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	var sortedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
-	var unOrderedProjects []applicationprojectStruct.ProjectBaseStruct = make([]applicationprojectStruct.ProjectBaseStruct, 0)
+func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []application_project_payload.ProjectBaseStruct, sortedProjectMap map[string]application_project_payload.ProjectBaseStruct) ([]application_project_payload.ProjectBaseStruct, error) {
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	var sortedProjects []application_project_payload.ProjectBaseStruct = make([]application_project_payload.ProjectBaseStruct, 0)
+	var unOrderedProjects []application_project_payload.ProjectBaseStruct = make([]application_project_payload.ProjectBaseStruct, 0)
 
 	logrus.Debugf("'%d' projects ordering", len(projects))
 	for _, project := range projects {
@@ -550,7 +535,7 @@ func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []ap
 					logrus.Debugf("validating reference (%v) for project (%v)", reference.Header.Name, project.Header.Name)
 					if reference.Specifications.ID == 0 {
 						if _, ok := sortedProjectMap[reference.GetUniqueKey()]; !ok {
-							ok, err := projectService.IsExists(reference.GetFullName(), reference.Specifications.Workspace)
+							ok, err := service.IsExists(reference.GetFullName(), reference.Specifications.Workspace)
 							if err != nil {
 								return nil, err
 							}
@@ -594,4 +579,19 @@ func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
 		Name:  "Project.Application",
 		Order: 2000,
 	}
+}
+
+func CastArrayToConcrate(data []schemas.SchemaInterface) ([]application_project_payload.ProjectBaseStruct, error) {
+	r := make([]application_project_payload.ProjectBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(*application_project_payload.ProjectBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected application_project_payload.ProjectBaseStruct, got %T", item)
+		}
+
+		r = append(r, *model)
+	}
+
+	return r, nil
 }

@@ -5,8 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"parsdevkit.net/application/contracts"
-
+	"parsdevkit.net/modules/template/code_template_contract"
 	codetemplate "parsdevkit.net/structs/template/code-template"
 
 	"parsdevkit.net/application/ioc"
@@ -24,7 +23,7 @@ type CodeTemplateService struct {
 	environment                  string
 }
 
-func NewCodeTemplateService(environment string) contracts.TemplateServiceInterface[codetemplate.TemplateBaseStruct] {
+func NewCodeTemplateService(environment string) code_template_contract.TemplateInterface {
 	templateRespository := ioc.Get[*repositories.TemplateRepository]()
 	generationHistoryRespository := ioc.Get[*repositories.GenerationHistoryRepository]()
 
