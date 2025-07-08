@@ -3,9 +3,10 @@ package object_resource
 import (
 	"fmt"
 
-	engineOperations "parsdevkit.net/engines"
+	"parsdevkit.net/application/bus"
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	"parsdevkit.net/modules/resource/object_resource_payload"
+	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
@@ -31,13 +32,6 @@ func (s ObjectResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	}
 
 	return true
-}
-
-func (s ObjectResourceEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Resource.Object",
-		Order: 3000,
-	}
 }
 
 func (s ObjectResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
@@ -106,11 +100,15 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 			return err
 		}
 
-		if _, err := s.generate(resource); err != nil {
-			return err
-		}
 		fmt.Printf("%v (%d) Object Resource created\n", resource.Header.Name, index)
 
+		// err := bus.SendCommand(application_project_payload_commands.CreateApplicationProject{})
+		// if err != nil {
+		// 	panic(err)
+		// }
+		bus.PublishEvent(object_resource_payload_events.ResourceCreated{
+			Data: resource,
+		})
 	}
 
 	return nil
@@ -160,9 +158,10 @@ func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resour
 		if _, err := service.Save(resource); err != nil {
 			return err
 		}
-		if _, err := s.generate(resource); err != nil {
-			return err
-		}
+
+		bus.PublishEvent(object_resource_payload_events.ResourceCreated{
+			Data: resource,
+		})
 	}
 	return nil
 }
@@ -209,29 +208,6 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resour
 	logrus.Debugf("'%d' resource(s) deleting", len(readyToRemoveStructs))
 
 	return nil
-}
-
-func (s ObjectResourceEngine) generate(model object_resource_payload.ResourceBaseStruct) (*object_resource_payload.ResourceBaseStruct, error) {
-
-	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
-
-	result, err := resourceService.GetByName(model.Header.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	if result == nil {
-		return nil, nil
-	}
-
-	// TODO: Birden fazla template işlenebilmeli
-	templateEngine := engineOperations.NewCodeTemplateOperations(application.GetEnvironment())
-	err = templateEngine.GenerateByResource(model)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }
 
 func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationContext, model *object_resource_payload.ResourceBaseStruct) error {
@@ -284,6 +260,12 @@ func (s ObjectResourceEngine) getWorkspace(ctx *application.ApplicationContext, 
 	return result, nil
 }
 
+func (s ObjectResourceEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Resource.Object",
+		Order: 3000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]object_resource_payload.ResourceBaseStruct, error) {
 	r := make([]object_resource_payload.ResourceBaseStruct, 0, len(data))
 

@@ -33,13 +33,6 @@ func (s BasicTaskEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 
-func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Task.Common",
-		Order: 5000,
-	}
-}
-
 func (s BasicTaskEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -273,6 +266,12 @@ func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model
 	return result, nil
 }
 
+func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Task.Common",
+		Order: 5000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]commontask.TaskBaseStruct, error) {
 	r := make([]commontask.TaskBaseStruct, 0, len(data))
 

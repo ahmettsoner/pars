@@ -34,12 +34,6 @@ func (s FileTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Template.File",
-		Order: 4000,
-	}
-}
 
 func (s FileTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
@@ -287,6 +281,12 @@ func (s FileTemplateEngine) getWorkspace(ctx *application.ApplicationContext, mo
 	return result, nil
 }
 
+func (s FileTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.File",
+		Order: 4000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]filetemplateStruct.TemplateBaseStruct, error) {
 	r := make([]filetemplateStruct.TemplateBaseStruct, 0, len(data))
 

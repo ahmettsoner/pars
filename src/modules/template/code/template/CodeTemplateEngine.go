@@ -34,13 +34,6 @@ func (s CodeTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 
-func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Template.Code",
-		Order: 4000,
-	}
-}
-
 func (s CodeTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -287,6 +280,12 @@ func (s CodeTemplateEngine) getWorkspace(ctx *application.ApplicationContext, mo
 	return result, nil
 }
 
+func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.Code",
+		Order: 4000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]codetemplateStruct.TemplateBaseStruct, error) {
 	r := make([]codetemplateStruct.TemplateBaseStruct, 0, len(data))
 

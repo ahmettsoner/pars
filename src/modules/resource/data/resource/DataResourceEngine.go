@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"parsdevkit.net/modules/resource/data_resource_payload"
+	data_resource_payload_events "parsdevkit.net/modules/resource/data_resource_payload/events"
 
+	"parsdevkit.net/application/bus"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/modules/resource/data_resource_contract"
@@ -34,12 +36,6 @@ func (s DataResourceEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 
-func (s DataResourceEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Resource.Data",
-		Order: 3000,
-	}
-}
 func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -109,6 +105,11 @@ func (s DataResourceEngine) create(ctx *application.ApplicationContext, resource
 		if _, err := s.generate(resource); err != nil {
 			return err
 		}
+
+		bus.PublishEvent(data_resource_payload_events.ResourceCreated{
+			Data: resource,
+		})
+
 		fmt.Printf("%v (%d) Data Resource created\n", resource.Header.Name, index)
 
 	}
@@ -163,7 +164,11 @@ func (s DataResourceEngine) update(ctx *application.ApplicationContext, resource
 		if _, err := s.generate(resource); err != nil {
 			return err
 		}
+		bus.PublishEvent(data_resource_payload_events.ResourceCreated{
+			Data: resource,
+		})
 	}
+
 	return nil
 }
 func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []data_resource_payload.ResourceBaseStruct) ([]data_resource_payload.ResourceBaseStruct, error) {
@@ -279,6 +284,12 @@ func (s DataResourceEngine) getWorkspace(ctx *application.ApplicationContext, mo
 	}
 
 	return result, nil
+}
+func (s DataResourceEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Resource.Data",
+		Order: 3000,
+	}
 }
 
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]data_resource_payload.ResourceBaseStruct, error) {

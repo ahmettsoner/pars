@@ -8,6 +8,8 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
+	object_resource_handler "parsdevkit.net/modules/resource/object_resource/handlers"
+	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/template/file_template_contract"
 	"parsdevkit.net/modules/template/shared_template_contract"
@@ -70,7 +72,7 @@ func registerCommandHandlers() {
 	bus.RegisterCommandHandler[application_project_payload_commands.CreateApplicationProject](&application_project_handlers.CreateApplicationProjectHandler{})
 }
 func registerEventHandlers() {
-	// bus.RegisterEventHandler[CreateApplicationProjectCreated](&Logger{})
+	bus.RegisterEventHandler[object_resource_payload_events.ResourceCreated](&object_resource_handler.ResourceCreatedEventHandler{})
 }
 
 func registerSchemas() {

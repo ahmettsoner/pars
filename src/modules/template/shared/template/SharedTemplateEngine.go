@@ -31,13 +31,6 @@ func (s SharedTemplateEngine) Validate(data []schemas.SchemaInterface) bool {
 	return true
 }
 
-func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Template.Shared",
-		Order: 4000,
-	}
-}
-
 func (s SharedTemplateEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -247,6 +240,12 @@ func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, 
 	return result, nil
 }
 
+func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Template.Shared",
+		Order: 4000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]sharedtemplateStruct.TemplateBaseStruct, error) {
 	r := make([]sharedtemplateStruct.TemplateBaseStruct, 0, len(data))
 

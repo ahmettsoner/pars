@@ -28,12 +28,6 @@ func (s GroupEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
-func (s GroupEngine) GetConfig() engines.EngineConfig {
-	return engines.EngineConfig{
-		Name:  "Group",
-		Order: 1000,
-	}
-}
 func (s GroupEngine) Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -210,6 +204,12 @@ func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, mo
 	return nil
 }
 
+func (s GroupEngine) GetConfig() engines.EngineConfig {
+	return engines.EngineConfig{
+		Name:  "Group",
+		Order: 1000,
+	}
+}
 func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_group_payload.GroupBaseStruct, error) {
 	r := make([]basic_group_payload.GroupBaseStruct, 0, len(data))
 
