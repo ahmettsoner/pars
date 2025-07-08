@@ -33,7 +33,7 @@ type ProjectSpecification struct {
 	Schema          Schema
 	Layers          []applicationProject.Layer
 	Dependencies    []applicationProject.Dependency
-	References      []ProjectBaseStruct
+	References      []ProjectBaseStruct //schemas.SchemaHeader olmalı?
 	Options         []string
 	Modules         []string
 	Components      []string

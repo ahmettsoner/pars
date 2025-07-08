@@ -2,6 +2,7 @@ package project
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"parsdevkit.net/pkg/errors"
@@ -13,6 +14,14 @@ import (
 type Dependency struct {
 	Name    string
 	Version string
+}
+
+func (l Dependency) Key() string {
+	return l.Name
+}
+
+func (l Dependency) IsEqual(other Dependency) bool {
+	return reflect.DeepEqual(l, other)
 }
 
 func NewDependency(name string, version string) Dependency {

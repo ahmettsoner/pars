@@ -85,7 +85,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicProject() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
 
 	service := projectApplication.NewApplicationProjectService(suite.environment)
 	project, err := service.GetByFullNameWorkspace(structData.Name, suite.workspace)

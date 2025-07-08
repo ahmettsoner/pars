@@ -2,6 +2,7 @@ package project
 
 import (
 	"path/filepath"
+	"reflect"
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/pkg/errors"
@@ -15,6 +16,14 @@ type ProjectIdentifier struct {
 	Group     string
 	Workspace string
 	Path      []string
+}
+
+func (l ProjectIdentifier) Key() string {
+	return l.Name
+}
+
+func (l ProjectIdentifier) IsEqual(other ProjectIdentifier) bool {
+	return reflect.DeepEqual(l, other)
 }
 
 func NewProjectIdentifier(id int, name string, path []string, group string, workspace string) ProjectIdentifier {

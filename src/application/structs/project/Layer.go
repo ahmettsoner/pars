@@ -3,6 +3,7 @@ package project
 import (
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -17,6 +18,14 @@ type Layer struct {
 	Path    string
 	Package []string
 	BasedOn string
+}
+
+func (l Layer) Key() string {
+	return l.Name
+}
+
+func (l Layer) IsEqual(other Layer) bool {
+	return reflect.DeepEqual(l, other)
 }
 
 func NewLayer(id int, name, path string, _package []string, based_on string) Layer {

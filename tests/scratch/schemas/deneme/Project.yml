@@ -1,0 +1,8 @@
+Type: Project
+Kind: Application
+Name: App1
+Specifications:
+  Platform: Dotnet
+  Layers: 
+    - L1
+    - L2

@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"fmt"
+	"reflect"
 
 	"gopkg.in/yaml.v3"
 )
@@ -11,6 +12,14 @@ type SchemaHeader struct {
 	Kind     string     `yaml:"Kind"`
 	Name     string     `yaml:"Name"`
 	Metadata Metadata   `yaml:"Metadata"`
+}
+
+func (l SchemaHeader) Key() string {
+	return l.Name
+}
+
+func (l SchemaHeader) IsEqual(other SchemaHeader) bool {
+	return reflect.DeepEqual(l, other)
 }
 
 func NewSchemaHeader(_type StructType, kind string, name string, metadata Metadata) SchemaHeader {

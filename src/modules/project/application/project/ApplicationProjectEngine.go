@@ -20,6 +20,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/internal/diffx"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/engines"
@@ -59,7 +60,16 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 		return err
 	}
 
-	return s.createProjects(ctx, applicationprojects, true)
+	err = s.createProjects(ctx, applicationprojects, true)
+	if err != nil {
+		return err
+	}
+	err = s.updateProjects(ctx, applicationprojects, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	applicationprojects, err := CastArrayToConcrate(data)
@@ -67,7 +77,12 @@ func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, d
 		return err
 	}
 
-	return s.removeProjects(ctx, applicationprojects, true)
+	err = s.removeProjects(ctx, applicationprojects, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 func (s ApplicationProjectEngine) prepareProjectsToCreate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 
@@ -95,6 +110,28 @@ func (s ApplicationProjectEngine) prepareProjectsToCreate(ctx *application.Appli
 
 	return projectsReadyToCreate, nil
 }
+func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	projectsReadyToCreate, err := s.prepareProjectsToCreate(ctx, projects)
+	if err != nil {
+		return err
+	}
+
+	for index, project := range projectsReadyToCreate {
+
+		logrus.Debugf("trying to create %v", project.Header.Name)
+		if _, err := projectService.Create(project, init); err != nil {
+			return err
+		}
+
+		fmt.Printf("%v (%d) Project created\n", project.Header.Name, index)
+
+	}
+
+	return nil
+}
+
 func (s ApplicationProjectEngine) prepareProjectsToUpdate(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
 
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
@@ -127,31 +164,9 @@ func (s ApplicationProjectEngine) prepareProjectsToUpdate(ctx *application.Appli
 
 	return projectsForUpdate, nil
 }
-func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) updateProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, init bool) error {
 
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectsReadyToCreate, err := s.prepareProjectsToCreate(ctx, projects)
-	if err != nil {
-		return err
-	}
-
-	for index, project := range projectsReadyToCreate {
-
-		projectReferences, err := s.getProjectReferences(project)
-		if err != nil {
-			return err
-		}
-
-		project.Specifications.References = projectReferences
-
-		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := projectService.Create(project, init); err != nil {
-			return err
-		}
-
-		fmt.Printf("%v (%d) Project created\n", project.Header.Name, index)
-
-	}
 
 	projectsForUpdate, err := s.prepareProjectsToUpdate(ctx, projects)
 	if err != nil {
@@ -164,57 +179,18 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 		}
 
 		if !reflect.DeepEqual(project.Specifications.Layers, existingProject.Specifications.Layers) {
-			newItems := make([]applicationProject.Layer, 0)
-			updatedItems := make([]struct {
-				Old applicationProject.Layer
-				New applicationProject.Layer
-			}, 0)
-			deletedItems := make([]applicationProject.Layer, 0)
 
-			for _, newLayer := range project.Specifications.Layers {
-				found := false
-				for _, existingLayer := range existingProject.Specifications.Layers {
-					if newLayer.Name == existingLayer.Name {
-						found = true
-						if !reflect.DeepEqual(newLayer, existingLayer) {
-							updatedItems = append(updatedItems, struct {
-								Old applicationProject.Layer
-								New applicationProject.Layer
-							}{
-								Old: existingLayer,
-								New: newLayer,
-							})
-						}
-						break
-					}
-				}
-				if !found {
-					newItems = append(newItems, newLayer)
-				}
-			}
+			result := diffx.DiffSlice(existingProject.Specifications.Layers, project.Specifications.Layers)
 
-			for _, existingLayer := range existingProject.Specifications.Layers {
-				found := false
-				for _, newLayer := range project.Specifications.Layers {
-					if newLayer.Name == existingLayer.Name {
-						found = true
-						break
-					}
-				}
-				if !found {
-					deletedItems = append(deletedItems, existingLayer)
-				}
-			}
-
-			if len(newItems) > 0 {
-
-				err := projectService.CreateLayerFolder(project, newItems...)
+			if len(result.Created) > 0 {
+				err := projectService.CreateLayerFolder(project, result.Created...)
 				if err != nil {
 					return err
 				}
 			}
-			if len(updatedItems) > 0 {
-				for _, item := range updatedItems {
+			if len(result.Updated) > 0 {
+				//TODO Burda değişiklik tespit edilerek eğer move ve rename yapılabilir dosya ve klasörlere, silmekten daha güvenli
+				for _, item := range result.Updated {
 					err := projectService.DeleteLayerFolder(project, item.Old)
 					if err != nil {
 						return err
@@ -225,8 +201,8 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 					}
 				}
 			}
-			if len(deletedItems) > 0 {
-				err := projectService.DeleteLayerFolder(project, deletedItems...)
+			if len(result.Deleted) > 0 {
+				err := projectService.DeleteLayerFolder(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
@@ -234,57 +210,17 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 		}
 
 		if !reflect.DeepEqual(project.Specifications.Dependencies, existingProject.Specifications.Dependencies) {
-			newItems := make([]applicationProject.Dependency, 0)
-			updatedItems := make([]struct {
-				Old applicationProject.Dependency
-				New applicationProject.Dependency
-			}, 0)
-			deletedItems := make([]applicationProject.Dependency, 0)
+			result := diffx.DiffSlice(existingProject.Specifications.Dependencies, project.Specifications.Dependencies)
 
-			for _, newItem := range project.Specifications.Dependencies {
-				found := false
-				for _, existingItem := range existingProject.Specifications.Dependencies {
-					if newItem.Name == existingItem.Name {
-						found = true
-						if !reflect.DeepEqual(newItem, existingItem) {
-							updatedItems = append(updatedItems, struct {
-								Old applicationProject.Dependency
-								New applicationProject.Dependency
-							}{
-								Old: existingItem,
-								New: newItem,
-							})
-						}
-						break
-					}
-				}
-				if !found {
-					newItems = append(newItems, newItem)
-				}
-			}
-
-			for _, existingItem := range existingProject.Specifications.Dependencies {
-				found := false
-				for _, newItem := range project.Specifications.Dependencies {
-					if newItem.Name == existingItem.Name {
-						found = true
-						break
-					}
-				}
-				if !found {
-					deletedItems = append(deletedItems, existingItem)
-				}
-			}
-
-			if len(newItems) > 0 {
-				err := projectService.AddDependenciesToProject(project, newItems...)
+			if len(result.Created) > 0 {
+				err := projectService.AddDependenciesToProject(project, result.Created...)
 				if err != nil {
 					return err
 				}
 
 			}
-			if len(updatedItems) > 0 {
-				for _, item := range updatedItems {
+			if len(result.Updated) > 0 {
+				for _, item := range result.Updated {
 					err := projectService.RemoveDependencyFromProject(project, item.Old)
 					if err != nil {
 						return err
@@ -295,8 +231,8 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 					}
 				}
 			}
-			if len(deletedItems) > 0 {
-				err := projectService.RemoveDependencyFromProject(project, deletedItems...)
+			if len(result.Deleted) > 0 {
+				err := projectService.RemoveDependencyFromProject(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
@@ -304,57 +240,16 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 		}
 
 		if !reflect.DeepEqual(project.Specifications.References, existingProject.Specifications.References) {
-			newItems := make([]applicationprojectStruct.ProjectBaseStruct, 0)
-			updatedItems := make([]struct {
-				Old applicationprojectStruct.ProjectBaseStruct
-				New applicationprojectStruct.ProjectBaseStruct
-			}, 0)
-			deletedItems := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+			result := diffx.DiffSlice(existingProject.Specifications.References, project.Specifications.References)
 
-			for _, newRef := range project.Specifications.References {
-				found := false
-				for _, existingRef := range existingProject.Specifications.References {
-					if newRef.Header.Name == existingRef.Header.Name {
-						found = true
-						// if !reflect.DeepEqual(newRef, existingRef) {
-						if newRef.Specifications.Name != existingRef.Specifications.Name || newRef.Specifications.Group != existingRef.Specifications.Group || newRef.Specifications.Workspace != existingRef.Specifications.Workspace {
-							updatedItems = append(updatedItems, struct {
-								Old applicationprojectStruct.ProjectBaseStruct
-								New applicationprojectStruct.ProjectBaseStruct
-							}{
-								Old: existingRef,
-								New: newRef,
-							})
-						}
-						break
-					}
-				}
-				if !found {
-					newItems = append(newItems, newRef)
-				}
-			}
-
-			for _, existingRef := range existingProject.Specifications.References {
-				found := false
-				for _, newRef := range project.Specifications.References {
-					if newRef.Header.Name == existingRef.Header.Name {
-						found = true
-						break
-					}
-				}
-				if !found {
-					deletedItems = append(deletedItems, existingRef)
-				}
-			}
-
-			if len(newItems) > 0 {
-				err := projectService.AddReferenceToProject(project, newItems...)
+			if len(result.Created) > 0 {
+				err := projectService.AddReferenceToProject(project, result.Created...)
 				if err != nil {
 					return err
 				}
 			}
-			if len(updatedItems) > 0 {
-				for _, item := range updatedItems {
+			if len(result.Updated) > 0 {
+				for _, item := range result.Updated {
 					err := projectService.RemoveReferenceFromProject(project, item.Old)
 					if err != nil {
 						return err
@@ -365,8 +260,8 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 					}
 				}
 			}
-			if len(deletedItems) > 0 {
-				err := projectService.RemoveReferenceFromProject(project, deletedItems...)
+			if len(result.Deleted) > 0 {
+				err := projectService.RemoveReferenceFromProject(project, result.Deleted...)
 				if err != nil {
 					return err
 				}
@@ -379,24 +274,37 @@ func (s ApplicationProjectEngine) createProjects(ctx *application.ApplicationCon
 	}
 	return nil
 }
-func (s ApplicationProjectEngine) removeProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
 
-	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
+func (s ApplicationProjectEngine) prepareProjectsToRemove(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct) ([]applicationprojectStruct.ProjectBaseStruct, error) {
+
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	for _, project := range projects {
+	projectsReadyToDelete := make([]applicationprojectStruct.ProjectBaseStruct, 0)
 
+	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
-			return err
+			return nil, err
 		}
 		ok, err := projectService.IsExists(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if ok {
 			projectsReadyToDelete = append(projectsReadyToDelete, project)
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will delete", len(projectsReadyToDelete))
+	logrus.Debugf("'%d' project(s) detected that will remove", len(projectsReadyToDelete))
+
+	return projectsReadyToDelete, nil
+}
+
+func (s ApplicationProjectEngine) removeProjects(ctx *application.ApplicationContext, projects []applicationprojectStruct.ProjectBaseStruct, permanent bool) error {
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+
+	projectsReadyToDelete, err := s.prepareProjectsToRemove(ctx, projects)
+	if err != nil {
+		return err
+	}
 
 	for _, project := range projectsReadyToDelete {
 

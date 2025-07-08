@@ -49,7 +49,7 @@ func SwitchToWorkspace(t *testing.T, workspaceName, environment string) {
 func RemoveWorkspace(t *testing.T, workspaceName, environment string) {
 	commands := []string{"workspace", "remove", workspaceName}
 
-	_, err := ExecuteCommand(t, environment, commands...)
+	_, err := ExecuteCommandWithSelector(CommanderTypes.GO, t, environment, commands...)
 	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }
 func RemoveWorkspaceWithService(t *testing.T, workspaceName, environment string) {

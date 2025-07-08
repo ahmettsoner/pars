@@ -1,4 +1,4 @@
-package contracts
+package diffx
 
 type Comparable[T any] interface {
 	Key() string

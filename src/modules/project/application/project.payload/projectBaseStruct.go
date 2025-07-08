@@ -2,6 +2,7 @@ package application_project_payload
 
 import (
 	"fmt"
+	"reflect"
 
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/pkg/errors"
@@ -20,6 +21,13 @@ func (s ProjectBaseStruct) GetKey() string {
 	return "Project.Application"
 }
 
+func (l ProjectBaseStruct) Key() string {
+	return l.Header.Name
+}
+
+func (l ProjectBaseStruct) IsEqual(other ProjectBaseStruct) bool {
+	return reflect.DeepEqual(l, other)
+}
 func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpecification) ProjectBaseStruct {
 	return ProjectBaseStruct{
 		Header:         header,
