@@ -4,11 +4,14 @@ import (
 	"errors"
 	"reflect"
 
+	"parsdevkit.net/internal/flowx"
+
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
+	create_flows "parsdevkit.net/modules/project/application_project/flows/create"
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -98,20 +101,25 @@ func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationCo
 }
 func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
-	service := ioc.Get[application_project_contract.ProjectInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, projects)
 	if err != nil {
 		return err
 	}
 
-	for index, project := range readyToCreateStructs {
+	for _, project := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := service.Create(project, init); err != nil {
-			return err
+		projectFlow := flowx.NewFlow("CreateNewProject").
+			Step(&create_flows.PersistProject{}).
+			Step(&create_flows.GenerateProject{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":    init,
+			"project": project,
+		})
+
+		if err := projectFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
 		}
-
-		fmt.Printf("%v (%d) Project created\n", project.Header.Name, index)
 
 	}
 
