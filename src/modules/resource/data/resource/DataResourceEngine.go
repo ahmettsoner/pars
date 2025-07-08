@@ -3,6 +3,7 @@ package data_resource
 import (
 	"fmt"
 
+	data_resource_payload_commands "parsdevkit.net/modules/resource/data_resource_payload/commands"
 	data_resource_payload_events "parsdevkit.net/modules/resource/data_resource_payload/events"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 
@@ -16,7 +17,6 @@ import (
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
@@ -102,7 +102,8 @@ func (s DataResourceEngine) create(ctx *application.ApplicationContext, resource
 			return err
 		}
 
-		if _, err := s.generate(resource); err != nil {
+		err := bus.SendCommand(data_resource_payload_commands.GenerateResourceContents{Data: resource})
+		if err != nil {
 			return err
 		}
 
@@ -161,7 +162,9 @@ func (s DataResourceEngine) update(ctx *application.ApplicationContext, resource
 		if _, err := service.Save(resource); err != nil {
 			return err
 		}
-		if _, err := s.generate(resource); err != nil {
+
+		err := bus.SendCommand(data_resource_payload_commands.GenerateResourceContents{Data: resource})
+		if err != nil {
 			return err
 		}
 		bus.PublishEvent(data_resource_payload_events.ResourceCreated{
@@ -214,28 +217,6 @@ func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resource
 	logrus.Debugf("'%d' resource(s) deleting", len(readyToRemoveStructs))
 
 	return nil
-}
-
-func (s DataResourceEngine) generate(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
-
-	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
-
-	result, err := resourceService.GetByName(model.Header.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	if result == nil {
-		return nil, nil
-	}
-
-	templateOperations := engineOperations.NewFileTemplateOperations(application.GetEnvironment())
-	err = templateOperations.GenerateByResource(model)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }
 
 func (s DataResourceEngine) completeInformation(ctx *application.ApplicationContext, model *data_resource_payload_structs.ResourceBaseStruct) error {

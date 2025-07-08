@@ -8,11 +8,17 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
+	data_resource_handler "parsdevkit.net/modules/resource/data_resource/handlers"
+	data_resource_payload_commands "parsdevkit.net/modules/resource/data_resource_payload/commands"
 	object_resource_handler "parsdevkit.net/modules/resource/object_resource/handlers"
 	object_resource_payload_commands "parsdevkit.net/modules/resource/object_resource_payload/commands"
 	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
+	code_template_handler "parsdevkit.net/modules/template/code_template/handlers"
 	"parsdevkit.net/modules/template/code_template_contract"
+	code_template_payload_commands "parsdevkit.net/modules/template/code_template_payload/commands"
+	file_template_handler "parsdevkit.net/modules/template/file_template/handlers"
 	"parsdevkit.net/modules/template/file_template_contract"
+	file_template_payload_commands "parsdevkit.net/modules/template/file_template_payload/commands"
 	"parsdevkit.net/modules/template/shared_template_contract"
 
 	group "parsdevkit.net/modules/group/basic_group"
@@ -72,6 +78,9 @@ func RegisterServices() {
 func registerCommandHandlers() {
 	bus.RegisterCommandHandler[application_project_payload_commands.CreateApplicationProject](&application_project_handlers.CreateApplicationProjectHandler{})
 	bus.RegisterCommandHandler[object_resource_payload_commands.GenerateResourceContents](&object_resource_handler.GenerateResourceContentsCommandHandler{})
+	bus.RegisterCommandHandler[data_resource_payload_commands.GenerateResourceContents](&data_resource_handler.GenerateResourceContentsCommandHandler{})
+	bus.RegisterCommandHandler[file_template_payload_commands.GenerateTemplateContents](&file_template_handler.GenerateTemplateContentsCommandHandler{})
+	bus.RegisterCommandHandler[code_template_payload_commands.GenerateTemplateContents](&code_template_handler.GenerateTemplateContentsCommandHandler{})
 }
 func registerEventHandlers() {
 	bus.RegisterEventHandler[object_resource_payload_events.ResourceCreated](&object_resource_handler.ResourceCreatedEventHandler{})

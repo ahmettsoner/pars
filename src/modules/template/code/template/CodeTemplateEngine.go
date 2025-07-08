@@ -3,6 +3,8 @@ package code_template
 import (
 	"fmt"
 
+	"parsdevkit.net/application/bus"
+	code_template_payload_commands "parsdevkit.net/modules/template/code_template_payload/commands"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"parsdevkit.net/application/engines"
@@ -12,7 +14,6 @@ import (
 	"parsdevkit.net/application"
 
 	"github.com/sirupsen/logrus"
-	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
@@ -100,7 +101,8 @@ func (s CodeTemplateEngine) create(ctx *application.ApplicationContext, template
 			return err
 		}
 
-		if _, err := s.generate(template); err != nil {
+		err := bus.SendCommand(code_template_payload_commands.GenerateTemplateContents{Data: template})
+		if err != nil {
 			return err
 		}
 		fmt.Printf("%v (%d) Code Template created\n", template.Header.Name, index)
@@ -154,7 +156,8 @@ func (s CodeTemplateEngine) update(ctx *application.ApplicationContext, template
 		if _, err := service.Save(template); err != nil {
 			return err
 		}
-		if _, err := s.generate(template); err != nil {
+		err := bus.SendCommand(code_template_payload_commands.GenerateTemplateContents{Data: template})
+		if err != nil {
 			return err
 		}
 	}
@@ -203,27 +206,6 @@ func (s CodeTemplateEngine) remove(ctx *application.ApplicationContext, template
 	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
-}
-func (s CodeTemplateEngine) generate(model code_template_payload_structs.TemplateBaseStruct) (*code_template_payload_structs.TemplateBaseStruct, error) {
-
-	templateService := ioc.Get[code_template_contract.TemplateInterface]()
-
-	result, err := templateService.GetByName(model.Header.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	if result == nil {
-		return nil, nil
-	}
-
-	templateEngine := engineOperations.NewCodeTemplateOperations(application.GetEnvironment())
-	err = templateEngine.GenerateByTemplate(model)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }
 
 func (s CodeTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *code_template_payload_structs.TemplateBaseStruct) error {

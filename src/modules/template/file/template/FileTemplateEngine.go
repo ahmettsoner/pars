@@ -3,9 +3,10 @@ package file_template
 import (
 	"fmt"
 
+	"parsdevkit.net/application/bus"
+	file_template_payload_commands "parsdevkit.net/modules/template/file_template_payload/commands"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
-	engineOperations "parsdevkit.net/engines"
 	"parsdevkit.net/modules/template/file_template_contract"
 
 	"parsdevkit.net/application"
@@ -101,7 +102,8 @@ func (s FileTemplateEngine) create(ctx *application.ApplicationContext, template
 			return err
 		}
 
-		if _, err := s.generate(template); err != nil {
+		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
+		if err != nil {
 			return err
 		}
 		fmt.Printf("%v (%d) File Template created\n", template.Header.Name, index)
@@ -155,7 +157,8 @@ func (s FileTemplateEngine) update(ctx *application.ApplicationContext, template
 		if _, err := service.Save(template); err != nil {
 			return err
 		}
-		if _, err := s.generate(template); err != nil {
+		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
+		if err != nil {
 			return err
 		}
 	}
@@ -204,28 +207,6 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
-}
-
-func (s FileTemplateEngine) generate(model file_template_payload_structs.TemplateBaseStruct) (*file_template_payload_structs.TemplateBaseStruct, error) {
-
-	templateService := ioc.Get[file_template_contract.TemplateInterface]()
-
-	result, err := templateService.GetByName(model.Header.Name)
-	if err != nil {
-		return nil, err
-	}
-
-	if result == nil {
-		return nil, nil
-	}
-
-	templateOperations := engineOperations.NewFileTemplateOperations(application.GetEnvironment())
-	err = templateOperations.GenerateByTemplate(model)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
 }
 
 func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *file_template_payload_structs.TemplateBaseStruct) error {

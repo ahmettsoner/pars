@@ -9,6 +9,6 @@ import (
 type CreateApplicationProjectHandler struct{}
 
 func (h *CreateApplicationProjectHandler) Handle(cmd application_project_payload_commands.CreateApplicationProject) error {
-	fmt.Println("[CommandHandler] User created:")
+	fmt.Printf("[CommandHandler] Application Project")
 	return nil
 }

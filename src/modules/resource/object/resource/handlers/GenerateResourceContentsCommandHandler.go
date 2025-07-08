@@ -23,16 +23,16 @@ func (s *GenerateResourceContentsCommandHandler) Handle(cmd commands.GenerateRes
 	if _, err := s.generate(model); err != nil {
 		return err
 	}
-	fmt.Println("[CommandHandler] Resource '%s' generated:", cmd.Data.GetHeader().Name)
+	fmt.Printf("[CommandHandler] Resource '%s' generated\n", cmd.Data.GetHeader().Name)
 
 	return nil
 }
 
 func (s *GenerateResourceContentsCommandHandler) generate(model object_resource_payload_structs.ResourceBaseStruct) (*object_resource_payload_structs.ResourceBaseStruct, error) {
 
-	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
+	service := ioc.Get[object_resource_contract.ResourceInterface]()
 
-	result, err := resourceService.GetByName(model.Header.Name)
+	result, err := service.GetByName(model.Header.Name)
 	if err != nil {
 		return nil, err
 	}
