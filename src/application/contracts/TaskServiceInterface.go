@@ -5,6 +5,9 @@ import "parsdevkit.net/application/schemas"
 type TaskServiceInterface[T schemas.SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(mommonl T) (*T, error)
+	SaveTask(model T) (*T, error)
+	UndoSaveTask(model T) (*T, error)
+	DeleteTask(model T) (*T, error)
 	List() (*([]T), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]T), error)
 	Remove(name, workspace string, permanent bool) (*T, error)

@@ -1533,17 +1533,14 @@ func (s *ApplicationProjectService) DeleteProject(model application_project_payl
 
 	return &model, nil
 }
-func (s *ApplicationProjectService) UndoSaveProject(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) UndoSaveProject(model application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
-	logrus.Debugf("project %v information rolling back", projectModel.Header.Name)
-
-	err := s.projectRespository.DeleteByName(projectModel.Header.Name)
+	err := s.projectRespository.DeleteByName(model.Header.Name)
 	if err != nil {
-		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %s\n%w", projectModel.Header.Name, err)
+		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
 	}
 
-	logrus.Debugf("project %v information rolledback", projectModel.Header.Name)
-	return &projectModel, nil
+	return &model, nil
 }
 
 func (s *ApplicationProjectService) UndoGenerateProject(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {

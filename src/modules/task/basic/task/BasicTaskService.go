@@ -164,3 +164,46 @@ func (s BasicTaskService) saveTaskInformation(taskMommonl basic_task_payload_str
 
 	return &taskMommonl, nil
 }
+
+func (s BasicTaskService) SaveTask(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
+
+	jsonData, err := json.Marshal(model)
+	if err != nil {
+		return nil, err
+	}
+
+	taskEntity := entities.Task{
+		Name:     model.Header.Name,
+		Document: string(jsonData),
+	}
+
+	err = s.taskRespository.Save(&taskEntity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
+func (s *BasicTaskService) UndoSaveTask(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
+
+	err := s.taskRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Task silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+
+	return &model, nil
+}
+
+func (s *BasicTaskService) DeleteTask(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
+
+	logrus.Debugf("template %v removing", model.Header.Name)
+
+	err := s.taskRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Task silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+	logrus.Debugf("template (%v) information removed", model)
+
+	return &model, nil
+}

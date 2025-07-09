@@ -12,6 +12,10 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/internal/flowx"
+	create_steps "parsdevkit.net/modules/group/basic_group/flows/create"
+	remove_steps "parsdevkit.net/modules/group/basic_group/flows/remove"
+	update_steps "parsdevkit.net/modules/group/basic_group/flows/update"
 	"parsdevkit.net/modules/group/basic_group_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
@@ -81,21 +85,29 @@ func (s GroupEngine) prepareToCreate(ctx *application.ApplicationContext, groups
 }
 func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, init bool) error {
 
-	service := ioc.Get[basic_group_contract.GroupInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, groups)
 	if err != nil {
 		return err
 	}
 
-	for index, group := range readyToCreateStructs {
+	for _, group := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", group.Header.Name)
-		if _, err := service.Save(group); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", group.GetKey(), group.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		groupFlow := flowx.NewFlow("CreateNewGroup").
+			Step(&create_steps.SaveGroup{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":  init,
+			"group": group,
+		})
+
+		if err := groupFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Group Create işleminde hata oluştu: %w", &err)
 		}
-
-		fmt.Printf("%v (%d) Group created\n", group.Header.Name, index)
-
 	}
 
 	return nil
@@ -135,15 +147,27 @@ func (s GroupEngine) prepareToUpdate(ctx *application.ApplicationContext, groups
 }
 func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, init bool) error {
 
-	service := ioc.Get[basic_group_contract.GroupInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, groups)
 	if err != nil {
 		return err
 	}
 	for _, group := range readyToUpdateStructs {
-		if _, err := service.Save(group); err != nil {
-			return err
+
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", group.GetKey(), group.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
+		groupFlow := flowx.NewFlow("UpdateExistingGroup").
+			Step(&update_steps.UpdateGroup{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":  init,
+			"group": group,
+		})
+
+		if err := groupFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Group Update işleminde hata oluştu: %w", &err)
 		}
 	}
 	return nil
@@ -171,8 +195,6 @@ func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, groups
 }
 func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_group_payload_structs.GroupBaseStruct, permanent bool) error {
 
-	service := ioc.Get[basic_group_contract.GroupInterface]()
-
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, groups)
 	if err != nil {
 		return err
@@ -180,15 +202,23 @@ func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_
 
 	for _, group := range readyToRemoveStructs {
 
-		if _, err := service.Remove(group.Header.Name, permanent); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", group.GetKey(), group.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		groupFlow := flowx.NewFlow("RemoveExistingGroup").
+			Step(&remove_steps.DeleteGroup{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"group":     group,
+		})
+
+		if err := groupFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Group Remove işleminde hata oluştu: %w", &err)
 		}
-
-		fmt.Printf("%v Group deleted\n", group.Header.Name)
-
 	}
-
-	logrus.Debugf("'%d' group(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

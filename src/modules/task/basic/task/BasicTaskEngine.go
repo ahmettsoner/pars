@@ -9,6 +9,10 @@ import (
 
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
+	"parsdevkit.net/internal/flowx"
+	create_steps "parsdevkit.net/modules/task/basic_task/flows/create"
+	remove_steps "parsdevkit.net/modules/task/basic_task/flows/remove"
+	update_steps "parsdevkit.net/modules/task/basic_task/flows/update"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/ioc"
@@ -86,23 +90,29 @@ func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, ta
 }
 func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
-	service := ioc.Get[basic_task_contract.TaskInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, tasks)
 	if err != nil {
 		return err
 	}
 
-	for index, task := range readyToCreateStructs {
+	for _, task := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", task.Header.Name)
-		if _, err := service.Save(task); err != nil {
-			return err
-		}
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", task.GetKey(), task.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
 
-		if _, err := s.execute(task); err != nil {
-			return err
+		taskFlow := flowx.NewFlow("CreateNewTask").
+			Step(&create_steps.SaveTask{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init": init,
+			"task": task,
+		})
+
+		if err := taskFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Task Create işleminde hata oluştu: %w", &err)
 		}
-		fmt.Printf("%v (%d) Basic Task created\n", task.Header.Name, index)
 
 	}
 
@@ -143,15 +153,27 @@ func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, ta
 }
 func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
-	service := ioc.Get[basic_task_contract.TaskInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, tasks)
 	if err != nil {
 		return err
 	}
 	for _, task := range readyToUpdateStructs {
-		if _, err := service.Save(task); err != nil {
-			return err
+
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", task.GetKey(), task.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
+		taskFlow := flowx.NewFlow("UpdateExistingTask").
+			Step(&update_steps.UpdateTask{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init": init,
+			"task": task,
+		})
+
+		if err := taskFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Task Update işleminde hata oluştu: %w", &err)
 		}
 		if _, err := s.execute(task); err != nil {
 			return err
@@ -182,8 +204,6 @@ func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, ta
 }
 func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, permanent bool) error {
 
-	service := ioc.Get[basic_task_contract.TaskInterface]()
-
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, tasks)
 	if err != nil {
 		return err
@@ -191,15 +211,24 @@ func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []bas
 
 	for _, task := range readyToRemoveStructs {
 
-		if _, err := service.Remove(task.Header.Name, task.Specifications.Workspace, permanent); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", task.GetKey(), task.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		taskFlow := flowx.NewFlow("RemoveExistingTask").
+			Step(&remove_steps.DeleteTask{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"task":      task,
+		})
+
+		if err := taskFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Task Remove işleminde hata oluştu: %w", &err)
 		}
 
-		fmt.Printf("%v Group deleted\n", task.Header.Name)
-
 	}
-
-	logrus.Debugf("'%d' task(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

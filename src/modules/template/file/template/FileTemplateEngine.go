@@ -7,6 +7,10 @@ import (
 	file_template_payload_commands "parsdevkit.net/modules/template/file_template_payload/commands"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
+	"parsdevkit.net/internal/flowx"
+	create_steps "parsdevkit.net/modules/template/file_template/flows/create"
+	remove_steps "parsdevkit.net/modules/template/file_template/flows/remove"
+	update_steps "parsdevkit.net/modules/template/file_template/flows/update"
 	"parsdevkit.net/modules/template/file_template_contract"
 
 	"parsdevkit.net/application"
@@ -89,25 +93,34 @@ func (s FileTemplateEngine) prepareToCreate(ctx *application.ApplicationContext,
 }
 func (s FileTemplateEngine) create(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, init bool) error {
 
-	service := ioc.Get[file_template_contract.TemplateInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
 	if err != nil {
 		return err
 	}
 
-	for index, template := range readyToCreateStructs {
+	for _, template := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", template.Header.Name)
-		if _, err := service.Save(template); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		templateFlow := flowx.NewFlow("CreateNewTemplate").
+			Step(&create_steps.SaveTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"template": template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Create işleminde hata oluştu: %w", &err)
 		}
 
 		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%v (%d) File Template created\n", template.Header.Name, index)
-
 	}
 
 	return nil
@@ -147,16 +160,29 @@ func (s FileTemplateEngine) prepareToUpdate(ctx *application.ApplicationContext,
 }
 func (s FileTemplateEngine) update(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, init bool) error {
 
-	service := ioc.Get[file_template_contract.TemplateInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, templates)
 	if err != nil {
 		return err
 	}
 	for _, template := range readyToUpdateStructs {
-		if _, err := service.Save(template); err != nil {
-			return err
+
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
+		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
+			Step(&update_steps.UpdateTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"template": template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Update işleminde hata oluştu: %w", &err)
 		}
+
 		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
 		if err != nil {
 			return err
@@ -187,8 +213,6 @@ func (s FileTemplateEngine) prepareToRemove(ctx *application.ApplicationContext,
 }
 func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, templates []file_template_payload_structs.TemplateBaseStruct, permanent bool) error {
 
-	service := ioc.Get[file_template_contract.TemplateInterface]()
-
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, templates)
 	if err != nil {
 		return err
@@ -196,15 +220,24 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 
 	for _, template := range readyToRemoveStructs {
 
-		if _, err := service.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
+			Step(&remove_steps.DeleteTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"template":  template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Remove işleminde hata oluştu: %w", err)
 		}
 
-		fmt.Printf("%v Group deleted\n", template.Header.Name)
-
 	}
-
-	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

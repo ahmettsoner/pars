@@ -259,3 +259,16 @@ func (s *TemplateRepository) Delete(entity *entities.Template) error {
 	}
 	return nil
 }
+
+func (s *TemplateRepository) DeleteByName(name string) error {
+	entity, err := s.GetByName(name)
+	if err != nil {
+		return err
+	}
+
+	result := s.DbContext.Database.Delete(entity)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

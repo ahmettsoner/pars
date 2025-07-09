@@ -81,6 +81,10 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("🔍 Applying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
+		fmt.Printf("════════════════════════════════════\n")
+
 		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
@@ -92,6 +96,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			return nil
 		}
 
+		var loadedSchemas []string = make([]string, 0)
 		for _, data := range result {
 
 			if err := data.Validate(); err != nil {
@@ -99,8 +104,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 			}
 
-			fmt.Printf("✅ Loaded: %#v\n", data.GetHeader().Name)
+			loadedSchemas = append(loadedSchemas, data.GetHeader().Name)
 		}
+		fmt.Printf("✅ Loaded Schemas: %s\n\n", _string.Concat(", ", loadedSchemas...))
 
 		appCtx := application.GetContext()
 		if appCtx == nil {
@@ -110,8 +116,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return fmt.Errorf("Engine processing failed: %v", err)
 		}
-
-		fmt.Fprintf(os.Stdout, "✔ Schema(s) '%v' destroyed successfully\n", commandOptions.FilePaths)
 	} else {
 		cmd.Help()
 	}

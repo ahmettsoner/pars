@@ -7,6 +7,10 @@ import (
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
+	"parsdevkit.net/internal/flowx"
+	create_steps "parsdevkit.net/modules/resource/object_resource/flows/create"
+	remove_steps "parsdevkit.net/modules/resource/object_resource/flows/remove"
+	update_steps "parsdevkit.net/modules/resource/object_resource/flows/update"
 	object_resource_payload_commands "parsdevkit.net/modules/resource/object_resource_payload/commands"
 	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 
@@ -89,20 +93,29 @@ func (s ObjectResourceEngine) prepareToCreate(ctx *application.ApplicationContex
 }
 func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
-	service := ioc.Get[object_resource_contract.ResourceInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, resources)
 	if err != nil {
 		return err
 	}
 
-	for index, resource := range readyToCreateStructs {
+	for _, resource := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", resource.Header.Name)
-		if _, err := service.Save(resource); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", resource.GetKey(), resource.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		resourceFlow := flowx.NewFlow("CreateNewResource").
+			Step(&create_steps.SaveResource{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"resource": resource,
+		})
+
+		if err := resourceFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Resource Create işleminde hata oluştu: %w", &err)
 		}
-
-		fmt.Printf("%v (%d) Object Resource created\n", resource.Header.Name, index)
 
 		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
 		if err != nil {
@@ -148,15 +161,27 @@ func (s ObjectResourceEngine) prepareToUpdate(ctx *application.ApplicationContex
 }
 func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
-	service := ioc.Get[object_resource_contract.ResourceInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, resources)
 	if err != nil {
 		return err
 	}
 	for _, resource := range readyToUpdateStructs {
-		if _, err := service.Save(resource); err != nil {
-			return err
+
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", resource.GetKey(), resource.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
+		resourceFlow := flowx.NewFlow("UpdateExistingResource").
+			Step(&update_steps.UpdateResource{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"resource": resource,
+		})
+
+		if err := resourceFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Resource Create işleminde hata oluştu: %w", &err)
 		}
 
 		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
@@ -189,8 +214,6 @@ func (s ObjectResourceEngine) prepareToRemove(ctx *application.ApplicationContex
 }
 func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resources []object_resource_payload_structs.ResourceBaseStruct, permanent bool) error {
 
-	service := ioc.Get[object_resource_contract.ResourceInterface]()
-
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, resources)
 	if err != nil {
 		return err
@@ -198,15 +221,23 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resour
 
 	for _, resource := range readyToRemoveStructs {
 
-		if _, err := service.Remove(resource.Header.Name, resource.Specifications.Workspace, true, permanent); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", resource.GetKey(), resource.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		resourceFlow := flowx.NewFlow("RemoveExistingGroup").
+			Step(&remove_steps.DeleteResource{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"resource":  resource,
+		})
+
+		if err := resourceFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Resource Remove işleminde hata oluştu: %w", &err)
 		}
-
-		fmt.Printf("%v Group deleted\n", resource.Header.Name)
-
 	}
-
-	logrus.Debugf("'%d' resource(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

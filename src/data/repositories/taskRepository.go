@@ -160,3 +160,16 @@ func (s *TaskRepository) Delete(entity *entities.Task) error {
 	}
 	return nil
 }
+
+func (s *TaskRepository) DeleteByName(name string) error {
+	entity, err := s.GetByName(name)
+	if err != nil {
+		return err
+	}
+
+	result := s.DbContext.Database.Delete(entity)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

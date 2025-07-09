@@ -52,7 +52,7 @@ func (s DataResourceService) GetByName(name string) (*data_resource_payload_stru
 
 func (s DataResourceService) Save(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
-	result, err := s.saveResourceInformation(model)
+	result, err := s.SaveResource(model)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,18 @@ func (s DataResourceService) Remove(name, workspace string, force, permanent boo
 
 	return &resource, nil
 }
+func (s *DataResourceService) DeleteResource(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
+	logrus.Debugf("resource %v removing", model.Header.Name)
+
+	err := s.resourceRepository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Data Resource silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+	logrus.Debugf("resource (%v) information removed", model)
+
+	return &model, nil
+}
 func (s DataResourceService) IsExists(name, workspace string) (bool, error) {
 
 	resourceResourceEntity, err := s.resourceRepository.GetByNameAndWorkspace(name, workspace)
@@ -242,15 +253,15 @@ func (s DataResourceService) GetHash(name string) (string, error) {
 	return entity.Hash, nil
 }
 
-func (s DataResourceService) saveResourceInformation(resourceModel data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
+func (s DataResourceService) SaveResource(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
 
-	jsonData, err := json.Marshal(resourceModel)
+	jsonData, err := json.Marshal(model)
 	if err != nil {
 		return nil, err
 	}
 
 	resourceEntity := entities.Resource{
-		Name:     resourceModel.Header.Name,
+		Name:     model.Header.Name,
 		Document: string(jsonData),
 	}
 
@@ -259,5 +270,15 @@ func (s DataResourceService) saveResourceInformation(resourceModel data_resource
 		return nil, err
 	}
 
-	return &resourceModel, nil
+	return &model, nil
+}
+
+func (s *DataResourceService) UndoSaveResource(model data_resource_payload_structs.ResourceBaseStruct) (*data_resource_payload_structs.ResourceBaseStruct, error) {
+
+	err := s.resourceRepository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Application Project silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+
+	return &model, nil
 }

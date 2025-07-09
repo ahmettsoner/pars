@@ -162,7 +162,6 @@ func executeFunc(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Schema(s) '%v' applied successfully\n", commandOptions.FilePaths)
 }
 
 func init() {

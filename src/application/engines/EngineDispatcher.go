@@ -13,7 +13,6 @@ func DispatchEngineProcess(ctx *application.ApplicationContext, t []schemas.Sche
 	for _, engineModule := range AllSorted() {
 		key := engineModule.GetConfig().Name
 		if data, ok := schemaGroups[key]; ok {
-			fmt.Printf("Processing '%s' Schemas\n", key)
 			err := engineModule.Process(ctx, data)
 			if err != nil {
 				return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
@@ -28,7 +27,6 @@ func DispatchEngineDestroy(ctx *application.ApplicationContext, t []schemas.Sche
 	for _, engineModule := range AllSortedReverse() {
 		key := engineModule.GetConfig().Name
 		if data, ok := schemaGroups[key]; ok {
-			fmt.Printf("Destroying '%s' Schemas\n", key)
 			err := engineModule.Destroy(ctx, data)
 			if err != nil {
 				return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)

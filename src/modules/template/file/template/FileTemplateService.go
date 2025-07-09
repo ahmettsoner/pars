@@ -225,3 +225,46 @@ func (s FileTemplateService) saveTemplateInformation(templateModel file_template
 
 	return &templateModel, nil
 }
+
+func (s FileTemplateService) SaveTemplate(model file_template_payload_structs.TemplateBaseStruct) (*file_template_payload_structs.TemplateBaseStruct, error) {
+
+	jsonData, err := json.Marshal(model)
+	if err != nil {
+		return nil, err
+	}
+
+	resourceEntity := entities.Template{
+		Name:     model.Header.Name,
+		Document: string(jsonData),
+	}
+
+	err = s.templateRespository.Save(&resourceEntity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
+func (s *FileTemplateService) UndoSaveTemplate(model file_template_payload_structs.TemplateBaseStruct) (*file_template_payload_structs.TemplateBaseStruct, error) {
+
+	err := s.templateRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: File Template silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+
+	return &model, nil
+}
+
+func (s *FileTemplateService) DeleteTemplate(model file_template_payload_structs.TemplateBaseStruct) (*file_template_payload_structs.TemplateBaseStruct, error) {
+
+	logrus.Debugf("template %v removing", model.Header.Name)
+
+	err := s.templateRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: File Template silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+	logrus.Debugf("template (%v) information removed", model)
+
+	return &model, nil
+}

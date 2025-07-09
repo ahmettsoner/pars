@@ -44,13 +44,14 @@ func (f *Flow) RunWithContext(ctx context.Context, fc *FlowContext) error {
 func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 	fc.Log("Starting flow: %s", f.Name)
 
+	const padWidth = 30
 	var executedSteps []Step // <-- çalıştırılmış adımlar burada tutulacak
 
 	defer func() {
 		if r := recover(); r != nil {
 			pErr := fmt.Errorf("panic in flow '%s': %v", f.Name, r)
 			fc.AddError(pErr)
-			fc.Log("⚠️ Panic occurred: %v", r)
+			fc.Log("%-*s ❌ Fail", padWidth, r)
 
 			// Sadece çalışmış adımları tersten compensate et
 			for j := len(executedSteps) - 1; j >= 0; j-- {
@@ -68,11 +69,10 @@ func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 	}()
 
 	for _, step := range f.Steps {
-		fc.Log("Running step: %s", step.Name())
 
 		if err := step.Run(ctx, fc); err != nil {
 			fc.AddError(err)
-			fc.Log("❌ Step failed: %s - %v", step.Name(), err)
+			fc.Log("%-*s ❌ Fail", padWidth, step.Name())
 
 			// rollback
 			for j := len(executedSteps) - 1; j >= 0; j-- {
@@ -87,14 +87,10 @@ func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 			return err
 		}
 
-		fc.Log("✅ Step completed: %s", step.Name())
-
+		fc.Log("%-*s ✅ Done", padWidth, step.Name())
 		executedSteps = append(executedSteps, step) // sadece başarılı step’leri track et
-		if step.IgnoreError() {
-			fc.Log("⚠️ Step error ignored: %s", step.Name())
-		}
 	}
 
-	fc.Log("🎉 Flow completed successfully: %s", f.Name)
+	fc.Log("Flow completed successfully: %s", f.Name)
 	return nil
 }

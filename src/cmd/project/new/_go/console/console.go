@@ -3,7 +3,6 @@ package console
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"gorm.io/gorm/schema"
 	"parsdevkit.net/models"
@@ -160,7 +159,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Schema(s) '%v' applied successfully\n", commandOptions.FilePaths)
 }
 func afterFunc(cmd *cobra.Command, args []string) {
 	commandOptions = NewOptions{

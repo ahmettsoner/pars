@@ -171,3 +171,46 @@ func (s GroupService) saveGroupInformation(groupModel basic_group_payload_struct
 
 	return &groupModel, nil
 }
+
+func (s GroupService) SaveGroup(model basic_group_payload_structs.GroupBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
+
+	jsonData, err := json.Marshal(model)
+	if err != nil {
+		return nil, err
+	}
+
+	groupEntity := entities.Group{
+		Name:     model.Header.Name,
+		Document: string(jsonData),
+	}
+
+	err = s.groupRespository.Save(&groupEntity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
+func (s *GroupService) UndoSaveGroup(model basic_group_payload_structs.GroupBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
+
+	err := s.groupRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Group silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+
+	return &model, nil
+}
+
+func (s *GroupService) DeleteGroup(model basic_group_payload_structs.GroupBaseStruct) (*basic_group_payload_structs.GroupBaseStruct, error) {
+
+	logrus.Debugf("template %v removing", model.Header.Name)
+
+	err := s.groupRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Group silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+	logrus.Debugf("template (%v) information removed", model)
+
+	return &model, nil
+}

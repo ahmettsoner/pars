@@ -32,7 +32,7 @@ func (fc *FlowContext) Log(format string, args ...any) {
 	defer fc.mu.Unlock()
 	msg := fmt.Sprintf(format, args...)
 	fc.Logs = append(fc.Logs, msg)
-	fmt.Println("[FLOW]", msg)
+	fmt.Println(msg)
 }
 
 func (fc *FlowContext) AddError(err error) {

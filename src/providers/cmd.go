@@ -39,7 +39,7 @@ func Execute(path string, command string, args ...string) error {
 
 	scanner := bufio.NewScanner(stdout)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		// fmt.Println(scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {

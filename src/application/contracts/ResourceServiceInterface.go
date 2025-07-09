@@ -8,6 +8,9 @@ import (
 type ResourceServiceInterface[T schemas.SchemaInterface] interface {
 	GetByName(name string) (*T, error)
 	Save(model T) (*T, error)
+	SaveResource(model T) (*T, error)
+	UndoSaveResource(model T) (*T, error)
+	DeleteResource(model T) (*T, error)
 	List() (*([]T), error)
 	ListByWorkspace(workspace string) (*([]T), error)
 	ListBySet(set string) (*([]T), error)

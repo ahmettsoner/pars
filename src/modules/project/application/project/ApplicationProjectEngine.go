@@ -10,9 +10,9 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	create_steps "parsdevkit.net/modules/project/application_project/flows/steps/create"
-	remove_steps "parsdevkit.net/modules/project/application_project/flows/steps/remove"
-	update_steps "parsdevkit.net/modules/project/application_project/flows/steps/update"
+	create_steps "parsdevkit.net/modules/project/application_project/flows/create"
+	remove_steps "parsdevkit.net/modules/project/application_project/flows/remove"
+	update_steps "parsdevkit.net/modules/project/application_project/flows/update"
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -108,6 +108,10 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToCreateStructs {
 
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
 		projectFlow := flowx.NewFlow("CreateNewProject").
 			Step(&create_steps.SaveProject{}).
 			Step(&create_steps.PrepareProjectFolder{}).
@@ -170,6 +174,10 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
 		projectFlow := flowx.NewFlow("UpdateExistingProject").
 			Step(&update_steps.UpdateProject{}).
 			Step(&update_steps.UpdateProjectLayers{}).
@@ -183,7 +191,7 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 
 		if err := projectFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Project Create işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Project Update işleminde hata oluştu: %w", &err)
 		}
 	}
 	return nil
@@ -219,7 +227,11 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToRemoveStructs {
 
-		projectFlow := flowx.NewFlow("UpdateExistingProject").
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		projectFlow := flowx.NewFlow("RemoveExistingProject").
 			Step(&remove_steps.DestroyProject{}).
 			Step(&remove_steps.DeleteProject{}).
 			Step(&remove_steps.RemoveProjectFiles{})
@@ -231,14 +243,9 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 		if err := projectFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Project Create işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Project Remove işleminde hata oluştu: %w", &err)
 		}
-
-		fmt.Printf("%v Project deleted\n", project.GetFullName())
-
 	}
-
-	logrus.Debugf("'%d' project(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

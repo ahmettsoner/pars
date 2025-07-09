@@ -8,6 +8,10 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/internal/flowx"
+	create_steps "parsdevkit.net/modules/template/shared_template/flows/create"
+	remove_steps "parsdevkit.net/modules/template/shared_template/flows/remove"
+	update_steps "parsdevkit.net/modules/template/shared_template/flows/update"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
@@ -85,7 +89,6 @@ func (s SharedTemplateEngine) prepareToCreate(ctx *application.ApplicationContex
 }
 func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, init bool) error {
 
-	service := ioc.Get[shared_template_contract.TemplateInterface]()
 	readyToCreateStructs, err := s.prepareToCreate(ctx, templates)
 	if err != nil {
 		return err
@@ -93,9 +96,21 @@ func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templa
 
 	for _, template := range readyToCreateStructs {
 
-		logrus.Debugf("trying to create %v", template.Header.Name)
-		if _, err := service.Save(template); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		templateFlow := flowx.NewFlow("CreateNewTemplate").
+			Step(&create_steps.SaveTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"template": template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Create işleminde hata oluştu: %w", &err)
 		}
 
 	}
@@ -137,15 +152,26 @@ func (s SharedTemplateEngine) prepareToUpdate(ctx *application.ApplicationContex
 }
 func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, init bool) error {
 
-	service := ioc.Get[shared_template_contract.TemplateInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, templates)
 	if err != nil {
 		return err
 	}
 	for _, template := range readyToUpdateStructs {
-		if _, err := service.Save(template); err != nil {
-			return err
+		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("────────────────────────────────────\n")
+
+		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
+			Step(&update_steps.UpdateTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":     init,
+			"template": template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Update işleminde hata oluştu: %w", &err)
 		}
 	}
 	return nil
@@ -167,13 +193,10 @@ func (s SharedTemplateEngine) prepareToRemove(ctx *application.ApplicationContex
 			readyToRemoveStructs = append(readyToRemoveStructs, template)
 		}
 	}
-	logrus.Debugf("'%d' template(s) detected that will remove", len(readyToRemoveStructs))
 
 	return readyToRemoveStructs, nil
 }
 func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templates []shared_template_payload_structs.TemplateBaseStruct, permanent bool) error {
-
-	service := ioc.Get[shared_template_contract.TemplateInterface]()
 
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, templates)
 	if err != nil {
@@ -182,15 +205,24 @@ func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templa
 
 	for _, template := range readyToRemoveStructs {
 
-		if _, err := service.Remove(template.Header.Name, template.Specifications.Workspace, permanent); err != nil {
-			return err
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
+		fmt.Printf("════════════════════════════════════\n")
+
+		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
+			Step(&remove_steps.DeleteTemplate{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"template":  template,
+		})
+
+		if err := templateFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Template Remove işleminde hata oluştu: %w", err)
 		}
 
-		fmt.Printf("%v Shared Template deleted\n", template.Header.Name)
-
 	}
-
-	logrus.Debugf("'%d' template(s) deleting", len(readyToRemoveStructs))
 
 	return nil
 }

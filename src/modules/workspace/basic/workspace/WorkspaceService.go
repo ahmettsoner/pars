@@ -586,3 +586,46 @@ func (s WorkspaceService) GetHash(name string) (string, error) {
 
 	return entity.Hash, nil
 }
+
+func (s WorkspaceService) SaveWorkspace(model basic_workspace_payload_structs.WorkspaceBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	jsonData, err := json.Marshal(model)
+	if err != nil {
+		return nil, err
+	}
+
+	workspaceEntity := entities.Workspace{
+		Name:     model.Header.Name,
+		Document: string(jsonData),
+	}
+
+	err = s.workspaceRespository.Save(&workspaceEntity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model, nil
+}
+
+func (s *WorkspaceService) UndoSaveWorkspace(model basic_workspace_payload_structs.WorkspaceBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	err := s.workspaceRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Workspace silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+
+	return &model, nil
+}
+
+func (s *WorkspaceService) DeleteWorkspace(model basic_workspace_payload_structs.WorkspaceBaseStruct) (*basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	logrus.Debugf("template %v removing", model.Header.Name)
+
+	err := s.workspaceRespository.DeleteByName(model.Header.Name)
+	if err != nil {
+		return nil, fmt.Errorf("xxx: Code Workspace silme aşamasında beklenmeyen hata oluştu %s\n%w", model.Header.Name, err)
+	}
+	logrus.Debugf("template (%v) information removed", model)
+
+	return &model, nil
+}

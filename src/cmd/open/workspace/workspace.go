@@ -2,7 +2,6 @@ package workspace
 
 import (
 	"fmt"
-	"os"
 
 	"parsdevkit.net/components/workspace"
 	"parsdevkit.net/providers"
@@ -58,7 +57,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	providers.VSCodeExecute("", path)
 
-	fmt.Fprintf(os.Stdout, "✔ Workspace(s) '%v' applied successfully\n", commandOptions.Name)
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {
