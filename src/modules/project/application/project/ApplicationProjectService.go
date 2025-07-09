@@ -66,9 +66,9 @@ func (s *ApplicationProjectService) Create(model application_project_payload_str
 
 	logrus.Debugf("project %v creating", model.Header.Name)
 
-	if _, err := s.saveProjectInformation(model); err != nil {
+	if _, err := s.SaveProject(model); err != nil {
 		logrus.Warnf("yyy: rolling back the creating %v!", model.Header.Name)
-		_, rbErr := s.rollbackSaveProjectInformation(model)
+		_, rbErr := s.UndoSaveProject(model)
 		if rbErr != nil {
 			return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
 		}
@@ -78,11 +78,11 @@ func (s *ApplicationProjectService) Create(model application_project_payload_str
 	if init {
 		_, err := s.GenerateProject(model)
 		if err != nil {
-			_, rbErr := s.rollbackProjectGeneration(model)
+			_, rbErr := s.UndoGenerateProject(model)
 			if rbErr != nil {
 				return nil, fmt.Errorf("xxx: Application Project oluştururken meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
 			}
-			_, rbErr = s.rollbackSaveProjectInformation(model)
+			_, rbErr = s.UndoSaveProject(model)
 			if rbErr != nil {
 				return nil, fmt.Errorf("xxx: Application Project Information kayıt sırasında meydana gelen hata için uygulanan rollback hatası oluştu: '%s'\n%w", model.Header.Name, rbErr)
 			}
@@ -112,6 +112,13 @@ func (s ApplicationProjectService) GetByName(name string) (*application_project_
 	return template, nil
 }
 
+func (s *ApplicationProjectService) RemoveUnnecessaryFiles(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
+	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
+	if err := projectManager.RemoveDefaultFiles(model); err != nil {
+		return false, fmt.Errorf("xxx: Application Project oluştururma aşamasında default files kaldırma işlemi sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
+	}
+	return true, nil
+}
 func (s *ApplicationProjectService) GenerateProject(model application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	result, err := s.GetByName(model.Header.Name)
@@ -121,10 +128,6 @@ func (s *ApplicationProjectService) GenerateProject(model application_project_pa
 
 	if result == nil {
 		return nil, fmt.Errorf("xxx: Application Project tanımlı değil '%s'", model.Header.Name)
-	}
-
-	if _, err := s.CreateProjectFolder(model); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, proje klasörü hazırlama aşamasında beklenmeyen hata oluştu '%s'\n%w", model.Header.Name, err)
 	}
 
 	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
@@ -155,29 +158,19 @@ func (s *ApplicationProjectService) GenerateProject(model application_project_pa
 		}
 	}
 
-	if err := projectManager.RemoveDefaultFiles(model); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururma aşamasında default files kaldırma işlemi sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
-	}
+	return result, nil
+}
 
-	if _, err := s.CreateAllProjectFolders(model); err != nil {
-		return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin dizinleri oluşturma sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
-	}
-
-	if model.Specifications.Dependencies != nil {
-		err := s.AddDependenciesToProject(model, model.Specifications.Dependencies...)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
-		}
-	}
+func (s ApplicationProjectService) SetProjectDependencies(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
 	if model.Specifications.References != nil {
 		err := s.AddReferenceToProject(model, model.Specifications.References...)
 		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
+			return false, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
 		}
 	}
 
-	return result, nil
+	return true, nil
 }
 func (s ApplicationProjectService) AddDependenciesToProject(model application_project_payload_structs.ProjectBaseStruct, dependencies ...applicationProject.Dependency) error {
 
@@ -197,6 +190,18 @@ func (s ApplicationProjectService) RemoveDependencyFromProject(model application
 		return fmt.Errorf("xxx: Application Project Paket kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, dependencies, err)
 	}
 	return nil
+}
+
+func (s ApplicationProjectService) SetProjectReferences(model application_project_payload_structs.ProjectBaseStruct) (bool, error) {
+
+	if model.Specifications.Dependencies != nil {
+		err := s.AddDependenciesToProject(model, model.Specifications.Dependencies...)
+		if err != nil {
+			return false, fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", model.Header.Name, err)
+		}
+	}
+
+	return true, nil
 }
 func (s ApplicationProjectService) AddReferenceToProject(model application_project_payload_structs.ProjectBaseStruct, references ...application_project_payload_structs.ProjectBaseStruct) error {
 
@@ -289,6 +294,16 @@ func (s ApplicationProjectService) DeleteLayerFolder(project application_project
 
 	return nil
 }
+func (s ApplicationProjectService) AddProjectLayer(project application_project_payload_structs.ProjectBaseStruct, layers ...applicationProject.Layer) error {
+	return nil
+}
+func (s ApplicationProjectService) CreateProjectLayers(project application_project_payload_structs.ProjectBaseStruct) error {
+	if _, err := s.CreateAllProjectFolders(project); err != nil {
+		return fmt.Errorf("xxx: Application Project oluştururken, projelerin dizinleri oluşturma sırasında hata meydana geldi: '%s'\n%w", &project.Header.Name, err)
+	}
+	return nil
+}
+
 func (s ApplicationProjectService) CreateAllProjectFolders(project application_project_payload_structs.ProjectBaseStruct) ([]string, error) {
 	folders := make([]string, 0)
 	for _, value := range project.Specifications.Layers {
@@ -1623,7 +1638,7 @@ func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*
 	return &workspace.Specifications, nil
 }
 
-func (s *ApplicationProjectService) saveProjectInformation(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) SaveProject(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v information saving", projectModel.Header.Name)
 
@@ -1646,7 +1661,7 @@ func (s *ApplicationProjectService) saveProjectInformation(projectModel applicat
 	return &projectModel, nil
 }
 
-func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) UndoSaveProject(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v information rolling back", projectModel.Header.Name)
 
@@ -1659,7 +1674,7 @@ func (s *ApplicationProjectService) rollbackSaveProjectInformation(projectModel 
 	return &projectModel, nil
 }
 
-func (s *ApplicationProjectService) rollbackProjectGeneration(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
+func (s *ApplicationProjectService) UndoGenerateProject(projectModel application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("project %v dosya rolling back", projectModel.Header.Name)
 

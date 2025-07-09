@@ -2,7 +2,6 @@ package application_project
 
 import (
 	"errors"
-	"reflect"
 
 	"parsdevkit.net/internal/flowx"
 
@@ -11,7 +10,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	create_flows "parsdevkit.net/modules/project/application_project/flows/create"
+	flow_steps "parsdevkit.net/modules/project/application_project/flows/steps"
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -23,7 +22,6 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/internal/diffx"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/engines"
@@ -109,8 +107,13 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 	for _, project := range readyToCreateStructs {
 
 		projectFlow := flowx.NewFlow("CreateNewProject").
-			Step(&create_flows.PersistProject{}).
-			Step(&create_flows.GenerateProject{})
+			Step(&flow_steps.SaveProject{}).
+			Step(&flow_steps.PrepareProjectFolder{}).
+			Step(&flow_steps.GenerateProject{}).
+			Step(&flow_steps.RemoveUnnecessaryFiles{}).
+			Step(&flow_steps.CreateProjectLayers{}).
+			Step(&flow_steps.SetProjectDependencies{}).
+			Step(&flow_steps.SetProjectReferences{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":    init,
@@ -119,8 +122,8 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 
 		if err := projectFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Project Create işleminde hata oluştu: %w", &err)
 		}
-
 	}
 
 	return nil
@@ -160,110 +163,28 @@ func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationCo
 }
 func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
-	service := ioc.Get[application_project_contract.ProjectInterface]()
-
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, projects)
 	if err != nil {
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
-		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
-		if err != nil {
-			return err
-		}
+		projectFlow := flowx.NewFlow("UpdateExistingProject").
+			Step(&flow_steps.SaveProject{}).
+			Step(&flow_steps.CreateProjectLayers{}).
+			Step(&flow_steps.SetProjectDependencies{}).
+			Step(&flow_steps.SetProjectReferences{})
+			//CreateProjectLayers
+			//AddProjectReferences
+			//AddProjectDependencies
 
-		if !reflect.DeepEqual(project.Specifications.Layers, existingProject.Specifications.Layers) {
+		fc := flowx.NewContextWithData(map[string]any{
+			"init":    init,
+			"project": project,
+		})
 
-			result := diffx.DiffSlice(existingProject.Specifications.Layers, project.Specifications.Layers)
-
-			if len(result.Created) > 0 {
-				err := service.CreateLayerFolder(project, result.Created...)
-				if err != nil {
-					return err
-				}
-			}
-			if len(result.Updated) > 0 {
-				//TODO Burda değişiklik tespit edilerek eğer move ve rename yapılabilir dosya ve klasörlere, silmekten daha güvenli
-				for _, item := range result.Updated {
-					err := service.DeleteLayerFolder(project, item.Old)
-					if err != nil {
-						return err
-					}
-					err = service.CreateLayerFolder(project, item.New)
-					if err != nil {
-						return err
-					}
-				}
-			}
-			if len(result.Deleted) > 0 {
-				err := service.DeleteLayerFolder(project, result.Deleted...)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		if !reflect.DeepEqual(project.Specifications.Dependencies, existingProject.Specifications.Dependencies) {
-			result := diffx.DiffSlice(existingProject.Specifications.Dependencies, project.Specifications.Dependencies)
-
-			if len(result.Created) > 0 {
-				err := service.AddDependenciesToProject(project, result.Created...)
-				if err != nil {
-					return err
-				}
-
-			}
-			if len(result.Updated) > 0 {
-				for _, item := range result.Updated {
-					err := service.RemoveDependencyFromProject(project, item.Old)
-					if err != nil {
-						return err
-					}
-					err = service.AddDependenciesToProject(project, item.New)
-					if err != nil {
-						return err
-					}
-				}
-			}
-			if len(result.Deleted) > 0 {
-				err := service.RemoveDependencyFromProject(project, result.Deleted...)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		if !reflect.DeepEqual(project.Specifications.References, existingProject.Specifications.References) {
-			result := diffx.DiffSlice(existingProject.Specifications.References, project.Specifications.References)
-
-			if len(result.Created) > 0 {
-				err := service.AddReferenceToProject(project, result.Created...)
-				if err != nil {
-					return err
-				}
-			}
-			if len(result.Updated) > 0 {
-				for _, item := range result.Updated {
-					err := service.RemoveReferenceFromProject(project, item.Old)
-					if err != nil {
-						return err
-					}
-					err = service.AddReferenceToProject(project, item.New)
-					if err != nil {
-						return err
-					}
-				}
-			}
-			if len(result.Deleted) > 0 {
-				err := service.RemoveReferenceFromProject(project, result.Deleted...)
-				if err != nil {
-					return err
-				}
-			}
-		}
-
-		if _, err := service.Create(project, false); err != nil {
-			return err
+		if err := projectFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Project Create işleminde hata oluştu: %w", &err)
 		}
 	}
 	return nil

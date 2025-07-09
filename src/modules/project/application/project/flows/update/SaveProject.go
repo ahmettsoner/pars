@@ -1,4 +1,4 @@
-package create
+package update
 
 import (
 	"context"
@@ -8,20 +8,20 @@ import (
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
-type GenerateProject struct{}
+type SaveProject struct{ flowx.BaseStep }
 
-func (s *GenerateProject) Name() string { return "GenerateProject" }
+func (s *SaveProject) Name() string { return "SaveProject" }
 
-func (s *GenerateProject) Run(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *SaveProject) Run(ctx context.Context, fc *flowx.FlowContext) error {
 
 	return fmt.Errorf("dddd")
 }
 
-func (s *GenerateProject) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *SaveProject) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
 	project, ok := flowx.Get[application_project_payload_structs.ProjectBaseStruct](fc, "project")
 	if !ok {
 		panic(fmt.Errorf("xxx: project parametresi hatalı tipte"))
 	}
-	fc.Log("Rollback: Generating project %s", project.Header.Name)
+	fc.Log("Rollback: Updating project %s", project.Header.Name)
 	return nil
 }

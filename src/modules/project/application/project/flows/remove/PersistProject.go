@@ -11,11 +11,11 @@ import (
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
-type PersistProject struct{}
+type SaveProject struct{}
 
-func (s *PersistProject) Name() string { return "PersistProject" }
+func (s *SaveProject) Name() string { return "SaveProject" }
 
-func (s *PersistProject) Run(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *SaveProject) Run(ctx context.Context, fc *flowx.FlowContext) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
@@ -38,7 +38,7 @@ func (s *PersistProject) Run(ctx context.Context, fc *flowx.FlowContext) error {
 	return nil
 }
 
-func (s *PersistProject) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *SaveProject) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
 	project, ok := flowx.Get[application_project_payload_structs.ProjectBaseStruct](fc, "project")
 	if !ok {
 		panic(fmt.Errorf("xxx: init parametresi hatalı tipte"))

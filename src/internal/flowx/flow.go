@@ -55,6 +55,10 @@ func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 			// Sadece çalışmış adımları tersten compensate et
 			for j := len(executedSteps) - 1; j >= 0; j-- {
 				step := executedSteps[j]
+				if step.IgnoreError() {
+					fc.Log("⏭️ Skipping compensation for ignored step: %s", step.Name())
+					continue
+				}
 				fc.Log("🧨 Compensating due to panic: %s", step.Name())
 				_ = step.Compensate(ctx, fc)
 			}
@@ -73,6 +77,10 @@ func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 			// rollback
 			for j := len(executedSteps) - 1; j >= 0; j-- {
 				rollbackStep := executedSteps[j]
+				if step.IgnoreError() {
+					fc.Log("⏭️ Skipping compensation for ignored step: %s", step.Name())
+					continue
+				}
 				fc.Log("↩️ Compensating: %s", rollbackStep.Name())
 				_ = rollbackStep.Compensate(ctx, fc)
 			}
@@ -80,7 +88,11 @@ func (f *Flow) runInternal(ctx context.Context, fc *FlowContext) (err error) {
 		}
 
 		fc.Log("✅ Step completed: %s", step.Name())
+
 		executedSteps = append(executedSteps, step) // sadece başarılı step’leri track et
+		if step.IgnoreError() {
+			fc.Log("⚠️ Step error ignored: %s", step.Name())
+		}
 	}
 
 	fc.Log("🎉 Flow completed successfully: %s", f.Name)
