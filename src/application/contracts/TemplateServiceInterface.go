@@ -11,6 +11,7 @@ type TemplateServiceInterface[T schemas.SchemaInterface] interface {
 	SaveTemplate(model T) (*T, error)
 	UndoSaveTemplate(model T) (*T, error)
 	DeleteTemplate(model T) (*T, error)
+	ClearTemplateHistory(model T) error
 	List() (*([]T), error)
 	ListBySetAndLayers(set string, layers ...string) (*([]T), error)
 	ListByFilter(set, workspace string, layers []string, tags []string, labels []label.Label) (*([]T), error)

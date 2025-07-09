@@ -233,7 +233,8 @@ func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resource
 		fmt.Printf("════════════════════════════════════\n")
 
 		resourceFlow := flowx.NewFlow("RemoveExistingGroup").
-			Step(&remove_steps.DeleteResource{})
+			Step(&remove_steps.DeleteResource{}).
+			Step(&remove_steps.ClearResourceHistory{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"permanent": permanent,

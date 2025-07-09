@@ -16,3 +16,32 @@ type EngineInterface interface {
 	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 	GetConfig() EngineConfig
 }
+
+type ProcessorInterface interface {
+	Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type DestroyerInterface interface {
+	Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ApplicationProjectRunnerEngineInterface interface {
+	Run(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ApplicationProjectCleanerEngineInterface interface {
+	Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+
+type ApplicationProjectContainerizerEngineInterface interface {
+	Container(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+
+type ApplicationProjectDistributerEngineInterface interface {
+	Distribute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ApplicationProjectExecuterEngineInterface interface {
+	Execute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ApplicationProjectReleaserEngineInterface interface {
+	Release(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}

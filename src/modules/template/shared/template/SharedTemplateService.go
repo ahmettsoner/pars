@@ -244,3 +244,8 @@ func (s *SharedTemplateService) DeleteTemplate(model shared_template_payload_str
 
 	return &model, nil
 }
+
+func (s *SharedTemplateService) ClearTemplateHistory(model shared_template_payload_structs.TemplateBaseStruct) error {
+
+	return nil
+}

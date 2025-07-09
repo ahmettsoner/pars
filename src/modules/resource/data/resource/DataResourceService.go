@@ -282,3 +282,13 @@ func (s *DataResourceService) UndoSaveResource(model data_resource_payload_struc
 
 	return &model, nil
 }
+
+func (s *DataResourceService) ClearResourceHistory(model data_resource_payload_structs.ResourceBaseStruct) error {
+
+	err := s.generationHistoryRespository.DeleteBySetAndResource(model.Specifications.Set, model.Header.Name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

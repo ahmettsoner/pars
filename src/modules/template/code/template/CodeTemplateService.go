@@ -269,3 +269,13 @@ func (s *CodeTemplateService) DeleteTemplate(model code_template_payload_structs
 
 	return &model, nil
 }
+
+func (s *CodeTemplateService) ClearTemplateHistory(model code_template_payload_structs.TemplateBaseStruct) error {
+
+	err := s.generationHistoryRespository.DeleteBySetAndTemplate(model.Specifications.Set, model.Header.Name)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

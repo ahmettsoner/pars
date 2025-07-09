@@ -225,7 +225,8 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 		fmt.Printf("════════════════════════════════════\n")
 
 		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
-			Step(&remove_steps.DeleteTemplate{})
+			Step(&remove_steps.DeleteTemplate{}).
+			Step(&remove_steps.ClearTemplateHistory{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"permanent": permanent,
