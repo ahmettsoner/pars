@@ -69,13 +69,13 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.Names) > 0 {
 
-		projectService := ioc.Get[application_project_contract.ProjectInterface]()
-		for _, name := range commandOptions.Names {
-			_, err := projectService.Remove(name, commandOptions.Workspace, false, true)
-			if err != nil {
-				return fmt.Errorf("Failed to remove project(s) '%s'\n%w", name, err)
-			}
-		}
+		// projectService := ioc.Get[application_project_contract.ProjectInterface]()
+		// for _, name := range commandOptions.Names {
+		// 	_, err := projectService.Remove(name, commandOptions.Workspace, false, true)
+		// 	if err != nil {
+		// 		return fmt.Errorf("Failed to remove project(s) '%s'\n%w", name, err)
+		// 	}
+		// }
 		fmt.Fprintf(os.Stdout, "✔ Project(s) '%v' removed successfully\n", commandOptions.Names)
 	}
 

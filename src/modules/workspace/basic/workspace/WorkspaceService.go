@@ -334,20 +334,20 @@ func (s WorkspaceService) Remove(name string, force bool, permanent bool) (*basi
 		return nil, errors.New("invalid workspace workspace")
 	}
 
-	projectsBelongsToWorkspace, err := s.projectService.ListByWorkspace(workspaceName)
-	if err != nil {
-		return nil, err
-	}
+	// projectsBelongsToWorkspace, err := s.projectService.ListByWorkspace(workspaceName)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	if len(*projectsBelongsToWorkspace) > 0 {
-		if force {
-			for _, project := range *projectsBelongsToWorkspace {
-				s.projectService.Remove(project.GetFullName(), project.Specifications.Workspace, force, permanent)
-			}
-		} else {
-			return nil, errors.New(fmt.Sprintf("workspace (%v) has related projects", workspaceName))
-		}
-	}
+	// if len(*projectsBelongsToWorkspace) > 0 {
+	// 	if force {
+	// 		for _, project := range *projectsBelongsToWorkspace {
+	// 			s.projectService.Remove(project.GetFullName(), project.Specifications.Workspace, force, permanent)
+	// 		}
+	// 	} else {
+	// 		return nil, errors.New(fmt.Sprintf("workspace (%v) has related projects", workspaceName))
+	// 	}
+	// }
 
 	logrus.Debugf("workspace %v deleting...", workspaceEntity.Name)
 

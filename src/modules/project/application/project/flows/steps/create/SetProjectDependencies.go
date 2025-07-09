@@ -1,10 +1,9 @@
-package steps
+package create
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/internal/flowx"
 	"parsdevkit.net/modules/project/application_project_contract"
@@ -27,14 +26,15 @@ func (s *SetProjectDependencies) Run(ctx context.Context, fc *flowx.FlowContext)
 	if init {
 		project, ok := flowx.Get[application_project_payload_structs.ProjectBaseStruct](fc, "project")
 		if !ok {
-			panic(fmt.Errorf("xxx: init parametresi hatalı tipte"))
+			panic(fmt.Errorf("xxx: project parametresi hatalı tipte"))
 		}
 
-		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := service.SetProjectDependencies(project); err != nil {
-			return err
+		if project.Specifications.References != nil {
+			err := service.AddReferenceToProject(project, project.Specifications.References...)
+			if err != nil {
+				return fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", project.Header.Name, err)
+			}
 		}
-
 		fmt.Printf("%v Project created\n", project.Header.Name)
 	}
 	return nil

@@ -10,7 +10,9 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
-	flow_steps "parsdevkit.net/modules/project/application_project/flows/steps"
+	create_steps "parsdevkit.net/modules/project/application_project/flows/steps/create"
+	remove_steps "parsdevkit.net/modules/project/application_project/flows/steps/remove"
+	update_steps "parsdevkit.net/modules/project/application_project/flows/steps/update"
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -107,13 +109,13 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 	for _, project := range readyToCreateStructs {
 
 		projectFlow := flowx.NewFlow("CreateNewProject").
-			Step(&flow_steps.SaveProject{}).
-			Step(&flow_steps.PrepareProjectFolder{}).
-			Step(&flow_steps.GenerateProject{}).
-			Step(&flow_steps.RemoveUnnecessaryFiles{}).
-			Step(&flow_steps.CreateProjectLayers{}).
-			Step(&flow_steps.SetProjectDependencies{}).
-			Step(&flow_steps.SetProjectReferences{})
+			Step(&create_steps.SaveProject{}).
+			Step(&create_steps.PrepareProjectFolder{}).
+			Step(&create_steps.GenerateProject{}).
+			Step(&create_steps.RemoveUnnecessaryFiles{}).
+			Step(&create_steps.CreateProjectLayers{}).
+			Step(&create_steps.SetProjectDependencies{}).
+			Step(&create_steps.SetProjectReferences{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":    init,
@@ -169,13 +171,10 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 	}
 	for _, project := range readyToUpdateStructs {
 		projectFlow := flowx.NewFlow("UpdateExistingProject").
-			Step(&flow_steps.SaveProject{}).
-			Step(&flow_steps.CreateProjectLayers{}).
-			Step(&flow_steps.SetProjectDependencies{}).
-			Step(&flow_steps.SetProjectReferences{})
-			//CreateProjectLayers
-			//AddProjectReferences
-			//AddProjectDependencies
+			Step(&update_steps.UpdateProject{}).
+			Step(&update_steps.UpdateProjectLayers{}).
+			Step(&update_steps.UpdateProjectDependencies{}).
+			Step(&update_steps.UpdateProjectReferences{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":    init,
@@ -213,8 +212,6 @@ func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationCo
 }
 func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, permanent bool) error {
 
-	service := ioc.Get[application_project_contract.ProjectInterface]()
-
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, projects)
 	if err != nil {
 		return err
@@ -222,8 +219,19 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToRemoveStructs {
 
-		if _, err := service.Remove(project.GetFullName(), project.Specifications.Workspace, false, permanent); err != nil {
-			return err
+		projectFlow := flowx.NewFlow("UpdateExistingProject").
+			Step(&remove_steps.DestroyProject{}).
+			Step(&remove_steps.DeleteProject{}).
+			Step(&remove_steps.RemoveProjectFiles{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"permanent": permanent,
+			"project":   project,
+		})
+
+		if err := projectFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Project Create işleminde hata oluştu: %w", &err)
 		}
 
 		fmt.Printf("%v Project deleted\n", project.GetFullName())

@@ -9,17 +9,15 @@ import (
 
 type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	//General
-	Create(model T, init bool) (*T, error) //GenerateProject, CreateProjectFolder, SaveProject
-	// Destroy(model T, init bool) (*T, error) //Remove, RemoveProjectFolder, DeleteProject
+	// Destroy(model T, init bool) (*T, error) //DestroyProject, DeleteProject
 	GenerateProject(model T) (*T, error)     //with provider
 	UndoGenerateProject(model T) (*T, error) //with provider
-	// RemoveProject(model T) (*T, error) //with provider
-	SaveProject(model T) (*T, error)     //Todb
+	DestroyProject(model T) (*T, error)      //with provider
+	SaveProject(model T) (*T, error)
 	UndoSaveProject(model T) (*T, error) //from db
-	// DeleteProject(model T) (*T, error) //from db
+	DeleteProject(model T) (*T, error)   //from db
 	GetByName(name string) (*T, error)
-	Remove(name string, workspaceName string, force bool, permanent bool) (*T, error) //Object üzerinden yapılablir Create gibi, buda RemoveByName olabilir
-	List() (*([]T), error)                                                            //ListAll olarak değişecek
+	List() (*([]T), error) //ListAll olarak değişecek
 	IsExists(name string, workspaceName string) (bool, error)
 
 	//Query
@@ -44,24 +42,23 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	ValidateProjectStructure(model T) (bool, error)
 	CreateProjectFolder(model T, paths ...string) (string, error)
 	DeleteProjectFolder(model T, paths ...string) (string, error)
+	RemoveProjectFiles(project T) (bool, error)
 	RemoveUnnecessaryFiles(model T) (bool, error)
 
 	//Layer
-	CreateProjectLayers(project T) error
+	CreateAllProjectFolders(project T) ([]string, error)
 	AddProjectLayer(project T, layers ...project.Layer) error
 	CreateLayerFolder(project T, layers ...project.Layer) error
 	DeleteLayerFolder(project T, layers ...project.Layer) error
 	AddFileToLayer(model T, layer string, paths []string, filename string, content string) (*T, error)
 
 	//Reference
-	SetProjectReferences(model T) (bool, error)
 	ValidateProjectReferences(model T) (bool, error)
 	AddReferenceToProject(model T, references ...T) error
 	RemoveReferenceFromProject(model T, references ...T) error
 	// ListReferences
 
 	//Dependency
-	SetProjectDependencies(model T) (bool, error)
 	ValidateProjectDependencies(model T) (bool, error)
 	AddDependenciesToProject(model T, packages ...project.Dependency) error
 	RemoveDependencyFromProject(model T, packages ...project.Dependency) error

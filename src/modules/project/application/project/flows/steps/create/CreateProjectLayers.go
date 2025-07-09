@@ -1,4 +1,4 @@
-package steps
+package create
 
 import (
 	"context"
@@ -27,11 +27,11 @@ func (s *CreateProjectLayers) Run(ctx context.Context, fc *flowx.FlowContext) er
 	if init {
 		project, ok := flowx.Get[application_project_payload_structs.ProjectBaseStruct](fc, "project")
 		if !ok {
-			panic(fmt.Errorf("xxx: init parametresi hatalı tipte"))
+			panic(fmt.Errorf("xxx: project parametresi hatalı tipte"))
 		}
 
 		logrus.Debugf("trying to create %v", project.Header.Name)
-		if err := service.CreateProjectLayers(project); err != nil {
+		if _, err := service.CreateAllProjectFolders(project); err != nil {
 			return err
 		}
 
