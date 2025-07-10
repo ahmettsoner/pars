@@ -17,15 +17,14 @@ import (
 )
 
 type CleanOptions struct {
-	Name      string
+	Names     []string
 	Workspace string
 }
 
 var commandOptions CleanOptions
-var maxArgumentCount int = 1
 
 var CleanCmd = &cobra.Command{
-	Use:     "clean [name]",
+	Use:     "clean [name]...",
 	Aliases: []string{"c"},
 	Short:   "Clean project(s)",
 	Long:    `Clean project(s)`,
@@ -36,29 +35,24 @@ var CleanCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("Please provide project name using the --url flag or as argument.")
-	}
-	if len(args) > maxArgumentCount {
-		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required.")
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
 	}
 
-	appCtx := application.GetContext()
-	if appCtx == nil {
-		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	if _string.IsEmpty(commandOptions.Workspace) {
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
-	var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
-	}
-	commandOptions.Workspace = workspaceName
 
 	return nil
 }
@@ -66,23 +60,28 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("\n\n════════════════════════════════════\n")
-	fmt.Printf("🔍 Cleaning: %s\n", _string.Concat(", ", commandOptions.Name))
+	fmt.Printf("🔍 Cleaning: %s\n", _string.Concat(", ", commandOptions.Names...))
 	fmt.Printf("═══════════════════════════════════\n\n")
 
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Project,
-			application_project_payload_structs.PROJECT_KIND,
-			commandOptions.Name,
-			schemas.Metadata{},
-		),
-		Specifications: application_project_payload_structs.ProjectSpecification{
-			ProjectIdentifier: project.ProjectIdentifier{
-				Workspace: commandOptions.Workspace,
-			},
-		},
-	})
+
+	if len(commandOptions.Names) > 0 {
+		for _, name := range commandOptions.Names {
+			result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+				Header: schemas.NewSchemaHeader(
+					schemas.StructTypes.Project,
+					application_project_payload_structs.PROJECT_KIND,
+					name,
+					schemas.Metadata{},
+				),
+				Specifications: application_project_payload_structs.ProjectSpecification{
+					ProjectIdentifier: project.ProjectIdentifier{
+						Workspace: commandOptions.Workspace,
+					},
+				},
+			})
+		}
+	}
 
 	var loadedSchemas []string = make([]string, 0)
 	for _, data := range result {
@@ -113,7 +112,5 @@ func afterFunc(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	CleanCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
-
 	CleanCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

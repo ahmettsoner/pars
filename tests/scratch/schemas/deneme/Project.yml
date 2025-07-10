@@ -6,3 +6,22 @@ Specifications:
   Layers: 
     - L1
     - L2
+---
+Type: Project
+Kind: Application
+Name: App2
+Specifications:
+  Platform: Dotnet
+  Layers: 
+    - L3
+    - L4
+  
+---
+Type: Project
+Kind: Application
+Name: App3
+Specifications:
+  Platform: Dotnet
+  Layers: 
+    - L5
+  
