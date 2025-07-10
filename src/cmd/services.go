@@ -32,6 +32,8 @@ import (
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	"parsdevkit.net/modules/tool/browse_tool_contract"
 
+	environment "parsdevkit.net/modules/environment/basic_environment"
+	"parsdevkit.net/modules/environment/basic_environment_contract"
 	groupGroup "parsdevkit.net/modules/group/basic_group"
 	taskCommon "parsdevkit.net/modules/task/basic_task"
 	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
@@ -108,6 +110,7 @@ func registerEngines() {
 	engines.Register(&templateShared.SharedTemplateEngine{})
 	engines.Register(&taskCommon.BasicTaskEngine{})
 	engines.Register(&browseTool.ToolEngine{})
+	engines.Register(&environment.EnvironmentEngine{})
 }
 func registerPlatformManager() {
 	platforms.Register(parsManager.NewParsManager())
@@ -142,6 +145,9 @@ func registerContainers() {
 	})
 	ioc.Register(func() *repositories.GenerationHistoryRepository {
 		return repositories.NewGenerationHistoryRepository(dbContext)
+	})
+	ioc.RegisterInterface[basic_environment_contract.EnvironmentInterface](func() basic_environment_contract.EnvironmentInterface {
+		return environment.NewEnvironmentService()
 	})
 	ioc.RegisterInterface[basic_workspace_contract.WorkspaceInterface](func() basic_workspace_contract.WorkspaceInterface {
 		return workspaceWorkspace.NewWorkspaceService(application.GetEnvironment())

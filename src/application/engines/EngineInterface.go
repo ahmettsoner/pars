@@ -28,18 +28,14 @@ type ApplicationProjectCleanerEngineInterface interface {
 	Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 
-type ApplicationProjectContainerizerEngineInterface interface {
-	Containerize(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
-}
-
-type ApplicationProjectDistributerEngineInterface interface {
-	Distribute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
-}
 type ApplicationProjectExecuterEngineInterface interface {
 	Execute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 type ApplicationProjectReleaserEngineInterface interface {
 	Release(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ListEngineInterface interface {
+	List(ctx *application.ApplicationContext) error
 }
 type ToolsEngineInterface interface {
 	Browse(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error

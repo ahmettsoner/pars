@@ -18,10 +18,10 @@ func main() {
 		runInteractiveMode()
 	} else {
 		if err := cmd.RootCmd.Execute(); err != nil {
-			fmt.Println("❌ Error:", err)
+			fmt.Println("\n❌ Error:", err)
 			os.Exit(1)
 		} else {
-			fmt.Println("✅ Success: Operation completed.")
+			fmt.Println("\n✅ Success: Operation completed.")
 		}
 	}
 	// logLevel := application.GetLogLevel()
@@ -61,9 +61,9 @@ func runInteractiveMode() {
 		cmd.RootCmd.SetArgs(args)
 
 		if err := cmd.RootCmd.Execute(); err != nil {
-			fmt.Println("❌ Error:", err)
+			fmt.Println("\n❌ Error:", err)
 		} else {
-			fmt.Println("✅ Success: Operation completed.")
+			fmt.Println("\n✅ Success: Operation completed.")
 		}
 	}
 }

@@ -58,6 +58,12 @@ replace parsdevkit.net/modules/workspace/basic_workspace_contract => ./modules/w
 
 replace parsdevkit.net/modules/workspace/basic_workspace_payload => ./modules/workspace/basic/workspace.payload
 
+replace parsdevkit.net/modules/environment/basic_environment => ./modules/environment/basic/environment
+
+replace parsdevkit.net/modules/environment/basic_environment_contract => ./modules/environment/basic/environment.contract
+
+replace parsdevkit.net/modules/environment/basic_environment_payload => ./modules/environment/basic/environment.payload
+
 replace parsdevkit.net/modules/resource/object_resource => ./modules/resource/object/resource
 
 replace parsdevkit.net/modules/resource/object_resource_contract => ./modules/resource/object/resource.contract
@@ -175,6 +181,9 @@ require (
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000 // indirect

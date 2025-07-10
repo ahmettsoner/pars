@@ -56,6 +56,22 @@ func DispatchEngineClean(ctx *application.ApplicationContext, t []schemas.Schema
 	}
 	return nil
 }
+func DispatchEngineList(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
+
+	schemaGroups := GroupSchemas(t)
+	for _, engineModule := range AllSorted() {
+		key := engineModule.GetConfig().Name
+		if _, ok := schemaGroups[key]; ok {
+			if engine, ok := engineModule.(ListEngineInterface); ok {
+				err := engine.List(ctx)
+				if err != nil {
+					return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
+				}
+			}
+		}
+	}
+	return nil
+}
 
 func DispatchEngineBrowse(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
 

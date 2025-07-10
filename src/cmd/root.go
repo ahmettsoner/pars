@@ -26,12 +26,6 @@ import (
 	cmdTemplate "parsdevkit.net/cmd/template"
 	cmdTest "parsdevkit.net/cmd/test"
 
-	// cmdWork "parsdevkit.net/cmd/work"
-
-	// cmdContainerize "parsdevkit.net/cmd/containerize"
-	// cmdDistribute "parsdevkit.net/cmd/distribute"
-	// cmdGenerate "parsdevkit.net/cmd/generate"
-	cmdEdit "parsdevkit.net/cmd/edit"
 	cmdExecute "parsdevkit.net/cmd/execute"
 	cmdInit "parsdevkit.net/cmd/init"
 	cmdOpen "parsdevkit.net/cmd/open"
@@ -47,25 +41,27 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
+type RootOptions struct {
 	cfgFile          string
 	environment      string
 	logLevelEnumFlag logs.LogLevelEnumFlag
-)
+}
+
+var commandOptions RootOptions
 
 var RootCmd = &cobra.Command{
 	Use:   "pars [type] [command] [options] [flags]",
 	Short: "Smart Software Development Process Automation",
 	Long:  `Smart Software Development Process Automation`,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if !_string.IsEmpty(environment) {
-			application.SetEnvironment(environment)
+		if !_string.IsEmpty(commandOptions.environment) {
+			application.SetEnvironment(commandOptions.environment)
 		}
 
-		application.SetLogLevel(logLevelEnumFlag.Value)
+		application.SetLogLevel(commandOptions.logLevelEnumFlag.Value)
 
-		if logLevelEnumFlag.Value != logs.LogLevels.Silence {
-			if logrusLogLevel, err := log.ParseLevel(string(logLevelEnumFlag.Value)); err != nil {
+		if commandOptions.logLevelEnumFlag.Value != logs.LogLevels.Silence {
+			if logrusLogLevel, err := log.ParseLevel(string(commandOptions.logLevelEnumFlag.Value)); err != nil {
 				fmt.Println(err)
 				// file, err := os.OpenFile(filepath.Join(application.GetLogLocation(), "app.log"), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 				// if err != nil {
@@ -96,12 +92,12 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
-	RootCmd.PersistentFlags().StringVarP(&environment, "env", "e", "", "Environment (dev, prod, test, ...)")
+	RootCmd.PersistentFlags().StringVar(&commandOptions.cfgFile, "config", "", "config file (default is $HOME/.cli.yaml)")
+	RootCmd.PersistentFlags().StringVarP(&commandOptions.environment, "env", "e", "", "Environment (dev, prod, test, ...)")
 
 	logLevelValues := logs.LogLevelToArray()
-	logLevelEnumFlag.Value = logs.LogLevels.Error
-	RootCmd.PersistentFlags().VarP(&logLevelEnumFlag, "log-level", "", fmt.Sprintf("Select log level %v", logLevelValues))
+	commandOptions.logLevelEnumFlag.Value = logs.LogLevels.Error
+	RootCmd.PersistentFlags().VarP(&commandOptions.logLevelEnumFlag, "log-level", "", fmt.Sprintf("Select log level %v", logLevelValues))
 
 	RootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
@@ -129,7 +125,6 @@ func addSubCommands() {
 	// RootCmd.AddCommand(cmdRemote.RemoteCmd)
 	RootCmd.AddCommand(cmdExecute.ExecuteCmd)
 	RootCmd.AddCommand(cmdOpen.OpenCmd)
-	RootCmd.AddCommand(cmdEdit.EditCmd)
 	// RootCmd.AddCommand(cmdWork.WorkCmd)
 	// RootCmd.AddCommand(cmdGit.GitCmd)
 	// RootCmd.AddCommand(cmdContainerize.ContainerizeCmd)
@@ -144,8 +139,8 @@ func init() {
 }
 
 func initConfig() {
-	if !_string.IsEmpty(cfgFile) {
-		viper.SetConfigFile(cfgFile)
+	if !_string.IsEmpty(commandOptions.cfgFile) {
+		viper.SetConfigFile(commandOptions.cfgFile)
 	} else {
 		configDir := application.GetConfigLocation()
 

@@ -56,6 +56,12 @@ replace parsdevkit.net/modules/workspace/basic_workspace_contract => ../src/modu
 
 replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../src/modules/workspace/basic/workspace.payload
 
+replace parsdevkit.net/modules/environment/basic_environment => ../src/modules/environment/basic/environment
+
+replace parsdevkit.net/modules/environment/basic_environment_contract => ../src/modules/environment/basic/environment.contract
+
+replace parsdevkit.net/modules/environment/basic_environment_payload => ../src/modules/environment/basic/environment.payload
+
 replace parsdevkit.net/modules/resource/object_resource => ../src/modules/resource/object/resource
 
 replace parsdevkit.net/modules/resource/object_resource_contract => ../src/modules/resource/object/resource.contract
@@ -116,6 +122,9 @@ require (
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/environment/basic_environment v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/environment/basic_environment_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/environment/basic_environment_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
@@ -127,6 +136,7 @@ require (
 )
 
 require (
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/spf13/viper v1.19.0 // indirect

@@ -81,8 +81,8 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🔍 Applying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
+		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("⏳ Destroying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
 		fmt.Printf("════════════════════════════════════\n")
 
 		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)

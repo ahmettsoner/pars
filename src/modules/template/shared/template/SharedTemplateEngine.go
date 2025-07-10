@@ -97,7 +97,7 @@ func (s SharedTemplateEngine) create(ctx *application.ApplicationContext, templa
 	for _, template := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Creating: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("🛠️  Creating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("CreateNewTemplate").
 			Step(&create_steps.SaveTemplate{})
@@ -157,7 +157,7 @@ func (s SharedTemplateEngine) update(ctx *application.ApplicationContext, templa
 	}
 	for _, template := range readyToUpdateStructs {
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Updating: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("🛠️  Updating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
 			Step(&update_steps.UpdateTemplate{})
@@ -204,7 +204,7 @@ func (s SharedTemplateEngine) remove(ctx *application.ApplicationContext, templa
 	for _, template := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Removing: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("🛠️  Removing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
 			Step(&remove_steps.DeleteTemplate{})

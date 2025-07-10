@@ -54,8 +54,8 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	fmt.Printf("\n\n════════════════════════════════════\n")
-	fmt.Printf("🔍 Browsing: %s\n", _string.Concat(", ", commandOptions.URL))
+	fmt.Printf("════════════════════════════════════\n")
+	fmt.Printf("⏳ Browsing: %s\n", _string.Concat(", ", commandOptions.URL))
 	fmt.Printf("═══════════════════════════════════\n\n")
 
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
@@ -82,7 +82,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
-	fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
 	fmt.Printf("────────────────────────────────────\n")
 
 	appCtx := application.GetContext()

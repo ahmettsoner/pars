@@ -100,7 +100,7 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Creating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("🛠️  Creating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("CreateNewResource").
 			Step(&create_steps.SaveResource{}).
@@ -163,7 +163,7 @@ func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToUpdateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Updating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("🛠️  Updating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("UpdateExistingResource").
 			Step(&update_steps.UpdateResource{}).
@@ -213,7 +213,7 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("🛠️  Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("RemoveExistingGroup").
 			Step(&remove_steps.DeleteResource{}).

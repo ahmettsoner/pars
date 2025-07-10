@@ -1,5 +1,7 @@
 package contracts
 
-type EnvironmentServiceInterface interface {
-	List() ([]string, error)
+import "parsdevkit.net/application/schemas"
+
+type EnvironmentServiceInterface[T schemas.SchemaInterface] interface {
+	List() ([]T, error)
 }
