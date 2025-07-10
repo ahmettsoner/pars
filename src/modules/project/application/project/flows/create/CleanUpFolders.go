@@ -4,17 +4,18 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/internal/flowx"
 	"parsdevkit.net/modules/project/application_project_contract"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
-type SetProjectReferences struct{ flowx.BaseStep }
+type CleanUpFolders struct{ flowx.BaseStep }
 
-func (s *SetProjectReferences) Name() string { return "SetProjectReferences" }
+func (s *CleanUpFolders) Name() string { return "CleanUpFolders" }
 
-func (s *SetProjectReferences) Run(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *CleanUpFolders) Run(ctx context.Context, fc *flowx.FlowContext) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
@@ -29,17 +30,19 @@ func (s *SetProjectReferences) Run(ctx context.Context, fc *flowx.FlowContext) e
 			panic(fmt.Errorf("xxx: project parametresi hatalı tipte"))
 		}
 
-		if project.Specifications.References != nil {
-			err := service.AddReferenceToProject(project, project.Specifications.References...)
-			if err != nil {
-				return fmt.Errorf("xxx: Application Project oluştururken, projelerin paketi ekleme sırasında hata meydana geldi: '%s'\n%w", project.Header.Name, err)
-			}
+		logrus.Debugf("trying to create %v", project.Header.Name)
+		if _, err := service.RemoveUnnecessaryFiles(project); err != nil {
+			return err
 		}
 
 	}
 	return nil
 }
 
-func (s *SetProjectReferences) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *CleanUpFolders) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
 	return nil
+}
+
+func (s *CleanUpFolders) IgnoreError() bool {
+	return true
 }

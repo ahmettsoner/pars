@@ -99,9 +99,8 @@ func (s CodeTemplateEngine) create(ctx *application.ApplicationContext, template
 
 	for _, template := range readyToCreateStructs {
 
-		fmt.Printf("════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
-		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("CreateNewTemplate").
 			Step(&create_steps.SaveTemplate{})
@@ -166,9 +165,8 @@ func (s CodeTemplateEngine) update(ctx *application.ApplicationContext, template
 	}
 	for _, template := range readyToUpdateStructs {
 
-		fmt.Printf("────────────────────────────────────\n")
-		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
-		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
 			Step(&update_steps.UpdateTemplate{})
@@ -220,9 +218,8 @@ func (s CodeTemplateEngine) remove(ctx *application.ApplicationContext, template
 
 	for _, template := range readyToRemoveStructs {
 
-		fmt.Printf("════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n", template.GetKey(), template.Header.Name)
-		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
 			Step(&remove_steps.DeleteTemplate{}).

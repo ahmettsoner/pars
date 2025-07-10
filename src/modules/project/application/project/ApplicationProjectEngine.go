@@ -108,18 +108,26 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToCreateStructs {
 
-		fmt.Printf("════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
-		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("CreateNewProject").
 			Step(&create_steps.SaveProject{}).
 			Step(&create_steps.PrepareProjectFolder{}).
 			Step(&create_steps.GenerateProject{}).
-			Step(&create_steps.RemoveUnnecessaryFiles{}).
-			Step(&create_steps.CreateProjectLayers{}).
-			Step(&create_steps.SetProjectDependencies{}).
-			Step(&create_steps.SetProjectReferences{})
+			Step(&create_steps.CleanUpFolders{})
+		for _, item := range project.Specifications.Layers {
+			if _string.IsEmpty(item.Name) {
+				continue
+			}
+			projectFlow.Step(create_steps.NewCreateProjectLayer(item))
+		}
+		for _, item := range project.Specifications.Dependencies {
+			projectFlow.Step(create_steps.NewAddProjectDependency(item))
+		}
+		for _, item := range project.Specifications.References {
+			projectFlow.Step(create_steps.NewAddProjectReference(item))
+		}
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":    init,
@@ -174,9 +182,8 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
-		fmt.Printf("────────────────────────────────────\n")
-		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
-		fmt.Printf("────────────────────────────────────\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("UpdateExistingProject").
 			Step(&update_steps.UpdateProject{}).
@@ -227,9 +234,8 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToRemoveStructs {
 
-		fmt.Printf("════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n", project.GetKey(), project.Header.Name)
-		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("RemoveExistingProject").
 			Step(&remove_steps.DestroyProject{}).

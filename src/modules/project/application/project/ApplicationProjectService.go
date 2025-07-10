@@ -244,19 +244,6 @@ func (s ApplicationProjectService) AddProjectLayer(project application_project_p
 	return nil
 }
 
-func (s ApplicationProjectService) CreateAllProjectFolders(project application_project_payload_structs.ProjectBaseStruct) ([]string, error) {
-	folders := make([]string, 0)
-	for _, value := range project.Specifications.Layers {
-
-		createdFolder, err := s.CreateProjectFolder(project, value.GetPathAsArray()...)
-		if err != nil {
-			return nil, fmt.Errorf("xxx: Application Project layer klasörü oluştururken hata oluştu: '%s'\n%w", project.Header.Name, err)
-		}
-
-		folders = append(folders, createdFolder)
-	}
-	return folders, nil
-}
 func (s *ApplicationProjectService) AddFileToLayer(model application_project_payload_structs.ProjectBaseStruct, layer string, paths []string, filename string, content string) (*application_project_payload_structs.ProjectBaseStruct, error) {
 
 	logrus.Debugf("file %v creating for project %v on layer %v", filename, model.Header.Name, layer)

@@ -46,7 +46,6 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	RemoveUnnecessaryFiles(model T) (bool, error)
 
 	//Layer
-	CreateAllProjectFolders(project T) ([]string, error)
 	AddProjectLayer(project T, layers ...project.Layer) error
 	CreateLayerFolder(project T, layers ...project.Layer) error
 	DeleteLayerFolder(project T, layers ...project.Layer) error

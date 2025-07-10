@@ -79,9 +79,9 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 func executeFunc(cmd *cobra.Command, args []string) error {
 
 	if len(commandOptions.FilePaths) > 0 {
-		fmt.Printf("════════════════════════════════════\n")
+		fmt.Printf("\n\n════════════════════════════════════\n")
 		fmt.Printf("🔍 Applying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
-		fmt.Printf("════════════════════════════════════\n\n")
+		fmt.Printf("═══════════════════════════════════\n\n")
 		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
 		if err != nil {
@@ -103,7 +103,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			loadedSchemas = append(loadedSchemas, data.GetHeader().Name)
 		}
-		fmt.Printf("✅ Loaded Schemas: %s\n\n", _string.Concat(", ", loadedSchemas...))
+		fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
 
 		appCtx := application.GetContext()
 		if appCtx == nil {

@@ -6,16 +6,28 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/application/ioc"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/internal/flowx"
 	"parsdevkit.net/modules/project/application_project_contract"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
-type RemoveUnnecessaryFiles struct{ flowx.BaseStep }
+type CreateProjectLayer struct {
+	flowx.BaseStep
+	layer applicationProject.Layer
+}
 
-func (s *RemoveUnnecessaryFiles) Name() string { return "RemoveUnnecessaryFiles" }
+func NewCreateProjectLayer(layer applicationProject.Layer) *CreateProjectLayer {
+	return &CreateProjectLayer{
+		layer: layer,
+	}
+}
 
-func (s *RemoveUnnecessaryFiles) Run(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *CreateProjectLayer) Name() string {
+	return fmt.Sprintf("CreateProjectLayer: %s", s.layer.Name)
+}
+
+func (s *CreateProjectLayer) Run(ctx context.Context, fc *flowx.FlowContext) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
@@ -31,18 +43,13 @@ func (s *RemoveUnnecessaryFiles) Run(ctx context.Context, fc *flowx.FlowContext)
 		}
 
 		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := service.RemoveUnnecessaryFiles(project); err != nil {
+		if _, err := service.CreateProjectFolder(project, s.layer.GetPathAsArray()...); err != nil {
 			return err
 		}
-
 	}
 	return nil
 }
 
-func (s *RemoveUnnecessaryFiles) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
+func (s *CreateProjectLayer) Compensate(ctx context.Context, fc *flowx.FlowContext) error {
 	return nil
-}
-
-func (s *RemoveUnnecessaryFiles) IgnoreError() bool {
-	return true
 }
