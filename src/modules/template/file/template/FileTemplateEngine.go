@@ -3,8 +3,6 @@ package file_template
 import (
 	"fmt"
 
-	"parsdevkit.net/application/bus"
-	file_template_payload_commands "parsdevkit.net/modules/template/file_template_payload/commands"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
 	"parsdevkit.net/internal/flowx"
@@ -101,10 +99,11 @@ func (s FileTemplateEngine) create(ctx *application.ApplicationContext, template
 	for _, template := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("📦 Creating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("CreateNewTemplate").
-			Step(&create_steps.SaveTemplate{})
+			Step(&create_steps.SaveTemplate{}).
+			Step(&create_steps.GenerateTemplateContent{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":     init,
@@ -116,10 +115,6 @@ func (s FileTemplateEngine) create(ctx *application.ApplicationContext, template
 			return fmt.Errorf("xxx: Template Create işleminde hata oluştu: %w", &err)
 		}
 
-		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
-		if err != nil {
-			return err
-		}
 	}
 
 	return nil
@@ -166,10 +161,11 @@ func (s FileTemplateEngine) update(ctx *application.ApplicationContext, template
 	for _, template := range readyToUpdateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("📦 Updating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
-			Step(&update_steps.UpdateTemplate{})
+			Step(&update_steps.UpdateTemplate{}).
+			Step(&update_steps.GenerateTemplateContent{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":     init,
@@ -179,11 +175,6 @@ func (s FileTemplateEngine) update(ctx *application.ApplicationContext, template
 		if err := templateFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
 			return fmt.Errorf("xxx: Template Update işleminde hata oluştu: %w", &err)
-		}
-
-		err := bus.SendCommand(file_template_payload_commands.GenerateTemplateContents{Data: template})
-		if err != nil {
-			return err
 		}
 	}
 	return nil
@@ -219,7 +210,7 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 	for _, template := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("📦 Removing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
 			Step(&remove_steps.DeleteTemplate{}).

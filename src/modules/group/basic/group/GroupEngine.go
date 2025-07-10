@@ -93,7 +93,7 @@ func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_
 	for _, group := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", group.Header.Name, group.GetKey())
+		fmt.Printf("📦 Creating: %s.%s\n\n", group.Header.Name, group.GetKey())
 
 		groupFlow := flowx.NewFlow("CreateNewGroup").
 			Step(&create_steps.SaveGroup{})
@@ -153,7 +153,7 @@ func (s GroupEngine) update(ctx *application.ApplicationContext, groups []basic_
 	for _, group := range readyToUpdateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", group.Header.Name, group.GetKey())
+		fmt.Printf("📦 Updating: %s.%s\n\n", group.Header.Name, group.GetKey())
 
 		groupFlow := flowx.NewFlow("UpdateExistingGroup").
 			Step(&update_steps.UpdateGroup{})
@@ -201,7 +201,7 @@ func (s GroupEngine) remove(ctx *application.ApplicationContext, groups []basic_
 	for _, group := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", group.Header.Name, group.GetKey())
+		fmt.Printf("📦 Removing: %s.%s\n\n", group.Header.Name, group.GetKey())
 
 		groupFlow := flowx.NewFlow("RemoveExistingGroup").
 			Step(&remove_steps.DeleteGroup{})

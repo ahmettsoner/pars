@@ -11,7 +11,6 @@ import (
 	create_steps "parsdevkit.net/modules/resource/object_resource/flows/create"
 	remove_steps "parsdevkit.net/modules/resource/object_resource/flows/remove"
 	update_steps "parsdevkit.net/modules/resource/object_resource/flows/update"
-	object_resource_payload_commands "parsdevkit.net/modules/resource/object_resource_payload/commands"
 	object_resource_payload_events "parsdevkit.net/modules/resource/object_resource_payload/events"
 
 	"parsdevkit.net/application/engines"
@@ -101,10 +100,11 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("📦 Creating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("CreateNewResource").
-			Step(&create_steps.SaveResource{})
+			Step(&create_steps.SaveResource{}).
+			Step(&create_steps.GenerateResourceContent{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":     init,
@@ -116,10 +116,6 @@ func (s ObjectResourceEngine) create(ctx *application.ApplicationContext, resour
 			return fmt.Errorf("xxx: Resource Create işleminde hata oluştu: %w", &err)
 		}
 
-		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
-		if err != nil {
-			return err
-		}
 		bus.PublishEvent(object_resource_payload_events.ResourceCreated{Data: resource})
 	}
 
@@ -167,10 +163,11 @@ func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToUpdateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("📦 Updating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("UpdateExistingResource").
-			Step(&update_steps.UpdateResource{})
+			Step(&update_steps.UpdateResource{}).
+			Step(&update_steps.GenerateResourceContent{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":     init,
@@ -182,10 +179,6 @@ func (s ObjectResourceEngine) update(ctx *application.ApplicationContext, resour
 			return fmt.Errorf("xxx: Resource Create işleminde hata oluştu: %w", &err)
 		}
 
-		err := bus.SendCommand(object_resource_payload_commands.GenerateResourceContents{Data: resource})
-		if err != nil {
-			return err
-		}
 	}
 	return nil
 }
@@ -220,7 +213,7 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, resour
 	for _, resource := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
+		fmt.Printf("📦 Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
 		resourceFlow := flowx.NewFlow("RemoveExistingGroup").
 			Step(&remove_steps.DeleteResource{}).

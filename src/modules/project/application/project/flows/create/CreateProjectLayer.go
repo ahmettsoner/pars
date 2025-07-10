@@ -43,7 +43,8 @@ func (s *CreateProjectLayer) Run(ctx context.Context, fc *flowx.FlowContext) err
 		}
 
 		logrus.Debugf("trying to create %v", project.Header.Name)
-		if _, err := service.CreateProjectFolder(project, s.layer.GetPathAsArray()...); err != nil {
+
+		if err := service.CreateLayerFolder(project, s.layer); err != nil {
 			return err
 		}
 	}

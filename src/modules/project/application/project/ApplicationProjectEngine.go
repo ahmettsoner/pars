@@ -2,10 +2,13 @@ package application_project
 
 import (
 	"errors"
+	"reflect"
 
 	"parsdevkit.net/internal/flowx"
 
 	"fmt"
+
+	"parsdevkit.net/internal/diffx"
 
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
@@ -109,7 +112,7 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 	for _, project := range readyToCreateStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
+		fmt.Printf("📦 Creating: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("CreateNewProject").
 			Step(&create_steps.SaveProject{}).
@@ -169,7 +172,9 @@ func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationCo
 			if newModelHash != structHash {
 				readyToUpdateStructs = append(readyToUpdateStructs, project)
 			}
+			//burda else ile kayıt zaten güncel bilgisi yazdırılabilir
 		}
+		//burda else ile kayıt bulunamadı bilgisi yazdırılabilir
 	}
 	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
 
@@ -177,20 +182,95 @@ func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationCo
 }
 func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
+	service := ioc.Get[application_project_contract.ProjectInterface]()
 	readyToUpdateStructs, err := s.prepareToUpdate(ctx, projects)
 	if err != nil {
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
+		fmt.Printf("📦 Updating: %s.%s\n\n", project.Header.Name, project.GetKey())
+
+		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
+		if err != nil {
+			return err
+		}
 
 		projectFlow := flowx.NewFlow("UpdateExistingProject").
-			Step(&update_steps.UpdateProject{}).
-			Step(&update_steps.UpdateProjectLayers{}).
-			Step(&update_steps.UpdateProjectDependencies{}).
-			Step(&update_steps.UpdateProjectReferences{})
+			Step(&update_steps.UpdateProject{})
 
+		if !reflect.DeepEqual(project.Specifications.Layers, existingProject.Specifications.Layers) {
+
+			result := diffx.DiffSlice(existingProject.Specifications.Layers, project.Specifications.Layers)
+
+			if len(result.Created) > 0 {
+
+				for _, item := range result.Created {
+					if _string.IsEmpty(item.Name) {
+						continue
+					}
+					projectFlow.Step(update_steps.NewCreateProjectLayer(item))
+				}
+			}
+			if len(result.Updated) > 0 {
+				//TODO Burda değişiklik tespit edilerek eğer move ve rename yapılabilir dosya ve klasörlere, silmekten daha güvenli
+				for _, item := range result.Updated {
+					if _string.IsEmpty(item.Old.Name) {
+						continue
+					}
+					projectFlow.Step(update_steps.NewUpdateProjectLayer(item.Old, item.New))
+				}
+			}
+			if len(result.Deleted) > 0 {
+				for _, item := range result.Deleted {
+					if _string.IsEmpty(item.Name) {
+						continue
+					}
+					projectFlow.Step(update_steps.NewDeleteProjectLayer(item))
+				}
+			}
+		}
+
+		if !reflect.DeepEqual(project.Specifications.Dependencies, existingProject.Specifications.Dependencies) {
+			result := diffx.DiffSlice(existingProject.Specifications.Dependencies, project.Specifications.Dependencies)
+
+			if len(result.Created) > 0 {
+				for _, item := range result.Created {
+					projectFlow.Step(update_steps.NewCreateProjectDependency(item))
+				}
+
+			}
+			if len(result.Updated) > 0 {
+				for _, item := range result.Updated {
+					projectFlow.Step(update_steps.NewUpdateProjectDependency(item.Old, item.New))
+				}
+			}
+			if len(result.Deleted) > 0 {
+				for _, item := range result.Deleted {
+					projectFlow.Step(update_steps.NewDeleteProjectDependency(item))
+				}
+			}
+		}
+
+		if !reflect.DeepEqual(project.Specifications.References, existingProject.Specifications.References) {
+			result := diffx.DiffSlice(existingProject.Specifications.References, project.Specifications.References)
+
+			if len(result.Created) > 0 {
+				for _, item := range result.Created {
+					projectFlow.Step(update_steps.NewCreateProjectReference(item))
+				}
+			}
+			if len(result.Updated) > 0 {
+				for _, item := range result.Updated {
+					projectFlow.Step(update_steps.NewUpdateProjectReference(item.Old, item.New))
+				}
+			}
+			if len(result.Deleted) > 0 {
+				for _, item := range result.Deleted {
+					projectFlow.Step(update_steps.NewDeleteProjectReference(item))
+				}
+			}
+		}
 		fc := flowx.NewContextWithData(map[string]any{
 			"init":    init,
 			"project": project,
@@ -235,7 +315,7 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 	for _, project := range readyToRemoveStructs {
 
 		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("📦 Processing: %s.%s\n\n", project.Header.Name, project.GetKey())
+		fmt.Printf("📦 Removing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("RemoveExistingProject").
 			Step(&remove_steps.DestroyProject{}).
