@@ -294,7 +294,7 @@ func (s BasicTaskEngine) getWorkspace(ctx *application.ApplicationContext, model
 
 func (s BasicTaskEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Task.Common",
+		Name:  basic_task_payload_structs.MODULE_KEY,
 		Order: 5000,
 	}
 }

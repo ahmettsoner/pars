@@ -12,17 +12,13 @@ type EngineConfig struct {
 type EngineInterface interface {
 	// Init(ctx *application.ApplicationContext) error
 	Validate(data []schemas.SchemaInterface) bool
-	Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
-	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 	GetConfig() EngineConfig
 }
 
 type ProcessorInterface interface {
 	Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
-	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 type DestroyerInterface interface {
-	Process(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 type ApplicationProjectRunnerEngineInterface interface {
@@ -33,7 +29,7 @@ type ApplicationProjectCleanerEngineInterface interface {
 }
 
 type ApplicationProjectContainerizerEngineInterface interface {
-	Container(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+	Containerize(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 
 type ApplicationProjectDistributerEngineInterface interface {
@@ -44,4 +40,7 @@ type ApplicationProjectExecuterEngineInterface interface {
 }
 type ApplicationProjectReleaserEngineInterface interface {
 	Release(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ToolsEngineInterface interface {
+	Browse(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }

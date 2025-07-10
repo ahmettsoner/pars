@@ -78,43 +78,40 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	if len(commandOptions.FilePaths) > 0 {
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🔍 Applying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
-		fmt.Printf("═══════════════════════════════════\n\n")
-		result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
+	fmt.Printf("\n\n════════════════════════════════════\n")
+	fmt.Printf("🔍 Applying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
+	fmt.Printf("═══════════════════════════════════\n\n")
+	result, err := schema.GetAllManifestFilesInPath(commandOptions.FilePaths...)
 
-		if err != nil {
-			return fmt.Errorf("%w", err)
+	if err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	if len(result) == 0 {
+		fmt.Printf("Belirtilen dosya/dizinde uygun schema bulunamadı!\n")
+		return nil
+	}
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 		}
 
-		if len(result) == 0 {
-			fmt.Printf("Belirtilen dosya/dizinde uygun schema bulunamadı!\n")
-			return nil
-		}
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
 
-		var loadedSchemas []string = make([]string, 0)
-		for _, data := range result {
-
-			if err := data.Validate(); err != nil {
-				jsonObject, _ := json.ToJson(data)
-				return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-			}
-
-			loadedSchemas = append(loadedSchemas, data.GetHeader().Name)
-		}
-		fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
-
-		appCtx := application.GetContext()
-		if appCtx == nil {
-			return fmt.Errorf("xxx: Current workspace bulunamadı")
-		}
-		err = engines.DispatchEngineProcess(appCtx, result)
-		if err != nil {
-			return fmt.Errorf("Engine processing failed: %v", err)
-		}
-	} else {
-		cmd.Help()
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err = engines.DispatchEngineProcess(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
 	return nil

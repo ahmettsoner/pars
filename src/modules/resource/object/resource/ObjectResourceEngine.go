@@ -285,7 +285,7 @@ func (s ObjectResourceEngine) getWorkspace(ctx *application.ApplicationContext, 
 
 func (s ObjectResourceEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Resource.Object",
+		Name:  object_resource_payload_structs.MODULE_KEY,
 		Order: 3000,
 	}
 }

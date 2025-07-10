@@ -290,7 +290,7 @@ func (s DataResourceEngine) getWorkspace(ctx *application.ApplicationContext, mo
 }
 func (s DataResourceEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Resource.Data",
+		Name:  data_resource_payload_structs.MODULE_KEY,
 		Order: 3000,
 	}
 }

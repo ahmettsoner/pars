@@ -285,7 +285,7 @@ func (s CodeTemplateEngine) getWorkspace(ctx *application.ApplicationContext, mo
 
 func (s CodeTemplateEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Template.Code",
+		Name:  code_template_payload_structs.MODULE_KEY,
 		Order: 4000,
 	}
 }

@@ -272,7 +272,7 @@ func (s SharedTemplateEngine) getWorkspace(ctx *application.ApplicationContext, 
 
 func (s SharedTemplateEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Template.Shared",
+		Name:  shared_template_payload_structs.MODULE_KEY,
 		Order: 4000,
 	}
 }

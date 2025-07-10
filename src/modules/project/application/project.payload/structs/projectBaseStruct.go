@@ -18,7 +18,7 @@ func (e ProjectBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
 func (s ProjectBaseStruct) GetKey() string {
-	return "Project.Application"
+	return MODULE_KEY
 }
 
 func (l ProjectBaseStruct) Key() string {

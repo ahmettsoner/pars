@@ -30,6 +30,7 @@ import (
 	resourceObject "parsdevkit.net/modules/resource/object_resource"
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
+	"parsdevkit.net/modules/tool/browse_tool_contract"
 
 	groupGroup "parsdevkit.net/modules/group/basic_group"
 	taskCommon "parsdevkit.net/modules/task/basic_task"
@@ -37,6 +38,7 @@ import (
 	templateCode "parsdevkit.net/modules/template/code_template"
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
+	browseTool "parsdevkit.net/modules/tool/browse_tool"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
@@ -105,6 +107,7 @@ func registerEngines() {
 	engines.Register(&templateFile.FileTemplateEngine{})
 	engines.Register(&templateShared.SharedTemplateEngine{})
 	engines.Register(&taskCommon.BasicTaskEngine{})
+	engines.Register(&browseTool.ToolEngine{})
 }
 func registerPlatformManager() {
 	platforms.Register(parsManager.NewParsManager())
@@ -148,6 +151,9 @@ func registerContainers() {
 	})
 	ioc.RegisterInterface[application_project_contract.ProjectInterface](func() application_project_contract.ProjectInterface {
 		return projectApplication.NewApplicationProjectService(application.GetEnvironment())
+	})
+	ioc.RegisterInterface[browse_tool_contract.ToolInterface](func() browse_tool_contract.ToolInterface {
+		return browseTool.NewToolService(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[code_template_contract.TemplateInterface](func() code_template_contract.TemplateInterface {
 		return templateCode.NewCodeTemplateService(application.GetEnvironment())

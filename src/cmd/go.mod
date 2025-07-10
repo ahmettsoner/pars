@@ -15,6 +15,9 @@ require (
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/tool/browse_tool v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/tool/browse_tool_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/tool/browse_tool_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
@@ -100,9 +103,12 @@ replace parsdevkit.net/modules/group/basic_group_contract => ../modules/group/ba
 replace parsdevkit.net/modules/group/basic_group_payload => ../modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/project/application_project => ../modules/project/application/project
-
 replace parsdevkit.net/modules/project/application_project_contract => ../modules/project/application/project.contract
 replace parsdevkit.net/modules/project/application_project_payload => ../modules/project/application/project.payload
+
+replace parsdevkit.net/modules/tool/browse_tool => ../modules/tool/browse/tool
+replace parsdevkit.net/modules/tool/browse_tool_contract => ../modules/tool/browse/tool.contract
+replace parsdevkit.net/modules/tool/browse_tool_payload => ../modules/tool/browse/tool.payload
 
 replace parsdevkit.net/modules/resource/data_resource => ../modules/resource/data/resource
 

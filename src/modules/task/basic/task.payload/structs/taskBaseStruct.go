@@ -18,7 +18,7 @@ func (e TaskBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
 func (s TaskBaseStruct) GetKey() string {
-	return "Task.Common"
+	return MODULE_KEY
 }
 func NewTaskBaseStruct(header schemas.SchemaHeader, specifications TaskSpecification, configurations TaskConfiguration) TaskBaseStruct {
 	return TaskBaseStruct{

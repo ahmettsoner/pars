@@ -18,7 +18,7 @@ func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
 func (s TemplateBaseStruct) GetKey() string {
-	return "Template.Code"
+	return MODULE_KEY
 }
 func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
 	return TemplateBaseStruct{

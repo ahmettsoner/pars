@@ -19,7 +19,7 @@ func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
 func (s GroupBaseStruct) GetKey() string {
-	return "Group"
+	return MODULE_KEY
 }
 func NewGroupBaseStruct(header schemas.SchemaHeader, specifications GroupSpecification) GroupBaseStruct {
 	return GroupBaseStruct{

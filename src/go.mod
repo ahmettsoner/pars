@@ -10,6 +10,12 @@ replace parsdevkit.net/modules/project/application_project_contract => ./modules
 
 replace parsdevkit.net/modules/project/application_project_payload => ./modules/project/application/project.payload
 
+replace parsdevkit.net/modules/tool/browse_tool => ./modules/tool/browse/tool
+
+replace parsdevkit.net/modules/tool/browse_tool_contract => ./modules/tool/browse/tool.contract
+
+replace parsdevkit.net/modules/tool/browse_tool_payload => ./modules/tool/browse/tool.payload
+
 replace parsdevkit.net/modules/template/code_template => ./modules/template/code/template
 
 replace parsdevkit.net/modules/template/code_template_payload => ./modules/template/code/template.payload
@@ -162,6 +168,9 @@ require (
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template_payload v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/tool/browse_tool v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/tool/browse_tool_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/tool/browse_tool_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000 // indirect

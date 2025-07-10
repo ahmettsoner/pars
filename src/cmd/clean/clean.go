@@ -2,14 +2,16 @@ package clean
 
 import (
 	"fmt"
-	"os"
 
-	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/modules/project/application_project_contract"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/application"
 )
@@ -23,7 +25,7 @@ var commandOptions CleanOptions
 var maxArgumentCount int = 1
 
 var CleanCmd = &cobra.Command{
-	Use:     "clean",
+	Use:     "clean [name]",
 	Aliases: []string{"c"},
 	Short:   "Clean project(s)",
 	Long:    `Clean project(s)`,
@@ -62,13 +64,47 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	project, err := projectService.CleanV2(commandOptions.Name, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to clean project '%s'\n%w", commandOptions.Name, err)
-	}
 
-	fmt.Fprintf(os.Stdout, "✔ Project '%s' cleaned successfully\n", project.Header.Name)
+	fmt.Printf("\n\n════════════════════════════════════\n")
+	fmt.Printf("🔍 Cleaning: %s\n", _string.Concat(", ", commandOptions.Name))
+	fmt.Printf("═══════════════════════════════════\n\n")
+
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Project,
+			application_project_payload_structs.PROJECT_KIND,
+			commandOptions.Name,
+			schemas.Metadata{},
+		),
+		Specifications: application_project_payload_structs.ProjectSpecification{
+			ProjectIdentifier: project.ProjectIdentifier{
+				Workspace: commandOptions.Workspace,
+			},
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
+
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err := engines.DispatchEngineClean(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
+	}
 
 	return nil
 }

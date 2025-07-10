@@ -13,6 +13,7 @@ import (
 	"parsdevkit.net/application/ioc"
 	applicationProject "parsdevkit.net/application/structs/project"
 
+	clean_steps "parsdevkit.net/modules/project/application_project/flows/clean"
 	create_steps "parsdevkit.net/modules/project/application_project/flows/create"
 	remove_steps "parsdevkit.net/modules/project/application_project/flows/remove"
 	update_steps "parsdevkit.net/modules/project/application_project/flows/update"
@@ -606,7 +607,7 @@ func (s ApplicationProjectEngine) sortUnOrderedProjectsByReference(projects []ap
 
 func (s ApplicationProjectEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Project.Application",
+		Name:  application_project_payload_structs.MODULE_KEY,
 		Order: 2000,
 	}
 }
@@ -624,4 +625,67 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]application_project_
 	}
 
 	return r, nil
+}
+
+func (s ApplicationProjectEngine) Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	err = s.clean(ctx, dataStruct, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s ApplicationProjectEngine) clean(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
+
+	readyToUpdateStructs, err := s.prepareToClean(ctx, projects)
+	if err != nil {
+		return err
+	}
+	for _, project := range readyToUpdateStructs {
+		fmt.Printf("\n\n════════════════════════════════════\n")
+		fmt.Printf("📦 Cleaning: %s.%s\n\n", project.Header.Name, project.GetKey())
+
+		projectFlow := flowx.NewFlow("CleanProject").
+			Step(&clean_steps.CleanProject{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"project": project,
+		})
+
+		if err := projectFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Project Update işleminde hata oluştu: %w", &err)
+		}
+	}
+	return nil
+}
+
+func (s ApplicationProjectEngine) prepareToClean(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToUpdateStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+
+	for _, project := range projects {
+
+		activeWorkspace, err := s.getWorkspace(ctx, project)
+		if err != nil {
+			return nil, err
+		}
+
+		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), activeWorkspace.Header.Name)
+		if err != nil {
+			return nil, err
+		}
+		readyToUpdateStructs = append(readyToUpdateStructs, *existingProject)
+		//burda else ile kayıt bulunamadı bilgisi yazdırılabilir
+	}
+	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
+
+	return readyToUpdateStructs, nil
 }

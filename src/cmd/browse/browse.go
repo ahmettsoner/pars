@@ -2,12 +2,19 @@ package browse
 
 import (
 	"fmt"
-	"os"
 	"os/exec"
 	"runtime"
 
 	"github.com/spf13/cobra"
 	_string "parsdevkit.net/pkg/utilities/string"
+
+	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/tool"
+	"parsdevkit.net/pkg/utilities/json"
+
+	browse_tool_payload_structs "parsdevkit.net/modules/tool/browse_tool_payload/structs"
 )
 
 type BrowseOptions struct {
@@ -20,8 +27,8 @@ var maxArgumentCount int = 1
 var BrowseCmd = &cobra.Command{
 	Use:     "browse",
 	Aliases: []string{""},
-	Short:   "Browse project(s)",
-	Long:    `Browse project(s)`,
+	Short:   "Browse Url",
+	Long:    `Browse Url`,
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
@@ -47,12 +54,46 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	err := openBrowser(commandOptions.URL)
+	fmt.Printf("\n\n════════════════════════════════════\n")
+	fmt.Printf("🔍 Browsing: %s\n", _string.Concat(", ", commandOptions.URL))
+	fmt.Printf("═══════════════════════════════════\n\n")
+
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+	result = append(result, &browse_tool_payload_structs.ToolBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Tool,
+			browse_tool_payload_structs.TOOL_KIND,
+			commandOptions.URL,
+			schemas.Metadata{},
+		),
+		Specifications: browse_tool_payload_structs.ToolSpecification{
+			ToolIdentifier: tool.ToolIdentifier{},
+			Url:            commandOptions.URL,
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
+
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err := engines.DispatchEngineBrowse(appCtx, result)
 	if err != nil {
-		return fmt.Errorf("Failed to open URL: %v\n", err)
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ URL opened: %s\n", commandOptions.URL)
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {

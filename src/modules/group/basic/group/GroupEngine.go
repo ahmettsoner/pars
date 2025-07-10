@@ -233,7 +233,7 @@ func (s GroupEngine) completeInformation(ctx *application.ApplicationContext, mo
 
 func (s GroupEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Group",
+		Name:  basic_group_payload_structs.MODULE_KEY,
 		Order: 1000,
 	}
 }

@@ -19,7 +19,7 @@ func (e ResourceBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
 func (s ResourceBaseStruct) GetKey() string {
-	return "Resource.Data"
+	return MODULE_KEY
 }
 
 func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, configurations ResourceConfiguration) ResourceBaseStruct {

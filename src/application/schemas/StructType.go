@@ -17,6 +17,7 @@ var StructTypes = struct {
 	Layer       StructType
 	Template    StructType
 	Task        StructType
+	Tool        StructType
 }{
 	Workspace:   "Workspace",
 	Project:     "Project",
@@ -27,6 +28,7 @@ var StructTypes = struct {
 	Layer:       "Layer",
 	Template:    "Template",
 	Task:        "Task",
+	Tool:        "Tool",
 }
 
 func (c StructType) String() string {
@@ -49,6 +51,8 @@ func (c StructType) String() string {
 		return "Template"
 	case StructTypes.Task:
 		return "Task"
+	case StructTypes.Tool:
+		return "Tool"
 	default:
 		return "Unknown"
 	}
@@ -73,6 +77,8 @@ func StructTypeEnumFromString(enum string) (StructType, error) {
 		return StructTypes.Template, nil
 	case strings.ToLower(StructTypes.Task.String()):
 		return StructTypes.Task, nil
+	case strings.ToLower(StructTypes.Tool.String()):
+		return StructTypes.Tool, nil
 	default:
 		return "Unknown", fmt.Errorf("unknown state: %s", enum)
 	}

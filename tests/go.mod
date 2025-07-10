@@ -3,43 +3,67 @@ module pars/tests
 go 1.23.7
 
 replace parsdevkit.net/modules/project/application_project => ../src/modules/project/application/project
+
 replace parsdevkit.net/modules/project/application_project_contract => ../src/modules/project/application/project.contract
+
 replace parsdevkit.net/modules/project/application_project_payload => ../src/modules/project/application/project.payload
 
+replace parsdevkit.net/modules/tool/browse_tool => ../src/modules/tool/browse/tool
+
+replace parsdevkit.net/modules/tool/browse_tool_contract => ../src/modules/tool/browse/tool.contract
+
+replace parsdevkit.net/modules/tool/browse_tool_payload => ../src/modules/tool/browse/tool.payload
+
 replace parsdevkit.net/modules/template/code_template => ../src/modules/template/code/template
+
 replace parsdevkit.net/modules/template/code_template_payload => ../src/modules/template/code/template.payload
+
 replace parsdevkit.net/modules/template/code_template_contract => ../src/modules/template/code/template.contract
 
 replace parsdevkit.net/modules/template/shared_template => ../src/modules/template/shared/template
+
 replace parsdevkit.net/modules/template/shared_template_payload => ../src/modules/template/shared/template.payload
+
 replace parsdevkit.net/modules/template/shared_template_contract => ../src/modules/template/shared/template.contract
 
 replace parsdevkit.net/modules/template/file_template => ../src/modules/template/file/template
+
 replace parsdevkit.net/modules/template/file_template_payload => ../src/modules/template/file/template.payload
+
 replace parsdevkit.net/modules/template/file_template_contract => ../src/modules/template/file/template.contract
 
 replace parsdevkit.net/modules/task/basic_task => ../src/modules/task/basic/task
+
 replace parsdevkit.net/modules/task/basic_task_contract => ../src/modules/task/basic/task.contract
+
 replace parsdevkit.net/modules/task/basic_task_payload => ../src/modules/task/basic/task.payload
 
 replace parsdevkit.net/modules/resource/data_resource => ../src/modules/resource/data/resource
+
 replace parsdevkit.net/modules/resource/data_resource_contract => ../src/modules/resource/data/resource.contract
+
 replace parsdevkit.net/modules/resource/data_resource_payload => ../src/modules/resource/data/resource.payload
 
 replace parsdevkit.net/modules/group/basic_group => ../src/modules/group/basic/group
+
 replace parsdevkit.net/modules/group/basic_group_contract => ../src/modules/group/basic/group.contract
 
 replace parsdevkit.net/modules/group/basic_group_payload => ../src/modules/group/basic/group.payload
 
 replace parsdevkit.net/modules/workspace/basic_workspace => ../src/modules/workspace/basic/workspace
+
 replace parsdevkit.net/modules/workspace/basic_workspace_contract => ../src/modules/workspace/basic/workspace.contract
+
 replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../src/modules/workspace/basic/workspace.payload
 
 replace parsdevkit.net/modules/resource/object_resource => ../src/modules/resource/object/resource
+
 replace parsdevkit.net/modules/resource/object_resource_contract => ../src/modules/resource/object/resource.contract
+
 replace parsdevkit.net/modules/resource/object_resource_payload => ../src/modules/resource/object/resource.payload
 
 replace parsdevkit.net/application => ../src/application
+
 replace parsdevkit.net/internal => ../src/internal
 
 replace parsdevkit.net/persistence/entities => ../src/data/entities
@@ -77,20 +101,18 @@ require (
 	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
-	parsdevkit.net/internal v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/project/application_project_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/resource/object_resource_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/template/code_template_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/template/code_template_contract v0.0.0-00010101000000-000000000000
+	parsdevkit.net/modules/template/code_template_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
@@ -110,18 +132,22 @@ require (
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/internal v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/task/basic_task_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/task/basic_task_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/task/basic_task_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/template/file_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/file_template_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/file_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/modules/template/shared_template_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/template/shared_template_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/template/shared_template_payload v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/tool/browse_tool v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/tool/browse_tool_contract v0.0.0-00010101000000-000000000000 // indirect
 )
 
 require (
@@ -161,6 +187,7 @@ require (
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
 	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect; indirec
+	parsdevkit.net/modules/tool/browse_tool_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000
 	parsdevkit.net/providers v0.0.0-00010101000000-000000000000 // indirect

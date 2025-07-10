@@ -104,9 +104,10 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 			}
 
-			loadedSchemas = append(loadedSchemas, data.GetHeader().Name)
+			loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 		}
 		fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+		fmt.Printf("────────────────────────────────────\n")
 
 		appCtx := application.GetContext()
 		if appCtx == nil {
