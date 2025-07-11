@@ -5,14 +5,18 @@ import (
 	"log"
 	"strings"
 
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/modules/group/basic_group_contract"
+	"parsdevkit.net/pkg/utilities/json"
+
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	"parsdevkit.net/application/schemas"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application"
-	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/pkg/utilities/array"
@@ -59,47 +63,36 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	applicationProjectService := ioc.Get[application_project_contract.ProjectInterface]()
-	applicationProjectList, err := applicationProjectService.ListByWorkspace(commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to listing projects\n%w", err)
-	}
-	fmt.Printf("(%d) application project available\n", len(*applicationProjectList))
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	applicationProjectListBasic, err := applicationProjectService.ListIndividualByWorkspace(commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to list Workspace Application projects\n%w", err)
-	}
+	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Project,
+			application_project_payload_structs.PROJECT_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: application_project_payload_structs.ProjectSpecification{
+			ProjectIdentifier: project.ProjectIdentifier{},
+		},
+	})
 
-	if len(*applicationProjectListBasic) > 0 {
-		fmt.Println()
-		for _, project := range *applicationProjectList {
-			fmt.Printf("- %v\n", project.GetFullInformation())
-		}
-	}
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
 
-	groupService := ioc.Get[basic_group_contract.GroupInterface]()
-	groupList, err := groupService.List()
-	if err != nil {
-		return fmt.Errorf("Failed to list projects groups\n%w", err)
-	}
-
-	for _, group := range *groupList {
-
-		applicationProjectList, err := applicationProjectService.ListByFullNameWorkspace(fmt.Sprintf("%v/", group.Header.Name), commandOptions.Workspace)
-		if err != nil {
-			return fmt.Errorf("Failed to list Group '%s' projects\n%w", group.Header.Name, err)
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 		}
 
-		if len(*applicationProjectList) > 0 {
-			fmt.Println()
-			fmt.Printf("%v/", group.Header.Name)
-			fmt.Println()
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
 
-			for _, project := range *applicationProjectList {
-				fmt.Printf("- %v\n", project.GetFullInformation())
-			}
-		}
+	appCtx := application.GetContext()
+
+	err := engines.DispatchEngineList(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 	return nil
 }

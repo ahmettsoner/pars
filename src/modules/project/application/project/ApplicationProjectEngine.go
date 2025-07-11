@@ -17,6 +17,8 @@ import (
 	create_steps "parsdevkit.net/modules/project/application_project/flows/create"
 	remove_steps "parsdevkit.net/modules/project/application_project/flows/remove"
 	update_steps "parsdevkit.net/modules/project/application_project/flows/update"
+	describe_printer "parsdevkit.net/modules/project/application_project/printers/describe"
+	list_printer "parsdevkit.net/modules/project/application_project/printers/list"
 	"parsdevkit.net/modules/project/application_project_contract"
 
 	"parsdevkit.net/modules/group/basic_group_contract"
@@ -305,6 +307,7 @@ func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationCo
 
 	return readyToRemoveStructs, nil
 }
+
 func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, permanent bool) error {
 
 	readyToRemoveStructs, err := s.prepareToRemove(ctx, projects)
@@ -686,4 +689,174 @@ func (s ApplicationProjectEngine) prepareToClean(ctx *application.ApplicationCon
 	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
 
 	return readyToUpdateStructs, nil
+}
+
+func (s ApplicationProjectEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	projectList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *projectList {
+		resourceLabels := make([]string, 0)
+		for _, v := range e.Specifications.Labels {
+			resourceLabel := v.Key
+			if !_string.IsEmpty(v.Value) {
+				resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+			}
+			resourceLabels = append(resourceLabels, resourceLabel)
+		}
+		resource := list_printer.ViewModel{
+			Name:        e.Header.Name,
+			Set:         e.Specifications.Set,
+			Group:       e.Specifications.Group,
+			Platform:    e.Specifications.Platform.Type.String(),
+			ProjectType: e.Specifications.ProjectType,
+			Tags:        e.Header.Metadata.Tags,
+			Labels:      resourceLabels,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s ApplicationProjectEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Project List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListProject{Projects: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s ApplicationProjectEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			project, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if project != nil {
+				resourceLabels := make([]string, 0)
+				for _, v := range project.Specifications.Labels {
+					resourceLabel := v.Key
+					if !_string.IsEmpty(v.Value) {
+						resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+					}
+					resourceLabels = append(resourceLabels, resourceLabel)
+				}
+				resourceLayers := make([]string, 0)
+				for _, v := range project.Specifications.Layers {
+					resourceLayers = append(resourceLayers, v.LayerIdentifier.Name)
+				}
+				resourceDependencies := make([]string, 0)
+				for _, v := range project.Specifications.Dependencies {
+					resourceDependency := v.Name
+					if !_string.IsEmpty(v.Version) {
+						resourceDependency = fmt.Sprintf("%v@%v", v.Name, v.Version)
+					}
+					resourceDependencies = append(resourceDependencies, resourceDependency)
+				}
+
+				resourceReferences := []describe_printer.ReferenceViewModel{}
+
+				for _, v := range project.Specifications.References {
+
+					resourceReferenceLabels := make([]string, 0)
+					for _, v := range v.Specifications.Labels {
+						resourceLabel := v.Key
+						if !_string.IsEmpty(v.Value) {
+							resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+						}
+						resourceReferenceLabels = append(resourceReferenceLabels, resourceLabel)
+					}
+
+					resource := describe_printer.ReferenceViewModel{
+						Name:   v.Header.Name,
+						Set:    v.Specifications.Set,
+						Tags:   v.Header.Metadata.Tags,
+						Labels: resourceReferenceLabels,
+					}
+
+					resourceReferences = append(resourceReferences, resource)
+				}
+
+				resource := describe_printer.ViewModel{
+					Name:         project.Header.Name,
+					Group:        project.Specifications.Group,
+					Set:          project.Specifications.Set,
+					Platform:     project.Specifications.Platform.Type.String(),
+					ProjectType:  project.Specifications.ProjectType,
+					Runtime:      project.Specifications.Runtime,
+					Language:     project.Specifications.Language,
+					Path:         project.Specifications.ProjectIdentifier.Path,
+					Package:      project.Specifications.Package,
+					Tags:         project.Header.Metadata.Tags,
+					Labels:       resourceLabels,
+					Layers:       resourceLayers,
+					Dependencies: resourceDependencies,
+					References:   resourceReferences,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Project '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Project argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s ApplicationProjectEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, project := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", project.Name)
+
+		printer := describe_printer.DescribeProject{Project: project}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Project Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }

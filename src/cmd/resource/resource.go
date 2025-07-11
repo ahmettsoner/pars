@@ -1,6 +1,7 @@
 package resource
 
 import (
+	"parsdevkit.net/cmd/resource/describe"
 	"parsdevkit.net/cmd/resource/list"
 	"parsdevkit.net/cmd/resource/remove"
 
@@ -26,4 +27,5 @@ func init() {
 func addSubCommands() {
 	ResourceCmd.AddCommand(remove.RemoveCmd)
 	ResourceCmd.AddCommand(list.ListCommand)
+	ResourceCmd.AddCommand(describe.DescribeCmd)
 }

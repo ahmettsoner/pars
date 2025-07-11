@@ -36,8 +36,8 @@ var maxArgumentCount int = 1
 var DescribeCmd = &cobra.Command{
 	Use:               "describe [name]",
 	Aliases:           []string{"d"},
-	Short:             "Information about project",
-	Long:              `Information about project`,
+	Short:             "Information about group",
+	Long:              `Information about group`,
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,

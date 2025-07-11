@@ -17,6 +17,7 @@ type GroupListOptions struct {
 }
 
 var commandOptions GroupListOptions
+var maxArgumentCount int = 0
 
 var ListCmd = &cobra.Command{
 	Use:     "list",
@@ -30,6 +31,9 @@ var ListCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("There is no argument supported")
+	}
 	return nil
 }
 

@@ -2,20 +2,26 @@ package describe
 
 import (
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/structs/project"
 
 	"fmt"
 	"log"
 	"strings"
 
+	"parsdevkit.net/application/engines"
+
 	"parsdevkit.net/modules/project/application_project_contract"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/array"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
+	"parsdevkit.net/application/schemas"
 )
 
 type DescribeOptions struct {
@@ -41,10 +47,10 @@ var DescribeCmd = &cobra.Command{
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: project name is required. Provide as an argument.")
 	}
 	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only group name is expected.")
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
 	}
 	return nil
 }
@@ -66,25 +72,36 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectList, err := projectService.ListByFullNameWorkspace(commandOptions.Name, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to describe project '%s'\n%w", commandOptions.Name, err)
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+
+	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Project,
+			application_project_payload_structs.PROJECT_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: application_project_payload_structs.ProjectSpecification{
+			ProjectIdentifier: project.ProjectIdentifier{},
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
 
-	for _, e := range *projectList {
-		name := fmt.Sprintf(" - %v", e.GetFullInformation())
-		fmt.Println(name)
-		labels := fmt.Sprintf("\t Labels: %v", e.Specifications.Labels)
-		fmt.Println(labels)
-		projectPlatform := fmt.Sprintf("\t Platform: %v", e.Specifications.Platform.Type.String())
-		fmt.Println(projectPlatform)
-		projectType := fmt.Sprintf("\t Type: %v", e.Specifications.ProjectType)
-		fmt.Println(projectType)
-		projectRuntime := fmt.Sprintf("\t Runtime: %v", e.Specifications.Runtime.Type.String())
-		fmt.Println(projectRuntime)
-		layers := fmt.Sprintf("\t Layers: %v", e.Specifications.Layers)
-		fmt.Println(layers)
+	appCtx := application.GetContext()
+
+	err := engines.DispatchEngineDescribe(appCtx, result, commandOptions.Name)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 	return nil
 }

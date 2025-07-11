@@ -13,6 +13,8 @@ import (
 	create_steps "parsdevkit.net/modules/resource/data_resource/flows/create"
 	remove_steps "parsdevkit.net/modules/resource/data_resource/flows/remove"
 	update_steps "parsdevkit.net/modules/resource/data_resource/flows/update"
+	describe_printer "parsdevkit.net/modules/resource/data_resource/printers/describe"
+	list_printer "parsdevkit.net/modules/resource/data_resource/printers/list"
 	"parsdevkit.net/modules/resource/data_resource_contract"
 
 	"parsdevkit.net/application"
@@ -305,4 +307,106 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]data_resource_payloa
 	}
 
 	return r, nil
+}
+
+func (s DataResourceEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s DataResourceEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[data_resource_contract.ResourceInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	groupList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *groupList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s DataResourceEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Data Resource List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListResource{Resources: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s DataResourceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s DataResourceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[data_resource_contract.ResourceInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			group, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if group != nil {
+
+				resource := describe_printer.ViewModel{
+					Name: group.Header.Name,
+					Tags: group.Header.Metadata.Tags,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Data Resource '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Data Resource argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s DataResourceEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, group := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", group.Name)
+
+		printer := describe_printer.DescribeResource{Resource: group}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Data Resource Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }
