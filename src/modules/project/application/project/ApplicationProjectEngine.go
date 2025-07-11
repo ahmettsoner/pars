@@ -112,8 +112,7 @@ func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToCreateStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Creating: %s.%s\n\n", project.Header.Name, project.GetKey())
+		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("CreateNewProject").
 			Step(&create_steps.SaveProject{}).
@@ -189,8 +188,8 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Updating: %s.%s\n\n", project.Header.Name, project.GetKey())
+
+		fmt.Printf("\n\n🛠️  Updating: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), project.Specifications.Workspace)
 		if err != nil {
@@ -315,8 +314,7 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 	for _, project := range readyToRemoveStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Removing: %s.%s\n\n", project.Header.Name, project.GetKey())
+		fmt.Printf("\n\n🛠️  Removing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("RemoveExistingProject").
 			Step(&remove_steps.DestroyProject{}).
@@ -648,8 +646,8 @@ func (s ApplicationProjectEngine) clean(ctx *application.ApplicationContext, pro
 		return err
 	}
 	for _, project := range readyToUpdateStructs {
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Cleaning: %s.%s\n\n", project.Header.Name, project.GetKey())
+
+		fmt.Printf("\n\n🛠️  Cleaning: %s.%s\n\n", project.Header.Name, project.GetKey())
 
 		projectFlow := flowx.NewFlow("CleanProject").
 			Step(&clean_steps.CleanProject{})

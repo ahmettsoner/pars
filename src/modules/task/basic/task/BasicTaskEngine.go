@@ -97,8 +97,7 @@ func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []bas
 
 	for _, task := range readyToCreateStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Creating: %s.%s\n\n", task.Header.Name, task.GetKey())
+		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", task.Header.Name, task.GetKey())
 
 		taskFlow := flowx.NewFlow("CreateNewTask").
 			Step(&create_steps.SaveTask{})
@@ -158,8 +157,7 @@ func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []bas
 	}
 	for _, task := range readyToUpdateStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Updating: %s.%s\n\n", task.Header.Name, task.GetKey())
+		fmt.Printf("\n\n🛠️  Updating: %s.%s\n\n", task.Header.Name, task.GetKey())
 
 		taskFlow := flowx.NewFlow("UpdateExistingTask").
 			Step(&update_steps.UpdateTask{})
@@ -209,8 +207,7 @@ func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []bas
 
 	for _, task := range readyToRemoveStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Removing: %s.%s\n\n", task.Header.Name, task.GetKey())
+		fmt.Printf("\n\n🛠️  Removing: %s.%s\n\n", task.Header.Name, task.GetKey())
 
 		taskFlow := flowx.NewFlow("RemoveExistingTask").
 			Step(&remove_steps.DeleteTask{})

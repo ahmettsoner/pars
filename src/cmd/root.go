@@ -50,9 +50,11 @@ type RootOptions struct {
 var commandOptions RootOptions
 
 var RootCmd = &cobra.Command{
-	Use:   "pars [type] [command] [options] [flags]",
-	Short: "Smart Software Development Process Automation",
-	Long:  `Smart Software Development Process Automation`,
+	Use:           "pars [type] [command] [options] [flags]",
+	Short:         "Smart Software Development Process Automation",
+	Long:          `Smart Software Development Process Automation`,
+	SilenceUsage:  true,
+	SilenceErrors: true,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if !_string.IsEmpty(commandOptions.environment) {
 			application.SetEnvironment(commandOptions.environment)

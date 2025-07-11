@@ -53,3 +53,61 @@ func PrintFields(obj interface{}, depth int) {
 		fmt.Println("Error: this explains only structs and arrays/slices.")
 	}
 }
+func IsZeroValue(v any) bool {
+	return reflect.ValueOf(v).IsZero()
+}
+
+func EmptyValue(v any) string {
+	rv := reflect.ValueOf(v)
+
+	if !rv.IsValid() {
+		return "(none)"
+	}
+
+	switch rv.Kind() {
+	case reflect.String:
+		return "N/A"
+	case reflect.Slice, reflect.Array:
+		return "(empty)"
+	case reflect.Map:
+		return "(empty)"
+	case reflect.Ptr:
+		if rv.IsNil() {
+			return "(none)"
+		}
+		return EmptyValue(rv.Elem().Interface())
+	case reflect.Interface:
+		if rv.IsNil() {
+			return "(none)"
+		}
+		return EmptyValue(rv.Elem().Interface())
+	default:
+		return "(none)"
+	}
+}
+
+func IsEmpty(v any) bool {
+	if v == nil {
+		return true
+	}
+
+	rv := reflect.ValueOf(v)
+
+	// Handle nil interface or pointer
+	if !rv.IsValid() || (rv.Kind() == reflect.Ptr || rv.Kind() == reflect.Interface) && rv.IsNil() {
+		return true
+	}
+
+	switch rv.Kind() {
+	case reflect.String:
+		return rv.Len() == 0
+	case reflect.Slice, reflect.Array, reflect.Map:
+		return rv.Len() == 0
+	case reflect.Struct:
+		// Optional: could also check for all zero fields
+		return reflect.DeepEqual(v, reflect.Zero(rv.Type()).Interface())
+	default:
+		// Fallback for other types
+		return reflect.DeepEqual(v, reflect.Zero(rv.Type()).Interface())
+	}
+}

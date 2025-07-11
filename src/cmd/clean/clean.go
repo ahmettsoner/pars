@@ -58,11 +58,6 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-
-	fmt.Printf("════════════════════════════════════\n")
-	fmt.Printf("⏳ Cleaning: %s\n", _string.Concat(", ", commandOptions.Names...))
-	fmt.Printf("═══════════════════════════════════\n\n")
-
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
 	if len(commandOptions.Names) > 0 {

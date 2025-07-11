@@ -98,8 +98,7 @@ func (s FileTemplateEngine) create(ctx *application.ApplicationContext, template
 
 	for _, template := range readyToCreateStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Creating: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("CreateNewTemplate").
 			Step(&create_steps.SaveTemplate{}).
@@ -160,8 +159,7 @@ func (s FileTemplateEngine) update(ctx *application.ApplicationContext, template
 	}
 	for _, template := range readyToUpdateStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Updating: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("\n\n🛠️  Updating: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("UpdateExistingTemplate").
 			Step(&update_steps.UpdateTemplate{}).
@@ -209,8 +207,7 @@ func (s FileTemplateEngine) remove(ctx *application.ApplicationContext, template
 
 	for _, template := range readyToRemoveStructs {
 
-		fmt.Printf("\n\n════════════════════════════════════\n")
-		fmt.Printf("🛠️  Removing: %s.%s\n\n", template.Header.Name, template.GetKey())
+		fmt.Printf("\n\n🛠️  Removing: %s.%s\n\n", template.Header.Name, template.GetKey())
 
 		templateFlow := flowx.NewFlow("RemoveExistingTemplate").
 			Step(&remove_steps.DeleteTemplate{}).

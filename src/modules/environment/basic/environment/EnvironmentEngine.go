@@ -11,6 +11,7 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/schemas"
+	list_printer "parsdevkit.net/modules/environment/basic_environment/printers/list"
 	"parsdevkit.net/modules/environment/basic_environment_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
@@ -53,11 +54,8 @@ func (s EnvironmentEngine) list(ctx *application.ApplicationContext) error {
 		return err
 	}
 
-	fmt.Printf("(%d) environment available\n", (len(readyToListStructs) + 1))
-	fmt.Println("* Default")
-	for _, e := range readyToListStructs {
-		fmt.Printf("- %v\n", e.Header.Name)
-	}
+	printer := list_printer.ListEnvironment{Environments: readyToListStructs}
+	printer.Print()
 
 	return nil
 }

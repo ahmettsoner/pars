@@ -54,10 +54,6 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	fmt.Printf("════════════════════════════════════\n")
-	fmt.Printf("⏳ Browsing: %s\n", _string.Concat(", ", commandOptions.URL))
-	fmt.Printf("═══════════════════════════════════\n\n")
-
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 	result = append(result, &browse_tool_payload_structs.ToolBaseStruct{
 		Header: schemas.NewSchemaHeader(

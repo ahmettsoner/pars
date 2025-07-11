@@ -37,6 +37,10 @@ type ApplicationProjectReleaserEngineInterface interface {
 type ListEngineInterface interface {
 	List(ctx *application.ApplicationContext) error
 }
+
+type DescribeEngineInterface interface {
+	Describe(ctx *application.ApplicationContext, args ...any) error
+}
 type ToolsEngineInterface interface {
 	Browse(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }

@@ -289,7 +289,7 @@ func (s *ProjectRepository) ListByWorkspaceNameAndGroup(workspaceName string, gr
 
 func (s *ProjectRepository) ListByGroup(groupId int) (*([]entities.Project), error) {
 	var entities = make(([]entities.Project), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Group.ID') = ?", groupId).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.GroupObject.ID') = ?", groupId).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -298,7 +298,7 @@ func (s *ProjectRepository) ListByGroup(groupId int) (*([]entities.Project), err
 
 func (s *ProjectRepository) ListByGroupName(group string) (*([]entities.Project), error) {
 	var entities = make(([]entities.Project), 0)
-	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Group.Name') = ?", group).Find(&entities)
+	result := s.DbContext.Database.Where("json_extract(document, '$.Specifications.Group') = ?", group).Find(&entities)
 	if result.Error != nil {
 		return nil, result.Error
 	}

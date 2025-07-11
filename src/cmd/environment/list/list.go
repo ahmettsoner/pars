@@ -39,10 +39,6 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	fmt.Printf("════════════════════════════════════\n")
-	fmt.Printf("⏳ Listing Environments \n")
-	fmt.Printf("═══════════════════════════════════\n\n")
-
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
 	result = append(result, &basic_environment_payload_structs.EnvironmentBaseStruct{

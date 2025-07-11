@@ -3,6 +3,7 @@ Kind: Application
 Name: App1
 Specifications:
   Platform: Dotnet
+  Group: TestGroup
   Layers: 
     - L1
     - L2
@@ -12,6 +13,8 @@ Kind: Application
 Name: App2
 Specifications:
   Platform: Dotnet
+  Group: TestGroup
+  Set: PSet1
   Layers: 
     - L3
     - L4
@@ -22,6 +25,8 @@ Kind: Application
 Name: App3
 Specifications:
   Platform: Dotnet
+  Group: TestGroup
+  Set: PSet2
   Layers: 
     - L5
   
