@@ -95,7 +95,7 @@ func (s GroupEngine) create(ctx *application.ApplicationContext, groups []basic_
 
 	for _, group := range readyToCreateStructs {
 
-		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", group.Header.Name, group.GetKey())
+		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", group.Header.Name, group.GetKey())
 
 		groupFlow := flowx.NewFlow("CreateNewGroup").
 			Step(&create_steps.SaveGroup{})
@@ -260,16 +260,28 @@ func (s GroupEngine) List(ctx *application.ApplicationContext) error {
 
 	return nil
 }
-func (s GroupEngine) prepareToList(ctx *application.ApplicationContext) ([]basic_group_payload_structs.GroupBaseStruct, error) {
+func (s GroupEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
 
 	service := ioc.Get[basic_group_contract.GroupInterface]()
 
-	readyToListStructs, err := service.List()
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	groupList, err := service.List()
 	if err != nil {
 		return nil, err
 	}
 
-	return *readyToListStructs, nil
+	for _, e := range *groupList {
+		resource := list_printer.ViewModel{
+			Name:    e.Header.Name,
+			Tags:    e.Header.Metadata.Tags,
+			Path:    e.Specifications.Path,
+			Package: e.Specifications.Package,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
 }
 func (s GroupEngine) list(ctx *application.ApplicationContext) error {
 
@@ -277,6 +289,8 @@ func (s GroupEngine) list(ctx *application.ApplicationContext) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("\n🛠️  Group List (%d):\n\n", len(readyToListStructs))
 
 	printer := list_printer.ListGroup{Groups: readyToListStructs}
 	printer.Print()
@@ -351,7 +365,7 @@ func (s GroupEngine) describe(ctx *application.ApplicationContext, args ...any) 
 
 	for _, group := range readyToDescribeStructs {
 
-		fmt.Printf("\n\n🛠️  Details for: %s\n\n", group.Name)
+		fmt.Printf("\n🛠️  Details for: %s\n\n", group.Name)
 
 		printer := describe_printer.DescribeGroup{Group: group}
 

@@ -92,7 +92,7 @@ func (s WorkspaceEngine) create(ctx *application.ApplicationContext, workspaces 
 
 	for _, workspace := range readyToCreateStructs {
 
-		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
+		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
 		workspaceFlow := flowx.NewFlow("CreateNewWorkspace").
 			Step(&create_steps.SaveWorkspace{})
@@ -151,7 +151,7 @@ func (s WorkspaceEngine) update(ctx *application.ApplicationContext, workspaces 
 	}
 	for _, workspace := range readyToUpdateStructs {
 
-		fmt.Printf("\n\n🛠️  Updating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
+		fmt.Printf("\n🛠️  Updating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
 		workspaceFlow := flowx.NewFlow("UpdateExistingWorkspace").
 			Step(&update_steps.UpdateWorkspace{})
@@ -198,7 +198,7 @@ func (s WorkspaceEngine) remove(ctx *application.ApplicationContext, workspaces 
 
 	for _, workspace := range readyToRemoveStructs {
 
-		fmt.Printf("\n\n🛠️  Removing: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
+		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
 		workspaceFlow := flowx.NewFlow("RemoveExistingWorkspace").
 			Step(&remove_steps.DeleteWorkspace{})

@@ -62,7 +62,7 @@ func (s ToolEngine) browse(ctx *application.ApplicationContext, tools []browse_t
 
 	for _, tool := range readyToCreateStructs {
 
-		fmt.Printf("\n\n🛠️  Creating: %s.%s\n\n", tool.Header.Name, tool.GetKey())
+		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", tool.Header.Name, tool.GetKey())
 
 		toolFlow := flowx.NewFlow("CreateNewTool").
 			Step(&browse_steps.OpenBrowser{})

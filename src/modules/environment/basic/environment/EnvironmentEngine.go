@@ -36,13 +36,27 @@ func (s EnvironmentEngine) List(ctx *application.ApplicationContext) error {
 
 	return nil
 }
-func (s EnvironmentEngine) prepareToList(ctx *application.ApplicationContext) ([]basic_environment_payload_structs.EnvironmentBaseStruct, error) {
+func (s EnvironmentEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
 
 	service := ioc.Get[basic_environment_contract.EnvironmentInterface]()
 
-	readyToListStructs, err := service.List()
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	groupList, err := service.List()
 	if err != nil {
 		return nil, err
+	}
+
+	defaultResource := list_printer.ViewModel{
+		Name: "* Default",
+	}
+	readyToListStructs = append(readyToListStructs, defaultResource)
+
+	for _, e := range groupList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
 	}
 
 	return readyToListStructs, nil
@@ -53,6 +67,8 @@ func (s EnvironmentEngine) list(ctx *application.ApplicationContext) error {
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("\n🛠️  Environment List (%d):\n\n", len(readyToListStructs))
 
 	printer := list_printer.ListEnvironment{Environments: readyToListStructs}
 	printer.Print()
