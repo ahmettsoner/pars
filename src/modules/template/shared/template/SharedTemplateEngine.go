@@ -12,6 +12,8 @@ import (
 	create_steps "parsdevkit.net/modules/template/shared_template/flows/create"
 	remove_steps "parsdevkit.net/modules/template/shared_template/flows/remove"
 	update_steps "parsdevkit.net/modules/template/shared_template/flows/update"
+	describe_printer "parsdevkit.net/modules/template/shared_template/printers/describe"
+	list_printer "parsdevkit.net/modules/template/shared_template/printers/list"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"github.com/sirupsen/logrus"
@@ -287,4 +289,106 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]shared_template_payl
 	}
 
 	return r, nil
+}
+
+func (s SharedTemplateEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s SharedTemplateEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	groupList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *groupList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s SharedTemplateEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Shared Template List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListTemplate{Templates: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s SharedTemplateEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s SharedTemplateEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[shared_template_contract.TemplateInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			group, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if group != nil {
+
+				resource := describe_printer.ViewModel{
+					Name: group.Header.Name,
+					Tags: group.Header.Metadata.Tags,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Shared Template '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Shared Template argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s SharedTemplateEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, group := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", group.Name)
+
+		printer := describe_printer.DescribeTemplate{Template: group}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Shared Template Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }

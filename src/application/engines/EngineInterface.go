@@ -27,9 +27,19 @@ type ApplicationProjectRunnerEngineInterface interface {
 type ApplicationProjectCleanerEngineInterface interface {
 	Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
+type ApplicationProjectInstallerEngineInterface interface {
+	Install(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
 
 type ApplicationProjectExecuterEngineInterface interface {
 	Execute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+
+type ApplicationProjectOpenerEngineInterface interface {
+	Open(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
+type ApplicationProjectTesterEngineInterface interface {
+	Test(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 type ApplicationProjectReleaserEngineInterface interface {
 	Release(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error

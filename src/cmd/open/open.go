@@ -2,32 +2,32 @@ package open
 
 import (
 	"fmt"
-	"os"
 
-	_string "parsdevkit.net/pkg/utilities/string"
-	"parsdevkit.net/providers"
-
-	"parsdevkit.net/application"
-	"parsdevkit.net/cmd/open/project"
-	workspaceCommand "parsdevkit.net/cmd/open/workspace"
-
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/pkg/utilities/json"
+	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+
+	"parsdevkit.net/application"
 )
 
 type OpenOptions struct {
-	Name string
+	Names     []string
+	Workspace string
 }
 
 var commandOptions OpenOptions
-var maxArgumentCount int = 1
 
 var OpenCmd = &cobra.Command{
-	Use:     "open",
-	Aliases: []string{"o"},
-	Short:   "Open in editor",
-	Long:    `Open in editor`,
+	Use:     "open [name]...",
+	Aliases: []string{"c"},
+	Short:   "Open project(s)",
+	Long:    `Open project(s)`,
 	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
@@ -35,34 +35,71 @@ var OpenCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: workspace name is required. Provide it with '--name' or as an argument.")
-	}
-	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only workspace name is expected.")
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required.")
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
+	}
+
+	if _string.IsEmpty(commandOptions.Workspace) {
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
 
 	return nil
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+
+	if len(commandOptions.Names) > 0 {
+		for _, name := range commandOptions.Names {
+			result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+				Header: schemas.NewSchemaHeader(
+					schemas.StructTypes.Project,
+					application_project_payload_structs.PROJECT_KIND,
+					name,
+					schemas.Metadata{},
+				),
+				Specifications: application_project_payload_structs.ProjectSpecification{
+					ProjectIdentifier: project.ProjectIdentifier{
+						Workspace: commandOptions.Workspace,
+					},
+				},
+			})
+		}
+	}
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
 
 	appCtx := application.GetContext()
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
 	}
-	path := workspace.GetActiveWorkspacePath(appCtx, commandOptions.Name)
+	err := engines.DispatchEngineOpen(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
+	}
 
-	providers.VSCodeExecute("", path)
-
-	fmt.Fprintf(os.Stdout, "✔ Project '%v' opend successfully\n", commandOptions.Name)
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {
@@ -70,10 +107,5 @@ func afterFunc(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	addSubCommands()
-}
-
-func addSubCommands() {
-	OpenCmd.AddCommand(workspaceCommand.WorkspaceCommand)
-	OpenCmd.AddCommand(project.ProjectCmd)
+	OpenCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

@@ -7,7 +7,6 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/environment"
-	"parsdevkit.net/pkg/utilities/json"
 
 	"parsdevkit.net/application"
 	basic_environment_payload_structs "parsdevkit.net/modules/environment/basic_environment_payload/structs"
@@ -52,17 +51,6 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			EnvironmentIdentifier: environment.EnvironmentIdentifier{},
 		},
 	})
-
-	var loadedSchemas []string = make([]string, 0)
-	for _, data := range result {
-
-		if err := data.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(data)
-			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-		}
-
-		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
-	}
 
 	appCtx := application.GetContext()
 

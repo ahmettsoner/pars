@@ -2,29 +2,30 @@ package test
 
 import (
 	"fmt"
-	"os"
 
-	"parsdevkit.net/application/ioc"
-
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+
 	"parsdevkit.net/application"
-	"parsdevkit.net/modules/project/application_project_contract"
 )
 
-type CleanOptions struct {
-	Name      string
+type TestOptions struct {
+	Names     []string
 	Workspace string
 }
 
-var commandOptions CleanOptions
-var maxArgumentCount int = 1
+var commandOptions TestOptions
 
 var TestCmd = &cobra.Command{
-	Use:     "test",
-	Aliases: []string{"t"},
+	Use:     "test [name]...",
+	Aliases: []string{"c"},
 	Short:   "Test project(s)",
 	Long:    `Test project(s)`,
 	Args:    validateArgs,
@@ -34,18 +35,15 @@ var TestCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
-	}
-	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only project name is expected.")
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required.")
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
 	}
 
 	if _string.IsEmpty(commandOptions.Workspace) {
@@ -60,23 +58,54 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	_, err := projectService.Test(commandOptions.Name, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to test project '%s'\n%w", commandOptions.Name, err)
+	if len(commandOptions.Names) > 0 {
+		for _, name := range commandOptions.Names {
+			result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+				Header: schemas.NewSchemaHeader(
+					schemas.StructTypes.Project,
+					application_project_payload_structs.PROJECT_KIND,
+					name,
+					schemas.Metadata{},
+				),
+				Specifications: application_project_payload_structs.ProjectSpecification{
+					ProjectIdentifier: project.ProjectIdentifier{
+						Workspace: commandOptions.Workspace,
+					},
+				},
+			})
+		}
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Project '%v' tested successfully\n", commandOptions.Name)
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
+
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err := engines.DispatchEngineTest(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
+	}
 
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {
-	commandOptions = CleanOptions{}
+	commandOptions = TestOptions{}
 }
 
 func init() {
-	TestCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
-
 	TestCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

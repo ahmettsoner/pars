@@ -1,6 +1,7 @@
 package template
 
 import (
+	"parsdevkit.net/cmd/template/describe"
 	"parsdevkit.net/cmd/template/list"
 	"parsdevkit.net/cmd/template/remove"
 
@@ -25,5 +26,6 @@ func init() {
 
 func addSubCommands() {
 	TemplateCmd.AddCommand(remove.RemoveCmd)
-	TemplateCmd.AddCommand(list.ListCmd)
+	TemplateCmd.AddCommand(list.ListCommand)
+	TemplateCmd.AddCommand(describe.DescribeCmd)
 }

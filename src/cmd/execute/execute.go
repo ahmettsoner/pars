@@ -2,29 +2,30 @@ package execute
 
 import (
 	"fmt"
-	"os"
 
-	"parsdevkit.net/application/ioc"
-
-	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
-	"parsdevkit.net/modules/project/application_project_contract"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+
+	"parsdevkit.net/application"
 )
 
 type ExecuteOptions struct {
-	Name      string
+	Names     []string
 	Workspace string
 }
 
 var commandOptions ExecuteOptions
-var maxArgumentCount int = 1
 
 var ExecuteCmd = &cobra.Command{
-	Use:     "execute",
-	Aliases: []string{"x"},
+	Use:     "execute [name]...",
+	Aliases: []string{"c"},
 	Short:   "Execute project(s)",
 	Long:    `Execute project(s)`,
 	Args:    validateArgs,
@@ -34,42 +35,70 @@ var ExecuteCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: project name is required. Provide it with '--name' or as an argument.")
-	}
-	if len(args) > maxArgumentCount {
-		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: project name is required.")
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
 	}
 
-	appCtx := application.GetContext()
-	if appCtx == nil {
-		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	if _string.IsEmpty(commandOptions.Workspace) {
+		appCtx := application.GetContext()
+		if appCtx == nil {
+			return fmt.Errorf("xxx: Current workspace bulunamadı")
+		}
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
-	var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
-	}
-	commandOptions.Workspace = workspaceName
 
 	return nil
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	project, err := projectService.Clean(commandOptions.Name, commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to execute project '%s'\n%w", commandOptions.Name, err)
+	if len(commandOptions.Names) > 0 {
+		for _, name := range commandOptions.Names {
+			result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+				Header: schemas.NewSchemaHeader(
+					schemas.StructTypes.Project,
+					application_project_payload_structs.PROJECT_KIND,
+					name,
+					schemas.Metadata{},
+				),
+				Specifications: application_project_payload_structs.ProjectSpecification{
+					ProjectIdentifier: project.ProjectIdentifier{
+						Workspace: commandOptions.Workspace,
+					},
+				},
+			})
+		}
 	}
 
-	fmt.Fprintf(os.Stdout, "✔ Project '%s' executed successfully\n", project.Header.Name)
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
+
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err := engines.DispatchEngineExecute(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
+	}
 
 	return nil
 }
@@ -78,7 +107,5 @@ func afterFunc(cmd *cobra.Command, args []string) {
 }
 
 func init() {
-	ExecuteCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
-
 	ExecuteCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 }

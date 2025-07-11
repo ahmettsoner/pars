@@ -16,6 +16,8 @@ import (
 	create_steps "parsdevkit.net/modules/workspace/basic_workspace/flows/create"
 	remove_steps "parsdevkit.net/modules/workspace/basic_workspace/flows/remove"
 	update_steps "parsdevkit.net/modules/workspace/basic_workspace/flows/update"
+	describe_printer "parsdevkit.net/modules/workspace/basic_workspace/printers/describe"
+	list_printer "parsdevkit.net/modules/workspace/basic_workspace/printers/list"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
@@ -247,4 +249,105 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_workspace_payl
 	}
 
 	return r, nil
+}
+func (s WorkspaceEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	workspaceList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *workspaceList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s WorkspaceEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Workspace List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListWorkspace{Workspaces: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s WorkspaceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			workspace, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if workspace != nil {
+
+				resource := describe_printer.ViewModel{
+					Name: workspace.Header.Name,
+					Tags: workspace.Header.Metadata.Tags,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Workspace '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Workspace argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s WorkspaceEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, workspace := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", workspace.Name)
+
+		printer := describe_printer.DescribeWorkspace{Workspace: workspace}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Workspace Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }

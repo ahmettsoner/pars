@@ -12,6 +12,8 @@ import (
 	create_steps "parsdevkit.net/modules/template/code_template/flows/create"
 	remove_steps "parsdevkit.net/modules/template/code_template/flows/remove"
 	update_steps "parsdevkit.net/modules/template/code_template/flows/update"
+	describe_printer "parsdevkit.net/modules/template/code_template/printers/describe"
+	list_printer "parsdevkit.net/modules/template/code_template/printers/list"
 
 	"parsdevkit.net/application"
 
@@ -299,4 +301,106 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]code_template_payloa
 	}
 
 	return r, nil
+}
+
+func (s CodeTemplateEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s CodeTemplateEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	groupList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *groupList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s CodeTemplateEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Code Template List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListTemplate{Templates: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s CodeTemplateEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s CodeTemplateEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			group, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if group != nil {
+
+				resource := describe_printer.ViewModel{
+					Name: group.Header.Name,
+					Tags: group.Header.Metadata.Tags,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Code Template '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Code Template argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s CodeTemplateEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, group := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", group.Name)
+
+		printer := describe_printer.DescribeTemplate{Template: group}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Code Template Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }

@@ -13,6 +13,8 @@ import (
 	create_steps "parsdevkit.net/modules/task/basic_task/flows/create"
 	remove_steps "parsdevkit.net/modules/task/basic_task/flows/remove"
 	update_steps "parsdevkit.net/modules/task/basic_task/flows/update"
+	describe_printer "parsdevkit.net/modules/task/basic_task/printers/describe"
+	list_printer "parsdevkit.net/modules/task/basic_task/printers/list"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/ioc"
@@ -308,4 +310,106 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_task_payload_s
 	}
 
 	return r, nil
+}
+
+func (s BasicTaskEngine) List(ctx *application.ApplicationContext) error {
+	err := s.list(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	taskList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, e := range *taskList {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		readyToListStructs = append(readyToListStructs, resource)
+	}
+
+	return readyToListStructs, nil
+}
+func (s BasicTaskEngine) list(ctx *application.ApplicationContext) error {
+
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("\n🛠️  Task List (%d):\n\n", len(readyToListStructs))
+
+	printer := list_printer.ListTask{Tasks: readyToListStructs}
+	printer.Print()
+
+	return nil
+}
+
+func (s BasicTaskEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	err := s.describe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			task, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if task != nil {
+
+				resource := describe_printer.ViewModel{
+					Name: task.Header.Name,
+					Tags: task.Header.Metadata.Tags,
+				}
+
+				readyToDescribeStructs = append(readyToDescribeStructs, resource)
+			} else {
+				return nil, fmt.Errorf("xxx: Task '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Task argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s BasicTaskEngine) describe(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	for _, task := range readyToDescribeStructs {
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", task.Name)
+
+		printer := describe_printer.DescribeTask{Task: task}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Task Print sırasında hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
 }

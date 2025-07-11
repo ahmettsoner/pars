@@ -3,30 +3,30 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/components/workspace"
-	"parsdevkit.net/modules/template/code_template_contract"
-	"parsdevkit.net/modules/template/file_template_contract"
-	"parsdevkit.net/modules/template/shared_template_contract"
-	_string "parsdevkit.net/pkg/utilities/string"
-
-	"parsdevkit.net/application/ioc"
-
 	"github.com/spf13/cobra"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/template"
+	"parsdevkit.net/pkg/utilities/json"
+
 	"parsdevkit.net/application"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 )
 
-type ListOptions struct {
-	Workspace string
+type TemplateListOptions struct {
 }
 
-var commandOptions ListOptions
+var commandOptions TemplateListOptions
 var maxArgumentCount int = 0
 
-var ListCmd = &cobra.Command{
+var ListCommand = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
 	Short:   "List template(s)",
 	Long:    `List template(s)`,
+	Args:    validateArgs,
 	PreRunE: prepareFunc,
 	RunE:    executeFunc,
 	PostRun: afterFunc,
@@ -40,113 +40,68 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-
 	return nil
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-	codeTemplateService := ioc.Get[code_template_contract.TemplateInterface]()
-	fileTemplateService := ioc.Get[file_template_contract.TemplateInterface]()
-	sharedTemplateService := ioc.Get[shared_template_contract.TemplateInterface]()
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	if checkGlobals {
-		fmt.Println("*** Global Templates ***")
-		fmt.Println()
+	result = append(result, &code_template_payload_structs.TemplateBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Template,
+			code_template_payload_structs.TEMPLATE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: code_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
+		},
+	})
 
-		commandOptions.Workspace = "None"
+	result = append(result, &file_template_payload_structs.TemplateBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Template,
+			file_template_payload_structs.TEMPLATE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: file_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
+		},
+	})
 
-		sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
-		if err != nil {
-			return fmt.Errorf("Failed to list global shared templates\n%w", err)
+	result = append(result, &shared_template_payload_structs.TemplateBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Template,
+			shared_template_payload_structs.TEMPLATE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: shared_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 		}
 
-		fmt.Printf("(%d) shared template available\n\n", len(*sharedTemplateList))
-		for _, template := range *sharedTemplateList {
-			fmt.Printf("- %v\n", template.GetFullInformation())
-		}
-
-		fmt.Println()
-		fmt.Println("--------------------------")
-		fmt.Println()
-
-		codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
-		if err != nil {
-			return fmt.Errorf("Failed to list global code templates\n%w", err)
-		}
-
-		fmt.Printf("(%d) code template available\n\n", len(*codeTemplateList))
-		for _, template := range *codeTemplateList {
-			fmt.Printf("- %v\n", template.GetFullInformation())
-		}
-
-		fmt.Println()
-		fmt.Println("--------------------------")
-		fmt.Println()
-
-		fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
-		if err != nil {
-			return fmt.Errorf("Failed to list global file templates\n%w", err)
-		}
-
-		fmt.Printf("(%d) file template available\n\n", len(*fileTemplateList))
-		for _, template := range *fileTemplateList {
-			fmt.Printf("- %v\n", template.GetFullInformation())
-		}
-
-		commandOptions.Workspace = ""
-		fmt.Println()
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
-
-	fmt.Println("*** Workspace Specific Templates ***")
-	fmt.Println()
 
 	appCtx := application.GetContext()
-	if appCtx == nil {
-		return fmt.Errorf("xxx: Current workspace bulunamadı")
-	}
-	commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
 
-	sharedTemplateList, err := sharedTemplateService.ListByWorkspace(commandOptions.Workspace)
+	err := engines.DispatchEngineList(appCtx, result)
 	if err != nil {
-		return fmt.Errorf("Failed to list Active Workspace Shared templates\n%w", err)
-	}
-
-	fmt.Printf("(%d) shared template available\n\n", len(*sharedTemplateList))
-	for _, template := range *sharedTemplateList {
-		fmt.Printf("- %v\n", template.GetFullInformation())
-	}
-
-	fmt.Println()
-	fmt.Println("--------------------------")
-	fmt.Println()
-
-	codeTemplateList, err := codeTemplateService.ListByWorkspace(commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to list Active Workspace Code templates\n%w", err)
-	}
-
-	fmt.Printf("(%d) code template available\n\n", len(*codeTemplateList))
-	for _, template := range *codeTemplateList {
-		fmt.Printf("- %v\n", template.GetFullInformation())
-	}
-
-	fmt.Println()
-	fmt.Println("--------------------------")
-	fmt.Println()
-
-	fileTemplateList, err := fileTemplateService.ListByWorkspace(commandOptions.Workspace)
-	if err != nil {
-		return fmt.Errorf("Failed to list Active Workspace File templates\n%w", err)
-	}
-
-	fmt.Printf("(%d) file template available\n\n", len(*fileTemplateList))
-	for _, template := range *fileTemplateList {
-		fmt.Printf("- %v\n", template.GetFullInformation())
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {
-	commandOptions = ListOptions{}
+	commandOptions = TemplateListOptions{}
 }

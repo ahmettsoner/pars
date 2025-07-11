@@ -3,8 +3,12 @@ package list
 import (
 	"fmt"
 
-	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/workspace"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+	"parsdevkit.net/pkg/utilities/json"
 
 	"github.com/spf13/cobra"
 )
@@ -37,43 +41,37 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	workspaceList, err := workspaceService.List()
-	if err != nil {
-		return fmt.Errorf("Failed to retrieve workspace\n%w", err)
-	}
 
-	fmt.Printf("(%d) workspace available\n", len(*workspaceList))
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	activeWorkspace, err := workspaceService.GetActiveWorkspace()
-	if err != nil {
-		return fmt.Errorf("Failed to find Active Workspace\n%w", err)
-	}
+	result = append(result, &basic_workspace_payload_structs.WorkspaceBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Workspace,
+			basic_workspace_payload_structs.WORKSPACE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: basic_workspace_payload_structs.WorkspaceSpecification{
+			WorkspaceIdentifier: workspace.WorkspaceIdentifier{},
+		},
+	})
 
-	selectedWorkspace, err := workspaceService.GetSelectedWorkspace()
-	if err != nil {
-		return fmt.Errorf("Failed to find Selected Workspace\n%w", err)
-	}
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
 
-	fmt.Println()
-	if activeWorkspace != nil && selectedWorkspace != nil {
-		if activeWorkspace.Header.Name == selectedWorkspace.Header.Name {
-			fmt.Printf("* %v (active & selected)\n", activeWorkspace.Header.Name)
-		} else {
-			fmt.Printf("* %v (active)\n", activeWorkspace.Header.Name)
-			fmt.Printf("%v (selected)\n", selectedWorkspace.Header.Name)
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
 		}
-	} else if activeWorkspace != nil {
-		fmt.Printf("* %v (active)\n", activeWorkspace.Header.Name)
-	} else if selectedWorkspace != nil {
-		fmt.Printf("* %v (selected)\n", selectedWorkspace.Header.Name)
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
 
-	for _, workspace := range *workspaceList {
-		if (activeWorkspace == nil || activeWorkspace.Header.Name != workspace.Header.Name) &&
-			(selectedWorkspace == nil || selectedWorkspace.Header.Name != workspace.Header.Name) {
-			fmt.Println(workspace.Header.Name)
-		}
+	appCtx := application.GetContext()
+
+	err := engines.DispatchEngineList(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
 	return nil

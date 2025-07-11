@@ -3,11 +3,25 @@ package describe
 import (
 	"fmt"
 
-	"github.com/spf13/cobra"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/modules/group/basic_group_contract"
+	"parsdevkit.net/modules/task/basic_task_contract"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	"log"
+	"strings"
+
+	"parsdevkit.net/application"
+
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/task"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
+	"parsdevkit.net/pkg/utilities/json"
+
+	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
+
+	"github.com/spf13/cobra"
 )
 
 type DescribeOptions struct {
@@ -20,22 +34,23 @@ var commandOptions DescribeOptions
 var maxArgumentCount int = 1
 
 var DescribeCmd = &cobra.Command{
-	Use:     "describe",
-	Aliases: []string{"d"},
-	Short:   "Information about project",
-	Long:    `Information about project`,
-	Args:    validateArgs,
-	PreRunE: prepareFunc,
-	RunE:    executeFunc,
-	PostRun: afterFunc,
+	Use:               "describe [name]",
+	Aliases:           []string{"d"},
+	Short:             "Information about task",
+	Long:              `Information about task`,
+	Args:              validateArgs,
+	PreRunE:           prepareFunc,
+	RunE:              executeFunc,
+	PostRun:           afterFunc,
+	ValidArgsFunction: validArguments,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: group name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: task name is required. Provide as an argument.")
 	}
 	if len(args) > maxArgumentCount {
-		return fmt.Errorf("error: too many arguments. Only group name is expected.")
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
 	}
 	return nil
 }
@@ -49,28 +64,52 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	groupService := ioc.Get[basic_group_contract.GroupInterface]()
-	group, err := groupService.GetByName(commandOptions.Name)
-	if err != nil {
-		return fmt.Errorf("Failed to describe task '%s'\n%w", commandOptions.Name, err)
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+
+	result = append(result, &basic_task_payload_structs.TaskBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Task,
+			basic_task_payload_structs.TASK_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: basic_task_payload_structs.TaskSpecification{
+			TaskIdentifier: task.TaskIdentifier{},
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
 
-	name := fmt.Sprintf("%v", group.Name)
-	fmt.Println(name)
+	appCtx := application.GetContext()
 
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projectList, err := projectService.ListByGroupName(group.Name)
+	err := engines.DispatchEngineDescribe(appCtx, result, commandOptions.Name)
 	if err != nil {
-		return fmt.Errorf("Failed to retrieve group tasks '%s'\n%w", commandOptions.Name, err)
-	}
-
-	fmt.Printf("\tProjects:\n")
-	for _, e := range *projectList {
-		name := fmt.Sprintf("\t\t - %v", e.GetFullInformation())
-		fmt.Println(name)
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
 	return nil
+}
+
+func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if len(args) < maxArgumentCount {
+
+		if len(args) == 0 {
+			suggestions := listTaskNameSuggestions(args, toComplete)
+
+			return suggestions, cobra.ShellCompDirectiveNoSpace
+		}
+	}
+
+	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp
 }
 func afterFunc(cmd *cobra.Command, args []string) {
 	commandOptions = DescribeOptions{}
@@ -81,7 +120,51 @@ func init() {
 }
 
 func addSubCommands() {
-	DescribeCmd.Flags().StringVarP(&commandOptions.Name, "name", "n", "", "Project name")
+	// DescribeCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	// DescribeCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
+}
+func listTaskNameSuggestions(args []string, toComplete string) []string {
 
-	DescribeCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
+	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
+
+	var suggestions = make([]string, 0)
+	taskService := ioc.Get[basic_task_contract.TaskInterface]()
+	taskList, err := taskService.List()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, task := range *taskList {
+		if !array.ContainsSlice(args, task.Header.Name) && strings.HasPrefix(task.Header.Name, toComplete) {
+			suggestions = append(suggestions, task.Header.Name)
+		}
+	}
+	return suggestions
+}
+
+func workspaceFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	var suggestions = make([]string, 0)
+
+	workspaceList := listWorkspaceNameSuggestions(args, toComplete)
+
+	for _, workspace := range workspaceList {
+		suggestions = append(suggestions, workspace)
+	}
+
+	return suggestions, cobra.ShellCompDirectiveNoSpace
+}
+func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
+	var suggestions = make([]string, 0)
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	workspaceList, err := workspaceService.List()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, workspace := range *workspaceList {
+		if !array.ContainsSlice(args, workspace.Header.Name) && strings.HasPrefix(workspace.Header.Name, toComplete) {
+			suggestions = append(suggestions, workspace.Header.Name)
+		}
+	}
+	return suggestions
 }

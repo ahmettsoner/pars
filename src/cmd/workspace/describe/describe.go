@@ -3,17 +3,20 @@ package describe
 import (
 	"fmt"
 	"log"
-	"sort"
 	"strings"
 
 	"parsdevkit.net/application/ioc"
 
 	"parsdevkit.net/application"
 
+	"parsdevkit.net/application/engines"
+	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs/workspace"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 	"parsdevkit.net/pkg/utilities/array"
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
-	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"github.com/spf13/cobra"
@@ -52,11 +55,6 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Name = args[0]
 	}
 
-	return nil
-}
-
-func executeFunc(cmd *cobra.Command, args []string) error {
-
 	appCtx := application.GetContext()
 	if appCtx == nil {
 		return fmt.Errorf("xxx: Current workspace bulunamadı")
@@ -74,69 +72,45 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	workspace, err := workspaceService.GetByName(commandOptions.Name)
-	if err != nil {
-		return fmt.Errorf("Failed to retrieve workspace '%s'\n%w", commandOptions.Name, err)
+	return nil
+}
+func executeFunc(cmd *cobra.Command, args []string) error {
+
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
+
+	result = append(result, &basic_workspace_payload_structs.WorkspaceBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Workspace,
+			basic_workspace_payload_structs.WORKSPACE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: basic_workspace_payload_structs.WorkspaceSpecification{
+			WorkspaceIdentifier: workspace.WorkspaceIdentifier{},
+		},
+	})
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 	}
 
-	if workspace == nil {
-		fmt.Println("There are no workspace yet...")
-	} else {
-		projectService := ioc.Get[application_project_contract.ProjectInterface]()
-		projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
-		if err != nil {
-			return fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", commandOptions.Name, err)
-		}
+	appCtx := application.GetContext()
 
-		if commandOptions.PathOnly {
-			fmt.Print(workspace.Specifications.Path)
-		}
-
-		fmt.Printf("Workspace (%v) has %d project\n", workspace.Header.Name, len(*projectList))
-		fmt.Printf("Path : %v \n", workspace.Specifications.Path)
-
-		fmt.Printf("\nProjects:\n")
-		if commandOptions.WorkspaceDescribeView.Value == "flat" {
-			for _, e := range *projectList {
-				name := fmt.Sprintf(" - %v", e.GetFullInformation())
-				fmt.Println(name)
-			}
-		} else if commandOptions.WorkspaceDescribeView.Value == "hierarchical" {
-			groups := make(map[string][]string)
-			keys := []string{}
-
-			for _, e := range *projectList {
-				name := e.GetInformation()
-				if !_string.IsEmpty(e.Specifications.GroupObject.Name) {
-					groups[e.Specifications.Group] = append(groups[e.Specifications.Group], name)
-				} else {
-					groups[name] = []string{}
-				}
-			}
-
-			for key := range groups {
-				keys = append(keys, key)
-			}
-			sort.Strings(keys)
-
-			for _, key := range keys {
-				groupItems := groups[key]
-
-				if len(groupItems) > 0 {
-					fmt.Printf("%s\n", key)
-					for _, value := range groupItems {
-						fmt.Printf("  - %s\n", value)
-					}
-				} else {
-					fmt.Printf("- %s\n", key)
-				}
-			}
-		}
+	err := engines.DispatchEngineDescribe(appCtx, result, commandOptions.Name)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
 
 	return nil
 }
+
 func afterFunc(cmd *cobra.Command, args []string) {
 	commandOptions = DescribeOptions{}
 }

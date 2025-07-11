@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/modules/resource/data_resource_contract"
+	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	"log"
@@ -14,9 +14,10 @@ import (
 
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/application/structs/resource"
-	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
-	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
+	"parsdevkit.net/application/structs/template"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 	"parsdevkit.net/pkg/utilities/json"
 
 	"parsdevkit.net/pkg/utilities/array"
@@ -37,8 +38,8 @@ var maxArgumentCount int = 1
 var DescribeCmd = &cobra.Command{
 	Use:               "describe [name]",
 	Aliases:           []string{"d"},
-	Short:             "Information about resource",
-	Long:              `Information about resource`,
+	Short:             "Information about template",
+	Long:              `Information about template`,
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
@@ -48,7 +49,7 @@ var DescribeCmd = &cobra.Command{
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: resource name is required. Provide as an argument.")
+		return fmt.Errorf("error: template name is required. Provide as an argument.")
 	}
 	if len(args) > maxArgumentCount {
 		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
@@ -67,27 +68,39 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	result = append(result, &data_resource_payload_structs.ResourceBaseStruct{
+	result = append(result, &code_template_payload_structs.TemplateBaseStruct{
 		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Resource,
-			data_resource_payload_structs.RESOURCE_KIND,
+			schemas.StructTypes.Template,
+			code_template_payload_structs.TEMPLATE_KIND,
 			"temp-obj",
 			schemas.Metadata{},
 		),
-		Specifications: data_resource_payload_structs.ResourceSpecification{
-			ResourceIdentifier: resource.ResourceIdentifier{},
+		Specifications: code_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
 		},
 	})
 
-	result = append(result, &object_resource_payload_structs.ResourceBaseStruct{
+	result = append(result, &file_template_payload_structs.TemplateBaseStruct{
 		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Resource,
-			object_resource_payload_structs.RESOURCE_KIND,
+			schemas.StructTypes.Template,
+			file_template_payload_structs.TEMPLATE_KIND,
 			"temp-obj",
 			schemas.Metadata{},
 		),
-		Specifications: object_resource_payload_structs.ResourceSpecification{
-			ResourceIdentifier: resource.ResourceIdentifier{},
+		Specifications: file_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
+		},
+	})
+
+	result = append(result, &shared_template_payload_structs.TemplateBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Template,
+			shared_template_payload_structs.TEMPLATE_KIND,
+			"temp-obj",
+			schemas.Metadata{},
+		),
+		Specifications: shared_template_payload_structs.TemplateSpecification{
+			TemplateIdentifier: template.TemplateIdentifier{},
 		},
 	})
 
@@ -116,7 +129,7 @@ func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]str
 	if len(args) < maxArgumentCount {
 
 		if len(args) == 0 {
-			suggestions := listResourceNameSuggestions(args, toComplete)
+			suggestions := listTemplateNameSuggestions(args, toComplete)
 
 			return suggestions, cobra.ShellCompDirectiveNoSpace
 		}
@@ -136,20 +149,20 @@ func addSubCommands() {
 	// DescribeCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
 	// DescribeCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 }
-func listResourceNameSuggestions(args []string, toComplete string) []string {
+func listTemplateNameSuggestions(args []string, toComplete string) []string {
 
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
 
 	var suggestions = make([]string, 0)
-	resourceService := ioc.Get[data_resource_contract.ResourceInterface]()
-	resourceList, err := resourceService.List()
+	templateService := ioc.Get[code_template_contract.TemplateInterface]()
+	templateList, err := templateService.List()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, resource := range *resourceList {
-		if !array.ContainsSlice(args, resource.Header.Name) && strings.HasPrefix(resource.Header.Name, toComplete) {
-			suggestions = append(suggestions, resource.Header.Name)
+	for _, template := range *templateList {
+		if !array.ContainsSlice(args, template.Header.Name) && strings.HasPrefix(template.Header.Name, toComplete) {
+			suggestions = append(suggestions, template.Header.Name)
 		}
 	}
 	return suggestions

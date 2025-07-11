@@ -43,6 +43,7 @@ import (
 	browseTool "parsdevkit.net/modules/tool/browse_tool"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
@@ -98,6 +99,8 @@ func registerSchemas() {
 	schemas.Register(&code_template_payload_structs.TemplateBaseStruct{})
 	schemas.Register(&file_template_payload_structs.TemplateBaseStruct{})
 	schemas.Register(&shared_template_payload_structs.TemplateBaseStruct{})
+	schemas.Register(&basic_task_payload_structs.TaskBaseStruct{})
+	schemas.Register(&basic_workspace_payload_structs.WorkspaceBaseStruct{})
 }
 
 func registerEngines() {
@@ -111,6 +114,7 @@ func registerEngines() {
 	engines.Register(&taskCommon.BasicTaskEngine{})
 	engines.Register(&browseTool.ToolEngine{})
 	engines.Register(&environment.EnvironmentEngine{})
+	engines.Register(&workspaceWorkspace.WorkspaceEngine{})
 }
 func registerPlatformManager() {
 	platforms.Register(parsManager.NewParsManager())
