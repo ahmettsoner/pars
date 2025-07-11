@@ -13,11 +13,8 @@ import (
 	"parsdevkit.net/application"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/application/structs/resource"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
-	"parsdevkit.net/pkg/utilities/json"
 
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -65,41 +62,9 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-
-	result = append(result, &data_resource_payload_structs.ResourceBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Resource,
-			data_resource_payload_structs.RESOURCE_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: data_resource_payload_structs.ResourceSpecification{
-			ResourceIdentifier: resource.ResourceIdentifier{},
-		},
-	})
-
-	result = append(result, &object_resource_payload_structs.ResourceBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Resource,
-			object_resource_payload_structs.RESOURCE_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: object_resource_payload_structs.ResourceSpecification{
-			ResourceIdentifier: resource.ResourceIdentifier{},
-		},
-	})
-
-	var loadedSchemas []string = make([]string, 0)
-	for _, data := range result {
-
-		if err := data.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(data)
-			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-		}
-
-		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	var result []string = []string{
+		object_resource_payload_structs.MODULE_KEY,
+		data_resource_payload_structs.MODULE_KEY,
 	}
 
 	appCtx := application.GetContext()

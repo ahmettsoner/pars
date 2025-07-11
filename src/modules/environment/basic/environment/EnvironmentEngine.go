@@ -89,7 +89,7 @@ func (s EnvironmentEngine) completeInformation(ctx *application.ApplicationConte
 
 func (s EnvironmentEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Environment",
+		Name:  basic_environment_payload_structs.MODULE_KEY,
 		Order: 1000,
 	}
 }

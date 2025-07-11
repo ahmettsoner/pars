@@ -2,7 +2,6 @@ package describe
 
 import (
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/application/structs/project"
 
 	"fmt"
 	"log"
@@ -14,14 +13,12 @@ import (
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/array"
-	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/components/workspace"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
-	"parsdevkit.net/application/schemas"
 )
 
 type DescribeOptions struct {
@@ -71,31 +68,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-
-	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-
-	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Project,
-			application_project_payload_structs.PROJECT_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: application_project_payload_structs.ProjectSpecification{
-			ProjectIdentifier: project.ProjectIdentifier{},
-		},
-	})
-
-	var loadedSchemas []string = make([]string, 0)
-	for _, data := range result {
-
-		if err := data.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(data)
-			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-		}
-
-		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
-	}
+	var result []string = []string{application_project_payload_structs.MODULE_KEY}
 
 	appCtx := application.GetContext()
 

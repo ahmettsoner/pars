@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/pkg/utilities/array"
 )
 
 func DispatchEngineProcess(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
@@ -120,12 +121,11 @@ func DispatchEngineTest(ctx *application.ApplicationContext, t []schemas.SchemaI
 	}
 	return nil
 }
-func DispatchEngineList(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
+func DispatchEngineList(ctx *application.ApplicationContext, t []string) error {
 
-	schemaGroups := GroupSchemas(t)
 	for _, engineModule := range AllSorted() {
 		key := engineModule.GetConfig().Name
-		if _, ok := schemaGroups[key]; ok {
+		if ok := array.ContainsSlice(t, key); ok {
 			if engine, ok := engineModule.(ListEngineInterface); ok {
 				err := engine.List(ctx)
 				if err != nil {
@@ -136,12 +136,11 @@ func DispatchEngineList(ctx *application.ApplicationContext, t []schemas.SchemaI
 	}
 	return nil
 }
-func DispatchEngineDescribe(ctx *application.ApplicationContext, t []schemas.SchemaInterface, args ...any) error {
+func DispatchEngineDescribe(ctx *application.ApplicationContext, t []string, args ...any) error {
 
-	schemaGroups := GroupSchemas(t)
 	for _, engineModule := range AllSorted() {
 		key := engineModule.GetConfig().Name
-		if _, ok := schemaGroups[key]; ok {
+		if ok := array.ContainsSlice(t, key); ok {
 			if engine, ok := engineModule.(DescribeEngineInterface); ok {
 				err := engine.Describe(ctx, args...)
 				if err != nil {

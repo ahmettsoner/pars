@@ -232,7 +232,7 @@ func (s WorkspaceEngine) completeInformation(ctx *application.ApplicationContext
 
 func (s WorkspaceEngine) GetConfig() engines.EngineConfig {
 	return engines.EngineConfig{
-		Name:  "Workspace",
+		Name:  basic_workspace_payload_structs.MODULE_KEY,
 		Order: 1000,
 	}
 }

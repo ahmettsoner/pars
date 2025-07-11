@@ -13,12 +13,9 @@ import (
 	"parsdevkit.net/application"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/application/structs/template"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
-	"parsdevkit.net/pkg/utilities/json"
 
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -65,54 +62,10 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-
-	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-
-	result = append(result, &code_template_payload_structs.TemplateBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Template,
-			code_template_payload_structs.TEMPLATE_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: code_template_payload_structs.TemplateSpecification{
-			TemplateIdentifier: template.TemplateIdentifier{},
-		},
-	})
-
-	result = append(result, &file_template_payload_structs.TemplateBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Template,
-			file_template_payload_structs.TEMPLATE_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: file_template_payload_structs.TemplateSpecification{
-			TemplateIdentifier: template.TemplateIdentifier{},
-		},
-	})
-
-	result = append(result, &shared_template_payload_structs.TemplateBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Template,
-			shared_template_payload_structs.TEMPLATE_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: shared_template_payload_structs.TemplateSpecification{
-			TemplateIdentifier: template.TemplateIdentifier{},
-		},
-	})
-
-	var loadedSchemas []string = make([]string, 0)
-	for _, data := range result {
-
-		if err := data.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(data)
-			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-		}
-
-		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	var result []string = []string{
+		code_template_payload_structs.MODULE_KEY,
+		file_template_payload_structs.MODULE_KEY,
+		shared_template_payload_structs.MODULE_KEY,
 	}
 
 	appCtx := application.GetContext()

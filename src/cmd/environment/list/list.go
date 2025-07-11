@@ -5,8 +5,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/application/structs/environment"
 
 	"parsdevkit.net/application"
 	basic_environment_payload_structs "parsdevkit.net/modules/environment/basic_environment_payload/structs"
@@ -38,19 +36,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-
-	result = append(result, &basic_environment_payload_structs.EnvironmentBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Environment,
-			basic_environment_payload_structs.ENVIRONMENT_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: basic_environment_payload_structs.EnvironmentSpecification{
-			EnvironmentIdentifier: environment.EnvironmentIdentifier{},
-		},
-	})
+	var result []string = []string{basic_environment_payload_structs.MODULE_KEY}
 
 	appCtx := application.GetContext()
 

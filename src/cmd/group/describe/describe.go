@@ -13,10 +13,7 @@ import (
 	"parsdevkit.net/application"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/application/structs/group"
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
-	"parsdevkit.net/pkg/utilities/json"
 
 	"parsdevkit.net/pkg/utilities/array"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -64,30 +61,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
-
-	result = append(result, &basic_group_payload_structs.GroupBaseStruct{
-		Header: schemas.NewSchemaHeader(
-			schemas.StructTypes.Group,
-			basic_group_payload_structs.GROUP_KIND,
-			"temp-obj",
-			schemas.Metadata{},
-		),
-		Specifications: basic_group_payload_structs.GroupSpecification{
-			GroupIdentifier: group.GroupIdentifier{},
-		},
-	})
-
-	var loadedSchemas []string = make([]string, 0)
-	for _, data := range result {
-
-		if err := data.Validate(); err != nil {
-			jsonObject, _ := json.ToJson(data)
-			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
-		}
-
-		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
-	}
+	var result []string = []string{basic_group_payload_structs.MODULE_KEY}
 
 	appCtx := application.GetContext()
 
