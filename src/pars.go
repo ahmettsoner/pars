@@ -41,7 +41,7 @@ func main() {
 
 func runInteractiveMode() {
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Println("🔁 Interactive Cobra CLI Mode. Type 'exit' to quit.")
+	fmt.Println("🔁 Interactive Pars CLI Mode. Type 'exit' to quit.")
 
 	for {
 		fmt.Print("pars >> ")

@@ -2,32 +2,42 @@ package remove
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"strings"
-
-	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/modules/group/basic_group_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	"log"
+	"strings"
+
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+
+	"parsdevkit.net/application"
+
+	"parsdevkit.net/application/engines"
+
+	"parsdevkit.net/pkg/utilities/array"
+	_string "parsdevkit.net/pkg/utilities/string"
+
 	"github.com/spf13/cobra"
+	"parsdevkit.net/application/schemas"
 )
 
 type RemoveOptions struct {
-	Names     []string
+	Name      string
 	Workspace string
 	Force     string
 }
 
 var commandOptions RemoveOptions
+var maxArgumentCount int = 1
 
 var RemoveCmd = &cobra.Command{
-	Use:               "remove [name]...",
+	Use:               "remove [name]",
 	Aliases:           []string{"r"},
-	Short:             "Group Information",
-	Long:              `Group Information`,
+	Short:             "Remove group",
+	Long:              `Remove group`,
 	Args:              validateArgs,
 	PreRunE:           prepareFunc,
 	RunE:              executeFunc,
@@ -36,33 +46,61 @@ var RemoveCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: group name is required.")
+	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
+		return fmt.Errorf("error: group name is required. Provide as an argument.")
+	}
+	if len(args) > maxArgumentCount {
+		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if len(commandOptions.Names) == 0 && len(args) > 0 {
-		commandOptions.Names = args
+	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
+		commandOptions.Name = args[0]
 	}
 	return nil
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	if len(commandOptions.Names) > 0 {
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-		groupService := ioc.Get[basic_group_contract.GroupInterface]()
-		for _, name := range commandOptions.Names {
-			_, err := groupService.Remove(name, true)
-			if err != nil {
-				return fmt.Errorf("Failed to remove group(s) '%s'\n%w", name, err)
-			}
-		}
-		fmt.Fprintf(os.Stdout, "✔ Group(s) '%v' removed successfully\n", commandOptions.Names)
+	result = append(result, &application_project_payload_structs.ProjectBaseStruct{
+		Header: schemas.NewSchemaHeader(
+			schemas.StructTypes.Project,
+			application_project_payload_structs.PROJECT_KIND,
+			commandOptions.Name,
+			schemas.Metadata{},
+		),
+		Specifications: application_project_payload_structs.ProjectSpecification{
+			ProjectIdentifier: project.ProjectIdentifier{
+				Workspace: commandOptions.Workspace,
+			},
+		},
+	})
+
+	appCtx := application.GetContext()
+
+	err := engines.DispatchEngineDestroy(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
 	}
+
 	return nil
+}
+
+func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	if len(args) < maxArgumentCount {
+
+		if len(args) == 0 {
+			suggestions := listGroupNameSuggestions(args, toComplete)
+
+			return suggestions, cobra.ShellCompDirectiveNoSpace
+		}
+	}
+
+	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp
 }
 func afterFunc(cmd *cobra.Command, args []string) {
 	commandOptions = RemoveOptions{}
@@ -73,21 +111,9 @@ func init() {
 }
 
 func addSubCommands() {
-	RemoveCmd.Flags().StringSliceVarP(&commandOptions.Names, "names", "n", nil, "Comma-separated list of names")
-	// RemoveCmd.RegisterFlagCompletionFunc("name", nameFlagCompletion)
-
+	// RemoveCmd.Flags().StringVarP(&workspaceName, "workspace", "w", "", "Workspace name")
+	// RemoveCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
 }
-
-func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	suggestions := listGroupNameSuggestions(args, toComplete)
-
-	if len(suggestions) == 1 {
-		return suggestions, cobra.ShellCompDirectiveNoFileComp
-	}
-
-	return suggestions, cobra.ShellCompDirectiveNoFileComp
-}
-
 func listGroupNameSuggestions(args []string, toComplete string) []string {
 
 	// workspaceName = workspace.GetActiveWorkspaceName(workspaceName)
@@ -107,6 +133,17 @@ func listGroupNameSuggestions(args []string, toComplete string) []string {
 	return suggestions
 }
 
+func workspaceFlagCompletion(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+	var suggestions = make([]string, 0)
+
+	workspaceList := listWorkspaceNameSuggestions(args, toComplete)
+
+	for _, workspace := range workspaceList {
+		suggestions = append(suggestions, workspace)
+	}
+
+	return suggestions, cobra.ShellCompDirectiveNoSpace
+}
 func listWorkspaceNameSuggestions(args []string, toComplete string) []string {
 	var suggestions = make([]string, 0)
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()

@@ -3,6 +3,8 @@ package code_template
 import (
 	"fmt"
 
+	"parsdevkit.net/application/bus"
+	code_template_payload_events "parsdevkit.net/modules/template/code_template_payload/events"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"parsdevkit.net/application/engines"
@@ -115,6 +117,7 @@ func (s CodeTemplateEngine) create(ctx *application.ApplicationContext, template
 			return fmt.Errorf("xxx: Template Create işleminde hata oluştu: %w", &err)
 		}
 
+		bus.PublishEvent(code_template_payload_events.TemplateCreated{Data: template})
 	}
 
 	return nil

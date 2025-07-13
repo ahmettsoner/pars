@@ -7,12 +7,18 @@ import (
 )
 
 type ViewModel struct {
-	Name string
-	Tags []string
+	Name     string
+	Tags     []string
+	Path     string
+	Projects []ProjectViewModel
 }
 
 type ProjectViewModel struct {
-	Name string
+	Name   string
+	Group  string
+	Set    string
+	Tags   []string
+	Labels []string
 }
 
 type DescribeWorkspace struct {

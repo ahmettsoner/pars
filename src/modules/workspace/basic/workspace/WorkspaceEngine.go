@@ -5,6 +5,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	"parsdevkit.net/modules/project/application_project_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 	"parsdevkit.net/pkg/utilities/encrypt"
 
@@ -268,9 +269,30 @@ func (s WorkspaceEngine) prepareToList(ctx *application.ApplicationContext) ([]l
 		return nil, err
 	}
 
+	activeWorkspace, err := service.GetActiveWorkspace()
+	if err != nil {
+		return nil, fmt.Errorf("Failed to find Active Workspace\n%w", err)
+	}
+
+	selectedWorkspace, err := service.GetSelectedWorkspace()
+	if err != nil {
+		return nil, fmt.Errorf("Failed to find Selected Workspace\n%w", err)
+	}
+
 	for _, e := range *workspaceList {
+		name := e.Header.Name
+		label := name
+
+		if activeWorkspace != nil && selectedWorkspace != nil && activeWorkspace.Header.Name == name && selectedWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (active & selected)", name)
+		} else if activeWorkspace != nil && activeWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (active)", name)
+		} else if selectedWorkspace != nil && selectedWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (selected)", name)
+		}
+
 		resource := list_printer.ViewModel{
-			Name: e.Header.Name,
+			Name: label,
 			Tags: e.Header.Metadata.Tags,
 		}
 
@@ -313,11 +335,44 @@ func (s WorkspaceEngine) prepareToDescribe(ctx *application.ApplicationContext, 
 			if err != nil {
 				return nil, err
 			}
+
+			projectService := ioc.Get[application_project_contract.ProjectInterface]()
+			projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
+			if err != nil {
+				return nil, fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", a, err)
+			}
+
+			resourceProjects := []describe_printer.ProjectViewModel{}
+
+			for _, v := range *projectList {
+
+				resourceProjectLabels := make([]string, 0)
+				for _, v := range v.Specifications.Labels {
+					resourceLabel := v.Key
+					if !_string.IsEmpty(v.Value) {
+						resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+					}
+					resourceProjectLabels = append(resourceProjectLabels, resourceLabel)
+				}
+
+				resource := describe_printer.ProjectViewModel{
+					Name:   v.Header.Name,
+					Set:    v.Specifications.Set,
+					Group:  v.Specifications.Group,
+					Tags:   v.Header.Metadata.Tags,
+					Labels: resourceProjectLabels,
+				}
+
+				resourceProjects = append(resourceProjects, resource)
+			}
+
 			if workspace != nil {
 
 				resource := describe_printer.ViewModel{
-					Name: workspace.Header.Name,
-					Tags: workspace.Header.Metadata.Tags,
+					Name:     workspace.Header.Name,
+					Tags:     workspace.Header.Metadata.Tags,
+					Path:     workspace.Specifications.Path,
+					Projects: resourceProjects,
 				}
 
 				readyToDescribeStructs = append(readyToDescribeStructs, resource)

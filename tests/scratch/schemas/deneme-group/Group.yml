@@ -1,0 +1,11 @@
+Type: Group
+Name: Group1
+Metadata:
+  Tags:
+    - Grp1
+Specifications:
+  Layers: 
+    - L1
+    - L2
+  Labels:
+    - Lab=Val2

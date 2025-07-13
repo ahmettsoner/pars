@@ -38,6 +38,7 @@ import (
 	taskCommon "parsdevkit.net/modules/task/basic_task"
 	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 	templateCode "parsdevkit.net/modules/template/code_template"
+	code_template_payload_events "parsdevkit.net/modules/template/code_template_payload/events"
 	templateFile "parsdevkit.net/modules/template/file_template"
 	templateShared "parsdevkit.net/modules/template/shared_template"
 	browseTool "parsdevkit.net/modules/tool/browse_tool"
@@ -89,6 +90,7 @@ func registerCommandHandlers() {
 }
 func registerEventHandlers() {
 	bus.RegisterEventHandler[object_resource_payload_events.ResourceCreated](&object_resource_handler.ResourceCreatedEventHandler{})
+	bus.RegisterEventHandler[code_template_payload_events.TemplateCreated](&object_resource_handler.CodeTemplateCreatedEventHandler{})
 }
 
 func registerSchemas() {

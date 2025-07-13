@@ -8,42 +8,37 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/engines"
-	"parsdevkit.net/components/schema"
-	"parsdevkit.net/modules/workspace/basic_workspace_contract"
-
 	"parsdevkit.net/application/ioc"
-
-	"parsdevkit.net/application"
+	"parsdevkit.net/components/schema"
 	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/array"
 	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
+
+	"parsdevkit.net/application"
 )
 
 type DestroyOptions struct {
-	Name      string
+	Names     []string
 	Workspace string
-	NoInit    bool
 	FilePaths []string
 }
 
-var commandOptions = DestroyOptions{
-	NoInit: true,
-}
+var commandOptions DestroyOptions
 var maxArgumentCount int = 0
 
 var DestroyCmd = &cobra.Command{
-	Use:               "destroy",
-	Aliases:           []string{"d"},
-	Short:             "Destroy Schema(s)",
-	Long:              `Destroy Schema(s)`,
-	Args:              validateArgs,
-	PreRunE:           prepareFunc,
-	RunE:              executeFunc,
-	PostRun:           afterFunc,
-	ValidArgsFunction: validArguments,
+	Use:     "destroy [name]...",
+	Aliases: []string{"d"},
+	Short:   "Destroy project(s)",
+	Long:    `Destroy project(s)`,
+	Args:    validateArgs,
+	PreRunE: prepareFunc,
+	RunE:    executeFunc,
+	PostRun: afterFunc,
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
@@ -53,13 +48,12 @@ func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.FilePaths) == 0 {
 		return fmt.Errorf("Please provide a file location for the destroy schema(s)")
 	}
-
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
 	}
 
 	if _string.IsEmpty(commandOptions.Workspace) {
@@ -67,11 +61,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
 		}
-		var workspaceName, err = workspace.GetActiveWorkspaceNameV2(appCtx, commandOptions.Workspace)
-		if err != nil {
-			return fmt.Errorf("failed to find active workspace '%s'\n%w", commandOptions.Name, err)
-		}
-		commandOptions.Workspace = workspaceName
+		commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, "")
 	}
 
 	return nil
@@ -102,27 +92,24 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 			loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
 		}
-		fmt.Printf("⏳ Destroying Schemas: %s\n", _string.Concat(", ", commandOptions.FilePaths...))
-		fmt.Printf("✅ Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+		fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+		fmt.Printf("────────────────────────────────────\n")
 
 		appCtx := application.GetContext()
 		if appCtx == nil {
 			return fmt.Errorf("xxx: Current workspace bulunamadı")
 		}
+
 		err = engines.DispatchEngineDestroy(appCtx, result)
 		if err != nil {
 			return fmt.Errorf("Engine processing failed: %v", err)
 		}
-	} else {
-		cmd.Help()
 	}
 
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {
-	commandOptions = DestroyOptions{
-		NoInit: true,
-	}
+	commandOptions = DestroyOptions{}
 }
 
 func init() {
@@ -132,8 +119,6 @@ func init() {
 func addSubCommands() {
 	DestroyCmd.Flags().StringVarP(&commandOptions.Workspace, "workspace", "w", "", "Workspace name")
 	DestroyCmd.RegisterFlagCompletionFunc("workspace", workspaceFlagCompletion)
-
-	DestroyCmd.Flags().BoolVarP(&commandOptions.NoInit, "no-init", "", false, "Create project but do not initialize")
 
 	DestroyCmd.Flags().StringSliceVarP(&commandOptions.FilePaths, "file", "f", nil, "Comma-separated list of declaration files")
 	DestroyCmd.RegisterFlagCompletionFunc("file", fileFlagCompletion)
