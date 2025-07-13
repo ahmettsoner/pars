@@ -32,7 +32,12 @@ func (s ToolEngine) Browse(ctx *application.ApplicationContext, data []schemas.S
 		return err
 	}
 
-	err = s.browse(ctx, dataStruct, true)
+	readyToBrowseStructs, err := s.prepareToBrowse(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+
+	err = s.browse(ctx, readyToBrowseStructs, true)
 	if err != nil {
 		return err
 	}
@@ -53,14 +58,9 @@ func (s ToolEngine) prepareToBrowse(ctx *application.ApplicationContext, tools [
 
 	return readyToCreateStructs, nil
 }
-func (s ToolEngine) browse(ctx *application.ApplicationContext, tools []browse_tool_payload_structs.ToolBaseStruct, init bool) error {
+func (s ToolEngine) browse(ctx *application.ApplicationContext, models []browse_tool_payload_structs.ToolBaseStruct, init bool) error {
 
-	readyToCreateStructs, err := s.prepareToBrowse(ctx, tools)
-	if err != nil {
-		return err
-	}
-
-	for _, tool := range readyToCreateStructs {
+	for _, tool := range models {
 
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", tool.Header.Name, tool.GetKey())
 

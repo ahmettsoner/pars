@@ -41,24 +41,21 @@ func (s WorkspaceEngine) Process(ctx *application.ApplicationContext, data []sch
 		return err
 	}
 
-	err = s.create(ctx, dataStruct, true)
-	if err != nil {
-		return err
-	}
-	err = s.update(ctx, dataStruct, true)
+	readyToCreateStructs, err := s.prepareToCreate(ctx, dataStruct)
 	if err != nil {
 		return err
 	}
 
-	return nil
-}
-func (s WorkspaceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	dataStruct, err := CastArrayToConcrate(data)
+	err = s.create(ctx, readyToCreateStructs, true)
 	if err != nil {
 		return err
 	}
 
-	err = s.remove(ctx, dataStruct, true)
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, readyToUpdateStructs, true)
 	if err != nil {
 		return err
 	}
@@ -86,14 +83,9 @@ func (s WorkspaceEngine) prepareToCreate(ctx *application.ApplicationContext, wo
 
 	return readyToCreateStructs, nil
 }
-func (s WorkspaceEngine) create(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct, init bool) error {
+func (s WorkspaceEngine) create(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, init bool) error {
 
-	readyToCreateStructs, err := s.prepareToCreate(ctx, workspaces)
-	if err != nil {
-		return err
-	}
-
-	for _, workspace := range readyToCreateStructs {
+	for _, workspace := range models {
 
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
@@ -146,13 +138,9 @@ func (s WorkspaceEngine) prepareToUpdate(ctx *application.ApplicationContext, wo
 
 	return readyToUpdateStructs, nil
 }
-func (s WorkspaceEngine) update(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct, init bool) error {
+func (s WorkspaceEngine) update(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, init bool) error {
 
-	readyToUpdateStructs, err := s.prepareToUpdate(ctx, workspaces)
-	if err != nil {
-		return err
-	}
-	for _, workspace := range readyToUpdateStructs {
+	for _, workspace := range models {
 
 		fmt.Printf("\n🛠️  Updating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
@@ -171,10 +159,28 @@ func (s WorkspaceEngine) update(ctx *application.ApplicationContext, workspaces 
 	}
 	return nil
 }
-func (s WorkspaceEngine) prepareToRemove(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+func (s WorkspaceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	readyToDestroyStructs, err := s.prepareToDestroy(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+
+	err = s.destroy(ctx, readyToDestroyStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToDestroy(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
 
 	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	readyToRemoveStructs := make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0)
+	readyToDestroyStructs := make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0)
 
 	for _, workspace := range workspaces {
 		if err := s.completeInformation(ctx, &workspace); err != nil {
@@ -185,25 +191,20 @@ func (s WorkspaceEngine) prepareToRemove(ctx *application.ApplicationContext, wo
 			return nil, err
 		}
 		if ok {
-			readyToRemoveStructs = append(readyToRemoveStructs, workspace)
+			readyToDestroyStructs = append(readyToDestroyStructs, workspace)
 		}
 	}
-	logrus.Debugf("'%d' workspace(s) detected that will remove", len(readyToRemoveStructs))
+	logrus.Debugf("'%d' workspace(s) detected that will destroy", len(readyToDestroyStructs))
 
-	return readyToRemoveStructs, nil
+	return readyToDestroyStructs, nil
 }
-func (s WorkspaceEngine) remove(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct, permanent bool) error {
+func (s WorkspaceEngine) destroy(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, permanent bool) error {
 
-	readyToRemoveStructs, err := s.prepareToRemove(ctx, workspaces)
-	if err != nil {
-		return err
-	}
-
-	for _, workspace := range readyToRemoveStructs {
+	for _, workspace := range models {
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
-		workspaceFlow := flowx.NewFlow("RemoveExistingWorkspace").
+		workspaceFlow := flowx.NewFlow("DestroyExistingWorkspace").
 			Step(&remove_steps.DeleteWorkspace{})
 
 		fc := flowx.NewContextWithData(map[string]any{
@@ -213,7 +214,167 @@ func (s WorkspaceEngine) remove(ctx *application.ApplicationContext, workspaces 
 
 		if err := workspaceFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Workspace Remove işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Workspace Destroy işleminde hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
+}
+
+func (s WorkspaceEngine) List(ctx *application.ApplicationContext) error {
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.list(ctx, readyToListStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToList(ctx *application.ApplicationContext) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	workspaceList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return *workspaceList, nil
+}
+func (s WorkspaceEngine) list(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct) error {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	var viewModels []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+
+	activeWorkspace, err := service.GetActiveWorkspace()
+	if err != nil {
+		return fmt.Errorf("Failed to find Active Workspace\n%w", err)
+	}
+
+	selectedWorkspace, err := service.GetSelectedWorkspace()
+	if err != nil {
+		return fmt.Errorf("Failed to find Selected Workspace\n%w", err)
+	}
+
+	for _, e := range models {
+		name := e.Header.Name
+		label := name
+
+		if activeWorkspace != nil && selectedWorkspace != nil && activeWorkspace.Header.Name == name && selectedWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (active & selected)", name)
+		} else if activeWorkspace != nil && activeWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (active)", name)
+		} else if selectedWorkspace != nil && selectedWorkspace.Header.Name == name {
+			label = fmt.Sprintf("* %v (selected)", name)
+		}
+
+		resource := list_printer.ViewModel{
+			Name: label,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		viewModels = append(viewModels, resource)
+	}
+
+	fmt.Printf("\n🛠️  Workspace List (%d):\n\n", len(viewModels))
+
+	printer := list_printer.ListWorkspace{Workspaces: viewModels}
+	printer.Print()
+
+	return nil
+}
+
+func (s WorkspaceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.describe(ctx, readyToDescribeStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	var readyToDescribeStructs []basic_workspace_payload_structs.WorkspaceBaseStruct = make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			workspace, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+
+			if workspace != nil {
+
+				readyToDescribeStructs = append(readyToDescribeStructs, *workspace)
+			} else {
+				return nil, fmt.Errorf("xxx: Workspace '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Workspace argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s WorkspaceEngine) describe(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct) error {
+
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+
+	for _, workspace := range models {
+
+		projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
+		if err != nil {
+			return fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", workspace.Header.Name, err)
+		}
+
+		resourceProjects := []describe_printer.ProjectViewModel{}
+
+		for _, v := range *projectList {
+
+			resourceProjectLabels := make([]string, 0)
+			for _, v := range v.Specifications.Labels {
+				resourceLabel := v.Key
+				if !_string.IsEmpty(v.Value) {
+					resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+				}
+				resourceProjectLabels = append(resourceProjectLabels, resourceLabel)
+			}
+
+			resource := describe_printer.ProjectViewModel{
+				Name:   v.Header.Name,
+				Set:    v.Specifications.Set,
+				Group:  v.Specifications.Group,
+				Tags:   v.Header.Metadata.Tags,
+				Labels: resourceProjectLabels,
+			}
+
+			resourceProjects = append(resourceProjects, resource)
+		}
+
+		resource := describe_printer.ViewModel{
+			Name:     workspace.Header.Name,
+			Tags:     workspace.Header.Metadata.Tags,
+			Path:     workspace.Specifications.Path,
+			Projects: resourceProjects,
+		}
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", resource.Name)
+
+		printer := describe_printer.DescribeWorkspace{Workspace: resource}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Workspace Print sırasında hata oluştu: %w", &err)
 		}
 	}
 
@@ -250,159 +411,4 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_workspace_payl
 	}
 
 	return r, nil
-}
-func (s WorkspaceEngine) List(ctx *application.ApplicationContext) error {
-	err := s.list(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s WorkspaceEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
-
-	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-
-	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
-	workspaceList, err := service.List()
-	if err != nil {
-		return nil, err
-	}
-
-	activeWorkspace, err := service.GetActiveWorkspace()
-	if err != nil {
-		return nil, fmt.Errorf("Failed to find Active Workspace\n%w", err)
-	}
-
-	selectedWorkspace, err := service.GetSelectedWorkspace()
-	if err != nil {
-		return nil, fmt.Errorf("Failed to find Selected Workspace\n%w", err)
-	}
-
-	for _, e := range *workspaceList {
-		name := e.Header.Name
-		label := name
-
-		if activeWorkspace != nil && selectedWorkspace != nil && activeWorkspace.Header.Name == name && selectedWorkspace.Header.Name == name {
-			label = fmt.Sprintf("* %v (active & selected)", name)
-		} else if activeWorkspace != nil && activeWorkspace.Header.Name == name {
-			label = fmt.Sprintf("* %v (active)", name)
-		} else if selectedWorkspace != nil && selectedWorkspace.Header.Name == name {
-			label = fmt.Sprintf("* %v (selected)", name)
-		}
-
-		resource := list_printer.ViewModel{
-			Name: label,
-			Tags: e.Header.Metadata.Tags,
-		}
-
-		readyToListStructs = append(readyToListStructs, resource)
-	}
-
-	return readyToListStructs, nil
-}
-func (s WorkspaceEngine) list(ctx *application.ApplicationContext) error {
-
-	readyToListStructs, err := s.prepareToList(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\n🛠️  Workspace List (%d):\n\n", len(readyToListStructs))
-
-	printer := list_printer.ListWorkspace{Workspaces: readyToListStructs}
-	printer.Print()
-
-	return nil
-}
-
-func (s WorkspaceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
-	err := s.describe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s WorkspaceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
-
-	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-
-	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
-	for _, v := range args {
-		if a, ok := v.(string); ok {
-			workspace, err := service.GetByName(a)
-			if err != nil {
-				return nil, err
-			}
-
-			projectService := ioc.Get[application_project_contract.ProjectInterface]()
-			projectList, err := projectService.ListByWorkspace(workspace.Specifications.Name)
-			if err != nil {
-				return nil, fmt.Errorf("Failed to retrieve workspace projects '%s'\n%w", a, err)
-			}
-
-			resourceProjects := []describe_printer.ProjectViewModel{}
-
-			for _, v := range *projectList {
-
-				resourceProjectLabels := make([]string, 0)
-				for _, v := range v.Specifications.Labels {
-					resourceLabel := v.Key
-					if !_string.IsEmpty(v.Value) {
-						resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
-					}
-					resourceProjectLabels = append(resourceProjectLabels, resourceLabel)
-				}
-
-				resource := describe_printer.ProjectViewModel{
-					Name:   v.Header.Name,
-					Set:    v.Specifications.Set,
-					Group:  v.Specifications.Group,
-					Tags:   v.Header.Metadata.Tags,
-					Labels: resourceProjectLabels,
-				}
-
-				resourceProjects = append(resourceProjects, resource)
-			}
-
-			if workspace != nil {
-
-				resource := describe_printer.ViewModel{
-					Name:     workspace.Header.Name,
-					Tags:     workspace.Header.Metadata.Tags,
-					Path:     workspace.Specifications.Path,
-					Projects: resourceProjects,
-				}
-
-				readyToDescribeStructs = append(readyToDescribeStructs, resource)
-			} else {
-				return nil, fmt.Errorf("xxx: Workspace '%s' bulunamadı", a)
-			}
-		} else {
-			return nil, fmt.Errorf("xxx: Workspace argümanı doğru değil")
-		}
-	}
-
-	return readyToDescribeStructs, nil
-}
-func (s WorkspaceEngine) describe(ctx *application.ApplicationContext, args ...any) error {
-
-	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	for _, workspace := range readyToDescribeStructs {
-
-		fmt.Printf("\n🛠️  Details for: %s\n\n", workspace.Name)
-
-		printer := describe_printer.DescribeWorkspace{Workspace: workspace}
-
-		if err := printer.Print(); err != nil {
-			return fmt.Errorf("xxx: Workspace Print sırasında hata oluştu: %w", &err)
-		}
-	}
-
-	return nil
 }

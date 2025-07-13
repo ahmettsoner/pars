@@ -47,24 +47,21 @@ func (s DataResourceEngine) Process(ctx *application.ApplicationContext, data []
 		return err
 	}
 
-	err = s.create(ctx, dataStruct, true)
-	if err != nil {
-		return err
-	}
-	err = s.update(ctx, dataStruct, true)
+	readyToCreateStructs, err := s.prepareToCreate(ctx, dataStruct)
 	if err != nil {
 		return err
 	}
 
-	return nil
-}
-func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	dataStruct, err := CastArrayToConcrate(data)
+	err = s.create(ctx, readyToCreateStructs, true)
 	if err != nil {
 		return err
 	}
 
-	err = s.remove(ctx, dataStruct, true)
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, readyToUpdateStructs, true)
 	if err != nil {
 		return err
 	}
@@ -92,14 +89,9 @@ func (s DataResourceEngine) prepareToCreate(ctx *application.ApplicationContext,
 
 	return readyToCreateStructs, nil
 }
-func (s DataResourceEngine) create(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
+func (s DataResourceEngine) create(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
-	readyToCreateStructs, err := s.prepareToCreate(ctx, resources)
-	if err != nil {
-		return err
-	}
-
-	for _, resource := range readyToCreateStructs {
+	for _, resource := range models {
 
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
@@ -158,13 +150,9 @@ func (s DataResourceEngine) prepareToUpdate(ctx *application.ApplicationContext,
 
 	return readyToUpdateStructs, nil
 }
-func (s DataResourceEngine) update(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
+func (s DataResourceEngine) update(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct, init bool) error {
 
-	readyToUpdateStructs, err := s.prepareToUpdate(ctx, resources)
-	if err != nil {
-		return err
-	}
-	for _, resource := range readyToUpdateStructs {
+	for _, resource := range models {
 
 		fmt.Printf("\n🛠️  Updating: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
@@ -189,10 +177,30 @@ func (s DataResourceEngine) update(ctx *application.ApplicationContext, resource
 
 	return nil
 }
-func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
+
+func (s DataResourceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	readyToDestroyStructs, err := s.prepareToDestroy(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToDestroyStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s DataResourceEngine) prepareToDestroy(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
-	readyToRemoveStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
+	readyToDestroyStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
 
 	for _, resource := range resources {
 		if err := s.completeInformation(ctx, &resource); err != nil {
@@ -203,25 +211,20 @@ func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext,
 			return nil, err
 		}
 		if ok {
-			readyToRemoveStructs = append(readyToRemoveStructs, resource)
+			readyToDestroyStructs = append(readyToDestroyStructs, resource)
 		}
 	}
-	logrus.Debugf("'%d' resource(s) detected that will remove", len(readyToRemoveStructs))
+	logrus.Debugf("'%d' resource(s) detected that will destroy", len(readyToDestroyStructs))
 
-	return readyToRemoveStructs, nil
+	return readyToDestroyStructs, nil
 }
-func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resources []data_resource_payload_structs.ResourceBaseStruct, permanent bool) error {
+func (s DataResourceEngine) remove(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct, permanent bool) error {
 
-	readyToRemoveStructs, err := s.prepareToRemove(ctx, resources)
-	if err != nil {
-		return err
-	}
-
-	for _, resource := range readyToRemoveStructs {
+	for _, resource := range models {
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
-		resourceFlow := flowx.NewFlow("RemoveExistingGroup").
+		resourceFlow := flowx.NewFlow("DestroyExistingGroup").
 			Step(&remove_steps.DeleteResource{}).
 			Step(&remove_steps.ClearResourceHistory{})
 
@@ -232,9 +235,113 @@ func (s DataResourceEngine) remove(ctx *application.ApplicationContext, resource
 
 		if err := resourceFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Resource Remove işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Resource Destroy işleminde hata oluştu: %w", &err)
 		}
 
+	}
+
+	return nil
+}
+
+func (s DataResourceEngine) List(ctx *application.ApplicationContext) error {
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.list(ctx, readyToListStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s DataResourceEngine) prepareToList(ctx *application.ApplicationContext) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
+
+	service := ioc.Get[data_resource_contract.ResourceInterface]()
+
+	groupList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return *groupList, nil
+}
+func (s DataResourceEngine) list(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct) error {
+
+	var viewModels []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+
+	for _, e := range *&models {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		viewModels = append(viewModels, resource)
+	}
+
+	fmt.Printf("\n🛠️  Data Resource List (%d):\n\n", len(viewModels))
+
+	printer := list_printer.ListResource{Resources: viewModels}
+	printer.Print()
+
+	return nil
+}
+
+func (s DataResourceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.describe(ctx, readyToDescribeStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s DataResourceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
+
+	service := ioc.Get[data_resource_contract.ResourceInterface]()
+
+	var readyToDescribeStructs []data_resource_payload_structs.ResourceBaseStruct = make([]data_resource_payload_structs.ResourceBaseStruct, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			resource, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if resource != nil {
+
+				readyToDescribeStructs = append(readyToDescribeStructs, *resource)
+
+			} else {
+				return nil, fmt.Errorf("xxx: Data Resource '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Data Resource argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s DataResourceEngine) describe(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct) error {
+
+	for _, resource := range models {
+
+		viewModel := describe_printer.ViewModel{
+			Name: resource.Header.Name,
+			Tags: resource.Header.Metadata.Tags,
+		}
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", viewModel.Name)
+
+		printer := describe_printer.DescribeResource{Resource: viewModel}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Data Resource Print sırasında hata oluştu: %w", &err)
+		}
 	}
 
 	return nil
@@ -307,106 +414,4 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]data_resource_payloa
 	}
 
 	return r, nil
-}
-
-func (s DataResourceEngine) List(ctx *application.ApplicationContext) error {
-	err := s.list(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s DataResourceEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
-
-	service := ioc.Get[data_resource_contract.ResourceInterface]()
-
-	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
-	groupList, err := service.List()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, e := range *groupList {
-		resource := list_printer.ViewModel{
-			Name: e.Header.Name,
-			Tags: e.Header.Metadata.Tags,
-		}
-
-		readyToListStructs = append(readyToListStructs, resource)
-	}
-
-	return readyToListStructs, nil
-}
-func (s DataResourceEngine) list(ctx *application.ApplicationContext) error {
-
-	readyToListStructs, err := s.prepareToList(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\n🛠️  Data Resource List (%d):\n\n", len(readyToListStructs))
-
-	printer := list_printer.ListResource{Resources: readyToListStructs}
-	printer.Print()
-
-	return nil
-}
-
-func (s DataResourceEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
-	err := s.describe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s DataResourceEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
-
-	service := ioc.Get[data_resource_contract.ResourceInterface]()
-
-	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
-	for _, v := range args {
-		if a, ok := v.(string); ok {
-			group, err := service.GetByName(a)
-			if err != nil {
-				return nil, err
-			}
-			if group != nil {
-
-				resource := describe_printer.ViewModel{
-					Name: group.Header.Name,
-					Tags: group.Header.Metadata.Tags,
-				}
-
-				readyToDescribeStructs = append(readyToDescribeStructs, resource)
-			} else {
-				return nil, fmt.Errorf("xxx: Data Resource '%s' bulunamadı", a)
-			}
-		} else {
-			return nil, fmt.Errorf("xxx: Data Resource argümanı doğru değil")
-		}
-	}
-
-	return readyToDescribeStructs, nil
-}
-func (s DataResourceEngine) describe(ctx *application.ApplicationContext, args ...any) error {
-
-	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	for _, group := range readyToDescribeStructs {
-
-		fmt.Printf("\n🛠️  Details for: %s\n\n", group.Name)
-
-		printer := describe_printer.DescribeResource{Resource: group}
-
-		if err := printer.Print(); err != nil {
-			return fmt.Errorf("xxx: Data Resource Print sırasında hata oluştu: %w", &err)
-		}
-	}
-
-	return nil
 }

@@ -55,24 +55,21 @@ func (s ApplicationProjectEngine) Process(ctx *application.ApplicationContext, d
 		return err
 	}
 
-	err = s.create(ctx, dataStruct, true)
-	if err != nil {
-		return err
-	}
-	err = s.update(ctx, dataStruct, true)
+	readyToCreateStructs, err := s.prepareToCreate(ctx, dataStruct)
 	if err != nil {
 		return err
 	}
 
-	return nil
-}
-func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	dataStruct, err := CastArrayToConcrate(data)
+	err = s.create(ctx, readyToCreateStructs, true)
 	if err != nil {
 		return err
 	}
 
-	err = s.remove(ctx, dataStruct, true)
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, readyToUpdateStructs, true)
 	if err != nil {
 		return err
 	}
@@ -105,14 +102,9 @@ func (s ApplicationProjectEngine) prepareToCreate(ctx *application.ApplicationCo
 
 	return readyToCreateStructs, nil
 }
-func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) create(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
-	readyToCreateStructs, err := s.prepareToCreate(ctx, projects)
-	if err != nil {
-		return err
-	}
-
-	for _, project := range readyToCreateStructs {
+	for _, project := range models {
 
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", project.Header.Name, project.GetKey())
 
@@ -182,14 +174,10 @@ func (s ApplicationProjectEngine) prepareToUpdate(ctx *application.ApplicationCo
 
 	return readyToUpdateStructs, nil
 }
-func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
+func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct, init bool) error {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToUpdateStructs, err := s.prepareToUpdate(ctx, projects)
-	if err != nil {
-		return err
-	}
-	for _, project := range readyToUpdateStructs {
+	for _, project := range models {
 
 		fmt.Printf("\n🛠️  Updating: %s.%s\n\n", project.Header.Name, project.GetKey())
 
@@ -286,10 +274,28 @@ func (s ApplicationProjectEngine) update(ctx *application.ApplicationContext, pr
 	return nil
 }
 
-func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	readyToDestroyStructs, err := s.prepareToDestroy(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToDestroyStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToDestroy(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
 
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToRemoveStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	readyToDestroyStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
 
 	for _, project := range projects {
 		if err := s.completeInformation(ctx, &project); err != nil {
@@ -300,26 +306,21 @@ func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationCo
 			return nil, err
 		}
 		if ok {
-			readyToRemoveStructs = append(readyToRemoveStructs, project)
+			readyToDestroyStructs = append(readyToDestroyStructs, project)
 		}
 	}
-	logrus.Debugf("'%d' project(s) detected that will remove", len(readyToRemoveStructs))
+	logrus.Debugf("'%d' project(s) detected that will destroy", len(readyToDestroyStructs))
 
-	return readyToRemoveStructs, nil
+	return readyToDestroyStructs, nil
 }
 
-func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, permanent bool) error {
+func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct, permanent bool) error {
 
-	readyToRemoveStructs, err := s.prepareToRemove(ctx, projects)
-	if err != nil {
-		return err
-	}
-
-	for _, project := range readyToRemoveStructs {
+	for _, project := range models {
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", project.Header.Name, project.GetKey())
 
-		projectFlow := flowx.NewFlow("RemoveExistingProject").
+		projectFlow := flowx.NewFlow("DestroyExistingProject").
 			Step(&remove_steps.DestroyProject{}).
 			Step(&remove_steps.DeleteProject{}).
 			Step(&remove_steps.RemoveProjectFiles{})
@@ -331,7 +332,241 @@ func (s ApplicationProjectEngine) remove(ctx *application.ApplicationContext, pr
 
 		if err := projectFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Project Remove işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Project Destroy işleminde hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
+}
+
+func (s ApplicationProjectEngine) Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	readyToCleanStructs, err := s.prepareToClean(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.clean(ctx, readyToCleanStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s ApplicationProjectEngine) clean(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct) error {
+
+	for _, project := range models {
+
+		fmt.Printf("\n🛠️  Cleaning: %s.%s\n\n", project.Header.Name, project.GetKey())
+
+		projectFlow := flowx.NewFlow("CleanProject").
+			Step(&clean_steps.CleanProject{})
+
+		fc := flowx.NewContextWithData(map[string]any{
+			"project": project,
+		})
+
+		if err := projectFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Project Update işleminde hata oluştu: %w", &err)
+		}
+	}
+	return nil
+}
+
+func (s ApplicationProjectEngine) prepareToClean(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToUpdateStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+
+	for _, project := range projects {
+
+		activeWorkspace, err := s.getWorkspace(ctx, project)
+		if err != nil {
+			return nil, err
+		}
+
+		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), activeWorkspace.Header.Name)
+		if err != nil {
+			return nil, err
+		}
+		readyToUpdateStructs = append(readyToUpdateStructs, *existingProject)
+		//burda else ile kayıt bulunamadı bilgisi yazdırılabilir
+	}
+	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
+
+	return readyToUpdateStructs, nil
+}
+
+func (s ApplicationProjectEngine) List(ctx *application.ApplicationContext) error {
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.list(ctx, readyToListStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToList(ctx *application.ApplicationContext) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+
+	projectList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return *projectList, nil
+}
+func (s ApplicationProjectEngine) list(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct) error {
+
+	var viewModels []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+
+	for _, e := range models {
+		resourceLabels := make([]string, 0)
+		for _, v := range e.Specifications.Labels {
+			resourceLabel := v.Key
+			if !_string.IsEmpty(v.Value) {
+				resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+			}
+			resourceLabels = append(resourceLabels, resourceLabel)
+		}
+		resource := list_printer.ViewModel{
+			Name:        e.Header.Name,
+			Set:         e.Specifications.Set,
+			Group:       e.Specifications.Group,
+			Platform:    e.Specifications.Platform.Type.String(),
+			ProjectType: e.Specifications.ProjectType,
+			Tags:        e.Header.Metadata.Tags,
+			Labels:      resourceLabels,
+		}
+
+		viewModels = append(viewModels, resource)
+	}
+
+	fmt.Printf("\n🛠️  Project List (%d):\n\n", len(viewModels))
+
+	printer := list_printer.ListProject{Projects: viewModels}
+	printer.Print()
+
+	return nil
+}
+
+func (s ApplicationProjectEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.describe(ctx, readyToDescribeStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+
+	var readyToDescribeStructs []application_project_payload_structs.ProjectBaseStruct = make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			project, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if project != nil {
+				readyToDescribeStructs = append(readyToDescribeStructs, *project)
+			} else {
+				return nil, fmt.Errorf("xxx: Project '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Project argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s ApplicationProjectEngine) describe(ctx *application.ApplicationContext, models []application_project_payload_structs.ProjectBaseStruct) error {
+
+	for _, project := range models {
+
+		resourceLabels := make([]string, 0)
+		for _, v := range project.Specifications.Labels {
+			resourceLabel := v.Key
+			if !_string.IsEmpty(v.Value) {
+				resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+			}
+			resourceLabels = append(resourceLabels, resourceLabel)
+		}
+		resourceLayers := make([]string, 0)
+		for _, v := range project.Specifications.Layers {
+			resourceLayers = append(resourceLayers, v.LayerIdentifier.Name)
+		}
+		resourceDependencies := make([]string, 0)
+		for _, v := range project.Specifications.Dependencies {
+			resourceDependency := v.Name
+			if !_string.IsEmpty(v.Version) {
+				resourceDependency = fmt.Sprintf("%v@%v", v.Name, v.Version)
+			}
+			resourceDependencies = append(resourceDependencies, resourceDependency)
+		}
+
+		resourceReferences := []describe_printer.ReferenceViewModel{}
+
+		for _, v := range project.Specifications.References {
+
+			resourceReferenceLabels := make([]string, 0)
+			for _, v := range v.Specifications.Labels {
+				resourceLabel := v.Key
+				if !_string.IsEmpty(v.Value) {
+					resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
+				}
+				resourceReferenceLabels = append(resourceReferenceLabels, resourceLabel)
+			}
+
+			resource := describe_printer.ReferenceViewModel{
+				Name:   v.Header.Name,
+				Set:    v.Specifications.Set,
+				Tags:   v.Header.Metadata.Tags,
+				Labels: resourceReferenceLabels,
+			}
+
+			resourceReferences = append(resourceReferences, resource)
+		}
+
+		viewModel := describe_printer.ViewModel{
+			Name:         project.Header.Name,
+			Group:        project.Specifications.Group,
+			Set:          project.Specifications.Set,
+			Platform:     project.Specifications.Platform.Type.String(),
+			ProjectType:  project.Specifications.ProjectType,
+			Runtime:      project.Specifications.Runtime,
+			Language:     project.Specifications.Language,
+			Path:         project.Specifications.ProjectIdentifier.Path,
+			Package:      project.Specifications.Package,
+			Tags:         project.Header.Metadata.Tags,
+			Labels:       resourceLabels,
+			Layers:       resourceLayers,
+			Dependencies: resourceDependencies,
+			References:   resourceReferences,
+		}
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", viewModel.Name)
+
+		printer := describe_printer.DescribeProject{Project: viewModel}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Project Print sırasında hata oluştu: %w", &err)
 		}
 	}
 
@@ -626,237 +861,4 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]application_project_
 	}
 
 	return r, nil
-}
-
-func (s ApplicationProjectEngine) Clean(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	dataStruct, err := CastArrayToConcrate(data)
-	if err != nil {
-		return err
-	}
-
-	err = s.clean(ctx, dataStruct, true)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s ApplicationProjectEngine) clean(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct, init bool) error {
-
-	readyToUpdateStructs, err := s.prepareToClean(ctx, projects)
-	if err != nil {
-		return err
-	}
-	for _, project := range readyToUpdateStructs {
-
-		fmt.Printf("\n🛠️  Cleaning: %s.%s\n\n", project.Header.Name, project.GetKey())
-
-		projectFlow := flowx.NewFlow("CleanProject").
-			Step(&clean_steps.CleanProject{})
-
-		fc := flowx.NewContextWithData(map[string]any{
-			"project": project,
-		})
-
-		if err := projectFlow.Run(fc); err != nil {
-			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Project Update işleminde hata oluştu: %w", &err)
-		}
-	}
-	return nil
-}
-
-func (s ApplicationProjectEngine) prepareToClean(ctx *application.ApplicationContext, projects []application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
-
-	service := ioc.Get[application_project_contract.ProjectInterface]()
-	readyToUpdateStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
-
-	for _, project := range projects {
-
-		activeWorkspace, err := s.getWorkspace(ctx, project)
-		if err != nil {
-			return nil, err
-		}
-
-		existingProject, err := service.GetByFullNameWorkspace(project.GetFullName(), activeWorkspace.Header.Name)
-		if err != nil {
-			return nil, err
-		}
-		readyToUpdateStructs = append(readyToUpdateStructs, *existingProject)
-		//burda else ile kayıt bulunamadı bilgisi yazdırılabilir
-	}
-	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
-
-	return readyToUpdateStructs, nil
-}
-
-func (s ApplicationProjectEngine) List(ctx *application.ApplicationContext) error {
-	err := s.list(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s ApplicationProjectEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
-
-	service := ioc.Get[application_project_contract.ProjectInterface]()
-
-	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
-	projectList, err := service.List()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, e := range *projectList {
-		resourceLabels := make([]string, 0)
-		for _, v := range e.Specifications.Labels {
-			resourceLabel := v.Key
-			if !_string.IsEmpty(v.Value) {
-				resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
-			}
-			resourceLabels = append(resourceLabels, resourceLabel)
-		}
-		resource := list_printer.ViewModel{
-			Name:        e.Header.Name,
-			Set:         e.Specifications.Set,
-			Group:       e.Specifications.Group,
-			Platform:    e.Specifications.Platform.Type.String(),
-			ProjectType: e.Specifications.ProjectType,
-			Tags:        e.Header.Metadata.Tags,
-			Labels:      resourceLabels,
-		}
-
-		readyToListStructs = append(readyToListStructs, resource)
-	}
-
-	return readyToListStructs, nil
-}
-func (s ApplicationProjectEngine) list(ctx *application.ApplicationContext) error {
-
-	readyToListStructs, err := s.prepareToList(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\n🛠️  Project List (%d):\n\n", len(readyToListStructs))
-
-	printer := list_printer.ListProject{Projects: readyToListStructs}
-	printer.Print()
-
-	return nil
-}
-
-func (s ApplicationProjectEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
-	err := s.describe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s ApplicationProjectEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
-
-	service := ioc.Get[application_project_contract.ProjectInterface]()
-
-	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
-	for _, v := range args {
-		if a, ok := v.(string); ok {
-			project, err := service.GetByName(a)
-			if err != nil {
-				return nil, err
-			}
-			if project != nil {
-				resourceLabels := make([]string, 0)
-				for _, v := range project.Specifications.Labels {
-					resourceLabel := v.Key
-					if !_string.IsEmpty(v.Value) {
-						resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
-					}
-					resourceLabels = append(resourceLabels, resourceLabel)
-				}
-				resourceLayers := make([]string, 0)
-				for _, v := range project.Specifications.Layers {
-					resourceLayers = append(resourceLayers, v.LayerIdentifier.Name)
-				}
-				resourceDependencies := make([]string, 0)
-				for _, v := range project.Specifications.Dependencies {
-					resourceDependency := v.Name
-					if !_string.IsEmpty(v.Version) {
-						resourceDependency = fmt.Sprintf("%v@%v", v.Name, v.Version)
-					}
-					resourceDependencies = append(resourceDependencies, resourceDependency)
-				}
-
-				resourceReferences := []describe_printer.ReferenceViewModel{}
-
-				for _, v := range project.Specifications.References {
-
-					resourceReferenceLabels := make([]string, 0)
-					for _, v := range v.Specifications.Labels {
-						resourceLabel := v.Key
-						if !_string.IsEmpty(v.Value) {
-							resourceLabel = fmt.Sprintf("%v=%v", v.Key, v.Value)
-						}
-						resourceReferenceLabels = append(resourceReferenceLabels, resourceLabel)
-					}
-
-					resource := describe_printer.ReferenceViewModel{
-						Name:   v.Header.Name,
-						Set:    v.Specifications.Set,
-						Tags:   v.Header.Metadata.Tags,
-						Labels: resourceReferenceLabels,
-					}
-
-					resourceReferences = append(resourceReferences, resource)
-				}
-
-				resource := describe_printer.ViewModel{
-					Name:         project.Header.Name,
-					Group:        project.Specifications.Group,
-					Set:          project.Specifications.Set,
-					Platform:     project.Specifications.Platform.Type.String(),
-					ProjectType:  project.Specifications.ProjectType,
-					Runtime:      project.Specifications.Runtime,
-					Language:     project.Specifications.Language,
-					Path:         project.Specifications.ProjectIdentifier.Path,
-					Package:      project.Specifications.Package,
-					Tags:         project.Header.Metadata.Tags,
-					Labels:       resourceLabels,
-					Layers:       resourceLayers,
-					Dependencies: resourceDependencies,
-					References:   resourceReferences,
-				}
-
-				readyToDescribeStructs = append(readyToDescribeStructs, resource)
-			} else {
-				return nil, fmt.Errorf("xxx: Project '%s' bulunamadı", a)
-			}
-		} else {
-			return nil, fmt.Errorf("xxx: Project argümanı doğru değil")
-		}
-	}
-
-	return readyToDescribeStructs, nil
-}
-func (s ApplicationProjectEngine) describe(ctx *application.ApplicationContext, args ...any) error {
-
-	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	for _, project := range readyToDescribeStructs {
-
-		fmt.Printf("\n🛠️  Details for: %s\n\n", project.Name)
-
-		printer := describe_printer.DescribeProject{Project: project}
-
-		if err := printer.Print(); err != nil {
-			return fmt.Errorf("xxx: Project Print sırasında hata oluştu: %w", &err)
-		}
-	}
-
-	return nil
 }

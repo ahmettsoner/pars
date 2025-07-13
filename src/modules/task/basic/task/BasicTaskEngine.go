@@ -45,24 +45,21 @@ func (s BasicTaskEngine) Process(ctx *application.ApplicationContext, data []sch
 		return err
 	}
 
-	err = s.create(ctx, dataStruct, true)
-	if err != nil {
-		return err
-	}
-	err = s.update(ctx, dataStruct, true)
+	readyToCreateStructs, err := s.prepareToCreate(ctx, dataStruct)
 	if err != nil {
 		return err
 	}
 
-	return nil
-}
-func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
-	dataStruct, err := CastArrayToConcrate(data)
+	err = s.create(ctx, readyToCreateStructs, true)
 	if err != nil {
 		return err
 	}
 
-	err = s.remove(ctx, dataStruct, true)
+	readyToUpdateStructs, err := s.prepareToUpdate(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.update(ctx, readyToUpdateStructs, true)
 	if err != nil {
 		return err
 	}
@@ -90,14 +87,9 @@ func (s BasicTaskEngine) prepareToCreate(ctx *application.ApplicationContext, ta
 
 	return readyToCreateStructs, nil
 }
-func (s BasicTaskEngine) create(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
+func (s BasicTaskEngine) create(ctx *application.ApplicationContext, models []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
-	readyToCreateStructs, err := s.prepareToCreate(ctx, tasks)
-	if err != nil {
-		return err
-	}
-
-	for _, task := range readyToCreateStructs {
+	for _, task := range models {
 
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", task.Header.Name, task.GetKey())
 
@@ -151,13 +143,9 @@ func (s BasicTaskEngine) prepareToUpdate(ctx *application.ApplicationContext, ta
 
 	return readyToUpdateStructs, nil
 }
-func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, init bool) error {
+func (s BasicTaskEngine) update(ctx *application.ApplicationContext, models []basic_task_payload_structs.TaskBaseStruct, init bool) error {
 
-	readyToUpdateStructs, err := s.prepareToUpdate(ctx, tasks)
-	if err != nil {
-		return err
-	}
-	for _, task := range readyToUpdateStructs {
+	for _, task := range models {
 
 		fmt.Printf("\n🛠️  Updating: %s.%s\n\n", task.Header.Name, task.GetKey())
 
@@ -179,10 +167,28 @@ func (s BasicTaskEngine) update(ctx *application.ApplicationContext, tasks []bas
 	}
 	return nil
 }
-func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct) ([]basic_task_payload_structs.TaskBaseStruct, error) {
+
+func (s BasicTaskEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate(data)
+	if err != nil {
+		return err
+	}
+
+	readyToDestroyStructs, err := s.prepareToDestroy(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+	err = s.remove(ctx, readyToDestroyStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToDestroy(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct) ([]basic_task_payload_structs.TaskBaseStruct, error) {
 
 	service := ioc.Get[basic_task_contract.TaskInterface]()
-	readyToRemoveStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
+	readyToDestroyStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
 
 	for _, task := range tasks {
 		if err := s.completeInformation(ctx, &task); err != nil {
@@ -193,25 +199,20 @@ func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, ta
 			return nil, err
 		}
 		if ok {
-			readyToRemoveStructs = append(readyToRemoveStructs, task)
+			readyToDestroyStructs = append(readyToDestroyStructs, task)
 		}
 	}
-	logrus.Debugf("'%d' task(s) detected that will remove", len(readyToRemoveStructs))
+	logrus.Debugf("'%d' task(s) detected that will destroy", len(readyToDestroyStructs))
 
-	return readyToRemoveStructs, nil
+	return readyToDestroyStructs, nil
 }
-func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []basic_task_payload_structs.TaskBaseStruct, permanent bool) error {
+func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, models []basic_task_payload_structs.TaskBaseStruct, permanent bool) error {
 
-	readyToRemoveStructs, err := s.prepareToRemove(ctx, tasks)
-	if err != nil {
-		return err
-	}
-
-	for _, task := range readyToRemoveStructs {
+	for _, task := range models {
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", task.Header.Name, task.GetKey())
 
-		taskFlow := flowx.NewFlow("RemoveExistingTask").
+		taskFlow := flowx.NewFlow("DestroyExistingTask").
 			Step(&remove_steps.DeleteTask{})
 
 		fc := flowx.NewContextWithData(map[string]any{
@@ -221,9 +222,112 @@ func (s BasicTaskEngine) remove(ctx *application.ApplicationContext, tasks []bas
 
 		if err := taskFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Task Remove işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Task Destroy işleminde hata oluştu: %w", &err)
 		}
 
+	}
+
+	return nil
+}
+
+func (s BasicTaskEngine) List(ctx *application.ApplicationContext) error {
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.list(ctx, readyToListStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToList(ctx *application.ApplicationContext) ([]basic_task_payload_structs.TaskBaseStruct, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	taskList, err := service.List()
+	if err != nil {
+		return nil, err
+	}
+
+	return *taskList, nil
+}
+func (s BasicTaskEngine) list(ctx *application.ApplicationContext, models []basic_task_payload_structs.TaskBaseStruct) error {
+
+	var viewModels []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	for _, e := range models {
+		resource := list_printer.ViewModel{
+			Name: e.Header.Name,
+			Tags: e.Header.Metadata.Tags,
+		}
+
+		viewModels = append(viewModels, resource)
+	}
+
+	fmt.Printf("\n🛠️  Task List (%d):\n\n", len(viewModels))
+
+	printer := list_printer.ListTask{Tasks: viewModels}
+	printer.Print()
+
+	return nil
+}
+
+func (s BasicTaskEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
+	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.describe(ctx, readyToDescribeStructs)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]basic_task_payload_structs.TaskBaseStruct, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+
+	var readyToDescribeStructs []basic_task_payload_structs.TaskBaseStruct = make([]basic_task_payload_structs.TaskBaseStruct, 0)
+	for _, v := range args {
+		if a, ok := v.(string); ok {
+			task, err := service.GetByName(a)
+			if err != nil {
+				return nil, err
+			}
+			if task != nil {
+
+				readyToDescribeStructs = append(readyToDescribeStructs, *task)
+
+			} else {
+				return nil, fmt.Errorf("xxx: Task '%s' bulunamadı", a)
+			}
+		} else {
+			return nil, fmt.Errorf("xxx: Task argümanı doğru değil")
+		}
+	}
+
+	return readyToDescribeStructs, nil
+}
+func (s BasicTaskEngine) describe(ctx *application.ApplicationContext, models []basic_task_payload_structs.TaskBaseStruct) error {
+
+	for _, task := range models {
+
+		viewModel := describe_printer.ViewModel{
+			Name: task.Header.Name,
+			Tags: task.Header.Metadata.Tags,
+		}
+
+		fmt.Printf("\n🛠️  Details for: %s\n\n", viewModel.Name)
+
+		printer := describe_printer.DescribeTask{Task: viewModel}
+
+		if err := printer.Print(); err != nil {
+			return fmt.Errorf("xxx: Task Print sırasında hata oluştu: %w", &err)
+		}
 	}
 
 	return nil
@@ -310,106 +414,4 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_task_payload_s
 	}
 
 	return r, nil
-}
-
-func (s BasicTaskEngine) List(ctx *application.ApplicationContext) error {
-	err := s.list(ctx)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s BasicTaskEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
-
-	service := ioc.Get[basic_task_contract.TaskInterface]()
-
-	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
-	taskList, err := service.List()
-	if err != nil {
-		return nil, err
-	}
-
-	for _, e := range *taskList {
-		resource := list_printer.ViewModel{
-			Name: e.Header.Name,
-			Tags: e.Header.Metadata.Tags,
-		}
-
-		readyToListStructs = append(readyToListStructs, resource)
-	}
-
-	return readyToListStructs, nil
-}
-func (s BasicTaskEngine) list(ctx *application.ApplicationContext) error {
-
-	readyToListStructs, err := s.prepareToList(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\n🛠️  Task List (%d):\n\n", len(readyToListStructs))
-
-	printer := list_printer.ListTask{Tasks: readyToListStructs}
-	printer.Print()
-
-	return nil
-}
-
-func (s BasicTaskEngine) Describe(ctx *application.ApplicationContext, args ...any) error {
-	err := s.describe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-func (s BasicTaskEngine) prepareToDescribe(ctx *application.ApplicationContext, args ...any) ([]describe_printer.ViewModel, error) {
-
-	service := ioc.Get[basic_task_contract.TaskInterface]()
-
-	var readyToDescribeStructs []describe_printer.ViewModel = make([]describe_printer.ViewModel, 0)
-	for _, v := range args {
-		if a, ok := v.(string); ok {
-			task, err := service.GetByName(a)
-			if err != nil {
-				return nil, err
-			}
-			if task != nil {
-
-				resource := describe_printer.ViewModel{
-					Name: task.Header.Name,
-					Tags: task.Header.Metadata.Tags,
-				}
-
-				readyToDescribeStructs = append(readyToDescribeStructs, resource)
-			} else {
-				return nil, fmt.Errorf("xxx: Task '%s' bulunamadı", a)
-			}
-		} else {
-			return nil, fmt.Errorf("xxx: Task argümanı doğru değil")
-		}
-	}
-
-	return readyToDescribeStructs, nil
-}
-func (s BasicTaskEngine) describe(ctx *application.ApplicationContext, args ...any) error {
-
-	readyToDescribeStructs, err := s.prepareToDescribe(ctx, args...)
-	if err != nil {
-		return err
-	}
-
-	for _, task := range readyToDescribeStructs {
-
-		fmt.Printf("\n🛠️  Details for: %s\n\n", task.Name)
-
-		printer := describe_printer.DescribeTask{Task: task}
-
-		if err := printer.Print(); err != nil {
-			return fmt.Errorf("xxx: Task Print sırasında hata oluştu: %w", &err)
-		}
-	}
-
-	return nil
 }

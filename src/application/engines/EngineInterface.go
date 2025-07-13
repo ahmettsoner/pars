@@ -51,6 +51,9 @@ type ListEngineInterface interface {
 type DescribeEngineInterface interface {
 	Describe(ctx *application.ApplicationContext, args ...any) error
 }
+type RemoveEngineInterface interface {
+	Remove(ctx *application.ApplicationContext, args ...any) error
+}
 type ToolsEngineInterface interface {
 	Browse(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }

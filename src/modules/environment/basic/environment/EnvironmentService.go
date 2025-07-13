@@ -78,8 +78,8 @@ func (s EnvironmentService) list() ([]string, error) {
 			envName := file.GetOnlyFileName(matches[1])
 			if !_string.IsEmpty(envName) {
 				result = append(result, envName)
-				// } else {
-				// 	result = append(result, "pars")
+			} else {
+				result = append(result, "Default")
 			}
 		}
 		return nil

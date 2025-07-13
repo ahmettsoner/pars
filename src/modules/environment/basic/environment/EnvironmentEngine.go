@@ -28,49 +28,49 @@ func (s EnvironmentEngine) Validate(data []schemas.SchemaInterface) bool {
 
 	return true
 }
+
 func (s EnvironmentEngine) List(ctx *application.ApplicationContext) error {
-	err := s.list(ctx)
+	readyToListStructs, err := s.prepareToList(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = s.list(ctx, readyToListStructs)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-func (s EnvironmentEngine) prepareToList(ctx *application.ApplicationContext) ([]list_printer.ViewModel, error) {
+func (s EnvironmentEngine) prepareToList(ctx *application.ApplicationContext) ([]basic_environment_payload_structs.EnvironmentBaseStruct, error) {
 
 	service := ioc.Get[basic_environment_contract.EnvironmentInterface]()
 
-	var readyToListStructs []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
-	groupList, err := service.List()
+	environmentList, err := service.List()
 	if err != nil {
 		return nil, err
 	}
 
-	defaultResource := list_printer.ViewModel{
-		Name: "* Default",
-	}
-	readyToListStructs = append(readyToListStructs, defaultResource)
+	return environmentList, nil
+}
+func (s EnvironmentEngine) list(ctx *application.ApplicationContext, models []basic_environment_payload_structs.EnvironmentBaseStruct) error {
 
-	for _, e := range groupList {
+	var viewModels []list_printer.ViewModel = make([]list_printer.ViewModel, 0)
+	for _, e := range models {
+		label := e.Header.Name
+		if e.Header.Name == "Default" {
+			label = fmt.Sprintf("* %s", label)
+		}
 		resource := list_printer.ViewModel{
-			Name: e.Header.Name,
+			Name: label,
 		}
 
-		readyToListStructs = append(readyToListStructs, resource)
+		viewModels = append(viewModels, resource)
 	}
 
-	return readyToListStructs, nil
-}
-func (s EnvironmentEngine) list(ctx *application.ApplicationContext) error {
+	fmt.Printf("\n🛠️  Environment List (%d):\n\n", len(viewModels))
 
-	readyToListStructs, err := s.prepareToList(ctx)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("\n🛠️  Environment List (%d):\n\n", len(readyToListStructs))
-
-	printer := list_printer.ListEnvironment{Environments: readyToListStructs}
+	printer := list_printer.ListEnvironment{Environments: viewModels}
 	printer.Print()
 
 	return nil
