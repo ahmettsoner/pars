@@ -25,7 +25,6 @@ Specifications:
       Workspace 
       Path      
 	Platform        
-	ProjectType     
 	Set             
 	Package         
 	Labels          
@@ -35,6 +34,7 @@ Specifications:
 	Dependencies    
 	References      
 Application:
+	ProjectType     
   Runtime         
 	Language        
 	Schema          
@@ -43,5 +43,4 @@ Application:
 	Components      
 	Patterns          
   EntryPoint
-  Serve
-    Ports
+  Ports

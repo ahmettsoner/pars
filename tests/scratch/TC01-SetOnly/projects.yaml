@@ -8,7 +8,6 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
-  ProjectType: {{ .Type }}
   Set: {{ .Set }}
 
 
@@ -23,3 +22,6 @@ Specifications:
   References:
   {{range .References}}- {{ . }}{{end}}
   {{ end }}
+
+Application:
+  ProjectType: {{ .Type }}

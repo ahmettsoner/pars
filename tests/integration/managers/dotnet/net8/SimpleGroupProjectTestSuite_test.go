@@ -49,7 +49,7 @@ func (suite *SimpleGroupProjectTestSuite) SetupSuite() {
 	suite.manager = managers.NewDotnetManager()
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspace, suite.environment)
 }
 func (suite *SimpleGroupProjectTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")
@@ -67,7 +67,7 @@ func (suite *SimpleGroupProjectTestSuite) TearDownTest() {
 // func (suite *SimpleGroupProjectTestSuite) Test_AddNewProject_Basic() {
 
 // 	projectName := suite.faker.Project.Name()
-// 	project := CreateNewTestProjectWithGroup(common.CommanderTypes.GO, suite.T(), projectName, suite.testArea, suite.workspace, suite.group, suite.group)
+// 	project := CreateNewTestProjectWithGroup(common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), projectName, suite.testArea, suite.workspace, suite.group, suite.group)
 
 // 	projectState, err := suite.manager.HasProjectOnGroup(project)
 // 	require.NoError(suite.T(), err, "failed to check project on group")

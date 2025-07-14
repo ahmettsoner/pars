@@ -10,14 +10,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: WebApp
   
   Platform: 
     Type: dotnet
     Version: Net7
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
 
 
 
@@ -36,8 +32,14 @@ Specifications:
       Path: Controllers
     - Name: presentation:view
       Path: Views
-  Options:
 
   Dependencies:
   References:
 
+
+Application:
+  ProjectType: WebApp
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:

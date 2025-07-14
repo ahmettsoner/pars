@@ -629,3 +629,50 @@ func (s *WorkspaceService) DeleteWorkspace(model basic_workspace_payload_structs
 
 	return &model, nil
 }
+
+func (s WorkspaceService) CreateWorkspaceFolder(model basic_workspace_payload_structs.WorkspaceBaseStruct) (string, error) {
+
+	outputPath, err := s.correctOutputPath(model.Specifications.Path)
+	if err != nil {
+		return "", err
+	}
+
+	existingWorkspace, err := s.IsDirectoryReserved(outputPath)
+	if err != nil {
+		return "", err
+	}
+	if existingWorkspace != nil && existingWorkspace.Header.Name != model.Header.Name {
+		return "", errors.New("Workspace directory reserved to (" + existingWorkspace.Header.Name + ")")
+	}
+
+	isExists := s.directoryExists(model.Specifications.GetAbsolutePath())
+	if isExists {
+		isDirectory, err := s.isDirectory(model.Specifications.GetAbsolutePath())
+		if err != nil {
+			return "", err
+		}
+		if !isDirectory {
+			return "", errors.New("Not valid directory specified: " + model.Specifications.GetAbsolutePath())
+		}
+		// return "", errors.New("There is a workspace folder with same name: " + workspaceName)
+	}
+
+	if err := os.MkdirAll(model.Specifications.GetAbsolutePath(), os.ModePerm); err != nil {
+		return "", err
+	}
+
+	if err := os.Mkdir(model.Specifications.GetCodeBaseFolder(), os.ModePerm); err != nil {
+		return "", err
+	}
+	logrus.Debugf("Creating workspace codebase folder: %s", model.Specifications.GetCodeBaseFolder())
+
+	if err := os.Mkdir(model.Specifications.GetTemplatesFolder(), os.ModePerm); err != nil {
+		return "", err
+	}
+
+	if err := os.Mkdir(model.Specifications.GetResourcesFolder(), os.ModePerm); err != nil {
+		return "", err
+	}
+
+	return outputPath, nil
+}

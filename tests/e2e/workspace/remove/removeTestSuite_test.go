@@ -55,7 +55,7 @@ func (suite *RemoveTestSuite) TearDownTest() {
 
 func (suite *RemoveTestSuite) TestRemoveBasicWorkspace() {
 	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 	commands := []string{
 		"workspace",
@@ -76,8 +76,8 @@ func (suite *RemoveTestSuite) TestRemoveBasicWorkspace() {
 func (suite *RemoveTestSuite) TestRemoveBasicMultipleWorkspace() {
 	name := suite.faker.Workspace.Name()
 	name1 := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name1), name1, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name1), name1, suite.environment)
 
 	commands := []string{
 		"workspace",

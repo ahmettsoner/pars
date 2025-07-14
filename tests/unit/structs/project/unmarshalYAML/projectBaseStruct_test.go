@@ -32,22 +32,22 @@ Metadata:
 Specifications:
   Name: Utils
   Group: Common
-  ProjectType: Library
   Set: Pars
-  Package: pars
-  Path: Utils
-  Workspace: pars-project
   Platform: 
     Type: go
     Version: Go121
+  Package: pars
+  Path: Utils
+  Workspace: pars-project
   Layers:
-
   Dependencies:
   - gopkg.in/yaml.v3@v3.0.1
   References:
   - Name: Logging
     Group: Core
     Workspace: pars-project
+Application:
+  ProjectType: Library
 `
 
 	// Act
@@ -65,7 +65,6 @@ Specifications:
 			"Utils",
 			"Common",
 			"pars-project",
-			models.ProjectTypes.Library,
 			applicationGroup.GroupIdentifier{},
 			"Pars",
 			[]string{"pars"},
@@ -73,8 +72,6 @@ Specifications:
 			file.PathToArray("Utils"),
 			applicationWorkspace.WorkspaceIdentifier{},
 			application_project_payload_structs.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
-			application_project_payload_structs.NewRuntime("", ""),
-			application_project_payload_structs.NewSchema(),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency{
 				applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
@@ -87,7 +84,6 @@ Specifications:
 						"",
 						"Core",
 						"pars-project",
-						"",
 						applicationGroup.GroupIdentifier{},
 						"",
 						[]string(nil),
@@ -95,21 +91,23 @@ Specifications:
 						[]string(nil),
 						applicationWorkspace.WorkspaceIdentifier{},
 						application_project_payload_structs.Platform{},
-						application_project_payload_structs.Runtime{},
-						application_project_payload_structs.Schema{},
 						[]applicationProject.Layer(nil),
 						[]applicationProject.Dependency(nil),
 						[]application_project_payload_structs.ProjectBaseStruct(nil),
-						[]string(nil),
-						[]string(nil),
-						[]string(nil),
-						[]string(nil),
 					),
+					application_project_payload_structs.Application{},
 				),
 			},
+		),
+		Application: application_project_payload_structs.NewApplication(
+			models.ProjectTypes.Library,
+			application_project_payload_structs.NewRuntime("", ""),
+			application_project_payload_structs.NewSchema(),
 			[]string(nil),
 			[]string(nil),
 			[]string(nil),
+			[]string(nil),
+			"",
 			[]string(nil),
 		),
 	}

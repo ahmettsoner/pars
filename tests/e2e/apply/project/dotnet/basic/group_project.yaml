@@ -15,5 +15,6 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
-  ProjectType: {{ .Type }}
   Group: {{ .Group }}
+Application:
+  ProjectType: {{ .Type }}

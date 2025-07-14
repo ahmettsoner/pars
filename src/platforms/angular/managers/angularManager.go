@@ -63,7 +63,7 @@ func (s AngularManager) GetPlatformVersion(platform application_project_payload_
 }
 
 func (s AngularManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
-	_, err := ProjectTypeToAngularCLITypeString(angularModels.AngularProjectType(project.Specifications.ProjectType))
+	_, err := ProjectTypeToAngularCLITypeString(angularModels.AngularProjectType(project.Application.ProjectType))
 	if err != nil {
 		return err
 	}
@@ -428,7 +428,7 @@ func (s AngularManager) RemoveDefaultFiles(project application_project_payload_s
 	var paths []string = []string{}
 	// projectPath := project.Specifications.GetAbsoluteProjectPath()
 
-	var projectType models.ProjectType = models.ProjectType(project.Specifications.ProjectType)
+	var projectType models.ProjectType = models.ProjectType(project.Application.ProjectType)
 	if projectType == models.ProjectTypes.Library {
 	} else if projectType == models.ProjectTypes.SPA {
 	}

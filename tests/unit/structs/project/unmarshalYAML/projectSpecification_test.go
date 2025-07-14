@@ -26,7 +26,6 @@ func Test_UnMarshall_ProjectSpecificationStruct_FullData(t *testing.T) {
 	a := assert.New(t)
 	yamlData := `
 Name: Utils
-ProjectType: Library
 Group: Common
 Set: Pars
 Package: pars
@@ -53,7 +52,6 @@ References:
 		"Utils",
 		"Common",
 		"pars-project",
-		models.ProjectTypes.Library,
 		applicationGroup.GroupIdentifier{},
 		"Pars",
 		[]string{"pars"},
@@ -61,8 +59,6 @@ References:
 		file.PathToArray("Utils"),
 		applicationWorkspace.WorkspaceIdentifier{},
 		application_project_payload_structs.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
-		application_project_payload_structs.Runtime{},
-		application_project_payload_structs.NewSchema(),
 		[]applicationProject.Layer(nil),
 		[]applicationProject.Dependency{
 			applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
@@ -75,7 +71,6 @@ References:
 					"",
 					"Core",
 					"pars-project",
-					"",
 					applicationGroup.GroupIdentifier{},
 					"",
 					[]string(nil),
@@ -83,22 +78,13 @@ References:
 					[]string(nil),
 					applicationWorkspace.WorkspaceIdentifier{},
 					application_project_payload_structs.Platform{},
-					application_project_payload_structs.Runtime{},
-					application_project_payload_structs.Schema{},
 					[]applicationProject.Layer(nil),
 					[]applicationProject.Dependency(nil),
 					[]application_project_payload_structs.ProjectBaseStruct(nil),
-					[]string(nil),
-					[]string(nil),
-					[]string(nil),
-					[]string(nil),
 				),
+				application_project_payload_structs.Application{},
 			),
 		},
-		[]string(nil),
-		[]string(nil),
-		[]string(nil),
-		[]string(nil),
 	)
 
 	// Assert

@@ -45,7 +45,6 @@ func (s *EnvironmentBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error)
 		s.Header = tempHeaderObject
 	}
 
-	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
 		Specifications EnvironmentSpecification `yaml:"Specifications"`
 	}

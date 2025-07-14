@@ -42,7 +42,7 @@ func (suite *DefaultWorkspaceTestSuite) SetupSuite() {
 	suite.T().Logf("Creating test location at (%v)", suite.testArea)
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	common.InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.Cobra, suite.T(), suite.testArea, suite.workspace, suite.environment)
 
 	suite.T().Logf("Switching to workspace (%v)...", suite.workspace)
 	common.SwitchToWorkspace(suite.T(), suite.workspace, suite.environment)
@@ -100,7 +100,7 @@ func (suite *DefaultWorkspaceTestSuite) TestCreateBasicTemplate() {
 
 	templateFile := common.CreateTempFileFromTemplate(suite.T(), declarationFile, suite.testArea, structData)
 
-	common.Apply(common.CommanderTypes.GO, suite.T(), templateFile, suite.environment)
+	common.Apply(common.CommanderTypes.Cobra, suite.T(), templateFile, suite.environment)
 
 	service := templateCode.NewCodeTemplateService(suite.environment)
 	template, err := service.GetByName(structData.Name)

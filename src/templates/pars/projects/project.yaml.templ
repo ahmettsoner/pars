@@ -11,7 +11,6 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Project
   
   Platform: 
     Type: Pars
@@ -30,7 +29,9 @@ Specifications:
       Path: Structs/Resources
     - Name: templates
       Path: Templates
-  Options:
 
   Dependencies:
   References:
+Application:
+  ProjectType: Project
+  Options:

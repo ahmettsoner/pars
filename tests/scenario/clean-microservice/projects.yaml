@@ -15,7 +15,6 @@ Specifications:
   Name: Catalog.Core
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Package: Catalog.Core
   Group: EShoppingProject
   Path: /Services/Catalog/Catalog.Core
@@ -40,6 +39,8 @@ Specifications:
   - MongoDB.Driver
   - AspNetCore.HealthChecks.MongoDB
   - Microsoft.AspNetCore.Mvc.Versioning
+Application:
+  ProjectType: library
 ---
 Type: Project
 Kind: Application
@@ -50,7 +51,6 @@ Specifications:
   Name: Catalog.Application
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Package: Catalog.Application
   Group: EShoppingProject
   Path: /Services/Catalog/Catalog.Application
@@ -80,6 +80,8 @@ Specifications:
   References:
   - Name: EShopping.Catalog.Core
     Group: EShoppingProject
+Application:
+  ProjectType: library
 ---
 
 Type: Project
@@ -91,7 +93,6 @@ Specifications:
   Name: Catalog.Infrastructure
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Package: Catalog.Infrastructure
   Group: EShoppingProject
   Path: /Services/Catalog/Catalog.Infrastructure
@@ -118,6 +119,8 @@ Specifications:
     Group: EShoppingProject
   - Name: EShopping.Catalog.Application
     Group: EShoppingProject
+Application:
+  ProjectType: library
 ---
 
 Type: Project
@@ -129,7 +132,6 @@ Specifications:
   Name: Catalog.API
   Set: EShopping
   Platform: dotnet
-  ProjectType: webapi
   Package: Catalog.API
   Group: EShoppingProject
   Path: /Services/Catalog/Catalog.API
@@ -154,6 +156,8 @@ Specifications:
   - Microsoft.Extensions.Logging.Abstractions
   - Swashbuckle.AspNetCore
   - AutoMapper
+Application:
+  ProjectType: wepapi
 ---
 
 Type: Group
@@ -176,7 +180,6 @@ Specifications:
   Name: Catalog.Models
   Set: EShopping
   Platform: nodejs
-  ProjectType: library
   Group: EShoppingProjectNodeJSClient
   Package: Catalog
   Labels:
@@ -186,6 +189,8 @@ Specifications:
   - Name: Client:API:Model
     Path: models
     Package: models
+Application:
+  ProjectType: library
 
 ---
 Type: Project
@@ -197,7 +202,6 @@ Specifications:
   Name: Catalog.Client.Http
   Set: EShopping
   Platform: nodejs
-  ProjectType: library
   Group: EShoppingProjectNodeJSClient
   Package: Catalog
   Labels:
@@ -213,6 +217,8 @@ Specifications:
   Dependencies:
     - axios
     - axios-retry
+Application:
+  ProjectType: library
 ---
 Type: Project
 Kind: Application
@@ -223,7 +229,6 @@ Specifications:
   Name: Catalog.Client.gRPC
   Set: EShopping
   Platform: nodejs
-  ProjectType: library
   Group: EShoppingProjectNodeJSClient
   Package: Catalog
   Labels:
@@ -238,6 +243,8 @@ Specifications:
     Group: EShoppingProjectNodeJSClient
   Dependencies:
     - "@grpc/grpc-js"
+Application:
+  ProjectType: library
 ---
 
 Type: Group
@@ -260,7 +267,6 @@ Specifications:
   Name: Catalog.Models
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Group: EShoppingProjectDotnetClient
   Package: Models
   Labels:
@@ -270,6 +276,8 @@ Specifications:
   - Name: Client:API:Model
     Path: Models
     Package: Models
+Application:
+  ProjectType: library
 ---
 Type: Project
 Kind: Application
@@ -280,7 +288,6 @@ Specifications:
   Name: Catalog.Client.Http
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Group: EShoppingProjectDotnetClient
   Package: Catalog
   Layers:
@@ -295,6 +302,8 @@ Specifications:
     Group: EShoppingProjectDotnetClient
   Dependencies:
     - polly
+Application:
+  ProjectType: library
 
 ---
 Type: Project
@@ -306,7 +315,6 @@ Specifications:
   Name: Catalog.Client.gRPC
   Set: EShopping
   Platform: dotnet
-  ProjectType: library
   Group: EShoppingProjectDotnetClient
   Package: Catalog
   Layers:
@@ -320,6 +328,8 @@ Specifications:
   Dependencies:
     - Grpc.Net.Client
     - polly
+Application:
+  ProjectType: library
 ---
 
 Type: Group
@@ -339,7 +349,6 @@ Specifications:
   Name: Catalog.Web.UI
   Set: EShopping
   Platform: angular
-  ProjectType: spa
   Group: EShoppingProjectUI
 
   References:
@@ -349,3 +358,6 @@ Specifications:
     Group: EShoppingProjectNodeJSClient
   - Name: EShopping.Catalog.Client.NodeJS.gRPC
     Group: EShoppingProjectNodeJSClient
+
+Application:
+  ProjectType: spa

@@ -11,10 +11,10 @@ import (
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
-func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment string) {
+func InitializeNewWorkspace(commander CommanderType, t *testing.T, wsPath, workspaceName, environment string) {
 	commands := []string{"init", workspaceName, wsPath}
 
-	_, err := ExecuteCommand(t, environment, commands...)
+	_, err := ExecuteCommandWithSelector(commander, t, environment, commands...)
 	require.NoErrorf(t, err, "Failed to execute command %v", commands)
 }
 func InitializeNewWorkspaceWithService(t *testing.T, wsPath, workspaceName, environment string) basic_workspace_payload_structs.WorkspaceBaseStruct {

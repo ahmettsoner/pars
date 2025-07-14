@@ -445,7 +445,7 @@ func (s ApplicationProjectEngine) list(ctx *application.ApplicationContext, mode
 			Set:         e.Specifications.Set,
 			Group:       e.Specifications.Group,
 			Platform:    e.Specifications.Platform.Type.String(),
-			ProjectType: e.Specifications.ProjectType,
+			ProjectType: e.Application.ProjectType,
 			Tags:        e.Header.Metadata.Tags,
 			Labels:      resourceLabels,
 		}
@@ -550,9 +550,9 @@ func (s ApplicationProjectEngine) describe(ctx *application.ApplicationContext, 
 			Group:        project.Specifications.Group,
 			Set:          project.Specifications.Set,
 			Platform:     project.Specifications.Platform.Type.String(),
-			ProjectType:  project.Specifications.ProjectType,
-			Runtime:      project.Specifications.Runtime,
-			Language:     project.Specifications.Language,
+			ProjectType:  project.Application.ProjectType,
+			Runtime:      project.Application.Runtime,
+			Language:     project.Application.Language,
 			Path:         project.Specifications.ProjectIdentifier.Path,
 			Package:      project.Specifications.Package,
 			Tags:         project.Header.Metadata.Tags,
@@ -652,7 +652,7 @@ func (s ApplicationProjectEngine) completeInformation(ctx *application.Applicati
 	}
 
 	model.Specifications.Layers = append(model.Specifications.Layers, applicationProject.Layer{})
-	model.Specifications.ProjectType = projectType
+	model.Application.ProjectType = projectType
 	return nil
 }
 

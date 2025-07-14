@@ -90,7 +90,8 @@ func (s WorkspaceEngine) create(ctx *application.ApplicationContext, models []ba
 		fmt.Printf("\n🛠️  Creating: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
 		workspaceFlow := flowx.NewFlow("CreateNewWorkspace").
-			Step(&create_steps.SaveWorkspace{})
+			Step(&create_steps.SaveWorkspace{}).
+			Step(&create_steps.PrepareWorkspaceFolder{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"workspace": workspace,
@@ -266,7 +267,8 @@ func (s WorkspaceEngine) init(ctx *application.ApplicationContext, models []basi
 		fmt.Printf("\n🛠️  Initializing: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
 
 		workspaceFlow := flowx.NewFlow("InitializeWorkspace").
-			Step(&create_steps.SaveWorkspace{})
+			Step(&create_steps.SaveWorkspace{}).
+			Step(&create_steps.PrepareWorkspaceFolder{})
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"workspace": workspace,
@@ -274,7 +276,7 @@ func (s WorkspaceEngine) init(ctx *application.ApplicationContext, models []basi
 
 		if err := workspaceFlow.Run(fc); err != nil {
 			fc.Log("Flow failed: %v", err)
-			return fmt.Errorf("xxx: Workspace Destroy işleminde hata oluştu: %w", &err)
+			return fmt.Errorf("xxx: Workspace Init işleminde hata oluştu: %w", &err)
 		}
 	}
 

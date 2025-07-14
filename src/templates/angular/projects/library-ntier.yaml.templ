@@ -10,22 +10,23 @@ Specifications::
   Set: {{ .Set }}
   Package: {{ .Package }}.Core
   Path: {{ .Path }}.Core
-  ProjectType: Library
   
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
 
   Layers:
   - core
-  Options:
 
   Dependencies:
   References:
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 
 ---
@@ -38,11 +39,7 @@ Specifications::
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
-  Definition:
     Name: {{ .Name }}.Service
     Workspace: {{ .Workspace }}
     Group: {{ .Group }}
@@ -50,17 +47,19 @@ Specifications::
     Package: {{ .Package }}.Service
     Path: {{ .Path }}.Service
 
-  Schema:
-    ProjectType: Library
-
 
   Layers:
   - service
   - business:model
-  Options:
 
   Dependencies:
   References:
   - Name: {{ .Name }}.Core
     Group:  {{ .Group }}
     Workspace: {{ .Workspace }}
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:

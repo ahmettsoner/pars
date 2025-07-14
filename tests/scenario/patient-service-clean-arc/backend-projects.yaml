@@ -7,7 +7,6 @@ Specifications:
   Name: Application
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Application
   Group: PatientService.Core
 
@@ -23,6 +22,8 @@ Specifications:
     Package: Dtos
   Dependencies:
   - MediatR@12.2.0
+Application:
+  ProjectType: library
 
 ---
 
@@ -35,7 +36,6 @@ Specifications:
   Name: Domain
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Domain
   Group: PatientService.Core
 
@@ -54,6 +54,8 @@ Specifications:
   - Microsoft.EntityFrameworkCore.Design@8.0.3
   - Microsoft.EntityFrameworkCore.Tools@8.0.3
   - Microsoft.EntityFrameworkCore.SqlServer@8.0.3
+Application:
+  ProjectType: library
 
 ---
 
@@ -66,7 +68,6 @@ Specifications:
   Name: Infrastructure
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Infrastructure
   Group: PatientService.Core
 
@@ -103,6 +104,8 @@ Specifications:
     Group: PatientService.Core
   - Name: Domain
     Group: PatientService.Core
+Application:
+  ProjectType: library
 
 ---
 
@@ -115,7 +118,6 @@ Specifications:
   Name: Presentation.Query
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Presentation/Query
   Group: PatientService.Query
 
@@ -133,6 +135,8 @@ Specifications:
     Group: PatientService.Core
   - Name: Infrastructure
     Group: PatientService.Core
+Application:
+  ProjectType: library
 
 ---
 
@@ -145,7 +149,6 @@ Specifications:
   Name: Presentation.Command
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Presentation/Command
   Group: PatientService.Command
 
@@ -163,3 +166,6 @@ Specifications:
     Group: PatientService.Core
   - Name: Infrastructure
     Group: PatientService.Core
+
+Application:
+  ProjectType: library

@@ -48,7 +48,7 @@ func (suite *GroupProjectDependencyTestSuite) SetupSuite() {
 	suite.manager = managers.NewDotnetManager()
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspace, suite.environment)
 
 	projectName1 := suite.faker.Project.Name()
 	projectName2 := suite.faker.Project.Name()

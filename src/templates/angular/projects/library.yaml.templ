@@ -10,19 +10,20 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Library
   
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
 
 
   Layers:
-  Options:
 
   Dependencies:
   References:
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:

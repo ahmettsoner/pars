@@ -55,7 +55,7 @@ func (suite *ListTestSuite) TearDownTest() {
 
 func (suite *ListTestSuite) TestListCurrentWorkspace() {
 	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 	commands := []string{
 		"workspace",

@@ -10,14 +10,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Library
 
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
   Layers:
     - Name: core
@@ -26,8 +22,13 @@ Specifications:
       Path: Services
     - Name: business:model
       Path: Models
-  Options:
 
   Dependencies:
   References:
+Application:
+  ProjectType: Library
 
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:

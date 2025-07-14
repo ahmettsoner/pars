@@ -16,4 +16,5 @@ type WorkspaceServiceInterface[T schemas.SchemaInterface] interface {
 	GetActiveWorkspace() (*T, error)
 	ChangeCurrentWorkspace(name string) (*T, error)
 	ListByNameStartWith(name string) (*([]T), error)
+	CreateWorkspaceFolder(model T) (string, error)
 }

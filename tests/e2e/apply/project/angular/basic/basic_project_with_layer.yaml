@@ -6,9 +6,10 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
-  ProjectType: {{ .Type }}
 
 
   Layers:
   {{range .Layers}}- {{.}}
   {{end}}
+Application:
+  ProjectType: {{ .Type }}

@@ -10,14 +10,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Console
 
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
 
 
   Layers:
@@ -33,6 +29,12 @@ Specifications:
       Path: Database/Repositories
     - Name: presentation:controller
       Path: Controllers
-  Options:
   References:
 
+
+Application:
+  ProjectType: Console
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:

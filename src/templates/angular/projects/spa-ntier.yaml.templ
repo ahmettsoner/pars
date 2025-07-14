@@ -10,23 +10,24 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Core
   Path: {{ .Path }}.Core
-  ProjectType: Library
 
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
-
 
 
   Layers:
   - core
-  Options:
   
   Dependencies:
   References:
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:
+
 
 
 ---
@@ -42,27 +43,28 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Service
   Path: {{ .Path }}.Service
-  ProjectType: Library
 
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
 
 
   Layers:
   - service
   - business:model
-  Options:
 
   Dependencies:
   References:
   - Name: {{ .Name }}.Core
     Group:  {{ .Group }}
     Workspace: {{ .Workspace }}
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 ---
 Type: Project
@@ -77,21 +79,15 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: SPA
   
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
-
 
 
   Layers:
     - presentation:controller
     - presentation:view
-  Options:
 
   Dependencies:
   References:
@@ -101,3 +97,9 @@ Specifications:
   - Name: {{ .Name }}.Service
     Group:  {{ .Group }}
     Workspace: {{ .Workspace }}
+Application:
+  ProjectType: SPA
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:

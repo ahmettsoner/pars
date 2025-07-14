@@ -6,9 +6,11 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
-  ProjectType: {{ .Type }}
 
 
   References:
   {{range .References}}- {{.}}
   {{end}}
+
+Application:
+  ProjectType: {{ .Type }}

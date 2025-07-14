@@ -7,7 +7,6 @@ Specifications:
   Name: Application
   Set: PatientService
   Platform: dotnet
-  ProjectType: library
   Package: Patient/Service/Application
 
   Layers:
@@ -22,3 +21,6 @@ Specifications:
     Package: Dtos
   Dependencies:
   - MediatR@12.2.0
+
+Application:
+  ProjectType: library

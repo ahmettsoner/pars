@@ -57,7 +57,7 @@ package services
 // 	suite.T().Logf("Creating test location at (%v)", suite.testArea)
 
 // 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspaceName)
-// 	workspaceBase := InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspaceName, suite.environment)
+// 	workspaceBase := common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspaceName, suite.environment)
 // 	suite.workspace = workspaceBase.Specifications
 
 // 	suite.T().Log("Project creation completed")

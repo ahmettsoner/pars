@@ -67,7 +67,7 @@ func (s DotnetManager) GetKey() models.PlatformType {
 }
 func (s DotnetManager) CreateProject(project application_project_payload_structs.ProjectBaseStruct) error {
 
-	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.Specifications.ProjectType))
+	dotnetProjectType, err := ProjectTypeToDotnetCLITypeString(models.ProjectType(project.Application.ProjectType))
 	if err != nil {
 		return fmt.Errorf("xxx: proje oluşturma işlemi sırasında ProjectType bulunamadı? %w", err)
 	}
@@ -242,7 +242,7 @@ func (s DotnetManager) RemoveDefaultFiles(project application_project_payload_st
 	var paths []string = []string{}
 	projectPath := project.Specifications.GetAbsoluteProjectPath()
 
-	var projectType models.ProjectType = models.ProjectType(project.Specifications.ProjectType)
+	var projectType models.ProjectType = models.ProjectType(project.Application.ProjectType)
 	paths = append(paths, filepath.Join(projectPath, "obj"))
 	if projectType == models.ProjectTypes.Library {
 		paths = append(paths, filepath.Join(projectPath, "Class1.cs"))

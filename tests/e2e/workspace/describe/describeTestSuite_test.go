@@ -55,7 +55,7 @@ func (suite *DescribeTestSuite) TearDownTest() {
 
 func (suite *DescribeTestSuite) TestDescribeCurrentWorkspace() {
 	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 	commands := []string{
 		"workspace",
@@ -76,7 +76,7 @@ func (suite *DescribeTestSuite) TestDescribeCurrentWorkspace() {
 
 func (suite *DescribeTestSuite) TestDescribeSelectedWorkspace() {
 	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 	commands := []string{
 		"workspace",
@@ -98,7 +98,7 @@ func (suite *DescribeTestSuite) TestDescribeSelectedWorkspace() {
 
 // func (suite *DescribeTestSuite) TestDescribeWorkspaceWithSelectedViewType() {
 // 	name := suite.faker.Workspace.Name()
-// 	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+// 	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 // 	commands := []string{
 // 		"workspace",
@@ -122,7 +122,7 @@ func (suite *DescribeTestSuite) TestDescribeSelectedWorkspace() {
 
 // func (suite *DescribeTestSuite) TestDescribeWorkspaceOnlyPath() {
 // 	name := suite.faker.Workspace.Name()
-// 	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+// 	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
 // 	commands := []string{
 // 		"workspace",

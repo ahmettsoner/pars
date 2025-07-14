@@ -44,7 +44,7 @@ func (suite *BasicProjectLayerTestSuite) SetupSuite() {
 	suite.manager = managers.NewDotnetManager()
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspace, suite.environment)
 }
 func (suite *BasicProjectLayerTestSuite) TearDownSuite() {
 	suite.T().Log("Test suite disposing...")

@@ -15,10 +15,12 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
-  ProjectType: {{ .Type }}
   Group: {{ .Group }}
 
 
   Layers:
   {{range .Layers}}- {{.}}
   {{end}}
+
+Application:
+  ProjectType: {{ .Type }}

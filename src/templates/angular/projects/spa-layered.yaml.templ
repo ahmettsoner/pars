@@ -10,14 +10,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: SPA
 
   Platform: 
     Type: angular
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: nodejs
-    Version: {{ .RuntimeVersion }}
 
 
   Layers:
@@ -33,3 +29,10 @@ Specifications:
   Dependencies:
   References:
 
+
+Application:
+  ProjectType: SPA
+  Runtime:
+    Type: nodejs
+    Version: {{ .RuntimeVersion }}
+  Options:

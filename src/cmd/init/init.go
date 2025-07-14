@@ -58,7 +58,7 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 		commandOptions.Name = args[0]
 	}
 	if len(args) > 1 {
-		commandOptions.Path = args[1]
+		commandOptions.Path = filepath.Join(args[1], args[0])
 	}
 
 	if _string.IsEmpty(commandOptions.Name) {
@@ -120,9 +120,9 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 	fmt.Printf("────────────────────────────────────\n")
 
 	appCtx := application.GetContext()
-	if appCtx == nil {
-		return fmt.Errorf("xxx: Current workspace bulunamadı")
-	}
+	// if appCtx == nil {
+	// 	return fmt.Errorf("xxx: Current workspace bulunamadı")
+	// }
 	err := engines.DispatchEngineInit(appCtx, result)
 	if err != nil {
 		return fmt.Errorf("Engine processing failed: %v", err)

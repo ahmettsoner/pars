@@ -433,7 +433,7 @@ func (s NodeJSManager) RemoveDefaultFiles(project application_project_payload_st
 	var paths []string = []string{}
 	// projectPath := project.Specifications.GetAbsoluteProjectPath()
 
-	var projectType models.ProjectType = models.ProjectType(project.Specifications.ProjectType)
+	var projectType models.ProjectType = models.ProjectType(project.Application.ProjectType)
 	if projectType == models.ProjectTypes.Library {
 	} else if projectType == models.ProjectTypes.SPA {
 	}

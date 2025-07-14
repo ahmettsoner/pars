@@ -48,7 +48,7 @@ func (suite *BasicProjectDependencyTestSuite) SetupSuite() {
 	suite.manager = managers.NewDotnetManager()
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspace, suite.environment)
 
 	projectName := suite.faker.Project.Name()
 	suite.project = CreateNewTestProject(suite.T(), projectName, suite.testArea, suite.workspace)

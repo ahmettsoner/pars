@@ -11,25 +11,26 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Core
   Path: {{ .Path }}.Core
-  ProjectType: Library
 
   Platform: 
     Type: go
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: go
-    Version: {{ .RuntimeVersion }}
 
 
 
   Layers:
     - Name: core
       Path: Core
-  Options:
 
   Dependencies:
   References:
 
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: go
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 ---
 Type: Project
@@ -45,14 +46,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Service
   Path: {{ .Path }}.Service
-  ProjectType: Library
 
   Platform: 
     Type: go
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: go
-    Version: {{ .RuntimeVersion }}
 
 
 
@@ -61,7 +58,6 @@ Specifications:
       Path: Services
     - Name: business:model
       Path: Models
-  Options:
 
   Dependencies:
   References:
@@ -77,6 +73,12 @@ Specifications:
     Group:  {{ .Group }}
     Workspace: 
       Name: {{ .Workspace }}
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: go
+    Version: {{ .RuntimeVersion }}
+  Options:
 ---
 Type: Project
 Kind: Application
@@ -91,14 +93,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Database
   Path: {{ .Path }}.Database
-  ProjectType: Library
 
   Platform: 
     Type: go
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: go
-    Version: {{ .RuntimeVersion }}
 
 
 
@@ -107,9 +105,14 @@ Specifications:
       Path: Database/Entities
     - Name: persistence:database:repository
       Path: Database/Repositories
-  Options:
 
   Dependencies:
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: go
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 ---
 Type: Project
@@ -125,21 +128,16 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Console
   
   Platform: 
     Type: go
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: go
-    Version: {{ .RuntimeVersion }}
 
 
 
   Layers:
     - Name: presentation:controller
       Path: Controllers
-  Options:
 
   Dependencies:
   References:
@@ -155,3 +153,9 @@ Specifications:
     Group:  {{ .Group }}
     Workspace: 
       Name: {{ .Workspace }}
+Application:
+  ProjectType: Console
+  Runtime:
+    Type: go
+    Version: {{ .RuntimeVersion }}
+  Options:

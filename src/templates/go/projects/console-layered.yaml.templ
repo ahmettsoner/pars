@@ -11,14 +11,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Console
   
   Platform: 
     Type: go
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: go
-    Version: {{ .RuntimeVersion }}
 
 
 
@@ -41,3 +37,10 @@ Specifications:
     - Microsoft.EntityFrameworkCore.Tools:8.0.1
   References:
 
+
+Application:
+  ProjectType: Console
+  Runtime:
+    Type: go
+    Version: {{ .RuntimeVersion }}
+  Options:

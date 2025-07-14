@@ -10,24 +10,25 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Core
   Path: {{ .Path }}.Core
-  ProjectType: Library
 
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
 
 
   Layers:
     - Name: core
       Path: Core
-  Options:
   
   Dependencies:
   References:
 
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 ---
 Type: Project
@@ -42,23 +43,16 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Service
   Path: {{ .Path }}.Service
-  ProjectType: Library
 
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
-
-
 
   Layers:
     - Name: service
       Path: Services
     - Name: business:model
       Path: Models
-  Options:
 
   Dependencies:
   References:
@@ -68,6 +62,14 @@ Specifications:
   - Name: {{ .Name }}.Database
     Group:  {{ .Group }}
     Workspace: {{ .Workspace }}
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:
+
+
 ---
 Type: Project
 Kind: Application
@@ -81,14 +83,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}.Database
   Path: {{ .Path }}.Database
-  ProjectType: Library
 
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
 
 
 
@@ -97,9 +95,14 @@ Specifications:
       Path: Database/Entities
     - Name: persistence:database:repository
       Path: Database/Repositories
-  Options:
 
   Dependencies:
+Application:
+  ProjectType: Library
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:
 
 ---
 Type: Project
@@ -114,21 +117,16 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: Console
   
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
 
 
 
   Layers:
     - Name: presentation:controller
       Path: Controllers
-  Options:
 
   Dependencies:
   References:
@@ -141,3 +139,9 @@ Specifications:
   - Name: {{ .Name }}.Database
     Group:  {{ .Group }}
     Workspace: {{ .Workspace }}
+Application:
+  ProjectType: Console
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:

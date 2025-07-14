@@ -10,16 +10,10 @@ Specifications:
   Set: {{ .Set }}
   Package: {{ .Package }}
   Path: {{ .Path }}
-  ProjectType: WebApi
   
   Platform: 
     Type: dotnet
     Version: {{ .PlatformVersion }}
-  Runtime:
-    Type: dotnet
-    Version: {{ .RuntimeVersion }}
-
-
 
   Layers:
     - Name: core
@@ -34,8 +28,14 @@ Specifications:
       Path: Database/Repositories
     - Name: presentation:controller
       Path: Controllers
-  Options:
 
   Dependencies:
   References:
 
+
+Application:
+  ProjectType: WebApi
+  Runtime:
+    Type: dotnet
+    Version: {{ .RuntimeVersion }}
+  Options:

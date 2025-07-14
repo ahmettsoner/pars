@@ -6,4 +6,5 @@ Metadata:
 Specifications:
   Name: {{ .Name }}
   Platform: {{ .Platform }}
+Application:
   ProjectType: {{ .Type }}

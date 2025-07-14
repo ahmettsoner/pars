@@ -44,7 +44,7 @@ func (suite *DotnetWebAppTestSuite) SetupSuite() {
 	suite.T().Logf("Creating test location at (%v)", suite.testArea)
 
 	suite.T().Logf("Initializing New Workspace (%v)", suite.workspace)
-	common.InitializeNewWorkspace(suite.T(), suite.testArea, suite.workspace, suite.environment)
+	common.InitializeNewWorkspace(common.CommanderTypes.GO, suite.T(), suite.testArea, suite.workspace, suite.environment)
 
 	suite.T().Log("Test suite setup completed")
 }
