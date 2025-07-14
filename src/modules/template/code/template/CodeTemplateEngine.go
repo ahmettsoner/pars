@@ -301,7 +301,7 @@ func (s CodeTemplateEngine) prepareToDescribe(ctx *application.ApplicationContex
 			if err != nil {
 				return nil, err
 			}
-			if template != nil {
+			if template != nil && template.Header.Kind == code_template_payload_structs.TEMPLATE_KIND {
 
 				readyToDescribeStructs = append(readyToDescribeStructs, *template)
 			} else {
@@ -335,6 +335,38 @@ func (s CodeTemplateEngine) describe(ctx *application.ApplicationContext, models
 	return nil
 }
 
+func (s CodeTemplateEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s CodeTemplateEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]code_template_payload_structs.TemplateBaseStruct, error) {
+
+	service := ioc.Get[code_template_contract.TemplateInterface]()
+	readyToRemoveStructs := make([]code_template_payload_structs.TemplateBaseStruct, 0)
+
+	for _, a := range args {
+		template, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if template != nil && template.Header.Kind == code_template_payload_structs.TEMPLATE_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *template)
+		}
+	}
+	logrus.Debugf("'%d' template(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
 func (s CodeTemplateEngine) completeInformation(ctx *application.ApplicationContext, model *code_template_payload_structs.TemplateBaseStruct) error {
 
 	logrus.Debugf("filling model (%v) information", model.Header.Name)

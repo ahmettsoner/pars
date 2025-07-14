@@ -273,7 +273,7 @@ func (s GroupEngine) prepareToDescribe(ctx *application.ApplicationContext, args
 			if err != nil {
 				return nil, err
 			}
-			if group != nil {
+			if group != nil && group.Header.Kind == basic_group_payload_structs.GROUP_KIND {
 				groupList = append(groupList, *group)
 
 			} else {
@@ -352,7 +352,9 @@ func (s GroupEngine) prepareToRemove(ctx *application.ApplicationContext, args .
 		if err != nil {
 			return nil, err
 		}
-		readyToRemoveStructs = append(readyToRemoveStructs, *group)
+		if group != nil && group.Header.Kind == basic_group_payload_structs.GROUP_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *group)
+		}
 	}
 	logrus.Debugf("'%d' group(s) detected that will remove", len(readyToRemoveStructs))
 

@@ -26,9 +26,9 @@ import (
 	cmdTemplate "parsdevkit.net/cmd/template"
 	cmdTest "parsdevkit.net/cmd/test"
 
-	cmdExecute "parsdevkit.net/cmd/execute"
 	cmdInit "parsdevkit.net/cmd/init"
 	cmdOpen "parsdevkit.net/cmd/open"
+	cmdRun "parsdevkit.net/cmd/run"
 
 	// cmdRelease "parsdevkit.net/cmd/release"
 	// cmdRemote "parsdevkit.net/cmd/remote"
@@ -78,7 +78,7 @@ var RootCmd = &cobra.Command{
 	},
 }
 
-func Execute() {
+func Run() {
 	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
@@ -125,7 +125,7 @@ func addSubCommands() {
 	RootCmd.AddCommand(cmdTest.TestCmd)
 	// RootCmd.AddCommand(cmdRelease.ReleaseCmd)
 	// RootCmd.AddCommand(cmdRemote.RemoteCmd)
-	RootCmd.AddCommand(cmdExecute.ExecuteCmd)
+	RootCmd.AddCommand(cmdRun.RunCmd)
 	RootCmd.AddCommand(cmdOpen.OpenCmd)
 	// RootCmd.AddCommand(cmdWork.WorkCmd)
 	// RootCmd.AddCommand(cmdGit.GitCmd)

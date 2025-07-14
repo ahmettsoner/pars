@@ -216,7 +216,7 @@ func (s ObjectResourceEngine) remove(ctx *application.ApplicationContext, models
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
-		resourceFlow := flowx.NewFlow("DestroyExistingGroup").
+		resourceFlow := flowx.NewFlow("DestroyExistingResource").
 			Step(&remove_steps.DeleteResource{}).
 			Step(&remove_steps.ClearResourceHistory{})
 
@@ -251,12 +251,12 @@ func (s ObjectResourceEngine) prepareToList(ctx *application.ApplicationContext)
 
 	service := ioc.Get[object_resource_contract.ResourceInterface]()
 
-	groupList, err := service.List()
+	resourceList, err := service.List()
 	if err != nil {
 		return nil, err
 	}
 
-	return *groupList, nil
+	return *resourceList, nil
 }
 func (s ObjectResourceEngine) list(ctx *application.ApplicationContext, models []object_resource_payload_structs.ResourceBaseStruct) error {
 
@@ -303,7 +303,7 @@ func (s ObjectResourceEngine) prepareToDescribe(ctx *application.ApplicationCont
 			if err != nil {
 				return nil, err
 			}
-			if resource != nil {
+			if resource != nil && resource.Header.Kind == object_resource_payload_structs.RESOURCE_KIND {
 
 				readyToDescribeStructs = append(readyToDescribeStructs, *resource)
 
@@ -319,11 +319,11 @@ func (s ObjectResourceEngine) prepareToDescribe(ctx *application.ApplicationCont
 }
 func (s ObjectResourceEngine) describe(ctx *application.ApplicationContext, models []object_resource_payload_structs.ResourceBaseStruct) error {
 
-	for _, group := range models {
+	for _, resource := range models {
 
 		resource := describe_printer.ViewModel{
-			Name: group.Header.Name,
-			Tags: group.Header.Metadata.Tags,
+			Name: resource.Header.Name,
+			Tags: resource.Header.Metadata.Tags,
 		}
 
 		fmt.Printf("\n🛠️  Details for: %s\n\n", resource.Name)
@@ -336,6 +336,38 @@ func (s ObjectResourceEngine) describe(ctx *application.ApplicationContext, mode
 	}
 
 	return nil
+}
+func (s ObjectResourceEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ObjectResourceEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]object_resource_payload_structs.ResourceBaseStruct, error) {
+
+	service := ioc.Get[object_resource_contract.ResourceInterface]()
+	readyToRemoveStructs := make([]object_resource_payload_structs.ResourceBaseStruct, 0)
+
+	for _, a := range args {
+		resource, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if resource != nil && resource.Header.Kind == object_resource_payload_structs.RESOURCE_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *resource)
+		}
+	}
+	logrus.Debugf("'%d' resource(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
 }
 
 func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationContext, model *object_resource_payload_structs.ResourceBaseStruct) error {

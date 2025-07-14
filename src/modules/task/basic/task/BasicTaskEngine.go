@@ -7,7 +7,6 @@ import (
 	"parsdevkit.net/modules/task/basic_task_contract"
 	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 
-	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/internal/flowx"
 	create_steps "parsdevkit.net/modules/task/basic_task/flows/create"
@@ -298,7 +297,7 @@ func (s BasicTaskEngine) prepareToDescribe(ctx *application.ApplicationContext, 
 			if err != nil {
 				return nil, err
 			}
-			if task != nil {
+			if task != nil && task.Header.Kind == basic_task_payload_structs.TASK_KIND {
 
 				readyToDescribeStructs = append(readyToDescribeStructs, *task)
 
@@ -333,9 +332,41 @@ func (s BasicTaskEngine) describe(ctx *application.ApplicationContext, models []
 	return nil
 }
 
+func (s BasicTaskEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s BasicTaskEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]basic_task_payload_structs.TaskBaseStruct, error) {
+
+	service := ioc.Get[basic_task_contract.TaskInterface]()
+	readyToRemoveStructs := make([]basic_task_payload_structs.TaskBaseStruct, 0)
+
+	for _, a := range args {
+		task, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if task != nil && task.Header.Kind == basic_task_payload_structs.TASK_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *task)
+		}
+	}
+	logrus.Debugf("'%d' task(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
 func (s BasicTaskEngine) execute(model basic_task_payload_structs.TaskBaseStruct) (*basic_task_payload_structs.TaskBaseStruct, error) {
 
-	taskService := ioc.Get[contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct]]()
+	taskService := ioc.Get[basic_task_contract.TaskInterface]()
 
 	result, err := taskService.GetByName(model.Header.Name)
 	if err != nil {

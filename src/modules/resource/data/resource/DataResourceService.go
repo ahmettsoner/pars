@@ -230,7 +230,7 @@ func (s *DataResourceService) DeleteResource(model data_resource_payload_structs
 }
 func (s DataResourceService) IsExists(name, workspace string) (bool, error) {
 
-	resourceResourceEntity, err := s.resourceRepository.GetByNameAndWorkspace(name, workspace)
+	resourceResourceEntity, err := s.resourceRepository.GetByName(name)
 	if err != nil {
 		return false, fmt.Errorf("xxx: Data Resource getirme aşamasında beklenmeyen hata oluştu '%s'\n%w", name, err)
 	}

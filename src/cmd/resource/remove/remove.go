@@ -5,12 +5,13 @@ import (
 	"log"
 	"strings"
 
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/modules/resource/data_resource_contract"
+	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 	"parsdevkit.net/modules/resource/object_resource_contract"
+	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/components/workspace"
-	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 	"parsdevkit.net/application"
@@ -26,7 +27,7 @@ type RemoveOptions struct {
 var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:               "remove",
+	Use:               "remove name [name]...",
 	Aliases:           []string{"r"},
 	Short:             "Resource Information",
 	Long:              `Resource Information`,
@@ -49,79 +50,19 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) > 0 {
 		commandOptions.Names = args
 	}
-
 	return nil
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	if len(commandOptions.Names) > 0 {
+	var result []string = []string{object_resource_payload_structs.MODULE_KEY, data_resource_payload_structs.MODULE_KEY}
 
-		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
+	for _, name := range commandOptions.Names {
+		appCtx := application.GetContext()
 
-		objectResourceService := ioc.Get[object_resource_contract.ResourceInterface]()
-		dataResourceService := ioc.Get[data_resource_contract.ResourceInterface]()
-
-		for _, name := range commandOptions.Names {
-			if checkGlobals {
-				commandOptions.Workspace = "None"
-
-				ok, err := objectResourceService.IsExists(name, commandOptions.Workspace)
-				if err != nil {
-					return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
-				}
-				if ok {
-					objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", commandOptions.Names, err)
-					}
-					fmt.Println("Resource (" + objectResource.Header.Name + ") deleted permanently")
-				}
-
-				ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
-				if err != nil {
-					return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
-				}
-				if ok {
-					dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove object resource(s) '%s'\n%w", name, err)
-					}
-					fmt.Println("Resource (" + dataResource.Header.Name + ") deleted permanently")
-				}
-
-				commandOptions.Workspace = ""
-			}
-
-			appCtx := application.GetContext()
-			if appCtx == nil {
-				return fmt.Errorf("xxx: Current workspace bulunamadı")
-			}
-			commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
-
-			ok, err := objectResourceService.IsExists(name, commandOptions.Workspace)
-			if err != nil {
-				return fmt.Errorf("xxx: Object Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
-			}
-			if ok {
-				objectResource, err := objectResourceService.Remove(name, commandOptions.Workspace, true, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", commandOptions.Names, err)
-				}
-				fmt.Println("Resource (" + objectResource.Header.Name + ") deleted permanently")
-			}
-
-			ok, err = dataResourceService.IsExists(name, commandOptions.Workspace)
-			if err != nil {
-				return fmt.Errorf("xxx: Data Resource ('%s') kontrolünde hata oluştu\n%w", name, err)
-			}
-			if ok {
-				dataResource, err := dataResourceService.Remove(name, commandOptions.Workspace, true, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove data resource(s) '%s'\n%w", name, err)
-				}
-				fmt.Println("Resource (" + dataResource.Header.Name + ") deleted permanently")
-			}
+		err := engines.DispatchEngineRemove(appCtx, result, name)
+		if err != nil {
+			return fmt.Errorf("Engine processing failed: %v", err)
 		}
 	}
 

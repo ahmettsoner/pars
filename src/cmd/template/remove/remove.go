@@ -3,15 +3,16 @@ package remove
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
-	"parsdevkit.net/components/workspace"
+	"parsdevkit.net/application/engines"
 
 	"parsdevkit.net/modules/template/code_template_contract"
+	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	"parsdevkit.net/modules/template/file_template_contract"
+	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	"parsdevkit.net/modules/template/shared_template_contract"
-	_string "parsdevkit.net/pkg/utilities/string"
+	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/pkg/utilities/array"
@@ -21,15 +22,14 @@ import (
 )
 
 type RemoveOptions struct {
-	Names     []string
-	Workspace string
-	Force     string
+	Names []string
+	Force string
 }
 
 var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:               "remove",
+	Use:               "remove name [name]...",
 	Aliases:           []string{"r"},
 	Short:             "Template Information",
 	Long:              `Template Information`,
@@ -58,101 +58,15 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	if len(commandOptions.Names) > 0 {
+	var result []string = []string{code_template_payload_structs.MODULE_KEY, file_template_payload_structs.MODULE_KEY, shared_template_payload_structs.MODULE_KEY}
 
-		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-		codeTemplateService := ioc.Get[code_template_contract.TemplateInterface]()
-		fileTemplateService := ioc.Get[file_template_contract.TemplateInterface]()
-		sharedTemplateService := ioc.Get[shared_template_contract.TemplateInterface]()
+	for _, name := range commandOptions.Names {
+		appCtx := application.GetContext()
 
-		for _, name := range commandOptions.Names {
-
-			if checkGlobals {
-
-				commandOptions.Workspace = "None"
-
-				ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
-				if err != nil {
-					return fmt.Errorf("xxx: Code Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-				}
-				if ok {
-					codeTemplate, err := codeTemplateService.Remove(name, commandOptions.Workspace, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove Gblobal Code template(s) '%s'\n%w", name, err)
-					}
-					fmt.Println("Template (" + codeTemplate.Header.Name + ") deleted permanently")
-				}
-
-				ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
-				if err != nil {
-					return fmt.Errorf("xxx: File Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-				}
-				if ok {
-					fileTemplate, err := fileTemplateService.Remove(name, commandOptions.Workspace, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove Global File template(s) '%s'\n%w", name, err)
-					}
-					fmt.Println("Template (" + fileTemplate.Header.Name + ") deleted permanently")
-				}
-
-				ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
-				if err != nil {
-					return fmt.Errorf("xxx: Shared Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-				}
-				if ok {
-					sharedTemplate, err := sharedTemplateService.Remove(name, commandOptions.Workspace, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove Global Shared template(s) '%s'\n%w", name, err)
-					}
-					fmt.Println("Template (" + sharedTemplate.Header.Name + ") deleted permanently")
-				}
-
-				commandOptions.Workspace = ""
-			}
-			appCtx := application.GetContext()
-			if appCtx == nil {
-				return fmt.Errorf("xxx: Current workspace bulunamadı")
-			}
-
-			commandOptions.Workspace = workspace.GetActiveWorkspaceName(appCtx, commandOptions.Workspace)
-
-			ok, err := codeTemplateService.IsExists(name, commandOptions.Workspace)
-			if err != nil {
-				return fmt.Errorf("xxx: Code Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-			}
-			if ok {
-				codeTemplate, err := codeTemplateService.Remove(name, commandOptions.Workspace, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove Active Workspace Code template(s) '%s'\n%w", name, err)
-				}
-				fmt.Println("Template (" + codeTemplate.Header.Name + ") deleted permanently")
-			}
-
-			ok, err = fileTemplateService.IsExists(name, commandOptions.Workspace)
-			if err != nil {
-				return fmt.Errorf("xxx: File Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-			}
-			if ok {
-				fileTemplate, err := fileTemplateService.Remove(name, commandOptions.Workspace, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove Active Workspace File template(s) '%s'\n%w", name, err)
-				}
-				fmt.Println("Template (" + fileTemplate.Header.Name + ") deleted permanently")
-			}
-
-			ok, err = sharedTemplateService.IsExists(name, commandOptions.Workspace)
-			if err != nil {
-				return fmt.Errorf("xxx: Shared Template ('%s') kontrolünde hata oluştu\n%w", name, err)
-			}
-			if ok {
-				sharedTemplate, err := sharedTemplateService.Remove(name, commandOptions.Workspace, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove Active Workspace Shared template(s) '%s'\n%w", name, err)
-				}
-				fmt.Println("Template (" + sharedTemplate.Header.Name + ") deleted permanently")
-			}
+		err := engines.DispatchEngineRemove(appCtx, result, name)
+		if err != nil {
+			return fmt.Errorf("Engine processing failed: %v", err)
 		}
-		fmt.Fprintf(os.Stdout, "✔ template(s) '%v' removed successfully\n", commandOptions.Names)
 	}
 
 	return nil

@@ -93,7 +93,6 @@ func (s WorkspaceEngine) create(ctx *application.ApplicationContext, models []ba
 			Step(&create_steps.SaveWorkspace{})
 
 		fc := flowx.NewContextWithData(map[string]any{
-			"init":      init,
 			"workspace": workspace,
 		})
 
@@ -148,7 +147,6 @@ func (s WorkspaceEngine) update(ctx *application.ApplicationContext, models []ba
 			Step(&update_steps.UpdateWorkspace{})
 
 		fc := flowx.NewContextWithData(map[string]any{
-			"init":      init,
 			"workspace": workspace,
 		})
 
@@ -159,6 +157,7 @@ func (s WorkspaceEngine) update(ctx *application.ApplicationContext, models []ba
 	}
 	return nil
 }
+
 func (s WorkspaceEngine) Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
 	dataStruct, err := CastArrayToConcrate(data)
 	if err != nil {
@@ -170,7 +169,7 @@ func (s WorkspaceEngine) Destroy(ctx *application.ApplicationContext, data []sch
 		return err
 	}
 
-	err = s.destroy(ctx, readyToDestroyStructs, true)
+	err = s.remove(ctx, readyToDestroyStructs, true)
 	if err != nil {
 		return err
 	}
@@ -198,7 +197,7 @@ func (s WorkspaceEngine) prepareToDestroy(ctx *application.ApplicationContext, w
 
 	return readyToDestroyStructs, nil
 }
-func (s WorkspaceEngine) destroy(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, permanent bool) error {
+func (s WorkspaceEngine) remove(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, permanent bool) error {
 
 	for _, workspace := range models {
 
@@ -209,6 +208,67 @@ func (s WorkspaceEngine) destroy(ctx *application.ApplicationContext, models []b
 
 		fc := flowx.NewContextWithData(map[string]any{
 			"permanent": permanent,
+			"workspace": workspace,
+		})
+
+		if err := workspaceFlow.Run(fc); err != nil {
+			fc.Log("Flow failed: %v", err)
+			return fmt.Errorf("xxx: Workspace Destroy işleminde hata oluştu: %w", &err)
+		}
+	}
+
+	return nil
+}
+
+func (s WorkspaceEngine) Init(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error {
+	dataStruct, err := CastArrayToConcrate2(data)
+	if err != nil {
+		return err
+	}
+
+	readyToInitStructs, err := s.prepareToInit(ctx, dataStruct)
+	if err != nil {
+		return err
+	}
+
+	err = s.init(ctx, readyToInitStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToInit(ctx *application.ApplicationContext, workspaces []basic_workspace_payload_structs.WorkspaceBaseStruct) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	readyToInitStructs := make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0)
+
+	for _, workspace := range workspaces {
+		if err := s.completeInformation(ctx, &workspace); err != nil {
+			return nil, err
+		}
+		ok, err := service.IsExists(workspace.Header.Name)
+		if err != nil {
+			return nil, err
+		}
+		if !ok {
+			readyToInitStructs = append(readyToInitStructs, workspace)
+		}
+	}
+	logrus.Debugf("'%d' workspace(s) detected that will init", len(readyToInitStructs))
+
+	return readyToInitStructs, nil
+}
+func (s WorkspaceEngine) init(ctx *application.ApplicationContext, models []basic_workspace_payload_structs.WorkspaceBaseStruct, permanent bool) error {
+
+	for _, workspace := range models {
+
+		fmt.Printf("\n🛠️  Initializing: %s.%s\n\n", workspace.Header.Name, workspace.GetKey())
+
+		workspaceFlow := flowx.NewFlow("InitializeWorkspace").
+			Step(&create_steps.SaveWorkspace{})
+
+		fc := flowx.NewContextWithData(map[string]any{
 			"workspace": workspace,
 		})
 
@@ -314,7 +374,7 @@ func (s WorkspaceEngine) prepareToDescribe(ctx *application.ApplicationContext, 
 				return nil, err
 			}
 
-			if workspace != nil {
+			if workspace != nil && workspace.Header.Kind == basic_workspace_payload_structs.WORKSPACE_KIND {
 
 				readyToDescribeStructs = append(readyToDescribeStructs, *workspace)
 			} else {
@@ -381,6 +441,39 @@ func (s WorkspaceEngine) describe(ctx *application.ApplicationContext, models []
 	return nil
 }
 
+func (s WorkspaceEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s WorkspaceEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+
+	service := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+	readyToRemoveStructs := make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0)
+
+	for _, a := range args {
+		workspace, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if workspace != nil && workspace.Header.Kind == basic_workspace_payload_structs.WORKSPACE_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *workspace)
+		}
+	}
+	logrus.Debugf("'%d' workspace(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
+}
+
 func (s WorkspaceEngine) completeInformation(ctx *application.ApplicationContext, model *basic_workspace_payload_structs.WorkspaceBaseStruct) error {
 
 	logrus.Debugf("filling workspace (%v) information", model.Header.Name)
@@ -410,5 +503,19 @@ func CastArrayToConcrate(data []schemas.SchemaInterface) ([]basic_workspace_payl
 		r = append(r, *model)
 	}
 
+	return r, nil
+}
+
+func CastArrayToConcrate2(data []schemas.SchemaInterface) ([]basic_workspace_payload_structs.WorkspaceBaseStruct, error) {
+	r := make([]basic_workspace_payload_structs.WorkspaceBaseStruct, 0, len(data))
+
+	for _, item := range data {
+		model, ok := item.(basic_workspace_payload_structs.WorkspaceBaseStruct)
+		if !ok {
+			return nil, fmt.Errorf("invalid item type: expected basic_workspace_payload_structs.WorkspaceBaseStruct, got %T", item)
+		}
+
+		r = append(r, model)
+	}
 	return r, nil
 }

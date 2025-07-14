@@ -52,6 +52,7 @@ func (s ToolEngine) prepareToBrowse(ctx *application.ApplicationContext, tools [
 		if err := s.completeInformation(ctx, &tool); err != nil {
 			return nil, err
 		}
+
 		readyToCreateStructs = append(readyToCreateStructs, tool)
 	}
 	logrus.Debugf("'%d' tool(s) detected that will create", len(readyToCreateStructs))

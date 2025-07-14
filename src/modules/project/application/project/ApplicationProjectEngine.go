@@ -394,8 +394,9 @@ func (s ApplicationProjectEngine) prepareToClean(ctx *application.ApplicationCon
 		if err != nil {
 			return nil, err
 		}
-		readyToUpdateStructs = append(readyToUpdateStructs, *existingProject)
-		//burda else ile kayıt bulunamadı bilgisi yazdırılabilir
+		if existingProject != nil {
+			readyToUpdateStructs = append(readyToUpdateStructs, *existingProject)
+		}
 	}
 	logrus.Debugf("'%d' project(s) detected that will update", len(readyToUpdateStructs))
 
@@ -484,7 +485,7 @@ func (s ApplicationProjectEngine) prepareToDescribe(ctx *application.Application
 			if err != nil {
 				return nil, err
 			}
-			if project != nil {
+			if project != nil && project.Header.Kind == application_project_payload_structs.PROJECT_KIND {
 				readyToDescribeStructs = append(readyToDescribeStructs, *project)
 			} else {
 				return nil, fmt.Errorf("xxx: Project '%s' bulunamadı", a)
@@ -571,6 +572,39 @@ func (s ApplicationProjectEngine) describe(ctx *application.ApplicationContext, 
 	}
 
 	return nil
+}
+
+func (s ApplicationProjectEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s ApplicationProjectEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+
+	service := ioc.Get[application_project_contract.ProjectInterface]()
+	readyToRemoveStructs := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+
+	for _, a := range args {
+		project, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if project != nil && project.Header.Kind == application_project_payload_structs.PROJECT_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *project)
+		}
+	}
+	logrus.Debugf("'%d' project(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
 }
 
 func (s ApplicationProjectEngine) completeInformation(ctx *application.ApplicationContext, model *application_project_payload_structs.ProjectBaseStruct) error {

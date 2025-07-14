@@ -73,14 +73,30 @@ func DispatchEngineInstall(ctx *application.ApplicationContext, t []schemas.Sche
 	}
 	return nil
 }
-func DispatchEngineExecute(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
+func DispatchEngineRun(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
 
 	schemaGroups := GroupSchemas(t)
 	for _, engineModule := range AllSorted() {
 		key := engineModule.GetConfig().Name
 		if data, ok := schemaGroups[key]; ok {
-			if engine, ok := engineModule.(ApplicationProjectExecuterEngineInterface); ok {
-				err := engine.Execute(ctx, data)
+			if engine, ok := engineModule.(ApplicationProjectRunnerEngineInterface); ok {
+				err := engine.Run(ctx, data)
+				if err != nil {
+					return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
+				}
+			}
+		}
+	}
+	return nil
+}
+func DispatchEngineInit(ctx *application.ApplicationContext, t []schemas.SchemaInterface) error {
+
+	schemaGroups := GroupSchemas(t)
+	for _, engineModule := range AllSorted() {
+		key := engineModule.GetConfig().Name
+		if data, ok := schemaGroups[key]; ok {
+			if engine, ok := engineModule.(WorkspaceInitializerEngineInterface); ok {
+				err := engine.Init(ctx, data)
 				if err != nil {
 					return fmt.Errorf("xxx %s(%s) işlemi sırasında engine hata verdi\n %w", key, key, err)
 				}

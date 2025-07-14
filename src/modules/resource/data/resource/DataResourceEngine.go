@@ -224,7 +224,7 @@ func (s DataResourceEngine) remove(ctx *application.ApplicationContext, models [
 
 		fmt.Printf("\n🛠️  Removing: %s.%s\n\n", resource.Header.Name, resource.GetKey())
 
-		resourceFlow := flowx.NewFlow("DestroyExistingGroup").
+		resourceFlow := flowx.NewFlow("DestroyExistingResource").
 			Step(&remove_steps.DeleteResource{}).
 			Step(&remove_steps.ClearResourceHistory{})
 
@@ -260,12 +260,12 @@ func (s DataResourceEngine) prepareToList(ctx *application.ApplicationContext) (
 
 	service := ioc.Get[data_resource_contract.ResourceInterface]()
 
-	groupList, err := service.List()
+	resourceList, err := service.List()
 	if err != nil {
 		return nil, err
 	}
 
-	return *groupList, nil
+	return *resourceList, nil
 }
 func (s DataResourceEngine) list(ctx *application.ApplicationContext, models []data_resource_payload_structs.ResourceBaseStruct) error {
 
@@ -312,8 +312,7 @@ func (s DataResourceEngine) prepareToDescribe(ctx *application.ApplicationContex
 			if err != nil {
 				return nil, err
 			}
-			if resource != nil {
-
+			if resource != nil && resource.Header.Kind == data_resource_payload_structs.RESOURCE_KIND {
 				readyToDescribeStructs = append(readyToDescribeStructs, *resource)
 
 			} else {
@@ -345,6 +344,38 @@ func (s DataResourceEngine) describe(ctx *application.ApplicationContext, models
 	}
 
 	return nil
+}
+func (s DataResourceEngine) Remove(ctx *application.ApplicationContext, args ...any) error {
+
+	readyToRemoveStructs, err := s.prepareToRemove(ctx, args...)
+	if err != nil {
+		return err
+	}
+
+	err = s.remove(ctx, readyToRemoveStructs, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (s DataResourceEngine) prepareToRemove(ctx *application.ApplicationContext, args ...any) ([]data_resource_payload_structs.ResourceBaseStruct, error) {
+
+	service := ioc.Get[data_resource_contract.ResourceInterface]()
+	readyToRemoveStructs := make([]data_resource_payload_structs.ResourceBaseStruct, 0)
+
+	for _, a := range args {
+		resource, err := service.GetByName(a.(string))
+		if err != nil {
+			return nil, err
+		}
+		if resource != nil && resource.Header.Kind == data_resource_payload_structs.RESOURCE_KIND {
+			readyToRemoveStructs = append(readyToRemoveStructs, *resource)
+		}
+	}
+	logrus.Debugf("'%d' resource(s) detected that will remove", len(readyToRemoveStructs))
+
+	return readyToRemoveStructs, nil
 }
 
 func (s DataResourceEngine) completeInformation(ctx *application.ApplicationContext, model *data_resource_payload_structs.ResourceBaseStruct) error {

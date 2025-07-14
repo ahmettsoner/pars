@@ -21,6 +21,9 @@ type ProcessorInterface interface {
 type DestroyerInterface interface {
 	Destroy(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
+type WorkspaceInitializerEngineInterface interface {
+	Init(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+}
 type ApplicationProjectRunnerEngineInterface interface {
 	Run(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
@@ -31,8 +34,8 @@ type ApplicationProjectInstallerEngineInterface interface {
 	Install(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 
-type ApplicationProjectExecuterEngineInterface interface {
-	Execute(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
+type ApplicationProjectRunnerrEngineInterface interface {
+	Run(ctx *application.ApplicationContext, data []schemas.SchemaInterface) error
 }
 
 type ApplicationProjectOpenerEngineInterface interface {

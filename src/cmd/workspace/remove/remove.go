@@ -3,11 +3,14 @@ package remove
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
+	"parsdevkit.net/application"
+	"parsdevkit.net/application/engines"
 	"parsdevkit.net/pkg/utilities/array"
 
 	"parsdevkit.net/application/ioc"
@@ -36,7 +39,7 @@ var RemoveCmd = &cobra.Command{
 
 func validateArgs(cmd *cobra.Command, args []string) error {
 	if len(commandOptions.Names) == 0 && len(args) == 0 {
-		return fmt.Errorf("error: workspace name is required. Provide it with '--name' or as an argument.")
+		return fmt.Errorf("error: workspace name is required.")
 	}
 
 	return nil
@@ -51,17 +54,18 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	var result []string = []string{basic_workspace_payload_structs.MODULE_KEY}
+
 	for _, name := range commandOptions.Names {
-		workspace, err := workspaceService.Remove(name, commandOptions.Force, true)
+
+		appCtx := application.GetContext()
+
+		err := engines.DispatchEngineRemove(appCtx, result, name)
 		if err != nil {
-			return fmt.Errorf("Failed to remove workspace(s) '%s'\n%w", name, err)
+			return fmt.Errorf("Engine processing failed: %v", err)
 		}
-
-		fmt.Println("Workspace (" + workspace.Header.Name + ") deleted permanently")
 	}
-
-	fmt.Fprintf(os.Stdout, "✔ workspace(s) '%v' removed successfully\n", commandOptions.Names)
 	return nil
 }
 func afterFunc(cmd *cobra.Command, args []string) {

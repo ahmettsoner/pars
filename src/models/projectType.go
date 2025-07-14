@@ -16,6 +16,7 @@ var ProjectTypes = struct {
 	Console ProjectType
 	Desktop ProjectType
 	Mobile  ProjectType
+	// Plugin  ProjectType
 }{
 	Project: "project",
 	WebApi:  "webapi",

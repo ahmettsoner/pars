@@ -16,21 +16,19 @@ import (
 	"parsdevkit.net/application/engines"
 
 	"parsdevkit.net/pkg/utilities/array"
-	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
 )
 
 type RemoveOptions struct {
-	Name  string
+	Names []string
 	Force string
 }
 
 var commandOptions RemoveOptions
-var maxArgumentCount int = 1
 
 var RemoveCmd = &cobra.Command{
-	Use:               "remove [name]",
+	Use:               "remove name [name]...",
 	Aliases:           []string{"r"},
 	Short:             "Remove group",
 	Long:              `Remove group`,
@@ -42,18 +40,15 @@ var RemoveCmd = &cobra.Command{
 }
 
 func validateArgs(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) == 0 {
-		return fmt.Errorf("error: group name is required. Provide as an argument.")
-	}
-	if len(args) > maxArgumentCount {
-		return fmt.Errorf("Undefined argument(s) found: %v", args[maxArgumentCount:])
+	if len(commandOptions.Names) == 0 && len(args) == 0 {
+		return fmt.Errorf("error: group name is required.")
 	}
 	return nil
 }
 
 func prepareFunc(cmd *cobra.Command, args []string) error {
-	if _string.IsEmpty(commandOptions.Name) && len(args) > 0 {
-		commandOptions.Name = args[0]
+	if len(commandOptions.Names) == 0 && len(args) > 0 {
+		commandOptions.Names = args
 	}
 	return nil
 }
@@ -62,24 +57,25 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 
 	var result []string = []string{basic_group_payload_structs.MODULE_KEY}
 
-	appCtx := application.GetContext()
+	for _, name := range commandOptions.Names {
 
-	err := engines.DispatchEngineRemove(appCtx, result, commandOptions.Name)
-	if err != nil {
-		return fmt.Errorf("Engine processing failed: %v", err)
+		appCtx := application.GetContext()
+
+		err := engines.DispatchEngineRemove(appCtx, result, name)
+		if err != nil {
+			return fmt.Errorf("Engine processing failed: %v", err)
+		}
 	}
 
 	return nil
 }
 
 func validArguments(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-	if len(args) < maxArgumentCount {
 
-		if len(args) == 0 {
-			suggestions := listGroupNameSuggestions(args, toComplete)
+	if len(args) == 0 {
+		suggestions := listGroupNameSuggestions(args, toComplete)
 
-			return suggestions, cobra.ShellCompDirectiveNoSpace
-		}
+		return suggestions, cobra.ShellCompDirectiveNoSpace
 	}
 
 	return make([]string, 0), cobra.ShellCompDirectiveNoFileComp

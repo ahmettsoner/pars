@@ -6,8 +6,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"parsdevkit.net/application/engines"
+
 	"parsdevkit.net/application/schemas"
 
+	"parsdevkit.net/pkg/utilities/json"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/application/ioc"
@@ -15,6 +18,8 @@ import (
 	"github.com/spf13/cobra"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
+
+	"parsdevkit.net/application"
 )
 
 type InitOptions struct {
@@ -87,12 +92,41 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 
 func executeFunc(cmd *cobra.Command, args []string) error {
 
-	workspace, err := workspaceService.Save(basic_workspace_payload_structs.NewWorkspaceBaseStruct(schemas.NewSchemaHeader(schemas.StructTypes.Workspace, "", commandOptions.Name, schemas.Metadata{}), basic_workspace_payload_structs.NewWorkspaceSpecification(0, commandOptions.Name, commandOptions.Path)))
-	if err != nil {
-		return fmt.Errorf("Failed to initialize workspace '%s'\n%w", commandOptions.Name, err)
-	}
+	var result []schemas.SchemaInterface = make([]schemas.SchemaInterface, 0)
 
-	fmt.Fprintf(os.Stdout, "✔ New workspace (%v) created at: %v\n", workspace.Specifications.Name, workspace.Specifications.Path)
+	result = append(result, basic_workspace_payload_structs.NewWorkspaceBaseStruct(
+		schemas.NewSchemaHeader(schemas.StructTypes.Workspace,
+			"",
+			commandOptions.Name,
+			schemas.Metadata{},
+		),
+		basic_workspace_payload_structs.NewWorkspaceSpecification(
+			0,
+			commandOptions.Name,
+			commandOptions.Path,
+		)))
+
+	var loadedSchemas []string = make([]string, 0)
+	for _, data := range result {
+
+		if err := data.Validate(); err != nil {
+			jsonObject, _ := json.ToJson(data)
+			return fmt.Errorf("invalid data: '%s'\n%w", jsonObject, err)
+		}
+
+		loadedSchemas = append(loadedSchemas, fmt.Sprintf("%s.%s", data.GetHeader().Name, data.GetKey()))
+	}
+	fmt.Printf("Loaded Schemas: %s\n", _string.Concat(", ", loadedSchemas...))
+	fmt.Printf("────────────────────────────────────\n")
+
+	appCtx := application.GetContext()
+	if appCtx == nil {
+		return fmt.Errorf("xxx: Current workspace bulunamadı")
+	}
+	err := engines.DispatchEngineInit(appCtx, result)
+	if err != nil {
+		return fmt.Errorf("Engine processing failed: %v", err)
+	}
 
 	return nil
 }

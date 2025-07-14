@@ -6,6 +6,7 @@ import (
 
 	"parsdevkit.net/components/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
+	basic_task_payload_structs "parsdevkit.net/modules/task/basic_task_payload/structs"
 
 	"parsdevkit.net/application"
 
@@ -21,7 +22,7 @@ type RemoveOptions struct {
 var commandOptions RemoveOptions
 
 var RemoveCmd = &cobra.Command{
-	Use:     "remove",
+	Use:               "remove name [name]...",
 	Aliases: []string{"r"},
 	Short:   "Task Information",
 	Long:    `Task Information`,
@@ -49,35 +50,18 @@ func prepareFunc(cmd *cobra.Command, args []string) error {
 }
 
 func executeFunc(cmd *cobra.Command, args []string) error {
-		checkGlobals := _string.IsEmpty(commandOptions.Workspace)
-		taskService := ioc.Get[contracts.TaskServiceInterface[commontask.TaskBaseStruct]]()
 
-		for _, name := range commandOptions.Names {
-			if checkGlobals {
-				commandOptions.Workspace = "None"
 
-				if taskService.IsExists(name, commandOptions.Workspace) {
-					task, err := taskService.Remove(name, commandOptions.Workspace, true)
-					if err != nil {
-						return fmt.Errorf("Failed to remove task(s) '%s'\n%w", commandOptions.Names[], err)
-					}
-					fmt.Println("Task (" + task.Name + ") deleted permanently")
-				}
+	var result []string = []string{basic_task_payload_structs.MODULE_KEY}
 
-				commandOptions.Workspace = ""
-			}
+	for _, name := range commandOptions.Names {
+		appCtx := application.GetContext()
 
-			commandOptions.Workspace = workspace.GetActiveWorkspaceName(commandOptions.Workspace)
-
-			if taskService.IsExists(name, commandOptions.Workspace) {
-				task, err := taskService.Remove(name, commandOptions.Workspace, true)
-				if err != nil {
-					return fmt.Errorf("Failed to remove task(s) '%s'\n%w", name, err)
-				}
-				fmt.Println("Task (" + task.Name + ") deleted permanently")
-			}
+		err := engines.DispatchEngineRemove(appCtx, result, name)
+		if err != nil {
+			return fmt.Errorf("Engine processing failed: %v", err)
 		}
-		fmt.Fprintf(os.Stdout, "✔ task(s) '%v' removed successfully\n", commandOptions.Names)
+	}
 
 	return nil
 }

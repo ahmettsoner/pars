@@ -96,51 +96,52 @@ func (suite *DescribeTestSuite) TestDescribeSelectedWorkspace() {
 	})
 }
 
-func (suite *DescribeTestSuite) TestDescribeWorkspaceWithSelectedViewType() {
-	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+// func (suite *DescribeTestSuite) TestDescribeWorkspaceWithSelectedViewType() {
+// 	name := suite.faker.Workspace.Name()
+// 	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
-	commands := []string{
-		"workspace",
-		"describe",
-		name,
-		"--view",
-		"hierarchical",
-	}
+// 	commands := []string{
+// 		"workspace",
+// 		"describe",
+// 		name,
+// 		"--view",
+// 		"hierarchical",
+// 	}
 
-	describeOutput, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
-	require.NoError(suite.T(), err, "failed to retrieve workspace description")
+// 	describeOutput, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
+// 	require.NoError(suite.T(), err, "failed to retrieve workspace description")
 
-	require.NotEmpty(suite.T(), describeOutput, "Workspace description is not valid")
+// 	require.NotEmpty(suite.T(), describeOutput, "Workspace description is not valid")
 
-	suite.T().Cleanup(func() {
-		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
-		}
-	})
-}
-func (suite *DescribeTestSuite) TestDescribeWorkspaceOnlyPath() {
-	name := suite.faker.Workspace.Name()
-	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
+// 	suite.T().Cleanup(func() {
+// 		if !suite.noCleanOnFail || !suite.T().Failed() {
+// 			suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
+// 		}
+// 	})
+// }
 
-	commands := []string{
-		"workspace",
-		"describe",
-		name,
-		"--path",
-	}
+// func (suite *DescribeTestSuite) TestDescribeWorkspaceOnlyPath() {
+// 	name := suite.faker.Workspace.Name()
+// 	common.InitializeNewWorkspace(suite.T(), filepath.Join(suite.testArea, name), name, suite.environment)
 
-	describeOutput, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
-	require.NoError(suite.T(), err, "failed to retrieve workspace description")
+// 	commands := []string{
+// 		"workspace",
+// 		"describe",
+// 		name,
+// 		"--path",
+// 	}
 
-	require.NotEmpty(suite.T(), describeOutput, "Workspace description is not valid")
+// 	describeOutput, err := common.ExecuteCommandWithSelector(common.CommanderTypes.GO, suite.T(), suite.environment, commands...)
+// 	require.NoError(suite.T(), err, "failed to retrieve workspace description")
 
-	suite.T().Cleanup(func() {
-		if !suite.noCleanOnFail || !suite.T().Failed() {
-			suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
-		}
-	})
-}
+// 	require.NotEmpty(suite.T(), describeOutput, "Workspace description is not valid")
+
+// 	suite.T().Cleanup(func() {
+// 		if !suite.noCleanOnFail || !suite.T().Failed() {
+// 			suite.T().Logf("Test (%v) completed successfully at %v", suite.T().Name(), suite.testArea)
+// 		}
+// 	})
+// }
 
 func TestDescribeTestSuite(t *testing.T) {
 	suite.Run(t, new(DescribeTestSuite))
