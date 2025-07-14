@@ -676,3 +676,27 @@ func (s WorkspaceService) CreateWorkspaceFolder(model basic_workspace_payload_st
 
 	return outputPath, nil
 }
+
+func (s *WorkspaceService) Context(model basic_workspace_payload_structs.WorkspaceBaseStruct) interface{} {
+	return WorkspaceComposite{
+		Workspace: s.structToModel(model),
+		Original:  model,
+	}
+}
+func (s *WorkspaceService) structToModel(model basic_workspace_payload_structs.WorkspaceBaseStruct) Workspace {
+
+	var result Workspace = Workspace{
+		Name: model.Header.Name,
+	}
+
+	return result
+}
+
+type WorkspaceComposite struct {
+	Workspace
+	Original basic_workspace_payload_structs.WorkspaceBaseStruct
+}
+
+type Workspace struct {
+	Name string
+}

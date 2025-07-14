@@ -1,3 +1,8 @@
 Type: Template
 Kind: Code
 Name: Tmpl1
+Specifications:
+  Template:
+    Code: |
+      Generated for Layer (L1)
+      {{.Project.Original.Header.Name}}

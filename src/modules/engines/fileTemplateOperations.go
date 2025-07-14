@@ -169,17 +169,17 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 
 		var data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer)
 
-		fileNameStr, err := templateEngine.TemplateEngine(template.Specifications.Output.File, data)
+		fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 		if err != nil {
 			return err
 		}
-		pathStr, err := templateEngine.TemplateEngine(template.Specifications.Path, data)
+		pathStr, err := templateEngine.RenderTemplate(template.Specifications.Path, data)
 		if err != nil {
 			return err
 		}
 
 		data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer)
-		templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
+		templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 		if err != nil {
 			return err
 		}

@@ -204,7 +204,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objSection)
 
 						tempPackages := templateObj.Specifications.Package
-						packageStr, err := TemplateEngine(strings.Join(tempPackages, "/"), selectedContext)
+						packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
 						if err != nil {
 							return models.CodeTemplateDataContext{}
 						}
@@ -224,7 +224,7 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 
 				selectedContext := *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, object_resource_payload_structs.Section{})
 				tempPackages := templateObj.Specifications.Package
-				packageStr, err := TemplateEngine(strings.Join(tempPackages, "/"), selectedContext)
+				packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
 				if err != nil {
 					return models.CodeTemplateDataContext{}
 				}

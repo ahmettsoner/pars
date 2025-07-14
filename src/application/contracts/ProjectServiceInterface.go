@@ -70,4 +70,5 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	CleanV2(name string, workspaceName string) (*T, error)
 	Release(name string, workspaceName string) (*T, error)
 	Run(name string, workspaceName string) (*T, error)
+	// Context(model T) any
 }

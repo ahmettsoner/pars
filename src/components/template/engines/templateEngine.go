@@ -10,7 +10,7 @@ import (
 	"parsdevkit.net/modules/template/shared_template_contract"
 )
 
-func TemplateEngine(templateFile string, data any) (string, error) {
+func RenderTemplate(templateFile string, data any) (string, error) {
 	var outputBuffer bytes.Buffer
 
 	funcMap := template.FuncMap{

@@ -151,24 +151,24 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 
 										var data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
 
-										fileNameStr, err := templateEngine.TemplateEngine(template.Specifications.Output.File, data)
+										fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 										if err != nil {
 											return err
 										}
-										pathStr, err := templateEngine.TemplateEngine(template.Specifications.Path, data)
+										pathStr, err := templateEngine.RenderTemplate(template.Specifications.Path, data)
 										if err != nil {
 											return err
 										}
 
 										tempPackages := template.Specifications.Package
-										packageStr, err := templateEngine.TemplateEngine(strings.Join(tempPackages, "/"), data)
+										packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
 										if err != nil {
 											return err
 										}
 										template.Specifications.Package = file.PathToArray(packageStr)
 
 										data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
-										templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
+										templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 										if err != nil {
 											return err
 										}
@@ -203,24 +203,24 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 		if generate {
 			var data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, object_resource_payload_structs.Section{})
 
-			fileNameStr, err := templateEngine.TemplateEngine(template.Specifications.Output.File, data)
+			fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 			if err != nil {
 				return err
 			}
-			pathStr, err := templateEngine.TemplateEngine(template.Specifications.Path, data)
+			pathStr, err := templateEngine.RenderTemplate(template.Specifications.Path, data)
 			if err != nil {
 				return err
 			}
 
 			tempPackages := template.Specifications.Package
-			packageStr, err := templateEngine.TemplateEngine(strings.Join(tempPackages, "/"), data)
+			packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
 			if err != nil {
 				return err
 			}
 			template.Specifications.Package = file.PathToArray(packageStr)
 
 			data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, object_resource_payload_structs.Section{})
-			templateContentStr, err := templateEngine.TemplateEngine(template.Specifications.Template.Content, data)
+			templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 			if err != nil {
 				return err
 			}

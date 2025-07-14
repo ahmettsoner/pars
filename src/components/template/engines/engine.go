@@ -8,7 +8,7 @@ import (
 type EngineFuncs struct{}
 
 func (t EngineFuncs) RenderContent(templateName string, data any) string {
-	content, err := TemplateEngine(templateName, data)
+	content, err := RenderTemplate(templateName, data)
 	if err != nil {
 		return ""
 	}
@@ -30,7 +30,7 @@ func (t EngineFuncs) GetContent(templateName string) string {
 	return sharedTemplate.Specifications.Template.Content
 }
 func (t EngineFuncs) RenderTemplate(templateName string, data any) string {
-	content, err := TemplateEngine(t.GetContent(templateName), data)
+	content, err := RenderTemplate(t.GetContent(templateName), data)
 	if err != nil {
 		return ""
 	}
