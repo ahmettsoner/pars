@@ -35,6 +35,7 @@ Specifications:
   Layers:
   - layer1
   - layer2
+Object:
   Attributes:
   - Name: yea
     Visibility: private
@@ -71,6 +72,9 @@ Specifications:
 				label.NewLabel("foo", "bar"),
 			},
 			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "layer1", []object_resource_payload_structs.Section(nil)), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section(nil))},
+			applicationWorkspace.WorkspaceIdentifier{},
+		),
+		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
 				object_resource_payload_structs.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
 					structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
@@ -95,7 +99,6 @@ Specifications:
 					true,
 				),
 			},
-			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
 	)

@@ -11,6 +11,7 @@ import (
 type ResourceBaseStruct struct {
 	Header         schemas.SchemaHeader
 	Specifications ResourceSpecification
+	Object         ResourceObject
 	Configurations ResourceConfiguration
 }
 
@@ -21,10 +22,11 @@ func (s ResourceBaseStruct) GetKey() string {
 	return MODULE_KEY
 }
 
-func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, configurations ResourceConfiguration) ResourceBaseStruct {
+func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, object ResourceObject, configurations ResourceConfiguration) ResourceBaseStruct {
 	return ResourceBaseStruct{
 		Header:         header,
 		Specifications: specifications,
+		Object:         object,
 		Configurations: configurations,
 	}
 }
@@ -45,21 +47,37 @@ func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 		s.Header = tempHeaderObject
 	}
 
-	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
 		Specifications ResourceSpecification `yaml:"Specifications"`
-		Configurations ResourceConfiguration `yaml:"Configurations"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {
-		// if _, ok := err.(*yaml.TypeError); !ok {
-		// 	return err
-		// }
 		return err
 
 	} else {
 		s.Specifications = tempSpecificationObject.Specifications
-		s.Configurations = tempSpecificationObject.Configurations
+	}
+
+	var tempObjectObject struct {
+		Object ResourceObject `yaml:"Object"`
+	}
+
+	if err := unmarshal(&tempObjectObject); err != nil {
+		return err
+
+	} else {
+		s.Object = tempObjectObject.Object
+	}
+
+	var tempConfigurationObject struct {
+		Configurations ResourceConfiguration `yaml:"Configurations"`
+	}
+
+	if err := unmarshal(&tempConfigurationObject); err != nil {
+		return err
+
+	} else {
+		s.Configurations = tempConfigurationObject.Configurations
 	}
 
 	if _string.IsEmpty(string(s.Configurations.Generate)) {

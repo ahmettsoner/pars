@@ -132,6 +132,7 @@ Specifications:
   Layers:
     - Name: Persistence:Data:Context:Contract
     - Name: Persistence:Data:Context:Concrete
+Object:
   Attributes:
     - Name: Product
       Type:

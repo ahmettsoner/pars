@@ -35,7 +35,7 @@ func NewFileTemplateDataContext(workspace basic_workspace_payload_structs.Worksp
 			Original:           project,
 		},
 		Resource: objectResources.DataResourceComposite{
-			DataResource: templateService.DataResourceToModel(resource.Specifications, project.Specifications, layer.Name, template.Specifications),
+			DataResource: templateService.DataResourceToModel(resource.Specifications, resource.Data, project.Specifications, layer.Name, template.Specifications),
 			Original:     resource,
 		},
 		Template: objectResources.FileTemplateComposite{

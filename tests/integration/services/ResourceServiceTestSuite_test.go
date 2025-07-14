@@ -114,9 +114,11 @@ func BasicResource(name string) *object_resource_payload_structs.ResourceBaseStr
 			[]string{},
 			[]label.Label{},
 			[]object_resource_payload_structs.Layer{},
+			applicationWorkspace.WorkspaceIdentifier{},
+		),
+		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{},
 			[]object_resource_payload_structs.Method{},
-			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
 	)
@@ -145,6 +147,10 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 				label.NewLabel("foo", "bar"),
 			},
 			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "presentation:view", []object_resource_payload_structs.Section{}), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section{})},
+
+			applicationWorkspace.WorkspaceIdentifier{},
+		),
+		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
 				object_resource_payload_structs.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
 					structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
@@ -169,7 +175,6 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 					true,
 				),
 			},
-			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
 	)
@@ -198,6 +203,9 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 				label.NewLabel("foo", "bar"),
 			},
 			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "presentation:view", []object_resource_payload_structs.Section{}), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section{})},
+			applicationWorkspace.WorkspaceIdentifier{},
+		),
+		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
 				object_resource_payload_structs.NewAttribute("yea", structs.VisibilityTypeTypes.Private,
 					structs.NewDataType(string(structs.ValueTypes.String), structs.TypePackage{}, structs.DataTypeCategories.Value, structs.ModifierTypes.Object, []structs.DataType(nil)),
@@ -222,7 +230,6 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 					true,
 				),
 			},
-			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
 	)

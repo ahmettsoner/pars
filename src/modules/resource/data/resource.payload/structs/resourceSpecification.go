@@ -18,10 +18,9 @@ type ResourceSpecification struct {
 	Layers          []Layer
 	Dictionary      []Dictionary
 	Groups          []Group
-	Data            any
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, data any, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -29,7 +28,6 @@ func NewResourceSpecification(id int, name, workspace, path, set string, labels 
 		Set:                set,
 		Labels:             labels,
 		Layers:             layers,
-		Data:               data,
 	}
 }
 func (e ResourceSpecification) Validate() error {
@@ -64,7 +62,6 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		Set    string        `yaml:"Set"`
 		Labels []label.Label `yaml:"Labels"`
 		Layers []interface{} `yaml:"Layers"`
-		Data   any           `yaml:"Data"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
@@ -96,8 +93,6 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 
 			}
 		}
-
-		s.Data = tempObject.Data
 	}
 
 	return nil

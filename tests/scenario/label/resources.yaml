@@ -17,6 +17,7 @@ Specifications:
   - CQRS:Query:Handler
   - MVC:CQRS:Command:Controller
   - MVC:CQRS:Query:Controller
+Object:
   Attributes:
   - Name: Name
     Type: string

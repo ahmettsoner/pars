@@ -43,7 +43,6 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 		s.Header = tempHeaderObject
 	}
 
-	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
 		Specifications GroupSpecification `yaml:"Specifications"`
 	}

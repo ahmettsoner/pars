@@ -10,6 +10,7 @@ Specifications:
   Layers:
   {{range .Layers}}- {{.}}
   {{end}}
+Object:
   Attributes:
   - Name: yea
     Visibility: private

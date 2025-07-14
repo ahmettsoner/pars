@@ -36,7 +36,7 @@ func NewCodeTemplateDataContext(workspace basic_workspace_payload_structs.Worksp
 			Original:           project,
 		},
 		Resource: objectResources.ObjectResourceComposite{
-			ObjectResource: templateService.ResourceToModel(resource.Specifications, project.Specifications, layer.Name, template.Specifications),
+			ObjectResource: templateService.ResourceToModel(resource.Specifications, resource.Object, project.Specifications, layer.Name, template.Specifications),
 			Original:       resource,
 		},
 		Template: objectResources.CodeTemplateComposite{
@@ -48,7 +48,7 @@ func NewCodeTemplateDataContext(workspace basic_workspace_payload_structs.Worksp
 			Original:    layer,
 		},
 		Section: objectResources.ObjectSectionComposite{
-			ObjectSection: templateService.ObjectSectionToModel(resource.Specifications, project.Specifications, layer.Name, template.Specifications, section),
+			ObjectSection: templateService.ObjectSectionToModel(resource.Specifications, resource.Object, project.Specifications, layer.Name, template.Specifications, section),
 			Original:      section,
 		},
 	}
