@@ -23,7 +23,6 @@ func (s *GenerateTemplateContentsCommandHandler) Handle(cmd commands.GenerateTem
 	if _, err := s.generate(model); err != nil {
 		return err
 	}
-	fmt.Printf("[CommandHandler] Template '%s' generated\n", cmd.Data.GetHeader().Name)
 
 	return nil
 }

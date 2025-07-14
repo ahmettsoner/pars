@@ -23,7 +23,6 @@ func (s *GenerateResourceContentsCommandHandler) Handle(cmd commands.GenerateRes
 	if _, err := s.generate(model); err != nil {
 		return err
 	}
-	fmt.Printf("[CommandHandler] Resource '%s' generated\n", cmd.Data.GetHeader().Name)
 
 	return nil
 }
