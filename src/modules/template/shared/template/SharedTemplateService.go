@@ -5,8 +5,15 @@ import (
 	"errors"
 	"fmt"
 
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
+	"parsdevkit.net/models"
+	"parsdevkit.net/modules/resource/object_resource"
+
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/schemas"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
@@ -248,4 +255,47 @@ func (s *SharedTemplateService) DeleteTemplate(model shared_template_payload_str
 func (s *SharedTemplateService) ClearTemplateHistory(model shared_template_payload_structs.TemplateBaseStruct) error {
 
 	return nil
+}
+
+func (s *SharedTemplateService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
+
+	if model, ok := template.(shared_template_payload_structs.TemplateBaseStruct); ok {
+		if modelProject, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
+			return TemplateComposite{
+				SharedTemplate: s.structToModel(modelProject.Specifications.Platform.Type, model),
+				Original:       model,
+			}
+		}
+	}
+
+	return nil
+}
+func (s *SharedTemplateService) structToModel(platform models.PlatformType, model shared_template_payload_structs.TemplateBaseStruct) SharedTemplate {
+
+	var result SharedTemplate = SharedTemplate{
+		Name: model.Header.Name,
+	}
+	return result
+}
+func (s *SharedTemplateService) LabelListToModel(labels ...label.Label) []object_resource.ObjectLabel {
+
+	var result []object_resource.ObjectLabel = make([]object_resource.ObjectLabel, 0)
+
+	for _, label := range labels {
+		result = append(result, object_resource.ObjectLabel{
+			Key:   label.Key,
+			Value: label.Value,
+		})
+	}
+
+	return result
+}
+
+type TemplateComposite struct {
+	SharedTemplate
+	Original shared_template_payload_structs.TemplateBaseStruct
+}
+
+type SharedTemplate struct {
+	Name string
 }

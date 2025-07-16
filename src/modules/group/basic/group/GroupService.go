@@ -7,8 +7,10 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/layer"
 	"parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
 	applicationGroup "parsdevkit.net/application/structs/group"
+	"parsdevkit.net/models"
 	"parsdevkit.net/modules/group/basic_group_contract"
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
@@ -224,16 +226,20 @@ func (s *GroupService) Context(workspace, project, resource, template schemas.Sc
 
 	if model, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
 		return GroupComposite{
-			Group:    s.structToModel(model.Specifications.GroupObject),
+			Group:    s.structToModel(model.Specifications.Platform.Type, model.Specifications.GroupObject),
 			Original: model.Specifications.GroupObject,
 		}
 	}
 
 	return nil
 }
-func (s *GroupService) structToModel(model applicationGroup.GroupIdentifier /*basic_group_payload_structs.GroupBaseStruct*/) Group {
+func (s *GroupService) structToModel(platform models.PlatformType, model applicationGroup.GroupIdentifier /*basic_group_payload_structs.GroupBaseStruct*/) Group {
+	dependencies := model.Package
+	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](platform)
+
 	var result Group = Group{
-		Name: model.Name,
+		Package: manager.PrintDependencies(dependencies),
+		Name:    model.Name,
 	}
 	return result
 }
@@ -244,5 +250,6 @@ type GroupComposite struct {
 }
 
 type Group struct {
-	Name string
+	Name    string
+	Package string
 }

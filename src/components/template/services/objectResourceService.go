@@ -11,7 +11,6 @@ import (
 	"parsdevkit.net/modules/resource/object_resource"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
-	"parsdevkit.net/components/template/models/objectResources"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -328,17 +327,6 @@ func (s *ObjectResourceService) DataLayerListToModel(resource data_resource_payl
 	return result
 }
 
-func (s *ObjectResourceService) FileTemplateToModel(template file_template_payload_structs.TemplateBaseStruct) objectResources.FileTemplate {
-	dependencies := template.Specifications.Package
-
-	var result objectResources.FileTemplate = objectResources.FileTemplate{
-		Name:    template.Header.Name,
-		Package: s.manager.PrintDependencies(dependencies),
-		Labels:  s.LabelListToModel(template.Specifications.Labels...),
-	}
-
-	return result
-}
 func (s *ObjectResourceService) LabelListToModel(labels ...label.Label) []object_resource.ObjectLabel {
 
 	var result []object_resource.ObjectLabel = make([]object_resource.ObjectLabel, 0)
@@ -428,18 +416,6 @@ func (s *ObjectResourceService) MessageToModel(message object_resource_payload_s
 	var result object_resource.ObjectMessage = object_resource.ObjectMessage{
 		Text:       message.Text,
 		Dictionary: message.Dictionary.Key,
-	}
-
-	return result
-}
-
-func (s *ObjectResourceService) CodeTemplateToModel(template code_template_payload_structs.TemplateBaseStruct) objectResources.CodeTemplate {
-	dependencies := template.Specifications.Package
-
-	var result objectResources.CodeTemplate = objectResources.CodeTemplate{
-		Name:    template.Header.Name,
-		Package: s.manager.PrintDependencies(dependencies),
-		Labels:  s.LabelListToModel(template.Specifications.Labels...),
 	}
 
 	return result

@@ -5,10 +5,17 @@ import (
 	"errors"
 	"fmt"
 
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/platforms"
+	"parsdevkit.net/models"
 	"parsdevkit.net/modules/template/code_template_contract"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/schemas"
+	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	"parsdevkit.net/modules/resource/object_resource"
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/application/models/label"
@@ -278,4 +285,54 @@ func (s *CodeTemplateService) ClearTemplateHistory(model code_template_payload_s
 	}
 
 	return nil
+}
+
+func (s *CodeTemplateService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
+
+	if model, ok := template.(code_template_payload_structs.TemplateBaseStruct); ok {
+		if modelProject, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
+			return TemplateComposite{
+				CodeTemplate: s.structToModel(modelProject.Specifications.Platform.Type, model),
+				Original:     model,
+			}
+		}
+	}
+
+	return nil
+}
+func (s *CodeTemplateService) structToModel(platform models.PlatformType, model code_template_payload_structs.TemplateBaseStruct) CodeTemplate {
+	dependencies := model.Specifications.Package
+	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](platform)
+
+	var result CodeTemplate = CodeTemplate{
+		Package: manager.PrintDependencies(dependencies),
+		Labels:  s.LabelListToModel(model.Specifications.Labels...),
+	}
+	return result
+}
+func (s *CodeTemplateService) LabelListToModel(labels ...label.Label) []object_resource.ObjectLabel {
+
+	var result []object_resource.ObjectLabel = make([]object_resource.ObjectLabel, 0)
+
+	for _, label := range labels {
+		result = append(result, object_resource.ObjectLabel{
+			Key:   label.Key,
+			Value: label.Value,
+		})
+	}
+
+	return result
+}
+
+type TemplateComposite struct {
+	CodeTemplate
+	Original code_template_payload_structs.TemplateBaseStruct
+}
+
+type CodeTemplate struct {
+	Name    string
+	Package string
+	Labels  []object_resource.ObjectLabel
+	// Options []ObjectOption
+	// Layers     []ObjectLayer
 }

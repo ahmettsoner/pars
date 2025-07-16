@@ -16,6 +16,8 @@ import (
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/object_resource"
 	"parsdevkit.net/modules/resource/object_resource_contract"
+	"parsdevkit.net/modules/template/code_template"
+	"parsdevkit.net/modules/template/code_template_contract"
 	"parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
@@ -26,7 +28,7 @@ type CodeTemplateDataContext struct {
 	Group     basic_group.GroupComposite
 	Project   application_project.ApplicationProjectComposite
 	Resource  object_resource.ObjectResourceComposite
-	Template  objectResources.CodeTemplateComposite
+	Template  code_template.TemplateComposite
 	Layer     objectResources.ObjectLayerComposite
 	Section   objectResources.ObjectSectionComposite
 }
@@ -34,28 +36,26 @@ type CodeTemplateDataContext struct {
 func NewCodeTemplateDataContext(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, layer object_resource_payload_structs.Layer, section object_resource_payload_structs.Section) *CodeTemplateDataContext {
 
 	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](project.Specifications.Platform.Type)
-	templateService := objectResourceService.NewObjectResourceService(manager)
+	templateService2 := objectResourceService.NewObjectResourceService(manager)
 
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	groupService := ioc.Get[basic_group_contract.GroupInterface]()
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
+	templateService := ioc.Get[code_template_contract.TemplateInterface]()
 
 	return &CodeTemplateDataContext{
 		Workspace: workspaceService.Context(workspace, project, resource, template, layer.LayerIdentifier, section.SectionIdentifier).(basic_workspace.WorkspaceComposite),
 		Group:     groupService.Context(workspace, project, resource, template, layer.LayerIdentifier, section.SectionIdentifier).(basic_group.GroupComposite),
 		Project:   projectService.Context(workspace, project, resource, template, layer.LayerIdentifier, section.SectionIdentifier).(application_project.ApplicationProjectComposite),
 		Resource:  resourceService.Context(workspace, project, resource, template, layer.LayerIdentifier, section.SectionIdentifier).(object_resource.ObjectResourceComposite),
-		Template: objectResources.CodeTemplateComposite{
-			CodeTemplate: templateService.CodeTemplateToModel(template),
-			Original:     template,
-		},
+		Template:  templateService.Context(workspace, project, resource, template, layer.LayerIdentifier, section.SectionIdentifier).(code_template.TemplateComposite),
 		Layer: objectResources.ObjectLayerComposite{
-			ObjectLayer: templateService.ObjectLayerToModel(layer),
+			ObjectLayer: templateService2.ObjectLayerToModel(layer),
 			Original:    layer,
 		},
 		Section: objectResources.ObjectSectionComposite{
-			ObjectSection: templateService.ObjectSectionToModel(resource, project, layer, template, section),
+			ObjectSection: templateService2.ObjectSectionToModel(resource, project, layer, template, section),
 			Original:      section,
 		},
 	}
