@@ -2,6 +2,8 @@ package contracts
 
 import (
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
@@ -70,5 +72,5 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 	CleanV2(name string, workspaceName string) (*T, error)
 	Release(name string, workspaceName string) (*T, error)
 	Run(name string, workspaceName string) (*T, error)
-	// Context(model T) any
+	Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) any
 }

@@ -167,7 +167,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 
 	if generate {
 
-		var data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer)
+		var data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer, data_resource_payload_structs.Section{})
 
 		fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 		if err != nil {
@@ -178,7 +178,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			return err
 		}
 
-		data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer)
+		data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer, data_resource_payload_structs.Section{})
 		templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 		if err != nil {
 			return err

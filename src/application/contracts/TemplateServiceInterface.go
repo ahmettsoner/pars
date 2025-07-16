@@ -19,5 +19,5 @@ type TemplateServiceInterface[T schemas.SchemaInterface] interface {
 	IsExists(name, workspace string) (bool, error)
 	GetHash(name string) (string, error)
 	ListByWorkspace(workspace string) (*([]T), error)
-	Context(model T) any
+	// Context(model T) any
 }

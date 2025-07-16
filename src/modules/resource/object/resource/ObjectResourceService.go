@@ -7,6 +7,9 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/schemas"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"parsdevkit.net/modules/resource/object_resource_contract"
@@ -15,6 +18,7 @@ import (
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application/models/class"
 )
 
 type ObjectResourceService struct {
@@ -298,4 +302,111 @@ func (s *ObjectResourceService) ClearResourceHistory(model object_resource_paylo
 	}
 
 	return nil
+}
+
+func (s *ObjectResourceService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
+	if model, ok := project.(object_resource_payload_structs.ResourceBaseStruct); ok {
+		return ObjectResourceComposite{
+			ObjectResource: s.structToModel(model),
+			Original:       model,
+		}
+	}
+
+	return nil
+}
+func (s *ObjectResourceService) structToModel(model object_resource_payload_structs.ResourceBaseStruct) ObjectResource {
+
+	var result ObjectResource = ObjectResource{
+		Name: model.Header.Name,
+	}
+
+	return result
+}
+
+type ObjectResourceComposite struct {
+	ObjectResource
+	Original object_resource_payload_structs.ResourceBaseStruct
+}
+
+type ObjectResource struct {
+	Name       string
+	Package    string
+	Labels     []ObjectLabel
+	Layers     []ObjectLayer
+	Dictionary []ObjectDictionary
+	Groups     []ObjectGroup
+	Attributes []ObjectResourceAttribute
+	Methods    []ObjectResourceMethod
+	Imports    []ObjectResourceImport
+}
+
+type ObjectLabel struct {
+	Key   string
+	Value string
+}
+
+type ObjectDictionary struct {
+	Key        string
+	Translates map[string]string
+}
+
+type ObjectGroup struct {
+	Name    string
+	Title   ObjectMessage
+	Options []ObjectOption
+}
+
+type ObjectMessage struct {
+	Text       string
+	Dictionary string
+}
+type ObjectOption struct {
+	Key   string
+	Value interface{}
+}
+
+type ObjectLayer struct {
+	Name     string
+	Sections []ObjectSection
+}
+
+type ObjectSection struct {
+	Name       string
+	Package    string
+	Classes    []class.Class
+	Labels     []ObjectLabel
+	Options    []ObjectOption
+	Attributes []ObjectResourceAttribute
+	Methods    []ObjectResourceMethod
+	Imports    []ObjectResourceImport
+}
+
+type ObjectResourceAttribute struct {
+	Name         string
+	TypePackage  string
+	Type         string
+	TypeCategory string
+	Visibility   string
+	Labels       []ObjectLabel
+	Options      []ObjectOption
+	Common       bool
+}
+
+type ObjectResourceMethod struct {
+	Name        string
+	Visibility  string
+	Parameters  []ObjectResourceMethodParameter
+	ReturnTypes []string
+	Labels      []ObjectLabel
+	Options     []ObjectOption
+	Code        string
+	Common      bool
+}
+type ObjectResourceMethodParameter struct {
+	Name string
+	Type string
+}
+type ObjectResourceImport struct {
+	Aliases []string
+	Package string
 }

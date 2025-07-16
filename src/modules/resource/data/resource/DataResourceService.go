@@ -7,11 +7,15 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/modules/resource/data_resource_contract"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
 
+	"parsdevkit.net/application/models/class"
 	"parsdevkit.net/persistence/entities"
 
 	"github.com/sirupsen/logrus"
@@ -291,4 +295,106 @@ func (s *DataResourceService) ClearResourceHistory(model data_resource_payload_s
 	}
 
 	return nil
+}
+
+func (s *DataResourceService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
+	if model, ok := project.(data_resource_payload_structs.ResourceBaseStruct); ok {
+		return DataResourceComposite{
+			DataResource: s.structToModel(model),
+			Original:     model,
+		}
+	}
+
+	return nil
+}
+func (s *DataResourceService) structToModel(model data_resource_payload_structs.ResourceBaseStruct) DataResource {
+
+	var result DataResource = DataResource{
+		Name: model.Header.Name,
+	}
+
+	return result
+}
+
+type DataResourceComposite struct {
+	DataResource
+	Original data_resource_payload_structs.ResourceBaseStruct
+}
+
+type DataResource struct {
+	Name       string
+	Package    string
+	Labels     []ObjectLabel
+	Layers     []DataLayer
+	Dictionary []ObjectDictionary
+	Groups     []ObjectGroup
+	Data       any
+}
+
+type ObjectLabel struct {
+	Key   string
+	Value string
+}
+
+type ObjectDictionary struct {
+	Key        string
+	Translates map[string]string
+}
+
+type ObjectGroup struct {
+	Name    string
+	Title   ObjectMessage
+	Options []ObjectOption
+}
+
+type ObjectMessage struct {
+	Text       string
+	Dictionary string
+}
+type ObjectOption struct {
+	Key   string
+	Value interface{}
+}
+
+type DataLayer struct {
+	Name     string
+	Sections []DataSection
+}
+
+type DataSection struct {
+	Name    string
+	Package string
+	Classes []class.Class
+	Labels  []ObjectLabel
+	Options []ObjectOption
+}
+
+type DataResourceAttribute struct {
+	Name         string
+	TypePackage  string
+	Type         string
+	TypeCategory string
+	Visibility   string
+	Labels       []ObjectLabel
+	Options      []ObjectOption
+	Common       bool
+}
+
+type DataResourceMethod struct {
+	Name        string
+	Visibility  string
+	Parameters  []DataResourceMethodParameter
+	ReturnTypes []string
+	Labels      []ObjectLabel
+	Options     []ObjectOption
+	Code        string
+	Common      bool
+}
+type DataResourceMethodParameter struct {
+	Name string
+	Type string
+}
+type DataResourceImport struct {
+	Aliases []string
+	Package string
 }

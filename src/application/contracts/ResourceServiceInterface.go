@@ -2,6 +2,8 @@ package contracts
 
 import (
 	"parsdevkit.net/application/models/label"
+	"parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/application/schemas"
 )
 
@@ -22,4 +24,5 @@ type ResourceServiceInterface[T schemas.SchemaInterface] interface {
 	Remove(name, workspace string, force, permanent bool) (*T, error)
 	IsExists(name, workspace string) (bool, error)
 	GetHash(name string) (string, error)
+	Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) any
 }
