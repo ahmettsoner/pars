@@ -2,6 +2,7 @@ package engines
 
 import (
 	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	"parsdevkit.net/context/models"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
@@ -10,6 +11,7 @@ import (
 	"parsdevkit.net/pkg/utilities/encrypt"
 
 	"parsdevkit.net/application/ioc"
+	templatePkg "parsdevkit.net/components/template"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/data_resource_contract"
@@ -160,14 +162,16 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 		}
 	}
 
-	generate, newResourceModelHash, newResourceSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, data_resource_payload_structs.Section{}, resourceLayer)
+	generate, newResourceModelHash, newResourceSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, sectionPkg.SectionIdentifier{}, resourceLayer)
 	if err != nil {
 		return err
 	}
 
 	if generate {
 
-		var data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer, data_resource_payload_structs.Section{})
+		var data = models.NewFileTemplateDataContext(
+			templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+		)
 
 		fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 		if err != nil {
@@ -178,7 +182,9 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			return err
 		}
 
-		data = models.NewFileTemplateDataContext(workspace, project, resource, template, resourceLayer, data_resource_payload_structs.Section{})
+		data = models.NewFileTemplateDataContext(
+			templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+		)
 		templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 		if err != nil {
 			return err
@@ -201,7 +207,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 	return nil
 }
 
-func (s FileTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, section data_resource_payload_structs.Section, layer data_resource_payload_structs.Layer) (bool, string, string, string, error) {
+func (s FileTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer data_resource_payload_structs.Layer) (bool, string, string, string, error) {
 	var generate = true
 
 	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)

@@ -7,15 +7,8 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/models/label"
-	"parsdevkit.net/application/models/layer"
-	"parsdevkit.net/application/models/section"
-	"parsdevkit.net/application/platforms"
-	"parsdevkit.net/application/schemas"
-	"parsdevkit.net/models"
-	"parsdevkit.net/modules/resource/object_resource"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
-	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/template/file_template_contract"
 	"parsdevkit.net/persistence/repositories"
 
@@ -284,54 +277,4 @@ func (s *FileTemplateService) ClearTemplateHistory(model file_template_payload_s
 	}
 
 	return nil
-}
-
-func (s *FileTemplateService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
-
-	if model, ok := template.(file_template_payload_structs.TemplateBaseStruct); ok {
-		if modelProject, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
-			return TemplateComposite{
-				FileTemplate: s.structToModel(modelProject.Specifications.Platform.Type, model),
-				Original:     model,
-			}
-		}
-	}
-
-	return nil
-}
-func (s *FileTemplateService) structToModel(platform models.PlatformType, model file_template_payload_structs.TemplateBaseStruct) FileTemplate {
-	dependencies := model.Specifications.Package
-	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](platform)
-
-	var result FileTemplate = FileTemplate{
-		Package: manager.PrintDependencies(dependencies),
-		Labels:  s.LabelListToModel(model.Specifications.Labels...),
-	}
-	return result
-}
-func (s *FileTemplateService) LabelListToModel(labels ...label.Label) []object_resource.ObjectLabel {
-
-	var result []object_resource.ObjectLabel = make([]object_resource.ObjectLabel, 0)
-
-	for _, label := range labels {
-		result = append(result, object_resource.ObjectLabel{
-			Key:   label.Key,
-			Value: label.Value,
-		})
-	}
-
-	return result
-}
-
-type TemplateComposite struct {
-	FileTemplate
-	Original file_template_payload_structs.TemplateBaseStruct
-}
-
-type FileTemplate struct {
-	Name    string
-	Package string
-	Labels  []object_resource.ObjectLabel
-	// Options []ObjectOption
-	// Layers     []ObjectLayer
 }

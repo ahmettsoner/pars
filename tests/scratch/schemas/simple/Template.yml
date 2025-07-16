@@ -1,8 +1,7 @@
 Type: Template
 Kind: Code
-Name: Tmpl1
+Name: Tmpl2.json
 Specifications:
   Template:
     Code: |
-      Generated for Layer (L1)
-      {{.Project.Original}}
+      {{.Template | json.ToJson | json.PrettifyJSON}}

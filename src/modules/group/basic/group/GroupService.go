@@ -5,15 +5,8 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/application/models/layer"
-	"parsdevkit.net/application/models/section"
-	"parsdevkit.net/application/platforms"
-	"parsdevkit.net/application/schemas"
-	applicationGroup "parsdevkit.net/application/structs/group"
-	"parsdevkit.net/models"
 	"parsdevkit.net/modules/group/basic_group_contract"
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
-	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -220,36 +213,4 @@ func (s *GroupService) DeleteGroup(model basic_group_payload_structs.GroupBaseSt
 	logrus.Debugf("template (%v) information removed", model)
 
 	return &model, nil
-}
-
-func (s *GroupService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
-
-	if model, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
-		return GroupComposite{
-			Group:    s.structToModel(model.Specifications.Platform.Type, model.Specifications.GroupObject),
-			Original: model.Specifications.GroupObject,
-		}
-	}
-
-	return nil
-}
-func (s *GroupService) structToModel(platform models.PlatformType, model applicationGroup.GroupIdentifier /*basic_group_payload_structs.GroupBaseStruct*/) Group {
-	dependencies := model.Package
-	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](platform)
-
-	var result Group = Group{
-		Package: manager.PrintDependencies(dependencies),
-		Name:    model.Name,
-	}
-	return result
-}
-
-type GroupComposite struct {
-	Group
-	Original applicationGroup.GroupIdentifier /*basic_group_payload_structs.GroupBaseStruct*/
-}
-
-type Group struct {
-	Name    string
-	Package string
 }

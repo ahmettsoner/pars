@@ -9,9 +9,6 @@ import (
 	"strings"
 
 	"parsdevkit.net/application/models/label"
-	"parsdevkit.net/application/models/layer"
-	"parsdevkit.net/application/models/section"
-	"parsdevkit.net/application/schemas"
 
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
@@ -1544,58 +1541,4 @@ func (s *ApplicationProjectService) UndoGenerateProject(projectModel application
 
 	logrus.Debugf("project %v dosya rolledback", projectModel.Header.Name)
 	return &projectModel, nil
-}
-
-func (s *ApplicationProjectService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
-
-	if model, ok := project.(application_project_payload_structs.ProjectBaseStruct); ok {
-		return ApplicationProjectComposite{
-			ApplicationProject: s.structToModel(model),
-			Original:           model,
-		}
-	}
-
-	return nil
-}
-func (s *ApplicationProjectService) structToModel(model application_project_payload_structs.ProjectBaseStruct) ApplicationProject {
-	dependencies := model.Specifications.GetAllPackage()
-	manager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
-
-	var result ApplicationProject = ApplicationProject{
-		Name:    model.Header.Name,
-		Package: manager.PrintDependencies(dependencies),
-		Labels:  s.LabelListToModel(model.Specifications.Labels...),
-	}
-
-	return result
-}
-
-func (s *ApplicationProjectService) LabelListToModel(labels ...label.Label) []Label {
-
-	var result []Label = make([]Label, 0)
-
-	for _, label := range labels {
-		result = append(result, Label{
-			Key:   label.Key,
-			Value: label.Value,
-		})
-	}
-
-	return result
-}
-
-type ApplicationProjectComposite struct {
-	ApplicationProject
-	Original application_project_payload_structs.ProjectBaseStruct
-}
-
-type ApplicationProject struct {
-	Name    string
-	Package string
-	Labels  []Label
-}
-
-type Label struct {
-	Key   string
-	Value string
 }

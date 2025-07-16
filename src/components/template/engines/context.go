@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"strings"
 
+	sectionPkg "parsdevkit.net/application/models/section"
+	templatePkg "parsdevkit.net/components/template"
 	"parsdevkit.net/modules/resource/object_resource_contract"
 
 	"parsdevkit.net/application/ioc"
@@ -201,7 +203,17 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				for _, objSection := range layerObj.Sections {
 					if objSection.Name == section {
 
-						selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objSection)
+						selectedContext = *models.NewCodeTemplateDataContext(
+							templatePkg.NewContextProviderSource(
+								*workspaceObj,
+								nil,
+								*projectObj,
+								*resourceObj,
+								*templateObj,
+								layerObj.LayerIdentifier,
+								objSection.SectionIdentifier,
+							),
+						)
 
 						tempPackages := templateObj.Specifications.Package
 						packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
@@ -210,7 +222,17 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						}
 						templateObj.Specifications.Package = file.PathToArray(packageStr)
 
-						selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, objSection)
+						selectedContext = *models.NewCodeTemplateDataContext(
+							templatePkg.NewContextProviderSource(
+								*workspaceObj,
+								nil,
+								*projectObj,
+								*resourceObj,
+								*templateObj,
+								layerObj.LayerIdentifier,
+								objSection.SectionIdentifier,
+							),
+						)
 						break
 					}
 				}
@@ -222,7 +244,17 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				return selectedContext
 			} else {
 
-				selectedContext := *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, object_resource_payload_structs.Section{})
+				selectedContext := *models.NewCodeTemplateDataContext(
+					templatePkg.NewContextProviderSource(
+						*workspaceObj,
+						nil,
+						*projectObj,
+						*resourceObj,
+						*templateObj,
+						layerObj.LayerIdentifier,
+						sectionPkg.SectionIdentifier{},
+					),
+				)
 				tempPackages := templateObj.Specifications.Package
 				packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
 				if err != nil {
@@ -230,7 +262,17 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				}
 				templateObj.Specifications.Package = file.PathToArray(packageStr)
 
-				selectedContext = *models.NewCodeTemplateDataContext(*workspaceObj, *projectObj, *resourceObj, *templateObj, *layerObj, object_resource_payload_structs.Section{})
+				selectedContext = *models.NewCodeTemplateDataContext(
+					templatePkg.NewContextProviderSource(
+						*workspaceObj,
+						nil,
+						*projectObj,
+						*resourceObj,
+						*templateObj,
+						layerObj.LayerIdentifier,
+						sectionPkg.SectionIdentifier{},
+					),
+				)
 				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {
 					return models.CodeTemplateDataContext{}
 				}

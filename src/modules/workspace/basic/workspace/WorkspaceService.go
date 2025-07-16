@@ -10,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 
-	"parsdevkit.net/application/models/layer"
-	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -20,7 +18,6 @@ import (
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/application/schemas"
 
 	"parsdevkit.net/persistence/repositories"
 
@@ -678,32 +675,4 @@ func (s WorkspaceService) CreateWorkspaceFolder(model basic_workspace_payload_st
 	}
 
 	return outputPath, nil
-}
-
-func (s *WorkspaceService) Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) interface{} {
-	if model, ok := workspace.(basic_workspace_payload_structs.WorkspaceBaseStruct); ok {
-		return WorkspaceComposite{
-			Workspace: s.structToModel(model),
-			Original:  model,
-		}
-	}
-
-	return nil
-}
-func (s *WorkspaceService) structToModel(model basic_workspace_payload_structs.WorkspaceBaseStruct) Workspace {
-
-	var result Workspace = Workspace{
-		Name: model.Header.Name,
-	}
-
-	return result
-}
-
-type WorkspaceComposite struct {
-	Workspace
-	Original basic_workspace_payload_structs.WorkspaceBaseStruct
-}
-
-type Workspace struct {
-	Name string
 }

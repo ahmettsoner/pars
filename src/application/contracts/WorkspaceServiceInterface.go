@@ -1,8 +1,6 @@
 package contracts
 
 import (
-	"parsdevkit.net/application/models/layer"
-	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/application/schemas"
 )
 
@@ -21,6 +19,4 @@ type WorkspaceServiceInterface[T schemas.SchemaInterface] interface {
 	ChangeCurrentWorkspace(name string) (*T, error)
 	ListByNameStartWith(name string) (*([]T), error)
 	CreateWorkspaceFolder(model T) (string, error)
-	// Context(model T) any
-	Context(workspace, project, resource, template schemas.SchemaInterface, layer layer.LayerIdentifier, section section.SectionIdentifier) any
 }

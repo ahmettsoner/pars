@@ -5,6 +5,8 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
+	templatePkg "parsdevkit.net/components/template"
 	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/object_resource_contract"
@@ -143,13 +145,16 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 						for _, templateLayerSection := range templateLayer.Sections {
 							for _, templateLayerSectionClass := range templateLayerSection.Classes {
 								if resourceLayerSectionClass == templateLayerSectionClass {
-									generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, resourceLayerSection, resourceLayer)
+									generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, resourceLayerSection.SectionIdentifier, resourceLayer)
 									if err != nil {
 										return err
 									}
 									if generate {
 
-										var data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
+										var data = models.NewCodeTemplateDataContext(
+											templatePkg.NewContextProviderSource(
+												workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
+										)
 
 										fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 										if err != nil {
@@ -167,7 +172,9 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 										}
 										template.Specifications.Package = file.PathToArray(packageStr)
 
-										data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, resourceLayerSection)
+										data = models.NewCodeTemplateDataContext(
+											templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
+										)
 										templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 										if err != nil {
 											return err
@@ -196,12 +203,14 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 		}
 	} else {
 
-		generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, object_resource_payload_structs.Section{}, resourceLayer)
+		generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, sectionPkg.SectionIdentifier{}, resourceLayer)
 		if err != nil {
 			return err
 		}
 		if generate {
-			var data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, object_resource_payload_structs.Section{})
+			var data = models.NewCodeTemplateDataContext(
+				templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+			)
 
 			fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
 			if err != nil {
@@ -219,7 +228,9 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			}
 			template.Specifications.Package = file.PathToArray(packageStr)
 
-			data = models.NewCodeTemplateDataContext(workspace, project, resource, template, resourceLayer, object_resource_payload_structs.Section{})
+			data = models.NewCodeTemplateDataContext(
+				templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+			)
 			templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 			if err != nil {
 				return err
@@ -244,7 +255,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 	return nil
 }
 
-func (s CodeTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, section object_resource_payload_structs.Section, layer object_resource_payload_structs.Layer) (bool, string, string, string, error) {
+func (s CodeTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer object_resource_payload_structs.Layer) (bool, string, string, string, error) {
 	var generate = true
 
 	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)
