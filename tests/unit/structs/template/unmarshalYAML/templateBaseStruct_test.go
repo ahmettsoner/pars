@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	layerPkg "parsdevkit.net/application/models/layer"
 	templateStruct "parsdevkit.net/application/structs/template"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
@@ -49,7 +50,7 @@ Specifications:
 			code_template_payload_structs.NewOutput("{{ .Name }}.cs"),
 			[]string{"pars", "cmd"},
 			[]label.Label(nil),
-			[]code_template_payload_structs.Layer(nil), code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
+			[]layerPkg.Layer(nil), code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),

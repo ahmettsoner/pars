@@ -3,6 +3,7 @@ package data_resource
 import (
 	"fmt"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	data_resource_payload_events "parsdevkit.net/modules/resource/data_resource_payload/events"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 
@@ -397,7 +398,7 @@ func (s DataResourceEngine) completeInformation(ctx *application.ApplicationCont
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, data_resource_payload_structs.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, layerPkg.Layer{})
 	}
 	return nil
 }

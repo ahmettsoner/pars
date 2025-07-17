@@ -3,6 +3,8 @@ package unmarshalYAML
 import (
 	"testing"
 
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	"parsdevkit.net/application/structs"
 
 	"parsdevkit.net/application/models/label"
@@ -71,7 +73,7 @@ Object:
 			[]label.Label{
 				label.NewLabel("foo", "bar"),
 			},
-			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "layer1", []object_resource_payload_structs.Section(nil)), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section(nil))},
+			[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceObject(

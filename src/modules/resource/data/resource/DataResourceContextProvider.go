@@ -4,7 +4,7 @@ import (
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/layer"
-	layer2 "parsdevkit.net/application/models/layer"
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/application/models/section"
 	"parsdevkit.net/application/platforms"
 	"parsdevkit.net/application/schemas"
@@ -64,7 +64,7 @@ func (s *DataResourceContextProvider) structToModel(workspace schemas.SchemaInte
 			Aliases: value,
 		})
 	}
-	layers := make([]layer2.LayerIdentifier, 0)
+	layers := make([]layerPkg.LayerIdentifier, 0)
 	for _, v := range model.Specifications.Layers {
 		layers = append(layers, v.LayerIdentifier)
 	}
@@ -274,7 +274,7 @@ type DataResourceImport struct {
 }
 type DataLayerComposite struct {
 	DataLayer
-	Original data_resource_payload_structs.Layer
+	Original layerPkg.Layer
 }
 
 type DataSectionComposite struct {

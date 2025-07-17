@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/bus"
+	layerPkg "parsdevkit.net/application/models/layer"
 	code_template_payload_events "parsdevkit.net/modules/template/code_template_payload/events"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
@@ -390,7 +391,7 @@ func (s CodeTemplateEngine) completeInformation(ctx *application.ApplicationCont
 	}
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, code_template_payload_structs.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, layerPkg.Layer{})
 	}
 
 	return nil

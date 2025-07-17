@@ -2,6 +2,7 @@ package template
 
 import (
 	"parsdevkit.net/application/models/label"
+	sectionPkg "parsdevkit.net/application/models/section"
 
 	"gopkg.in/yaml.v3"
 )
@@ -9,10 +10,10 @@ import (
 type Resource struct {
 	Name    string
 	Labels  []label.Label
-	Section Section
+	Section sectionPkg.Section
 }
 
-func NewResource(name string, labels []label.Label, section Section) Resource {
+func NewResource(name string, labels []label.Label, section sectionPkg.Section) Resource {
 	return Resource{
 		Name:    name,
 		Labels:  labels,
@@ -26,8 +27,8 @@ func (s *Resource) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject struct {
 				Name    string
-				Labels  []label.Label `yaml:"Labels"`
-				Section Section       `yaml:"Section"`
+				Labels  []label.Label      `yaml:"Labels"`
+				Section sectionPkg.Section `yaml:"Section"`
 			}
 
 			if err := unmarshal(&tempObject); err != nil {

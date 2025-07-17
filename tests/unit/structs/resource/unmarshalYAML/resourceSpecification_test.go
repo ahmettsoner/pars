@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
@@ -32,7 +34,7 @@ Set: bar
 		"bar",
 		[]string(nil),
 		[]label.Label(nil),
-		[]object_resource_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -62,7 +64,7 @@ Path: /foo
 		"bar",
 		[]string(nil),
 		[]label.Label(nil),
-		[]object_resource_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -92,7 +94,7 @@ Package: pars/cmd
 		"bar",
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]object_resource_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -124,7 +126,7 @@ Package:
 		"bar",
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]object_resource_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -157,7 +159,7 @@ Labels:
 		[]label.Label{
 			label.NewLabel("foo", "bar"),
 		},
-		[]object_resource_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -190,7 +192,7 @@ Layers:
 		"bar",
 		[]string(nil),
 		[]label.Label(nil),
-		[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "layer1", []object_resource_payload_structs.Section(nil)), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section(nil))},
+		[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 
@@ -229,7 +231,7 @@ Layers:
 		[]label.Label{
 			label.NewLabel("foo", "bar"),
 		},
-		[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "layer1", []object_resource_payload_structs.Section(nil)), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section(nil))},
+		[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
 

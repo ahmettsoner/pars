@@ -7,6 +7,7 @@ import (
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/internal/flowx"
 	create_steps "parsdevkit.net/modules/resource/object_resource/flows/create"
 	remove_steps "parsdevkit.net/modules/resource/object_resource/flows/remove"
@@ -389,7 +390,7 @@ func (s ObjectResourceEngine) completeInformation(ctx *application.ApplicationCo
 	logrus.Debugf("workspace (%v) detected for (%v)", activeWorkspace.Header.Name, model.Header.Name)
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, object_resource_payload_structs.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, layerPkg.Layer{})
 	}
 
 	return nil

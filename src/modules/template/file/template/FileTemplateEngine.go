@@ -6,6 +6,7 @@ import (
 	"parsdevkit.net/application/bus"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	"parsdevkit.net/internal/flowx"
 	create_steps "parsdevkit.net/modules/template/file_template/flows/create"
 	remove_steps "parsdevkit.net/modules/template/file_template/flows/remove"
@@ -391,7 +392,7 @@ func (s FileTemplateEngine) completeInformation(ctx *application.ApplicationCont
 	}
 
 	if len(model.Specifications.Layers) == 0 {
-		model.Specifications.Layers = append(model.Specifications.Layers, file_template_payload_structs.Layer{})
+		model.Specifications.Layers = append(model.Specifications.Layers, layerPkg.Layer{})
 	}
 	return nil
 }

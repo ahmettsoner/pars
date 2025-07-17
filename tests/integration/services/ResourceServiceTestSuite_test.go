@@ -4,6 +4,8 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
@@ -113,7 +115,7 @@ func BasicResource(name string) *object_resource_payload_structs.ResourceBaseStr
 			"",
 			[]string{},
 			[]label.Label{},
-			[]object_resource_payload_structs.Layer{},
+			[]layerPkg.Layer{},
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceObject(
@@ -146,7 +148,7 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 			[]label.Label{
 				label.NewLabel("foo", "bar"),
 			},
-			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "presentation:view", []object_resource_payload_structs.Section{}), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section{})},
+			[]layerPkg.Layer{layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section{}), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section{})},
 
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
@@ -202,7 +204,7 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 			[]label.Label{
 				label.NewLabel("foo", "bar"),
 			},
-			[]object_resource_payload_structs.Layer{object_resource_payload_structs.NewLayer(0, "presentation:view", []object_resource_payload_structs.Section{}), object_resource_payload_structs.NewLayer(0, "layer2", []object_resource_payload_structs.Section{})},
+			[]layerPkg.Layer{layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section{}), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section{})},
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		object_resource_payload_structs.NewResourceObject(

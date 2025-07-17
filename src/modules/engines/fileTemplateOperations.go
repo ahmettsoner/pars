@@ -154,7 +154,7 @@ func (s FileTemplateOperations) GenerateByTemplate(model file_template_payload_s
 func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
 
-	resourceLayer := data_resource_payload_structs.Layer{}
+	resourceLayer := layerPkg.Layer{}
 
 	for _, selectedResourceLayer := range resource.Specifications.Layers {
 		if selectedResourceLayer.LayerIdentifier == layer {
@@ -207,7 +207,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 	return nil
 }
 
-func (s FileTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer data_resource_payload_structs.Layer) (bool, string, string, string, error) {
+func (s FileTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource data_resource_payload_structs.ResourceBaseStruct, template file_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer layerPkg.Layer) (bool, string, string, string, error) {
 	var generate = true
 
 	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)

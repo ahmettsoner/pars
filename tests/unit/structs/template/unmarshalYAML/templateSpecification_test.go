@@ -4,7 +4,8 @@ import (
 	"testing"
 
 	"parsdevkit.net/application/models/label"
-	templateStruct "parsdevkit.net/application/structs/template"
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
@@ -38,7 +39,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -73,7 +74,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -109,7 +110,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "code_sample"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -145,7 +146,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -180,7 +181,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -217,7 +218,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string{"pars", "cmd"},
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -254,9 +255,9 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer{
-			code_template_payload_structs.NewLayer(0, "layer1", []templateStruct.Section(nil)),
-			code_template_payload_structs.NewLayer(0, "layer2", []templateStruct.Section(nil)),
+		[]layerPkg.Layer{
+			layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)),
+			layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil)),
 		},
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
@@ -297,7 +298,7 @@ Template:
 			label.NewLabel_KeyOnly("label1"),
 			label.NewLabel("label2", "value2"),
 		},
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -338,7 +339,7 @@ Template:
 			label.NewLabel_KeyOnly("label1"),
 			label.NewLabel("label2", "value2"),
 		},
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)
@@ -374,7 +375,7 @@ Template:
 		code_template_payload_structs.NewOutput("filename.ext"),
 		[]string(nil),
 		[]label.Label(nil),
-		[]code_template_payload_structs.Layer(nil),
+		[]layerPkg.Layer(nil),
 		code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
 	)

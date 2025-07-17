@@ -8,6 +8,8 @@ import (
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"parsdevkit.net/application/models/label"
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	templateStruct "parsdevkit.net/application/structs/template"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
@@ -109,14 +111,14 @@ func BasicTemplate_WithName(name string) *code_template_payload_structs.Template
 			code_template_payload_structs.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
-			[]code_template_payload_structs.Layer{
-				code_template_payload_structs.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "service", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
+			[]layerPkg.Layer{
+				layerPkg.NewLayer(0, "service:contract", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "service", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "presentation:viewmodel", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:repository", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:entity", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:migration", []sectionPkg.Section(nil)),
 			},
 			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
@@ -140,14 +142,14 @@ func BasicTemplate_WithNameSet(name, set string) *code_template_payload_structs.
 			code_template_payload_structs.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
-			[]code_template_payload_structs.Layer{
-				code_template_payload_structs.NewLayer(0, "service:contract", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "service", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "presentation:view", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "presentation:viewmodel", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:repository", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:entity", []templateStruct.Section(nil)),
-				code_template_payload_structs.NewLayer(0, "persistence:database:migration", []templateStruct.Section(nil)),
+			[]layerPkg.Layer{
+				layerPkg.NewLayer(0, "service:contract", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "service", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "presentation:viewmodel", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:repository", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:entity", []sectionPkg.Section(nil)),
+				layerPkg.NewLayer(0, "persistence:database:migration", []sectionPkg.Section(nil)),
 			},
 			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},

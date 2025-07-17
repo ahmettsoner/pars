@@ -1,10 +1,13 @@
 package engines
 
 import (
+	"fmt"
 	"strings"
 
 	"parsdevkit.net/application/contextgenerator"
 	"parsdevkit.net/application/ioc"
+	"parsdevkit.net/application/models/class"
+	"parsdevkit.net/application/models/label"
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
 	templatePkg "parsdevkit.net/components/template"
@@ -26,10 +29,20 @@ import (
 
 	"parsdevkit.net/persistence/entities"
 
-	"github.com/sirupsen/logrus"
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
+
+type CodeTemplateOperationContent struct {
+	Workspace basic_workspace_payload_structs.WorkspaceBaseStruct
+	Project   application_project_payload_structs.ProjectBaseStruct
+	Resource  object_resource_payload_structs.ResourceBaseStruct
+	Template  code_template_payload_structs.TemplateBaseStruct
+	Layer     layerPkg.Layer
+	Section   sectionPkg.SectionIdentifier
+	Class     class.Class
+}
 
 type CodeTemplateOperations struct {
 	environment                 string
@@ -44,217 +57,159 @@ func NewCodeTemplateOperations(environment string) CodeTemplateOperations {
 	}
 }
 
-func (s CodeTemplateOperations) GenerateByResource(model object_resource_payload_structs.ResourceBaseStruct) error {
-	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	layers := make([]string, 0)
-	for _, modelLayer := range model.Specifications.Layers {
-		layers = append(layers, modelLayer.Name)
-	}
+func (s CodeTemplateOperations) Generate(source schemas.SchemaInterface) error {
 
-	templateService := ioc.Get[code_template_contract.TemplateInterface]()
-	templates, err := templateService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
-	if err != nil {
-		return err
-	}
-	logrus.Debugf("%d Template(s) found for layer '%v' \n", len(*templates), model.Header.Name)
+	var opCnt []CodeTemplateOperationContent
+	var workspace *basic_workspace_payload_structs.WorkspaceBaseStruct
+	var err error
+
+	var setName, workspaceName string
+	var layers []layerPkg.Layer
+	var tags []string
+	var labels []label.Label
+	var projects *[]application_project_payload_structs.ProjectBaseStruct
+	var templates *[]code_template_payload_structs.TemplateBaseStruct
+	var resources *[]object_resource_payload_structs.ResourceBaseStruct
 
 	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projects, err := projectService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
-	if err != nil {
-		return err
+	templateService := ioc.Get[code_template_contract.TemplateInterface]()
+	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
+	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
+
+	switch src := source.(type) {
+	case object_resource_payload_structs.ResourceBaseStruct:
+		setName = src.Specifications.Set
+		workspaceName = src.Specifications.Workspace
+		layers = src.Specifications.Layers
+		tags = src.Header.Metadata.Tags
+		labels = src.Specifications.Labels
+
+		workspace, err = workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return err
+		}
+
+		projects, err = projectService.ListByFilter(setName, workspaceName, layerNames(layers), tags, labels)
+		if err != nil {
+			return err
+		}
+		templates, err = templateService.ListByFilter(setName, workspaceName, layerNames(layers), tags, labels)
+		if err != nil {
+			return err
+		}
+		for _, project := range *projects {
+			for _, template := range *templates {
+				opCnt = append(opCnt, s.extractOperationContents(project, template, src, *workspace)...)
+			}
+		}
+
+	case code_template_payload_structs.TemplateBaseStruct:
+		setName = src.Specifications.Set
+		workspaceName = src.Specifications.Workspace
+		layers = src.Specifications.Layers
+		tags = src.Header.Metadata.Tags
+		labels = src.Specifications.Labels
+
+		workspace, err = workspaceService.GetByName(workspaceName)
+		if err != nil {
+			return err
+		}
+
+		projects, err = projectService.ListByFilter(setName, workspaceName, layerNames(layers), tags, labels)
+		if err != nil {
+			return err
+		}
+		resources, err = resourceService.ListByFilter(setName, workspaceName, layerNames(layers), tags, labels)
+		if err != nil {
+			return err
+		}
+
+		for _, project := range *projects {
+			for _, resource := range *resources {
+				opCnt = append(opCnt, s.extractOperationContents(project, src, resource, *workspace)...)
+			}
+		}
+	default:
+		return fmt.Errorf("unsupported type: %T", source)
 	}
-	logrus.Debugf("%d Projcet(s) found for layer '%v' \n", len(*projects), model.Header.Name)
 
-	for _, layer := range model.Specifications.Layers {
+	for _, cnt := range opCnt {
+		generate, _, _, _, err := s.CheckGeneration(cnt.Project, cnt.Resource, cnt.Template, cnt.Section, cnt.Layer)
+		if err != nil {
+			return err
+		}
 
-		for _, setProject := range *projects {
-			projectWorkspace, err := workspaceService.GetByName(setProject.Specifications.Workspace)
+		if generate {
+			err := s.GenerateContent(cnt)
 			if err != nil {
 				return err
 			}
-
-			for _, template := range *templates {
-				err := s.GenerateContent(*projectWorkspace, setProject, model, template, layer.LayerIdentifier)
-				if err != nil {
-					return err
-				}
-			}
 		}
 	}
+
+	return nil
+}
+func (s CodeTemplateOperations) GenerateByResource(model object_resource_payload_structs.ResourceBaseStruct) error {
+	return s.Generate(model)
+}
+func (s CodeTemplateOperations) GenerateContent(cnt CodeTemplateOperationContent) error {
+	projectService := ioc.Get[application_project_contract.ProjectInterface]()
+	var data = contextgenerator.NewTemplateDataContext(
+		templatePkg.NewContextProviderSource(
+			&cnt.Workspace, nil, &cnt.Project, &cnt.Resource, &cnt.Template, cnt.Layer.LayerIdentifier, cnt.Section),
+	)
+
+	fileNameStr, err := templateEngine.RenderTemplate(cnt.Template.Specifications.Output.File, data)
+	if err != nil {
+		return err
+	}
+	pathStr, err := templateEngine.RenderTemplate(cnt.Template.Specifications.Path, data)
+	if err != nil {
+		return err
+	}
+
+	tempPackages := cnt.Template.Specifications.Package
+	packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
+	if err != nil {
+		return err
+	}
+	cnt.Template.Specifications.Package = file.PathToArray(packageStr)
+
+	data = contextgenerator.NewTemplateDataContext(
+		templatePkg.NewContextProviderSource(
+			cnt.Workspace, nil, cnt.Project, cnt.Resource, cnt.Template, cnt.Layer.LayerIdentifier, cnt.Section),
+	)
+	templateContentStr, err := templateEngine.RenderTemplate(cnt.Template.Specifications.Template.Content, data)
+	if err != nil {
+		return err
+	}
+	cnt.Template.Specifications.Package = tempPackages
+
+	templateContentStr = AddCommentToGeneratedFile(cnt.Template.Specifications.Output.File, string(cnt.Resource.Configurations.Generate), string(cnt.Template.Configurations.Generate), templateContentStr)
+
+	_, err = projectService.AddFileToLayer(cnt.Project, cnt.Layer.Name, []string{cnt.Resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
+	if err != nil {
+		return err
+	}
+
+	_, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(cnt.Project, cnt.Resource, cnt.Template, cnt.Section, cnt.Layer)
+	if err != nil {
+		return err
+	}
+	generationHistory := entities.NewGenerationHistory(cnt.Resource.Specifications.Set, cnt.Resource.Header.Name, newResourceModelHash, cnt.Template.Header.Name, newTemplateModelHash, cnt.Section.Name, newLayerSectionModelHash, cnt.Layer.Name)
+	err = s.generationHistoryRepository.Create(generationHistory)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s CodeTemplateOperations) GenerateByTemplate(model code_template_payload_structs.TemplateBaseStruct) error {
-	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
-	layers := make([]string, 0)
-	for _, modelLayer := range model.Specifications.Layers {
-		layers = append(layers, modelLayer.Name)
-	}
-
-	resourceService := ioc.Get[object_resource_contract.ResourceInterface]()
-	resources, err := resourceService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
-	if err != nil {
-		return err
-	}
-	logrus.Debugf("%d Resource(s) found for layer '%v' \n", len(*resources), model.Header.Name)
-
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-	projects, err := projectService.ListByFilter(model.Specifications.Set, model.Specifications.Workspace, layers, model.Header.Metadata.Tags, model.Specifications.Labels)
-	if err != nil {
-		return err
-	}
-	logrus.Debugf("%d Projcet(s) found for layer '%v' \n", len(*projects), model.Header.Name)
-
-	for _, modelLayer := range model.Specifications.Layers {
-		for _, project := range *projects {
-			projectWorkspace, err := workspaceService.GetByName(project.Specifications.Workspace)
-			if err != nil {
-				return err
-			}
-
-			for _, resource := range *resources {
-				err := s.GenerateContent(*projectWorkspace, project, resource, model, modelLayer.LayerIdentifier)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
-	return nil
+	return s.Generate(model)
 }
 
-func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payload_structs.WorkspaceBaseStruct, project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, layer layerPkg.LayerIdentifier) error {
-	projectService := ioc.Get[application_project_contract.ProjectInterface]()
-
-	resourceLayer := object_resource_payload_structs.Layer{}
-
-	for _, selectedResourceLayer := range resource.Specifications.Layers {
-		if selectedResourceLayer.LayerIdentifier == layer {
-			resourceLayer = selectedResourceLayer
-		}
-	}
-
-	if len(resourceLayer.Sections) > 0 {
-
-		for _, resourceLayerSection := range resourceLayer.Sections {
-			for _, resourceLayerSectionClass := range resourceLayerSection.Classes {
-
-				for _, templateLayer := range template.Specifications.Layers {
-					if templateLayer.Name == resourceLayer.Name {
-						for _, templateLayerSection := range templateLayer.Sections {
-							for _, templateLayerSectionClass := range templateLayerSection.Classes {
-								if resourceLayerSectionClass == templateLayerSectionClass {
-									generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, resourceLayerSection.SectionIdentifier, resourceLayer)
-									if err != nil {
-										return err
-									}
-									if generate {
-
-										var data = contextgenerator.NewTemplateDataContext(
-											templatePkg.NewContextProviderSource(
-												workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
-										)
-
-										fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
-										if err != nil {
-											return err
-										}
-										pathStr, err := templateEngine.RenderTemplate(template.Specifications.Path, data)
-										if err != nil {
-											return err
-										}
-
-										tempPackages := template.Specifications.Package
-										packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
-										if err != nil {
-											return err
-										}
-										template.Specifications.Package = file.PathToArray(packageStr)
-
-										// data = contextgenerator.NewTemplateDataContext(
-										// 	templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
-										// )
-										templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
-										if err != nil {
-											return err
-										}
-										template.Specifications.Package = tempPackages
-
-										templateContentStr = AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
-
-										_, err = projectService.AddFileToLayer(project, layer.Name, []string{resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
-										if err != nil {
-											return err
-										}
-
-										generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Header.Name, newResourceModelHash, template.Header.Name, newTemplateModelHash, resourceLayerSection.Name, newLayerSectionModelHash, layer.Name)
-										err = s.generationHistoryRepository.Create(generationHistory)
-										if err != nil {
-											return err
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	} else {
-
-		generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, err := s.CheckGeneration(project, resource, template, sectionPkg.SectionIdentifier{}, resourceLayer)
-		if err != nil {
-			return err
-		}
-		if generate {
-			var data = contextgenerator.NewTemplateDataContext(
-				templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
-			)
-
-			fileNameStr, err := templateEngine.RenderTemplate(template.Specifications.Output.File, data)
-			if err != nil {
-				return err
-			}
-			pathStr, err := templateEngine.RenderTemplate(template.Specifications.Path, data)
-			if err != nil {
-				return err
-			}
-
-			tempPackages := template.Specifications.Package
-			packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
-			if err != nil {
-				return err
-			}
-			template.Specifications.Package = file.PathToArray(packageStr)
-
-			// data = contextgenerator.NewTemplateDataContext(
-			// 	templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
-			// )
-			templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
-			if err != nil {
-				return err
-			}
-			template.Specifications.Package = tempPackages
-
-			templateContentStr = AddCommentToGeneratedFile(template.Specifications.Output.File, string(resource.Configurations.Generate), string(template.Configurations.Generate), templateContentStr)
-
-			_, err = projectService.AddFileToLayer(project, layer.Name, []string{resource.Specifications.Path, pathStr}, fileNameStr, templateContentStr)
-			if err != nil {
-				return err
-			}
-
-			generationHistory := entities.NewGenerationHistory(resource.Specifications.Set, resource.Header.Name, newResourceModelHash, template.Header.Name, newTemplateModelHash, "", newLayerSectionModelHash, layer.Name)
-			err = s.generationHistoryRepository.Create(generationHistory)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
-}
-
-func (s CodeTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer object_resource_payload_structs.Layer) (bool, string, string, string, error) {
+func (s CodeTemplateOperations) CheckGeneration(project application_project_payload_structs.ProjectBaseStruct, resource object_resource_payload_structs.ResourceBaseStruct, template code_template_payload_structs.TemplateBaseStruct, section sectionPkg.SectionIdentifier, layer layerPkg.Layer) (bool, string, string, string, error) {
 	var generate = true
 
 	history, err := s.generationHistoryRepository.GetLast(template.Specifications.Set, resource.Header.Name, template.Header.Name, section.Name, layer.Name)
@@ -369,4 +324,62 @@ func (s CodeTemplateOperations) CheckGeneration(project application_project_payl
 	}
 
 	return generate, newResourceModelHash, newLayerSectionModelHash, newTemplateModelHash, nil
+}
+func (s CodeTemplateOperations) extractOperationContents(
+	project application_project_payload_structs.ProjectBaseStruct,
+	template code_template_payload_structs.TemplateBaseStruct,
+	resource object_resource_payload_structs.ResourceBaseStruct,
+	workspace basic_workspace_payload_structs.WorkspaceBaseStruct,
+) []CodeTemplateOperationContent {
+	var result []CodeTemplateOperationContent
+
+	for _, layer := range resource.Specifications.Layers {
+		if len(layer.Sections) == 0 {
+			result = append(result, CodeTemplateOperationContent{
+				Workspace: workspace,
+				Project:   project,
+				Resource:  resource,
+				Template:  template,
+				Layer:     layer,
+			})
+			continue
+		}
+
+		var templateLayer layerPkg.Layer
+		for _, tl := range template.Specifications.Layers {
+			if tl.Name == layer.Name {
+				templateLayer = tl
+				break
+			}
+		}
+
+		for _, rSec := range layer.Sections {
+			for _, rClass := range rSec.Classes {
+				for _, tSec := range templateLayer.Sections {
+					for _, tClass := range tSec.Classes {
+						if rClass == tClass {
+							result = append(result, CodeTemplateOperationContent{
+								Workspace: workspace,
+								Project:   project,
+								Resource:  resource,
+								Template:  template,
+								Layer:     layer,
+								Section:   rSec.SectionIdentifier,
+								Class:     rClass,
+							})
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return result
+}
+func layerNames(layers []layerPkg.Layer) []string {
+	names := make([]string, len(layers))
+	for i, l := range layers {
+		names[i] = l.Name
+	}
+	return names
 }

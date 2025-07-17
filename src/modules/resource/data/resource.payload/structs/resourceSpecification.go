@@ -5,6 +5,8 @@ import (
 	applicationResource "parsdevkit.net/application/structs/resource"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
+	layerPkg "parsdevkit.net/application/models/layer"
+	sectionPkg "parsdevkit.net/application/models/section"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
@@ -15,12 +17,12 @@ type ResourceSpecification struct {
 	Set             string
 	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Labels          []label.Label
-	Layers          []Layer
+	Layers          []layerPkg.Layer
 	Dictionary      []Dictionary
 	Groups          []Group
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, labels []label.Label, layers []layerPkg.Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -78,9 +80,9 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		for _, layer := range tempObject.Layers {
 			switch layerType := layer.(type) {
 			case string:
-				s.Layers = append(s.Layers, NewLayer(0, layerType, []Section{}))
+				s.Layers = append(s.Layers, layerPkg.NewLayer(0, layerType, []sectionPkg.Section{}))
 			case interface{}:
-				var value Layer
+				var value layerPkg.Layer
 
 				if err := unmarshal(&value); err != nil {
 					// if _, ok := err.(*yaml.TypeError); !ok {

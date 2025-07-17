@@ -8,6 +8,7 @@ import (
 	applicationResource "parsdevkit.net/application/structs/resource"
 	_string "parsdevkit.net/pkg/utilities/string"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/pkg/errors"
 )
@@ -19,10 +20,10 @@ type ResourceSpecification struct {
 	Package         []string
 	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Labels          []label.Label
-	Layers          []Layer
+	Layers          []layerPkg.Layer
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []layerPkg.Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: applicationResource.NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -71,11 +72,11 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		s.ResourceIdentifier = tempIdentifierObject.ResourceIdentifier
 	}
 	var tempObject struct {
-		Path    string        `yaml:"Path"`
-		Set     string        `yaml:"Set"`
-		Package interface{}   `yaml:"Package"`
-		Labels  []label.Label `yaml:"Labels"`
-		Layers  []Layer       `yaml:"Layers"`
+		Path    string           `yaml:"Path"`
+		Set     string           `yaml:"Set"`
+		Package interface{}      `yaml:"Package"`
+		Labels  []label.Label    `yaml:"Labels"`
+		Layers  []layerPkg.Layer `yaml:"Layers"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {

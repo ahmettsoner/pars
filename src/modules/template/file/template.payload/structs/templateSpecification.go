@@ -7,6 +7,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	applicationTemplate "parsdevkit.net/application/structs/template"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -19,12 +20,12 @@ type TemplateSpecification struct {
 	Package         []string
 	Output          Output
 	Labels          []label.Label
-	Layers          []Layer
+	Layers          []layerPkg.Layer
 	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Template        Template
 }
 
-func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []Layer, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier) TemplateSpecification {
+func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []layerPkg.Layer, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier) TemplateSpecification {
 	return TemplateSpecification{
 		TemplateIdentifier: applicationTemplate.NewTemplateIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -87,13 +88,13 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	var tempObject struct {
-		Set      string        `yaml:"Set"`
-		Path     string        `yaml:"Path"`
-		Output   Output        `yaml:"Output"`
-		Package  interface{}   `yaml:"Package"`
-		Labels   []label.Label `yaml:"Labels"`
-		Layers   []Layer       `yaml:"Layers"`
-		Template Template      `yaml:"Template"`
+		Set      string           `yaml:"Set"`
+		Path     string           `yaml:"Path"`
+		Output   Output           `yaml:"Output"`
+		Package  interface{}      `yaml:"Package"`
+		Labels   []label.Label    `yaml:"Labels"`
+		Layers   []layerPkg.Layer `yaml:"Layers"`
+		Template Template         `yaml:"Template"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {

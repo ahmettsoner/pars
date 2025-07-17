@@ -40,9 +40,8 @@ func (s *GenerateResourceContentsCommandHandler) generate(model object_resource_
 		return nil, nil
 	}
 
-	// TODO: Birden fazla template işlenebilmeli
 	templateEngine := engines.NewCodeTemplateOperations(application.GetEnvironment())
-	err = templateEngine.GenerateByResource(model)
+	err = templateEngine.Generate(model)
 	if err != nil {
 		return nil, err
 	}

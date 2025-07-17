@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
 	"parsdevkit.net/components/template"
 	templatePkg "parsdevkit.net/components/template"
@@ -13,7 +14,6 @@ import (
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/modules/project/application_project_contract"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
-	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 	"parsdevkit.net/modules/template/code_template_contract"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
@@ -162,7 +162,7 @@ func (c ContextFuncs) GetContextByBase(base CodeTemplateDataContext, args ...str
 		return CodeTemplateDataContext{}
 	}
 
-	var layerObj *object_resource_payload_structs.Layer = nil
+	var layerObj *layerPkg.Layer = nil
 	if resourceObj != nil {
 		for _, resourceLayer := range resourceObj.Specifications.Layers {
 			if resourceLayer.Name == layer {

@@ -4,15 +4,16 @@ import (
 	"parsdevkit.net/application/models/label"
 
 	"gopkg.in/yaml.v3"
+	sectionPkg "parsdevkit.net/application/models/section"
 )
 
 type Project struct {
 	Name    string
 	Labels  []label.Label
-	Section Section
+	Section sectionPkg.Section
 }
 
-func NewProject(name string, labels []label.Label, section Section) Project {
+func NewProject(name string, labels []label.Label, section sectionPkg.Section) Project {
 	return Project{
 		Name:    name,
 		Labels:  labels,
@@ -26,8 +27,8 @@ func (s *Project) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		if _, ok := err.(*yaml.TypeError); ok {
 			var tempObject struct {
 				Name    string
-				Labels  []label.Label `yaml:"Labels"`
-				Section Section       `yaml:"Section"`
+				Labels  []label.Label      `yaml:"Labels"`
+				Section sectionPkg.Section `yaml:"Section"`
 			}
 
 			if err := unmarshal(&tempObject); err != nil {
