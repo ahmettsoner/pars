@@ -11,6 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
+	applicationTemplate "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 )
 
@@ -42,15 +43,15 @@ Specifications:
 
 	expected := code_template_payload_structs.NewTemplateBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, "Entity", schemas.NewMetadata([]string{"tag1", "tag2"})),
-		code_template_payload_structs.NewTemplateSpecification(0,
+		applicationTemplate.NewTemplateSpecification(0,
 			"Entity",
 			"",
 			"Set",
 			"",
-			code_template_payload_structs.NewOutput("{{ .Name }}.cs"),
+			applicationTemplate.NewOutput("{{ .Name }}.cs"),
 			[]string{"pars", "cmd"},
 			[]label.Label(nil),
-			[]layerPkg.Layer(nil), code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.File, "path"),
+			[]layerPkg.Layer(nil), applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),

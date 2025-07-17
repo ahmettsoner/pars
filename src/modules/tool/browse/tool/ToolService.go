@@ -19,7 +19,7 @@ func NewToolService(environment string) browse_tool_contract.ToolInterface {
 }
 
 func (s ToolService) Browse(model browse_tool_payload_structs.ToolBaseStruct) (*browse_tool_payload_structs.ToolBaseStruct, error) {
-	err := openBrowser(url.EnsureProtocol(model.Specifications.Url))
+	err := openBrowser(url.EnsureProtocol(model.Browse.Url))
 	if err != nil {
 		return nil, fmt.Errorf("Failed to open browser:", err)
 	}

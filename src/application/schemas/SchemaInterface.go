@@ -4,6 +4,6 @@ type SchemaInterface interface {
 	Validate() error
 	// PrintInfo()
 	GetHeader() SchemaHeader
-	// GetSpecification() SchemaSpecification
+	GetSpecification() any
 	GetKey() string
 }

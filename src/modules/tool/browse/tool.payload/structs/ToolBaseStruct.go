@@ -8,28 +8,35 @@ import (
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
 	_string "parsdevkit.net/pkg/utilities/string"
+
+	applicationTool "parsdevkit.net/application/structs/tool"
 )
 
 type ToolBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications ToolSpecification
+	Specifications applicationTool.ToolSpecification
+	Browse         ToolBrowse
 }
 
 func (e ToolBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (e ToolBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s ToolBaseStruct) GetKey() string {
 	return MODULE_KEY
 }
-func NewToolBaseStruct(header schemas.SchemaHeader, specifications ToolSpecification) ToolBaseStruct {
+func NewToolBaseStruct(header schemas.SchemaHeader, specifications applicationTool.ToolSpecification, browse ToolBrowse) ToolBaseStruct {
 	return ToolBaseStruct{
 		Header:         header,
 		Specifications: specifications,
+		Browse:         browse,
 	}
 }
 func (e ToolBaseStruct) Validate() error {
-	if _string.IsEmpty(e.Specifications.Url) {
-		return &errors.ErrFieldRequired{FieldName: "Specifications.Url"}
+	if _string.IsEmpty(e.Browse.Url) {
+		return &errors.ErrFieldRequired{FieldName: "Browse.Url"}
 	}
 	return nil
 }
@@ -45,7 +52,7 @@ func (s *ToolBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error 
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
-		Specifications ToolSpecification `yaml:"Specifications"`
+		Specifications applicationTool.ToolSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

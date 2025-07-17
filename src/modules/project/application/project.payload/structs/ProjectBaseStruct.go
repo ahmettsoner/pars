@@ -18,6 +18,9 @@ type ProjectBaseStruct struct {
 func (e ProjectBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (e ProjectBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s ProjectBaseStruct) GetKey() string {
 	return MODULE_KEY
 }

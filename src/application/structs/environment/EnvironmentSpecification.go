@@ -1,12 +1,14 @@
 package environment
 
 import (
+	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type EnvironmentSpecification struct {
 	EnvironmentIdentifier
+	schemas.SchemaSpecification
 }
 
 func NewEnvironmentSpecification(id int, name string) EnvironmentSpecification {

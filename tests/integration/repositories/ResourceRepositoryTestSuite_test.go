@@ -16,6 +16,7 @@ import (
 	"parsdevkit.net/application/schemas"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
+	applicationResource "parsdevkit.net/application/structs/resource"
 	"parsdevkit.net/persistence/contexts"
 	"parsdevkit.net/persistence/entities"
 
@@ -191,7 +192,7 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			name,
 			"",
 			"/foo",
@@ -247,7 +248,7 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			name,
 			"",
 			"/foo",

@@ -14,9 +14,9 @@ import (
 
 	"parsdevkit.net/application/ioc"
 	"parsdevkit.net/application/platforms"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
-	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -1465,7 +1465,7 @@ func (s *ApplicationProjectService) getProject(name string, group string, worksp
 
 	return entity, nil
 }
-func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*basic_workspace_payload_structs.WorkspaceSpecification, error) {
+func (s *ApplicationProjectService) GetProjectWorkspace(workspaceName string) (*applicationWorkspace.WorkspaceSpecification, error) {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 
 	workspace, err := workspaceService.GetByName(workspaceName)

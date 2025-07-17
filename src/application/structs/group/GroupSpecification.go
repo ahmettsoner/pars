@@ -3,6 +3,7 @@ package group
 import (
 	"fmt"
 
+	"parsdevkit.net/application/schemas"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"gopkg.in/yaml.v3"
@@ -10,6 +11,7 @@ import (
 
 type GroupSpecification struct {
 	GroupIdentifier
+	schemas.SchemaSpecification
 }
 
 func NewGroupSpecification(id int, name, path string, _package []string) GroupSpecification {

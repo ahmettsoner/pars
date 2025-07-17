@@ -18,14 +18,13 @@ import (
 	dotnetModels "parsdevkit.net/platforms/dotnet/models"
 
 	"github.com/stretchr/testify/require"
-	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
 	"parsdevkit.net/pkg/utilities/file"
 )
 
 func InitializeNewWorkspace(t *testing.T, testPath, workspaceName, environment string) {
 
-	workspace := basic_workspace_payload_structs.NewWorkspaceSpecification(0, workspaceName, filepath.Join(testPath, workspaceName))
+	workspace := applicationWorkspace.NewWorkspaceSpecification(0, workspaceName, filepath.Join(testPath, workspaceName))
 
 	err := os.Mkdir(workspace.GetAbsolutePath(), os.ModePerm)
 	require.NoError(t, err)

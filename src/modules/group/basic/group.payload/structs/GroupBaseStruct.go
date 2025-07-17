@@ -19,6 +19,9 @@ type GroupBaseStruct struct {
 func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (e GroupBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s GroupBaseStruct) GetKey() string {
 	return MODULE_KEY
 }

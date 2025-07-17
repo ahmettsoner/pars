@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 
+	applicationTemplate "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"parsdevkit.net/application/models/label"
@@ -102,13 +103,13 @@ func BasicTemplate_WithName(name string) *code_template_payload_structs.Template
 
 	template := code_template_payload_structs.NewTemplateBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, name, schemas.Metadata{}),
-		code_template_payload_structs.NewTemplateSpecification(
+		applicationTemplate.NewTemplateSpecification(
 			0,
 			name,
 			"",
 			"bar",
 			"sample_template",
-			code_template_payload_structs.NewOutput("sample.cs"),
+			applicationTemplate.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
 			[]layerPkg.Layer{
@@ -120,7 +121,7 @@ func BasicTemplate_WithName(name string) *code_template_payload_structs.Template
 				layerPkg.NewLayer(0, "persistence:database:entity", []sectionPkg.Section(nil)),
 				layerPkg.NewLayer(0, "persistence:database:migration", []sectionPkg.Section(nil)),
 			},
-			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
+			applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
@@ -133,13 +134,13 @@ func BasicTemplate_WithNameSet(name, set string) *code_template_payload_structs.
 
 	template := code_template_payload_structs.NewTemplateBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Template, code_template_payload_structs.TEMPLATE_KIND, name, schemas.Metadata{}),
-		code_template_payload_structs.NewTemplateSpecification(
+		applicationTemplate.NewTemplateSpecification(
 			0,
 			name,
 			"",
 			set,
 			"sample_template",
-			code_template_payload_structs.NewOutput("sample.cs"),
+			applicationTemplate.NewOutput("sample.cs"),
 			[]string{"pack", "age"},
 			[]label.Label{label.NewLabel("foo", "bar")},
 			[]layerPkg.Layer{
@@ -151,7 +152,7 @@ func BasicTemplate_WithNameSet(name, set string) *code_template_payload_structs.
 				layerPkg.NewLayer(0, "persistence:database:entity", []sectionPkg.Section(nil)),
 				layerPkg.NewLayer(0, "persistence:database:migration", []sectionPkg.Section(nil)),
 			},
-			code_template_payload_structs.NewTemplate(code_template_payload_structs.TemplateSourceTypes.Code, "test-code-content"),
+			applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
 		),
 		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),

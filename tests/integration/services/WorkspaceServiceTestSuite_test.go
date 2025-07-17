@@ -8,6 +8,7 @@ import (
 	"pars/tests/internal/testenv/common"
 	"pars/tests/internal/testenv/faker"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	workspaceWorkspace "parsdevkit.net/modules/workspace/basic_workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
@@ -101,7 +102,7 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload_structs.Works
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
+		applicationWorkspace.NewWorkspaceSpecification(0,
 			name,
 			"path",
 		),
@@ -109,7 +110,7 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload_structs.Works
 	return &workspace
 }
 
-func BasicWorkspace_WithSpecification(specifications basic_workspace_payload_structs.WorkspaceSpecification) *basic_workspace_payload_structs.WorkspaceBaseStruct {
+func BasicWorkspace_WithSpecification(specifications applicationWorkspace.WorkspaceSpecification) *basic_workspace_payload_structs.WorkspaceBaseStruct {
 
 	workspace := basic_workspace_payload_structs.NewWorkspaceBaseStruct(
 		schemas.NewSchemaHeader(
@@ -136,7 +137,7 @@ func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload_str
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
+		applicationWorkspace.NewWorkspaceSpecification(0,
 			name,
 			path,
 		),

@@ -4,24 +4,28 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/schemas"
+	applicationTemplate "parsdevkit.net/application/structs/template"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type TemplateBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications TemplateSpecification
+	Specifications applicationTemplate.TemplateSpecification
 	Configurations TemplateConfiguration
 }
 
 func (e TemplateBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (e TemplateBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s TemplateBaseStruct) GetKey() string {
 	return MODULE_KEY
 }
 
-func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
+func NewTemplateBaseStruct(header schemas.SchemaHeader, specifications applicationTemplate.TemplateSpecification, configurations TemplateConfiguration) TemplateBaseStruct {
 	return TemplateBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -47,8 +51,8 @@ func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
-		Specifications TemplateSpecification `yaml:"Specifications"`
-		Configurations TemplateConfiguration `yaml:"Configurations"`
+		Specifications applicationTemplate.TemplateSpecification `yaml:"Specifications"`
+		Configurations TemplateConfiguration                     `yaml:"Configurations"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

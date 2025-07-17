@@ -7,10 +7,10 @@ import (
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
-	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
+	applicationResource "parsdevkit.net/application/structs/resource"
 )
 
 func Test_UnMarshall_ResourceObject_NameAndSet(t *testing.T) {
@@ -24,10 +24,10 @@ Set: bar
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"",
@@ -54,10 +54,10 @@ Path: /foo
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"/foo",
@@ -84,10 +84,10 @@ Package: pars/cmd
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"",
@@ -116,10 +116,10 @@ Package:
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"",
@@ -147,10 +147,10 @@ Labels:
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"",
@@ -182,10 +182,10 @@ Layers:
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"",
@@ -219,10 +219,10 @@ Layers:
 
 	// Act
 
-	var data object_resource_payload_structs.ResourceSpecification
+	var data applicationResource.ResourceSpecification
 	err := yaml.Unmarshal([]byte(yamlData), &data)
 
-	expected := object_resource_payload_structs.NewResourceSpecification(0,
+	expected := applicationResource.NewResourceSpecification(0,
 		"foo",
 		"",
 		"/foo",

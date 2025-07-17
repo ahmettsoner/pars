@@ -5,12 +5,12 @@ import (
 	"parsdevkit.net/application/schemas"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	applicationProject "parsdevkit.net/application/structs/project"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/models"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
-	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
-func BasicProject_WithName(name string, projectType models.ProjectType, platform models.PlatformType, runtime models.RuntimeType, workspace basic_workspace_payload_structs.WorkspaceSpecification) *application_project_payload_structs.ProjectBaseStruct {
+func BasicProject_WithName(name string, projectType models.ProjectType, platform models.PlatformType, runtime models.RuntimeType, workspace applicationWorkspace.WorkspaceSpecification) *application_project_payload_structs.ProjectBaseStruct {
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(

@@ -4,13 +4,14 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/schemas"
+	applicationResource "parsdevkit.net/application/structs/resource"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type ResourceBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications ResourceSpecification
+	Specifications applicationResource.ResourceSpecification
 	Object         ResourceObject
 	Configurations ResourceConfiguration
 }
@@ -18,11 +19,14 @@ type ResourceBaseStruct struct {
 func (e ResourceBaseStruct) GetHeader() schemas.SchemaHeader {
 	return e.Header
 }
+func (e ResourceBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s ResourceBaseStruct) GetKey() string {
 	return MODULE_KEY
 }
 
-func NewResourceBaseStruct(header schemas.SchemaHeader, specifications ResourceSpecification, object ResourceObject, configurations ResourceConfiguration) ResourceBaseStruct {
+func NewResourceBaseStruct(header schemas.SchemaHeader, specifications applicationResource.ResourceSpecification, object ResourceObject, configurations ResourceConfiguration) ResourceBaseStruct {
 	return ResourceBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -48,7 +52,7 @@ func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 	}
 
 	var tempSpecificationObject struct {
-		Specifications ResourceSpecification `yaml:"Specifications"`
+		Specifications applicationResource.ResourceSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

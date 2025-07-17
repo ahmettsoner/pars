@@ -19,6 +19,9 @@ func (e EnvironmentBaseStruct) GetHeader() schemas.SchemaHeader {
 		Name: e.Header.Name,
 	}
 }
+func (e EnvironmentBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s EnvironmentBaseStruct) GetKey() string {
 	return "Environment"
 }

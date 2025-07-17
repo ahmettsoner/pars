@@ -12,6 +12,7 @@ import (
 
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"parsdevkit.net/modules/project/application_project_contract"
@@ -116,8 +117,8 @@ func (s WorkspaceService) saveWorkspaceInformation(workspaceModel basic_workspac
 	return &workspaceModel, nil
 }
 
-func (s *WorkspaceService) Get(id int) (*basic_workspace_payload_structs.WorkspaceSpecification, error) {
-	var workspace *basic_workspace_payload_structs.WorkspaceSpecification
+func (s *WorkspaceService) Get(id int) (*applicationWorkspace.WorkspaceSpecification, error) {
+	var workspace *applicationWorkspace.WorkspaceSpecification
 
 	entity, err := s.workspaceRespository.Get(id)
 	if err != nil {

@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
@@ -37,7 +38,7 @@ Specifications:
 				Tags: []string{"tag1", "tag2"},
 			},
 		},
-		Specifications: basic_workspace_payload_structs.NewWorkspaceSpecification(0, "CMD", "cmd"),
+		Specifications: applicationWorkspace.NewWorkspaceSpecification(0, "CMD", "cmd"),
 	}
 
 	// Assert

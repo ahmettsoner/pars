@@ -3,13 +3,14 @@ package structs
 import (
 	"parsdevkit.net/application/schemas"
 
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type WorkspaceBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications WorkspaceSpecification
+	Specifications applicationWorkspace.WorkspaceSpecification
 }
 
 func (e WorkspaceBaseStruct) GetHeader() schemas.SchemaHeader {
@@ -18,11 +19,14 @@ func (e WorkspaceBaseStruct) GetHeader() schemas.SchemaHeader {
 		Name: e.Header.Name,
 	}
 }
+func (e WorkspaceBaseStruct) GetSpecification() any {
+	return e.Specifications
+}
 func (s WorkspaceBaseStruct) GetKey() string {
 	return "Workspace"
 }
 
-func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications WorkspaceSpecification) WorkspaceBaseStruct {
+func NewWorkspaceBaseStruct(header schemas.SchemaHeader, specifications applicationWorkspace.WorkspaceSpecification) WorkspaceBaseStruct {
 	return WorkspaceBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -47,7 +51,7 @@ func (s *WorkspaceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) e
 
 	//TODO: Specification ve Header 2 işlemde alındı düzeltilmeli, aşağıda ki block Specification bölümünü yeniden almak için geçici olarak kullanıldı
 	var tempSpecificationObject struct {
-		Specifications WorkspaceSpecification `yaml:"Specifications"`
+		Specifications applicationWorkspace.WorkspaceSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

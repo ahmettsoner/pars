@@ -20,7 +20,7 @@ import (
 
 type ProjectSpecification struct {
 	applicationProject.ProjectIdentifier
-	// schemas.SchemaSpecification
+	schemas.SchemaSpecification
 	Platform        Platform
 	Set             string
 	Package         []string

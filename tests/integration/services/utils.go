@@ -36,7 +36,7 @@ func InitializeNewWorkspace(t *testing.T, wsPath, workspaceName, environment str
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(0, workspaceName, wsPath),
+		applicationWorkspace.NewWorkspaceSpecification(0, workspaceName, wsPath),
 	)
 
 	workspaceService := workspaceWorkspace.NewWorkspaceService(environment)

@@ -9,6 +9,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
+	applicationResource "parsdevkit.net/application/structs/resource"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
@@ -64,7 +65,7 @@ Object:
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			"foo",
 			"",
 			"/foo",

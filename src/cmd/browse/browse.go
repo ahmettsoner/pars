@@ -12,6 +12,7 @@ import (
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/tool"
+	applicationTool "parsdevkit.net/application/structs/tool"
 	"parsdevkit.net/pkg/utilities/json"
 
 	browse_tool_payload_structs "parsdevkit.net/modules/tool/browse_tool_payload/structs"
@@ -62,9 +63,11 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			commandOptions.URL,
 			schemas.Metadata{},
 		),
-		Specifications: browse_tool_payload_structs.ToolSpecification{
+		Specifications: applicationTool.ToolSpecification{
 			ToolIdentifier: tool.ToolIdentifier{},
-			Url:            commandOptions.URL,
+		},
+		Browse: browse_tool_payload_structs.ToolBrowse{
+			Url: commandOptions.URL,
 		},
 	})
 

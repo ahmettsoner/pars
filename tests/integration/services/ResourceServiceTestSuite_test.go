@@ -10,6 +10,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/option"
 	"parsdevkit.net/application/structs"
+	applicationResource "parsdevkit.net/application/structs/resource"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
@@ -108,7 +109,7 @@ func BasicResource(name string) *object_resource_payload_structs.ResourceBaseStr
 				Tags: []string{},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			name,
 			"",
 			"",
@@ -139,7 +140,7 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			name,
 			"",
 			"/foo",
@@ -195,7 +196,7 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		object_resource_payload_structs.NewResourceSpecification(0,
+		applicationResource.NewResourceSpecification(0,
 			name,
 			"",
 			"/foo",

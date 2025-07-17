@@ -19,6 +19,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
@@ -184,7 +185,7 @@ func BasicWorkspace_WithName(name string) *basic_workspace_payload_structs.Works
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
+		applicationWorkspace.NewWorkspaceSpecification(0,
 			name,
 			"path",
 		),
@@ -203,7 +204,7 @@ func BasicWorkspace_WithNamePath(name, path string) *basic_workspace_payload_str
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(0,
+		applicationWorkspace.NewWorkspaceSpecification(0,
 			name,
 			path,
 		),

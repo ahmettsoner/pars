@@ -16,6 +16,7 @@ import (
 	"parsdevkit.net/application/ioc"
 
 	"github.com/spf13/cobra"
+	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 
@@ -100,7 +101,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 			commandOptions.Name,
 			schemas.Metadata{},
 		),
-		basic_workspace_payload_structs.NewWorkspaceSpecification(
+		applicationWorkspace.NewWorkspaceSpecification(
 			0,
 			commandOptions.Name,
 			commandOptions.Path,
