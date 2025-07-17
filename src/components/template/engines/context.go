@@ -6,11 +6,11 @@ import (
 	"strings"
 
 	sectionPkg "parsdevkit.net/application/models/section"
+	"parsdevkit.net/components/template"
 	templatePkg "parsdevkit.net/components/template"
 	"parsdevkit.net/modules/resource/object_resource_contract"
 
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/context/models"
 	"parsdevkit.net/modules/project/application_project_contract"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
@@ -19,14 +19,52 @@ import (
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
+
+	"parsdevkit.net/application/contextproviders"
+	"parsdevkit.net/application/contracts"
+
+	"parsdevkit.net/modules/group/basic_group"
+	"parsdevkit.net/modules/project/application_project"
+	"parsdevkit.net/modules/resource/object_resource"
+	"parsdevkit.net/modules/template/code_template"
+	"parsdevkit.net/modules/workspace/basic_workspace"
 )
 
 type ContextFuncs struct{}
 
-func (c ContextFuncs) GetContextByBaseForArray(base models.CodeTemplateDataContext, args []string) models.CodeTemplateDataContext {
+type CodeTemplateDataContext struct {
+	Workspace basic_workspace.WorkspaceComposite
+	Group     basic_group.GroupComposite
+	Project   application_project.ApplicationProjectComposite
+	Resource  object_resource.ObjectResourceComposite
+	Template  code_template.TemplateComposite
+	Layer     object_resource.ObjectLayerComposite
+	Section   object_resource.ObjectSectionComposite
+}
+
+func NewCodeTemplateDataContext(source template.ContextProviderSource) *CodeTemplateDataContext {
+
+	workspaceContextProvider := contextproviders.ContextProviderFactory[contracts.WorkspaceContextProviderInterface](source.Workspace)
+	// groupContextProvider := contextproviders.ContextProviderFactory[contracts.GroupContextProviderInterface](source.Group)
+	projectContextProvider := contextproviders.ContextProviderFactory[contracts.ProjectContextProviderInterface](source.Project)
+	resourceContextProvider := contextproviders.ContextProviderFactory[contracts.ResourceContextProviderInterface](source.Resource)
+	templateContextProvider := contextproviders.ContextProviderFactory[contracts.TemplateContextProviderInterface](source.Template)
+
+	return &CodeTemplateDataContext{
+		Workspace: workspaceContextProvider.Context(source).(basic_workspace.WorkspaceComposite),
+		// Group:     groupContextProvider.Context(source).(basic_group.GroupComposite),
+		Project:  projectContextProvider.Context(source).(application_project.ApplicationProjectComposite),
+		Resource: resourceContextProvider.Context(source).(object_resource.ObjectResourceComposite),
+		Template: templateContextProvider.Context(source).(code_template.TemplateComposite),
+		Layer:    resourceContextProvider.LayerToModelContext(source).(object_resource.ObjectLayerComposite),
+		Section:  resourceContextProvider.SectionToModelContext(source).(object_resource.ObjectSectionComposite),
+	}
+}
+
+func (c ContextFuncs) GetContextByBaseForArray(base CodeTemplateDataContext, args []string) CodeTemplateDataContext {
 	return c.GetContextByBase(base, args...)
 }
-func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args ...string) models.CodeTemplateDataContext {
+func (c ContextFuncs) GetContextByBase(base CodeTemplateDataContext, args ...string) CodeTemplateDataContext {
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	applicationProjectService := ioc.Get[application_project_contract.ProjectInterface]()
 	objectResourceService := ioc.Get[object_resource_contract.ResourceInterface]()
@@ -115,13 +153,13 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 
 	workspaceObj, err := workspaceService.GetByName(workspace)
 	if err != nil {
-		return models.CodeTemplateDataContext{}
+		return CodeTemplateDataContext{}
 	}
 
 	//TODO: Burda resource, template selector yapısı, project, resoruce ve template için layer ve set kontrollri daha sonra eklenecek
 	resourceObj, err := objectResourceService.GetByName(resource)
 	if err != nil {
-		return models.CodeTemplateDataContext{}
+		return CodeTemplateDataContext{}
 	}
 
 	var layerObj *object_resource_payload_structs.Layer = nil
@@ -140,13 +178,13 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		if _string.IsEmpty(project) {
 			projectListFromDb, err := applicationProjectService.ListBySetAndLayers(set, layer)
 			if err != nil {
-				return models.CodeTemplateDataContext{}
+				return CodeTemplateDataContext{}
 			}
 			projectList = *projectListFromDb
 		} else {
 			projectObj, err := applicationProjectService.GetByName(project)
 			if err != nil {
-				return models.CodeTemplateDataContext{}
+				return CodeTemplateDataContext{}
 			}
 			projectList = append(projectList, *projectObj)
 		}
@@ -175,13 +213,13 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		if _string.IsEmpty(template) {
 			templateListFromDb, err := codeTemplateService.ListBySetAndLayers(set, layer)
 			if err != nil {
-				return models.CodeTemplateDataContext{}
+				return CodeTemplateDataContext{}
 			}
 			templatelist = *templateListFromDb
 		} else {
 			templateObjFromDb, err := codeTemplateService.GetByName(project)
 			if err != nil {
-				return models.CodeTemplateDataContext{}
+				return CodeTemplateDataContext{}
 			}
 			templatelist = append(templatelist, *templateObjFromDb)
 		}
@@ -199,11 +237,11 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 
 		if templateObj != nil {
 			if !_string.IsEmpty(section) {
-				selectedContext := models.CodeTemplateDataContext{}
+				selectedContext := CodeTemplateDataContext{}
 				for _, objSection := range layerObj.Sections {
 					if objSection.Name == section {
 
-						selectedContext = *models.NewCodeTemplateDataContext(
+						selectedContext = *NewCodeTemplateDataContext(
 							templatePkg.NewContextProviderSource(
 								*workspaceObj,
 								nil,
@@ -218,11 +256,11 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						tempPackages := templateObj.Specifications.Package
 						packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
 						if err != nil {
-							return models.CodeTemplateDataContext{}
+							return CodeTemplateDataContext{}
 						}
 						templateObj.Specifications.Package = file.PathToArray(packageStr)
 
-						selectedContext = *models.NewCodeTemplateDataContext(
+						selectedContext = *NewCodeTemplateDataContext(
 							templatePkg.NewContextProviderSource(
 								*workspaceObj,
 								nil,
@@ -237,14 +275,14 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 					}
 				}
 
-				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {
-					return models.CodeTemplateDataContext{}
+				if reflect.DeepEqual(selectedContext, CodeTemplateDataContext{}) {
+					return CodeTemplateDataContext{}
 				}
 
 				return selectedContext
 			} else {
 
-				selectedContext := *models.NewCodeTemplateDataContext(
+				selectedContext := *NewCodeTemplateDataContext(
 					templatePkg.NewContextProviderSource(
 						*workspaceObj,
 						nil,
@@ -258,11 +296,11 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 				tempPackages := templateObj.Specifications.Package
 				packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), selectedContext)
 				if err != nil {
-					return models.CodeTemplateDataContext{}
+					return CodeTemplateDataContext{}
 				}
 				templateObj.Specifications.Package = file.PathToArray(packageStr)
 
-				selectedContext = *models.NewCodeTemplateDataContext(
+				selectedContext = *NewCodeTemplateDataContext(
 					templatePkg.NewContextProviderSource(
 						*workspaceObj,
 						nil,
@@ -273,8 +311,8 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 						sectionPkg.SectionIdentifier{},
 					),
 				)
-				if reflect.DeepEqual(selectedContext, models.CodeTemplateDataContext{}) {
-					return models.CodeTemplateDataContext{}
+				if reflect.DeepEqual(selectedContext, CodeTemplateDataContext{}) {
+					return CodeTemplateDataContext{}
 				}
 
 				return selectedContext
@@ -283,5 +321,5 @@ func (c ContextFuncs) GetContextByBase(base models.CodeTemplateDataContext, args
 		}
 	}
 
-	return models.CodeTemplateDataContext{}
+	return CodeTemplateDataContext{}
 }

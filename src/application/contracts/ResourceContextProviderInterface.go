@@ -5,7 +5,8 @@ import (
 )
 
 type ResourceContextProviderInterface interface {
-	Context(source template.ContextProviderSource) any
-	SectionToModelContext(source template.ContextProviderSource) any
-	LayerToModelContext(source template.ContextProviderSource) any
+	BaseContextProviderInterface
+	Context(source template.ContextProviderSource) interface{}
+	SectionToModelContext(source template.ContextProviderSource) interface{}
+	LayerToModelContext(source template.ContextProviderSource) interface{}
 }

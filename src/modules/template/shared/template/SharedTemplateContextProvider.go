@@ -9,6 +9,7 @@ import (
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	shared_template_payload_structs "parsdevkit.net/modules/template/shared_template_payload/structs"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/modules/template/shared_template_contract"
 )
 
@@ -22,6 +23,11 @@ func NewSharedTemplateContextProvider(environment string) shared_template_contra
 	}
 }
 
+func (s SharedTemplateContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: shared_template_payload_structs.MODULE_KEY,
+	}
+}
 func (s *SharedTemplateContextProvider) Context(source template.ContextProviderSource) interface{} {
 
 	if model, ok := source.Template.(shared_template_payload_structs.TemplateBaseStruct); ok {

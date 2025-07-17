@@ -1,6 +1,7 @@
 package application_project
 
 import (
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 
 	"parsdevkit.net/application/platforms"
@@ -18,6 +19,11 @@ func NewApplicationProjectContextProvider(environment string) application_projec
 
 	return &ApplicationProjectContextProvider{
 		environment: environment}
+}
+func (s ApplicationProjectContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: application_project_payload_structs.MODULE_KEY,
+	}
 }
 
 func (s *ApplicationProjectContextProvider) Context(source template.ContextProviderSource) interface{} {

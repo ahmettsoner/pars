@@ -1,9 +1,9 @@
 package engines
 
 import (
+	"parsdevkit.net/application/contextgenerator"
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
-	"parsdevkit.net/context/models"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	data_resource_payload_structs "parsdevkit.net/modules/resource/data_resource_payload/structs"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
@@ -169,7 +169,7 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 
 	if generate {
 
-		var data = models.NewFileTemplateDataContext(
+		var data = contextgenerator.NewTemplateDataContext(
 			templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
 		)
 
@@ -182,9 +182,9 @@ func (s FileTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			return err
 		}
 
-		data = models.NewFileTemplateDataContext(
-			templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
-		)
+		// data = contextgenerator.NewTemplateDataContext(
+		// 	templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+		// )
 		templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 		if err != nil {
 			return err

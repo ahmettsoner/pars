@@ -4,6 +4,7 @@ import (
 	"parsdevkit.net/application/platforms"
 	_string "parsdevkit.net/pkg/utilities/string"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/layer"
 	layer2 "parsdevkit.net/application/models/layer"
@@ -30,6 +31,11 @@ type ObjectResourceContextProvider struct {
 func NewObjectResourceContextProvider(environment string) object_resource_contract.ContextProviderInterface {
 	return &ObjectResourceContextProvider{
 		environment: environment,
+	}
+}
+func (s ObjectResourceContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: object_resource_payload_structs.MODULE_KEY,
 	}
 }
 

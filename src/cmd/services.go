@@ -3,6 +3,7 @@ package cmd
 import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/bus"
+	"parsdevkit.net/application/contextproviders"
 	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/engines"
 	"parsdevkit.net/application/ioc"
@@ -68,6 +69,7 @@ func RegisterServices() {
 	registerCommandHandlers()
 	registerEventHandlers()
 	registerEngines()
+	registerContextProviders()
 	registerSchemas()
 	registerPlatformManager()
 	registerContainers()
@@ -158,20 +160,11 @@ func registerContainers() {
 	ioc.RegisterInterface[basic_workspace_contract.WorkspaceInterface](func() basic_workspace_contract.WorkspaceInterface {
 		return workspaceWorkspace.NewWorkspaceService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[basic_workspace_contract.ContextProviderInterface](func() basic_workspace_contract.ContextProviderInterface {
-		return workspaceWorkspace.NewWorkspaceContextProvider(application.GetEnvironment())
-	})
 	ioc.RegisterInterface[basic_group_contract.GroupInterface](func() basic_group_contract.GroupInterface {
 		return groupGroup.NewGroupService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[basic_group_contract.ContextProviderInterface](func() basic_group_contract.ContextProviderInterface {
-		return groupGroup.NewGroupContextProvider(application.GetEnvironment())
-	})
 	ioc.RegisterInterface[application_project_contract.ProjectInterface](func() application_project_contract.ProjectInterface {
 		return projectApplication.NewApplicationProjectService(application.GetEnvironment())
-	})
-	ioc.RegisterInterface[application_project_contract.ContextProviderInterface](func() application_project_contract.ContextProviderInterface {
-		return projectApplication.NewApplicationProjectContextProvider(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[browse_tool_contract.ToolInterface](func() browse_tool_contract.ToolInterface {
 		return browseTool.NewToolService(application.GetEnvironment())
@@ -179,35 +172,32 @@ func registerContainers() {
 	ioc.RegisterInterface[code_template_contract.TemplateInterface](func() code_template_contract.TemplateInterface {
 		return templateCode.NewCodeTemplateService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[code_template_contract.ContextProviderInterface](func() code_template_contract.ContextProviderInterface {
-		return templateCode.NewCodeTemplateContextProvider(application.GetEnvironment())
-	})
 	ioc.RegisterInterface[file_template_contract.TemplateInterface](func() file_template_contract.TemplateInterface {
 		return templateFile.NewFileTemplateService(application.GetEnvironment())
-	})
-	ioc.RegisterInterface[file_template_contract.ContextProviderInterface](func() file_template_contract.ContextProviderInterface {
-		return templateFile.NewFileTemplateContextProvider(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[shared_template_contract.TemplateInterface](func() shared_template_contract.TemplateInterface {
 		return templateShared.NewSharedTemplateService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[shared_template_contract.ContextProviderInterface](func() shared_template_contract.ContextProviderInterface {
-		return templateShared.NewSharedTemplateContextProvider(application.GetEnvironment())
-	})
 	ioc.RegisterInterface[data_resource_contract.ResourceInterface](func() data_resource_contract.ResourceInterface {
 		return resourceData.NewDataResourceService(application.GetEnvironment())
-	})
-	ioc.RegisterInterface[data_resource_contract.ContextProviderInterface](func() data_resource_contract.ContextProviderInterface {
-		return resourceData.NewDataResourceContextProvider(application.GetEnvironment())
 	})
 	ioc.RegisterInterface[object_resource_contract.ResourceInterface](func() object_resource_contract.ResourceInterface {
 		return resourceObject.NewObjectResourceService(application.GetEnvironment())
 	})
-	ioc.RegisterInterface[object_resource_contract.ContextProviderInterface](func() object_resource_contract.ContextProviderInterface {
-		return resourceObject.NewObjectResourceContextProvider(application.GetEnvironment())
-	})
+
 	ioc.RegisterInterface[contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct]](func() contracts.TaskServiceInterface[basic_task_payload_structs.TaskBaseStruct] {
 		return taskCommon.NewBasicTaskService(application.GetEnvironment())
 	})
 
+}
+
+func registerContextProviders() {
+	contextproviders.Register(&workspaceWorkspace.WorkspaceContextProvider{})
+	contextproviders.Register(&groupGroup.GroupContextProvider{})
+	contextproviders.Register(&projectApplication.ApplicationProjectContextProvider{})
+	contextproviders.Register(&templateCode.CodeTemplateContextProvider{})
+	contextproviders.Register(&templateFile.FileTemplateContextProvider{})
+	contextproviders.Register(&templateShared.SharedTemplateContextProvider{})
+	contextproviders.Register(&resourceData.DataResourceContextProvider{})
+	contextproviders.Register(&resourceObject.ObjectResourceContextProvider{})
 }

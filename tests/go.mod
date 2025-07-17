@@ -108,9 +108,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/environment/basic_environment v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/environment/basic_environment_contract v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/environment/basic_environment_payload v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_payload v0.0.0-00010101000000-000000000000
@@ -136,19 +133,15 @@ require (
 )
 
 require (
-	github.com/fatih/color v1.15.0 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-runewidth v0.0.16 // indirect
-	github.com/olekukonko/errors v0.0.0-20250405072817-4e6d85265da6 // indirect
-	github.com/olekukonko/ll v0.0.8 // indirect
-	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
-	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/internal v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment_contract v0.0.0-00010101000000-000000000000 // indirect
+	parsdevkit.net/modules/environment/basic_environment_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/project/application_project_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/resource/data_resource_contract v0.0.0-00010101000000-000000000000 // indirect
@@ -201,7 +194,6 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
-	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect; indirec
 	parsdevkit.net/modules/tool/browse_tool_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000

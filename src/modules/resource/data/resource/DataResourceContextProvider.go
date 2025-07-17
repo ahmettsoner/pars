@@ -1,6 +1,7 @@
 package data_resource
 
 import (
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/models/layer"
 	layer2 "parsdevkit.net/application/models/layer"
@@ -29,6 +30,11 @@ func NewDataResourceContextProvider(environment string) data_resource_contract.C
 	}
 }
 
+func (s DataResourceContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: data_resource_payload_structs.MODULE_KEY,
+	}
+}
 func (s *DataResourceContextProvider) Context(source template.ContextProviderSource) interface{} {
 	if model, ok := source.Resource.(data_resource_payload_structs.ResourceBaseStruct); ok {
 		if modelProject, ok := source.Project.(application_project_payload_structs.ProjectBaseStruct); ok {

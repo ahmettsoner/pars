@@ -1,11 +1,13 @@
 package basic_group
 
 import (
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/platforms"
 	applicationGroup "parsdevkit.net/application/structs/group"
 	"parsdevkit.net/components/template"
 	"parsdevkit.net/models"
 	"parsdevkit.net/modules/group/basic_group_contract"
+	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 )
 
@@ -17,6 +19,12 @@ func NewGroupContextProvider(environment string) basic_group_contract.ContextPro
 
 	return &GroupContextProvider{
 		environment: environment}
+}
+
+func (s GroupContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: basic_group_payload_structs.MODULE_KEY,
+	}
 }
 
 func (s *GroupContextProvider) Context(source template.ContextProviderSource) interface{} {

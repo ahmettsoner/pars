@@ -3,6 +3,7 @@ package engines
 import (
 	"strings"
 
+	"parsdevkit.net/application/contextgenerator"
 	"parsdevkit.net/application/ioc"
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
@@ -24,8 +25,6 @@ import (
 	"parsdevkit.net/persistence/repositories"
 
 	"parsdevkit.net/persistence/entities"
-
-	"parsdevkit.net/context/models"
 
 	"github.com/sirupsen/logrus"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
@@ -151,7 +150,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 									}
 									if generate {
 
-										var data = models.NewCodeTemplateDataContext(
+										var data = contextgenerator.NewTemplateDataContext(
 											templatePkg.NewContextProviderSource(
 												workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
 										)
@@ -172,9 +171,9 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 										}
 										template.Specifications.Package = file.PathToArray(packageStr)
 
-										data = models.NewCodeTemplateDataContext(
-											templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
-										)
+										// data = contextgenerator.NewTemplateDataContext(
+										// 	templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, resourceLayerSection.SectionIdentifier),
+										// )
 										templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 										if err != nil {
 											return err
@@ -208,7 +207,7 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			return err
 		}
 		if generate {
-			var data = models.NewCodeTemplateDataContext(
+			var data = contextgenerator.NewTemplateDataContext(
 				templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
 			)
 
@@ -228,9 +227,9 @@ func (s CodeTemplateOperations) GenerateContent(workspace basic_workspace_payloa
 			}
 			template.Specifications.Package = file.PathToArray(packageStr)
 
-			data = models.NewCodeTemplateDataContext(
-				templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
-			)
+			// data = contextgenerator.NewTemplateDataContext(
+			// 	templatePkg.NewContextProviderSource(workspace, nil, project, resource, template, resourceLayer.LayerIdentifier, sectionPkg.SectionIdentifier{}),
+			// )
 			templateContentStr, err := templateEngine.RenderTemplate(template.Specifications.Template.Content, data)
 			if err != nil {
 				return err

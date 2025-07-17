@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/modules/resource/object_resource"
 	file_template_payload_structs "parsdevkit.net/modules/template/file_template_payload/structs"
 
+	"parsdevkit.net/application/contracts"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/template/file_template_contract"
 )
@@ -19,6 +20,11 @@ type FileTemplateContextProvider struct {
 func NewFileTemplateContextProvider(environment string) file_template_contract.ContextProviderInterface {
 	return &FileTemplateContextProvider{
 		environment: environment,
+	}
+}
+func (s FileTemplateContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: file_template_payload_structs.MODULE_KEY,
 	}
 }
 

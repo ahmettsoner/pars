@@ -10,6 +10,7 @@ import (
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 	"parsdevkit.net/modules/resource/object_resource"
 
+	"parsdevkit.net/application/contracts"
 	"parsdevkit.net/application/models/label"
 )
 
@@ -23,6 +24,11 @@ func NewCodeTemplateContextProvider(environment string) code_template_contract.C
 	}
 }
 
+func (s CodeTemplateContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: code_template_payload_structs.MODULE_KEY,
+	}
+}
 func (s *CodeTemplateContextProvider) Context(source template.ContextProviderSource) interface{} {
 
 	if model, ok := source.Template.(code_template_payload_structs.TemplateBaseStruct); ok {

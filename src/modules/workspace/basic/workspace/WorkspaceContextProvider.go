@@ -4,6 +4,7 @@ import (
 	"parsdevkit.net/components/template"
 	"parsdevkit.net/modules/workspace/basic_workspace_contract"
 
+	"parsdevkit.net/application/contracts"
 	basic_workspace_payload_structs "parsdevkit.net/modules/workspace/basic_workspace_payload/structs"
 )
 
@@ -17,6 +18,11 @@ func NewWorkspaceContextProvider(environment string) basic_workspace_contract.Co
 	}
 }
 
+func (s WorkspaceContextProvider) GetConfig() contracts.ContextProviderConfig {
+	return contracts.ContextProviderConfig{
+		Name: basic_workspace_payload_structs.MODULE_KEY,
+	}
+}
 func (s *WorkspaceContextProvider) Context(source template.ContextProviderSource) interface{} {
 	if model, ok := source.Workspace.(basic_workspace_payload_structs.WorkspaceBaseStruct); ok {
 		return WorkspaceComposite{

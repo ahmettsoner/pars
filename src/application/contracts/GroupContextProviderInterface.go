@@ -3,5 +3,6 @@ package contracts
 import "parsdevkit.net/components/template"
 
 type GroupContextProviderInterface interface {
-	Context(source template.ContextProviderSource) any
+	BaseContextProviderInterface
+	Context(source template.ContextProviderSource) interface{}
 }
