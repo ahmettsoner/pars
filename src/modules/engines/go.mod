@@ -45,8 +45,6 @@ replace parsdevkit.net/pkg => ../../pkg
 
 replace parsdevkit.net/persistence/contexts => ../../data/contexts
 
-replace parsdevkit.net/context => ../context
-
 replace parsdevkit.net/application => ../../application
 
 replace parsdevkit.net/components => ../../components
@@ -57,7 +55,6 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000
-	parsdevkit.net/context v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000

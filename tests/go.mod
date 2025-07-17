@@ -90,8 +90,6 @@ replace parsdevkit.net/platforms/go => ../src/platforms/go
 
 replace parsdevkit.net/platforms/pars => ../src/platforms/pars
 
-replace parsdevkit.net/context => ../src/modules/context
-
 replace parsdevkit.net/providers => ../src/providers
 
 replace parsdevkit.net/models => ../src/models
@@ -107,6 +105,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
+	parsdevkit.net/internal v0.0.0-00010101000000-000000000000
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group v0.0.0-00010101000000-000000000000
 	parsdevkit.net/modules/group/basic_group_contract v0.0.0-00010101000000-000000000000
@@ -138,7 +137,6 @@ require (
 	github.com/spf13/viper v1.19.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/internal v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/environment/basic_environment v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/environment/basic_environment_contract v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/modules/environment/basic_environment_payload v0.0.0-00010101000000-000000000000 // indirect

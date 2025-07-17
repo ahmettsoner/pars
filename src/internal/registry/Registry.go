@@ -1,4 +1,4 @@
-package ioc
+package registry
 
 import (
 	"fmt"

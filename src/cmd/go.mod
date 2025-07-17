@@ -87,7 +87,6 @@ require (
 	modernc.org/mathutil v1.5.0 // indirect
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
-	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/platforms/core v0.0.0-00010101000000-000000000000 // indirect
@@ -145,8 +144,6 @@ replace parsdevkit.net/modules/task/basic_task_contract => ../modules/task/basic
 replace parsdevkit.net/engines => ../modules/engines
 
 replace parsdevkit.net/pkg => ../pkg
-
-replace parsdevkit.net/context => ../modules/context
 
 replace parsdevkit.net/persistence/entities => ../data/entities
 

@@ -8,8 +8,6 @@ replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/internal => ../internal
 
-replace parsdevkit.net/context => ../modules/context
-
 replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../modules/workspace/basic/workspace.payload
 
 replace parsdevkit.net/persistence/entities => ../data/entities

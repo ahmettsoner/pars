@@ -88,8 +88,6 @@ replace parsdevkit.net/platforms/go => ./platforms/go
 
 replace parsdevkit.net/platforms/pars => ./platforms/pars
 
-replace parsdevkit.net/context => ./modules/context
-
 replace parsdevkit.net/providers => ./providers
 
 replace parsdevkit.net/internal => ./internal
@@ -146,7 +144,6 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/components v0.0.0-00010101000000-000000000000 // indirect
-	parsdevkit.net/context v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/internal v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/models v0.0.0-00010101000000-000000000000 // indirect
