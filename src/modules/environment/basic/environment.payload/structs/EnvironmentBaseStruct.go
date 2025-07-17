@@ -3,13 +3,14 @@ package structs
 import (
 	"parsdevkit.net/application/schemas"
 
+	applicationEnvironment "parsdevkit.net/application/structs/environment"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type EnvironmentBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications EnvironmentSpecification
+	Specifications applicationEnvironment.EnvironmentSpecification
 }
 
 func (e EnvironmentBaseStruct) GetHeader() schemas.SchemaHeader {
@@ -22,7 +23,7 @@ func (s EnvironmentBaseStruct) GetKey() string {
 	return "Environment"
 }
 
-func NewEnvironmentBaseStruct(header schemas.SchemaHeader, specifications EnvironmentSpecification) EnvironmentBaseStruct {
+func NewEnvironmentBaseStruct(header schemas.SchemaHeader, specifications applicationEnvironment.EnvironmentSpecification) EnvironmentBaseStruct {
 	return EnvironmentBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -46,7 +47,7 @@ func (s *EnvironmentBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	var tempSpecificationObject struct {
-		Specifications EnvironmentSpecification `yaml:"Specifications"`
+		Specifications applicationEnvironment.EnvironmentSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

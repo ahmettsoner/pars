@@ -1,18 +1,17 @@
-package structs
+package environment
 
 import (
-	applicationEnvironment "parsdevkit.net/application/structs/environment"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type EnvironmentSpecification struct {
-	applicationEnvironment.EnvironmentIdentifier
+	EnvironmentIdentifier
 }
 
 func NewEnvironmentSpecification(id int, name string) EnvironmentSpecification {
 	return EnvironmentSpecification{
-		EnvironmentIdentifier: applicationEnvironment.NewEnvironmentIdentifier(id, name),
+		EnvironmentIdentifier: NewEnvironmentIdentifier(id, name),
 	}
 }
 func (e EnvironmentSpecification) Validate() error {
@@ -25,7 +24,7 @@ func (e EnvironmentSpecification) Validate() error {
 func (s *EnvironmentSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		applicationEnvironment.EnvironmentIdentifier
+		EnvironmentIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

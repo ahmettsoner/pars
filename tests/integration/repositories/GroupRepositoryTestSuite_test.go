@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"parsdevkit.net/application"
+	applicationGroup "parsdevkit.net/application/structs/group"
 
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 
@@ -184,7 +185,7 @@ func BasicGroup_WithName(name string) *basic_group_payload_structs.GroupBaseStru
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_group_payload_structs.NewGroupSpecification(0,
+		applicationGroup.NewGroupSpecification(0,
 			name,
 			"path",
 			[]string{"foo", "bar"},
@@ -204,7 +205,7 @@ func BasicGroup_WithNamePath(name, path string) *basic_group_payload_structs.Gro
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_group_payload_structs.NewGroupSpecification(0,
+		applicationGroup.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

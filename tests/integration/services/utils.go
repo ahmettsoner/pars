@@ -306,7 +306,7 @@ func BasicGroup_WithNamePath(name, path string) *basic_group_payload_structs.Gro
 				Tags: []string{"tag1", "tag2"},
 			},
 		),
-		basic_group_payload_structs.NewGroupSpecification(0,
+		applicationGroup.NewGroupSpecification(0,
 			name,
 			path,
 			[]string{"foo", "bar"},

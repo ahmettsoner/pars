@@ -1,34 +1,33 @@
-package structs
+package group
 
 import (
 	"fmt"
 
-	applicationGroup "parsdevkit.net/application/structs/group"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"gopkg.in/yaml.v3"
 )
 
 type GroupSpecification struct {
-	applicationGroup.GroupIdentifier
+	GroupIdentifier
 }
 
 func NewGroupSpecification(id int, name, path string, _package []string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: applicationGroup.NewGroupIdentifier(id, name, path, _package),
+		GroupIdentifier: NewGroupIdentifier(id, name, path, _package),
 	}
 }
 
 func NewGroupSpecification_Empty(name string) GroupSpecification {
 	return GroupSpecification{
-		GroupIdentifier: applicationGroup.NewGroupIdentifier(0, name, name, []string{}),
+		GroupIdentifier: NewGroupIdentifier(0, name, name, []string{}),
 	}
 }
 
 func (s *GroupSpecification) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 	var tempIdentifierObject struct {
-		applicationGroup.GroupIdentifier
+		GroupIdentifier
 	}
 
 	if err := unmarshal(&tempIdentifierObject); err != nil {

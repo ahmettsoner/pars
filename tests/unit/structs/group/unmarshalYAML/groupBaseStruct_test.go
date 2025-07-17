@@ -3,6 +3,7 @@ package unmarshalYAML
 import (
 	"testing"
 
+	applicationGroup "parsdevkit.net/application/structs/group"
 	basic_group_payload_structs "parsdevkit.net/modules/group/basic_group_payload/structs"
 
 	"github.com/stretchr/testify/assert"
@@ -39,7 +40,7 @@ Specifications:
 				Tags: []string{"tag1", "tag2"},
 			},
 		},
-		Specifications: basic_group_payload_structs.NewGroupSpecification(0, "CMD", "cmd", []string{"pars", "cmd"}),
+		Specifications: applicationGroup.NewGroupSpecification(0, "CMD", "cmd", []string{"pars", "cmd"}),
 	}
 
 	// Assert

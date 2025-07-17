@@ -7,12 +7,13 @@ import (
 
 	"gopkg.in/yaml.v3"
 	"parsdevkit.net/application/schemas"
+	applicationGroup "parsdevkit.net/application/structs/group"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type GroupBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications GroupSpecification
+	Specifications applicationGroup.GroupSpecification
 }
 
 func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
@@ -21,7 +22,7 @@ func (e GroupBaseStruct) GetHeader() schemas.SchemaHeader {
 func (s GroupBaseStruct) GetKey() string {
 	return MODULE_KEY
 }
-func NewGroupBaseStruct(header schemas.SchemaHeader, specifications GroupSpecification) GroupBaseStruct {
+func NewGroupBaseStruct(header schemas.SchemaHeader, specifications applicationGroup.GroupSpecification) GroupBaseStruct {
 	return GroupBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -44,7 +45,7 @@ func (s *GroupBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) error
 	}
 
 	var tempSpecificationObject struct {
-		Specifications GroupSpecification `yaml:"Specifications"`
+		Specifications applicationGroup.GroupSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

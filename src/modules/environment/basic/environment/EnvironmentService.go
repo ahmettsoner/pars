@@ -8,6 +8,7 @@ import (
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/environment"
+	applicationEnvironment "parsdevkit.net/application/structs/environment"
 	"parsdevkit.net/modules/environment/basic_environment_contract"
 	"parsdevkit.net/pkg/utilities/file"
 	_string "parsdevkit.net/pkg/utilities/string"
@@ -44,7 +45,7 @@ func (s EnvironmentService) List() ([]basic_environment_payload_structs.Environm
 				entity,
 				schemas.Metadata{},
 			),
-			Specifications: basic_environment_payload_structs.EnvironmentSpecification{
+			Specifications: applicationEnvironment.EnvironmentSpecification{
 				EnvironmentIdentifier: environment.EnvironmentIdentifier{},
 			},
 		}
