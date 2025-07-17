@@ -48,7 +48,7 @@ func ProjectTypeToAngularCLITypeString(c angularModels.AngularProjectType) (stri
 func (s AngularManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.Angular
 }
-func (s AngularManager) GetPlatformVersion(platform application_project_payload_structs.Platform) angularModels.AngularPlatformVersion {
+func (s AngularManager) GetPlatformVersion(platform applicationProject.Platform) angularModels.AngularPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := angularModels.AngularPlatformVersions.V17
 
@@ -314,7 +314,7 @@ func (s AngularManager) RemoveDependenciesFromProject(project application_projec
 	return nil
 }
 
-func (s AngularManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s AngularManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	for _, reference := range references {
 		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
@@ -332,7 +332,7 @@ func (s AngularManager) AddReferenceToProject(project application_project_payloa
 	return nil
 }
 
-func (s AngularManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s AngularManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	for _, reference := range references {
 
@@ -353,7 +353,7 @@ func (s AngularManager) RemoveReferenceFromProject(project application_project_p
 
 func (s AngularManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project.Specifications))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -363,7 +363,7 @@ func (s AngularManager) IsProjectFileExists(project application_project_payload_
 		return !stat.IsDir(), nil
 	}
 }
-func (s AngularManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s AngularManager) GetProjectFileName(specifications applicationProject.ProjectSpecification) string {
 	return fmt.Sprintf("tsconfig.app.json")
 }
 
@@ -443,12 +443,12 @@ func (s AngularManager) RemoveFolderFromProjectDefinition(project application_pr
 	return nil
 }
 
-func (s AngularManager) GetProjectFileRelativePath(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s AngularManager) GetProjectFileRelativePath(specifications applicationProject.ProjectSpecification) string {
 
-	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
+	return filepath.Join(specifications.GetRelativeProjectPath(), s.GetProjectFileName(specifications))
 }
 
-func (s AngularManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (bool, error) {
+func (s AngularManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference applicationProject.Reference) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -468,7 +468,7 @@ func (s AngularManager) HasReferenceOnProject(project application_project_payloa
 	return referenceState, nil
 }
 
-func (s AngularManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+func (s AngularManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]applicationProject.Reference, error) {
 
 	output, err := providers.NPMExecuteWithOutput(project.Specifications.GetAbsoluteProjectPath(), "list", "--link")
 	if err != nil {
@@ -479,7 +479,7 @@ func (s AngularManager) ListReferencesFromProject(project application_project_pa
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	references := make([]applicationProject.Reference, 0)
 	for _, match := range matches {
 		for _, projectReference := range project.Specifications.References {
 			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())

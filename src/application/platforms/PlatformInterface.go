@@ -4,6 +4,7 @@ import (
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs"
 	"parsdevkit.net/application/structs/project"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 )
 
@@ -40,7 +41,7 @@ type PlatformInterface[T schemas.SchemaInterface] interface {
 	// LintProject(project T) error   // öneri
 
 	// ──────────────── Project File & Folder Management ────────────────
-	GetProjectFileName(project T) string
+	GetProjectFileName(project applicationProject.ProjectSpecification) string
 	IsProjectFileExists(project T) (bool, error)
 	IsProjectFolderExists(project T) (bool, error)
 	AddFolderToProjectDefinition(project T, paths ...string) error
@@ -63,11 +64,11 @@ type PlatformInterface[T schemas.SchemaInterface] interface {
 	PrintDependencies(dependencies []string) string
 
 	// ──────────────── Reference Management ────────────────
-	AddReferenceToProject(project T, references []T) error
-	RemoveReferenceFromProject(project T, references []T) error
-	ListReferencesFromProject(project T) ([]T, error)
-	GetReferenceFromProject(project T, reference T) error
-	HasReferenceOnProject(project T, reference T) (bool, error)
+	AddReferenceToProject(project T, references []applicationProject.Reference) error
+	RemoveReferenceFromProject(project T, references []applicationProject.Reference) error
+	ListReferencesFromProject(project T) ([]applicationProject.Reference, error)
+	GetReferenceFromProject(project T, reference applicationProject.Reference) error
+	HasReferenceOnProject(project T, reference applicationProject.Reference) (bool, error)
 
 	// ──────────────── Helpers ────────────────
 	PrintDataType(dataType structs.DataType) string

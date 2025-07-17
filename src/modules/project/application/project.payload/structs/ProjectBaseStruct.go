@@ -5,13 +5,14 @@ import (
 	"reflect"
 
 	"parsdevkit.net/application/schemas"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/pkg/errors"
 	_string "parsdevkit.net/pkg/utilities/string"
 )
 
 type ProjectBaseStruct struct {
 	Header         schemas.SchemaHeader
-	Specifications ProjectSpecification
+	Specifications applicationProject.ProjectSpecification
 	Application    Application
 }
 
@@ -32,7 +33,7 @@ func (l ProjectBaseStruct) Key() string {
 func (l ProjectBaseStruct) IsEqual(other ProjectBaseStruct) bool {
 	return reflect.DeepEqual(l, other)
 }
-func NewProjectBaseStruct(header schemas.SchemaHeader, specifications ProjectSpecification, application Application) ProjectBaseStruct {
+func NewProjectBaseStruct(header schemas.SchemaHeader, specifications applicationProject.ProjectSpecification, application Application) ProjectBaseStruct {
 	return ProjectBaseStruct{
 		Header:         header,
 		Specifications: specifications,
@@ -57,7 +58,7 @@ func (s *ProjectBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) err
 	}
 
 	var tempSpecificationObject struct {
-		Specifications ProjectSpecification `yaml:"Specifications"`
+		Specifications applicationProject.ProjectSpecification `yaml:"Specifications"`
 	}
 
 	if err := unmarshal(&tempSpecificationObject); err != nil {

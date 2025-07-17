@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"parsdevkit.net/application/ioc"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/internal/flowx"
 	"parsdevkit.net/modules/project/application_project_contract"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
@@ -12,10 +13,10 @@ import (
 
 type CreateProjectReference struct {
 	flowx.BaseStep
-	reference application_project_payload_structs.ProjectBaseStruct
+	reference applicationProject.Reference
 }
 
-func NewCreateProjectReference(reference application_project_payload_structs.ProjectBaseStruct) *CreateProjectReference {
+func NewCreateProjectReference(reference applicationProject.Reference) *CreateProjectReference {
 	return &CreateProjectReference{
 		reference: reference,
 	}

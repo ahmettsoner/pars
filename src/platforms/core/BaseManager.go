@@ -4,6 +4,7 @@ import (
 	"os"
 	"strings"
 
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 	_string "parsdevkit.net/pkg/utilities/string"
 
@@ -110,9 +111,9 @@ func (s *BaseManager) GetGroupPackage(project application_project_payload_struct
 	return result
 }
 
-func (s *BaseManager) GetProjectPackage(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s *BaseManager) GetProjectPackage(specifications applicationProject.ProjectSpecification) string {
 
-	result := strings.Join(project.Specifications.GetAllPackage(), s.PackageDelimiter)
+	result := strings.Join(specifications.GetAllPackage(), s.PackageDelimiter)
 
 	return result
 }

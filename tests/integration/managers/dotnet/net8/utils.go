@@ -47,7 +47,7 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -58,10 +58,10 @@ func CreateNewTestProject(t *testing.T, name, testPath, workspaceName string) ap
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,
@@ -86,7 +86,7 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName s
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -97,10 +97,10 @@ func CreateNewTestProjectWithLayer(t *testing.T, name, testPath, workspaceName s
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			layers,
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,
@@ -124,7 +124,7 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, 
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -135,10 +135,10 @@ func CreateNewTestProjectWithGroup(t *testing.T, name, testPath, workspaceName, 
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,
@@ -167,7 +167,7 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, worksp
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -178,10 +178,10 @@ func CreateNewTestProjectWithGroupAndLayers(t *testing.T, name, testPath, worksp
 			[]label.Label(nil),
 			file.PathToArray(name),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			layers,
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,
@@ -210,7 +210,7 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, wo
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -221,10 +221,10 @@ func CreateNewTestProjectWithGroupAndPath(t *testing.T, name, path, testPath, wo
 			[]label.Label(nil),
 			file.PathToArray(path),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,
@@ -252,7 +252,7 @@ func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, worksp
 
 	project := application_project_payload_structs.NewProjectBaseStruct(
 		schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, name, schemas.Metadata{}),
-		application_project_payload_structs.NewProjectSpecification(
+		applicationProject.NewProjectSpecification(
 			0,
 			name,
 			"",
@@ -263,10 +263,10 @@ func CreateNewTestProjectGroupAndPath(t *testing.T, name, path, testPath, worksp
 			[]label.Label(nil),
 			file.PathToArray(path),
 			applicationWorkspace.NewWorkspaceIdentifier(0, workspaceName, filepath.Join(testPath, workspaceName)),
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.Dotnet, dotnetModels.DotnetPlatformVersions.Net8.String()),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency(nil),
-			[]application_project_payload_structs.ProjectBaseStruct(nil),
+			[]applicationProject.Reference(nil),
 		),
 		application_project_payload_structs.NewApplication(
 			models.ProjectTypes.Library,

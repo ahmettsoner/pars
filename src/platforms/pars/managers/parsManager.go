@@ -29,7 +29,7 @@ func (s ParsManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.Pars
 }
 
-func (s ParsManager) GetPlatformVersion(platform application_project_payload_structs.Platform) parsModels.ParsPlatformVersion {
+func (s ParsManager) GetPlatformVersion(platform applicationProject.Platform) parsModels.ParsPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := parsModels.ParsPlatformVersions.BetaV1
 
@@ -171,12 +171,12 @@ func (s ParsManager) RemoveDependenciesFromProject(project application_project_p
 	return nil
 }
 
-func (s ParsManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s ParsManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	return nil
 }
 
-func (s ParsManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s ParsManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	return nil
 }

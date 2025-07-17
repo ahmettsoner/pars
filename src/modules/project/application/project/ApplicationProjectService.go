@@ -149,12 +149,12 @@ func (s ApplicationProjectService) RemoveDependencyFromProject(model application
 	return nil
 }
 
-func (s ApplicationProjectService) AddReferenceToProject(model application_project_payload_structs.ProjectBaseStruct, references ...application_project_payload_structs.ProjectBaseStruct) error {
+func (s ApplicationProjectService) AddReferenceToProject(model application_project_payload_structs.ProjectBaseStruct, references ...applicationProject.Reference) error {
 
 	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
-		err := projectManager.AddReferenceToProject(model, []application_project_payload_structs.ProjectBaseStruct{ref})
+		err := projectManager.AddReferenceToProject(model, []applicationProject.Reference{ref})
 		if err != nil {
 			return fmt.Errorf("xxx: Application Project Reference eklerken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
@@ -162,12 +162,12 @@ func (s ApplicationProjectService) AddReferenceToProject(model application_proje
 
 	return nil
 }
-func (s ApplicationProjectService) RemoveReferenceFromProject(model application_project_payload_structs.ProjectBaseStruct, references ...application_project_payload_structs.ProjectBaseStruct) error {
+func (s ApplicationProjectService) RemoveReferenceFromProject(model application_project_payload_structs.ProjectBaseStruct, references ...applicationProject.Reference) error {
 
 	projectManager := platforms.Get[application_project_payload_structs.ProjectBaseStruct](model.Specifications.Platform.Type)
 
 	for _, ref := range references {
-		err := projectManager.RemoveReferenceFromProject(model, []application_project_payload_structs.ProjectBaseStruct{ref})
+		err := projectManager.RemoveReferenceFromProject(model, []applicationProject.Reference{ref})
 		if err != nil {
 			return fmt.Errorf("xxx: Application Project Reference kaldırırken hata oluştu: '%s' Bağımlılıklar: '%+v'\n%w", model.Header.Name, references, err)
 		}
@@ -794,7 +794,7 @@ func (s *ApplicationProjectService) RemoveProjectFiles(project application_proje
 		}
 		logrus.Debugf("project (%v) files/folders removed", project.Header.Name)
 	} else {
-		if err := os.RemoveAll(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), projectManager.GetProjectFileName(project))); err != nil {
+		if err := os.RemoveAll(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), projectManager.GetProjectFileName(project.Specifications))); err != nil {
 			return false, fmt.Errorf("xxx: Application Project proje dosyası silinirken hata oluştu: '%s' Path: '%+v'\n%w", project.Header.Name, project.Specifications.GetAbsoluteBaseProjectPath(), err)
 		}
 		if err := projectManager.RemoveDefaultFiles(project); err != nil {

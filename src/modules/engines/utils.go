@@ -3,10 +3,10 @@ package engines
 import (
 	"fmt"
 
-	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
+	applicationProject "parsdevkit.net/application/structs/project"
 )
 
-func PrintRefInfo(projects []application_project_payload_structs.ProjectSpecification) {
+func PrintRefInfo(projects []applicationProject.ProjectSpecification) {
 	for _, project := range projects {
 		fmt.Printf("%v - %v (%v)\n", project.Group, project.Name, project.Workspace)
 		for _, ref := range project.References {

@@ -11,6 +11,7 @@ import (
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	"github.com/spf13/cobra"
+	applicationProject "parsdevkit.net/application/structs/project"
 	application_project_payload_structs "parsdevkit.net/modules/project/application_project_payload/structs"
 
 	"parsdevkit.net/application"
@@ -69,7 +70,7 @@ func executeFunc(cmd *cobra.Command, args []string) error {
 					name,
 					schemas.Metadata{},
 				),
-				Specifications: application_project_payload_structs.ProjectSpecification{
+				Specifications: applicationProject.ProjectSpecification{
 					ProjectIdentifier: project.ProjectIdentifier{
 						Workspace: commandOptions.Workspace,
 					},

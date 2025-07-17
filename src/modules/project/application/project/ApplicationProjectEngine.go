@@ -705,9 +705,9 @@ func (s ApplicationProjectEngine) getGroup(project application_project_payload_s
 	return &result, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReferences(prj application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReferences(prj application_project_payload_structs.ProjectBaseStruct) ([]applicationProject.Reference, error) {
 
-	projectReferences := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	projectReferences := make([]applicationProject.Reference, 0)
 
 	for _, reference := range prj.Specifications.References {
 		logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
@@ -727,11 +727,11 @@ func (s ApplicationProjectEngine) getProjectReferences(prj application_project_p
 	return projectReferences, nil
 }
 
-func (s ApplicationProjectEngine) getProjectReference(prj application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (*application_project_payload_structs.ProjectBaseStruct, error) {
+func (s ApplicationProjectEngine) getProjectReference(prj application_project_payload_structs.ProjectBaseStruct, reference applicationProject.Reference) (*applicationProject.Reference, error) {
 
 	workspaceService := ioc.Get[basic_workspace_contract.WorkspaceInterface]()
 	service := ioc.Get[application_project_contract.ProjectInterface]()
-	var projectReference *application_project_payload_structs.ProjectBaseStruct = nil
+	var projectReference *applicationProject.Reference = nil
 
 	logrus.Debugf("reference (%v) processing for (%v)", reference.Header.Name, prj.Header.Name)
 
@@ -759,7 +759,10 @@ func (s ApplicationProjectEngine) getProjectReference(prj application_project_pa
 		}
 
 		if selectedProject != nil {
-			projectReference = selectedProject
+			projectReference = &applicationProject.Reference{
+				Header:         selectedProject.Header,
+				Specifications: selectedProject.Specifications,
+			}
 		} else {
 			projectReference = &reference
 		}
@@ -773,7 +776,7 @@ func (s ApplicationProjectEngine) sortProjectsByReference(projects []application
 	service := ioc.Get[application_project_contract.ProjectInterface]()
 
 	logrus.Debugf("'%d' projects preparing for ordering", len(projects))
-	projectMap := make(map[string]application_project_payload_structs.ProjectSpecification)
+	projectMap := make(map[string]applicationProject.ProjectSpecification)
 	for _, project := range projects {
 		projectMap[project.GetUniqueKey()] = project.Specifications
 	}

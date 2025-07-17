@@ -4,6 +4,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/schemas"
 	"parsdevkit.net/application/structs/project"
+	applicationProject "parsdevkit.net/application/structs/project"
 	"parsdevkit.net/models"
 )
 
@@ -53,8 +54,8 @@ type ProjectServiceInterface[T schemas.SchemaInterface] interface {
 
 	//Reference
 	ValidateProjectReferences(model T) (bool, error)
-	AddReferenceToProject(model T, references ...T) error
-	RemoveReferenceFromProject(model T, references ...T) error
+	AddReferenceToProject(model T, references ...applicationProject.Reference) error
+	RemoveReferenceFromProject(model T, references ...applicationProject.Reference) error
 	// ListReferences
 
 	//Dependency

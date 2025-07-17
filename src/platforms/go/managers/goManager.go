@@ -32,7 +32,7 @@ func (s GoManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.GO
 }
 
-func (s GoManager) GetPlatformVersion(platform application_project_payload_structs.Platform) goModels.GoPlatformVersion {
+func (s GoManager) GetPlatformVersion(platform applicationProject.Platform) goModels.GoPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := goModels.GoPlatformVersions.Go121
 
@@ -64,7 +64,7 @@ func (s GoManager) CreateProject(project application_project_payload_structs.Pro
 		}
 	}
 
-	err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "init", s.GetProjectPackage(project))
+	err := providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "init", s.GetProjectPackage(project.Specifications))
 	if err != nil {
 		return err
 	}
@@ -244,7 +244,7 @@ func (s GoManager) RunProject(project application_project_payload_structs.Projec
 		}
 	}
 
-	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "run", s.GetProjectPackage(project))
+	err := providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "run", s.GetProjectPackage(project.Specifications))
 	if err != nil {
 		return err
 	}
@@ -270,12 +270,12 @@ func (s GoManager) AddToGroup(project application_project_payload_structs.Projec
 	if err != nil {
 		return err
 	}
-	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(project), relativeProjectPath))
+	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(project.Specifications), relativeProjectPath))
 	if err != nil {
 		return err
 	}
 
-	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "get", s.GetProjectPackage(project))
+	err = providers.GoExecute(project.Specifications.GetAbsoluteGroupPath(), "get", s.GetProjectPackage(project.Specifications))
 	if err != nil {
 		return err
 	}
@@ -330,7 +330,7 @@ func (s GoManager) RemoveDependenciesFromProject(project application_project_pay
 	return nil
 }
 
-func (s GoManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s GoManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	for _, reference := range references {
 
@@ -338,12 +338,12 @@ func (s GoManager) AddReferenceToProject(project application_project_payload_str
 		if err != nil {
 			return err
 		}
-		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(reference), relativeProjectPath))
+		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "mod", "edit", "-replace", fmt.Sprintf("%v=%v", s.GetProjectPackage(reference.Specifications), relativeProjectPath))
 		if err != nil {
 			return err
 		}
 
-		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", s.GetProjectPackage(reference))
+		err = providers.GoExecute(project.Specifications.GetAbsoluteProjectPath(), "get", s.GetProjectPackage(reference.Specifications))
 		if err != nil {
 			return err
 		}
@@ -352,7 +352,7 @@ func (s GoManager) AddReferenceToProject(project application_project_payload_str
 	return nil
 }
 
-func (s GoManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s GoManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 	fmt.Printf("Remove reference not implemented yet")
 	// for _, reference := range references {
 	// }
@@ -361,7 +361,7 @@ func (s GoManager) RemoveReferenceFromProject(project application_project_payloa
 }
 func (s GoManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project.Specifications))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -371,7 +371,7 @@ func (s GoManager) IsProjectFileExists(project application_project_payload_struc
 		return !stat.IsDir(), nil
 	}
 }
-func (s GoManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s GoManager) GetProjectFileName(specifications applicationProject.ProjectSpecification) string {
 	return fmt.Sprintf("go.mod")
 }
 

@@ -49,7 +49,7 @@ func (s NodeJSManager) GetKey() models.PlatformType {
 	return models.PlatformTypes.NodeJS
 }
 
-func (s NodeJSManager) GetPlatformVersion(platform application_project_payload_structs.Platform) nodejsModels.NodeJSPlatformVersion {
+func (s NodeJSManager) GetPlatformVersion(platform applicationProject.Platform) nodejsModels.NodeJSPlatformVersion {
 	if _string.IsEmpty(platform.Version) {
 		platformVersion := nodejsModels.NodeJSPlatformVersions.V17
 
@@ -319,7 +319,7 @@ func (s NodeJSManager) RemoveDependenciesFromProject(project application_project
 	return nil
 }
 
-func (s NodeJSManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s NodeJSManager) AddReferenceToProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	for _, reference := range references {
 		relativePath, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), reference.Specifications.GetAbsoluteProjectPath())
@@ -337,7 +337,7 @@ func (s NodeJSManager) AddReferenceToProject(project application_project_payload
 	return nil
 }
 
-func (s NodeJSManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []application_project_payload_structs.ProjectBaseStruct) error {
+func (s NodeJSManager) RemoveReferenceFromProject(project application_project_payload_structs.ProjectBaseStruct, references []applicationProject.Reference) error {
 
 	for _, reference := range references {
 
@@ -358,7 +358,7 @@ func (s NodeJSManager) RemoveReferenceFromProject(project application_project_pa
 
 func (s NodeJSManager) IsProjectFileExists(project application_project_payload_structs.ProjectBaseStruct) (bool, error) {
 
-	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project))) // check if the project file exists
+	stat, err := os.Stat(filepath.Join(project.Specifications.GetAbsoluteProjectPath(), s.GetProjectFileName(project.Specifications))) // check if the project file exists
 
 	if os.IsNotExist(err) {
 		return false, nil
@@ -368,7 +368,7 @@ func (s NodeJSManager) IsProjectFileExists(project application_project_payload_s
 		return !stat.IsDir(), nil
 	}
 }
-func (s NodeJSManager) GetProjectFileName(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s NodeJSManager) GetProjectFileName(specifications applicationProject.ProjectSpecification) string {
 	return "package.json"
 }
 
@@ -448,12 +448,12 @@ func (s NodeJSManager) RemoveFolderFromProjectDefinition(project application_pro
 	return nil
 }
 
-func (s NodeJSManager) GetProjectFileRelativePath(project application_project_payload_structs.ProjectBaseStruct) string {
+func (s NodeJSManager) GetProjectFileRelativePath(specifications applicationProject.ProjectSpecification) string {
 
-	return filepath.Join(project.Specifications.GetRelativeProjectPath(), s.GetProjectFileName(project))
+	return filepath.Join(specifications.GetRelativeProjectPath(), s.GetProjectFileName(specifications))
 }
 
-func (s NodeJSManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference application_project_payload_structs.ProjectBaseStruct) (bool, error) {
+func (s NodeJSManager) HasReferenceOnProject(project application_project_payload_structs.ProjectBaseStruct, reference applicationProject.Reference) (bool, error) {
 
 	references, err := s.ListReferencesFromProject(project)
 	if err != nil {
@@ -473,7 +473,7 @@ func (s NodeJSManager) HasReferenceOnProject(project application_project_payload
 	return referenceState, nil
 }
 
-func (s NodeJSManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]application_project_payload_structs.ProjectBaseStruct, error) {
+func (s NodeJSManager) ListReferencesFromProject(project application_project_payload_structs.ProjectBaseStruct) ([]applicationProject.Reference, error) {
 
 	output, err := providers.NPMExecuteWithOutput(project.Specifications.GetAbsoluteProjectPath(), "list", "--link")
 	if err != nil {
@@ -484,7 +484,7 @@ func (s NodeJSManager) ListReferencesFromProject(project application_project_pay
 
 	matches := pattern.FindAllStringSubmatch(output, -1)
 
-	references := make([]application_project_payload_structs.ProjectBaseStruct, 0)
+	references := make([]applicationProject.Reference, 0)
 	for _, match := range matches {
 		for _, projectReference := range project.Specifications.References {
 			relativeToReference, err := file.FindRelativePath(project.Specifications.GetAbsoluteProjectPath(), projectReference.Specifications.GetAbsoluteProjectPath())

@@ -60,7 +60,7 @@ Application:
 			Tags: []string{"tag1", "tag2"},
 		},
 		),
-		Specifications: application_project_payload_structs.NewProjectSpecification(
+		Specifications: applicationProject.NewProjectSpecification(
 			0,
 			"Utils",
 			"Common",
@@ -71,15 +71,15 @@ Application:
 			[]label.Label(nil),
 			file.PathToArray("Utils"),
 			applicationWorkspace.WorkspaceIdentifier{},
-			application_project_payload_structs.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
+			applicationProject.NewPlatform(models.PlatformTypes.GO, goModels.GoPlatformVersions.Go121.String()),
 			[]applicationProject.Layer(nil),
 			[]applicationProject.Dependency{
 				applicationProject.NewDependency("gopkg.in/yaml.v3", "v3.0.1"),
 			},
-			[]application_project_payload_structs.ProjectBaseStruct{
-				application_project_payload_structs.NewProjectBaseStruct(
-					schemas.NewSchemaHeader(schemas.StructTypes.Project, application_project_payload_structs.PROJECT_KIND, "Logging", schemas.Metadata{}),
-					application_project_payload_structs.NewProjectSpecification(
+			[]applicationProject.Reference{
+				applicationProject.NewReference(
+					schemas.NewSchemaHeader(schemas.StructTypes.Project, "", "Logging", schemas.Metadata{}),
+					applicationProject.NewProjectSpecification(
 						0,
 						"",
 						"Core",
@@ -90,12 +90,11 @@ Application:
 						[]label.Label(nil),
 						[]string(nil),
 						applicationWorkspace.WorkspaceIdentifier{},
-						application_project_payload_structs.Platform{},
+						applicationProject.Platform{},
 						[]applicationProject.Layer(nil),
 						[]applicationProject.Dependency(nil),
-						[]application_project_payload_structs.ProjectBaseStruct(nil),
+						[]applicationProject.Reference(nil),
 					),
-					application_project_payload_structs.Application{},
 				),
 			},
 		),
