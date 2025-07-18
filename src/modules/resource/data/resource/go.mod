@@ -14,8 +14,6 @@ replace parsdevkit.net/persistence/entities => ../../../data/entities
 
 replace parsdevkit.net/persistence/repositories => ../../../data/repositories
 
-replace parsdevkit.net/engines => ../../../modules/engines
-
 replace parsdevkit.net/components => ../../../components
 
 replace parsdevkit.net/platforms/core => ../../../platforms/core
@@ -35,7 +33,6 @@ replace parsdevkit.net/providers => ../../../providers
 require (
 	github.com/sirupsen/logrus v1.9.3
 	parsdevkit.net/application v0.0.0-00010101000000-000000000000
-	parsdevkit.net/engines v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/entities v0.0.0-00010101000000-000000000000
 	parsdevkit.net/persistence/repositories v0.0.0-00010101000000-000000000000
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000

@@ -94,8 +94,6 @@ replace parsdevkit.net/providers => ../src/providers
 
 replace parsdevkit.net/models => ../src/models
 
-replace parsdevkit.net/engines => ../src/modules/engines
-
 replace parsdevkit.net/cmd => ../src/cmd
 
 replace parsdevkit.net/components => ../src/components
@@ -192,7 +190,6 @@ require (
 	modernc.org/memory v1.5.0 // indirect
 	modernc.org/sqlite v1.23.1 // indirect
 	parsdevkit.net/cmd v0.0.0-00010101000000-000000000000
-	parsdevkit.net/engines v0.0.0-00010101000000-000000000000 // indirect; indirec
 	parsdevkit.net/modules/tool/browse_tool_payload v0.0.0-00010101000000-000000000000 // indirect
 	parsdevkit.net/persistence/contexts v0.0.0-00010101000000-000000000000
 	parsdevkit.net/platforms/nodejs v0.0.0-00010101000000-000000000000

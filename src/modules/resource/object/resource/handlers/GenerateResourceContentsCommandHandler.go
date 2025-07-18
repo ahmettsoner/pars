@@ -5,7 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 	"parsdevkit.net/application/ioc"
-	"parsdevkit.net/engines"
+	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/resource/object_resource_contract"
 	object_resource_payload_structs "parsdevkit.net/modules/resource/object_resource_payload/structs"
 
@@ -40,7 +40,7 @@ func (s *GenerateResourceContentsCommandHandler) generate(model object_resource_
 		return nil, nil
 	}
 
-	templateEngine := engines.NewTemplateOperations(application.GetEnvironment())
+	templateEngine := templateEngine.NewTemplateOperations(application.GetEnvironment())
 	err = templateEngine.Generate(model)
 	if err != nil {
 		return nil, err

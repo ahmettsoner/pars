@@ -2,13 +2,10 @@ module parsdevkit.net/application
 
 go 1.23.7
 
-replace parsdevkit.net/engines => ../modules/engines
 
 replace parsdevkit.net/pkg => ../pkg
 
 replace parsdevkit.net/internal => ../internal
-
-replace parsdevkit.net/modules/workspace/basic_workspace_payload => ../modules/workspace/basic/workspace.payload
 
 replace parsdevkit.net/persistence/entities => ../data/entities
 
@@ -37,7 +34,6 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 	parsdevkit.net/pkg v0.0.0-00010101000000-000000000000
 	parsdevkit.net/internal v0.0.0-00010101000000-000000000000
-	parsdevkit.net/modules/workspace/basic_workspace_payload v0.0.0-00010101000000-000000000000
 )
 
 require (

@@ -8,7 +8,7 @@ import (
 	"parsdevkit.net/modules/template/code_template_contract"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
-	engineOperations "parsdevkit.net/engines"
+	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/template/code_template_payload/commands"
 )
 
@@ -40,7 +40,7 @@ func (s *GenerateTemplateContentsCommandHandler) generate(model code_template_pa
 		return nil, nil
 	}
 
-	templateEngine := engineOperations.NewTemplateOperations(application.GetEnvironment())
+	templateEngine := templateEngine.NewTemplateOperations(application.GetEnvironment())
 	err = templateEngine.Generate(model)
 	if err != nil {
 		return nil, err

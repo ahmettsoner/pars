@@ -14,7 +14,6 @@ import (
 	applicationResource "parsdevkit.net/application/structs/resource"
 	applicationTemplate "parsdevkit.net/application/structs/template"
 	templatePkg "parsdevkit.net/components/template"
-	templateEngine "parsdevkit.net/components/template/engines"
 	"parsdevkit.net/modules/project/application_project_contract"
 	"parsdevkit.net/modules/resource/data_resource_contract"
 	"parsdevkit.net/modules/resource/object_resource_contract"
@@ -201,17 +200,17 @@ func (s TemplateOperations) GenerateContent(cnt TemplateOperationContent) error 
 			cnt.Workspace, nil, cnt.Project, cnt.Resource, cnt.Template, cnt.Layer.LayerIdentifier, cnt.Section),
 	)
 
-	fileNameStr, err := templateEngine.RenderTemplate(templateSpecifications.Output.File, data)
+	fileNameStr, err := RenderTemplate(templateSpecifications.Output.File, data)
 	if err != nil {
 		return err
 	}
-	pathStr, err := templateEngine.RenderTemplate(templateSpecifications.Path, data)
+	pathStr, err := RenderTemplate(templateSpecifications.Path, data)
 	if err != nil {
 		return err
 	}
 
 	tempPackages := templateSpecifications.Package
-	packageStr, err := templateEngine.RenderTemplate(strings.Join(tempPackages, "/"), data)
+	packageStr, err := RenderTemplate(strings.Join(tempPackages, "/"), data)
 	if err != nil {
 		return err
 	}
@@ -221,7 +220,7 @@ func (s TemplateOperations) GenerateContent(cnt TemplateOperationContent) error 
 		templatePkg.NewContextProviderSource(
 			cnt.Workspace, nil, cnt.Project, cnt.Resource, cnt.Template, cnt.Layer.LayerIdentifier, cnt.Section),
 	)
-	templateContentStr, err := templateEngine.RenderTemplate(templateSpecifications.Template.Content, data)
+	templateContentStr, err := RenderTemplate(templateSpecifications.Template.Content, data)
 	if err != nil {
 		return err
 	}
