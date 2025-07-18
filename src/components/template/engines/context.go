@@ -106,7 +106,7 @@ func (c ContextFuncs) GetContextByBase(base CodeTemplateDataContext, args ...str
 				section'a göre uygun olanları al
 
 
-			CodeTemplateOperations.PopulateContext ile context bilgisini al
+			TemplateOperations.PopulateContext ile context bilgisini al
 	*/
 
 	workspace := base.Workspace.Original.Header.Name

@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application"
 
+	"parsdevkit.net/application/structs"
 	applicationTemplate "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
@@ -123,8 +124,9 @@ func BasicTemplate_WithName(name string) *code_template_payload_structs.Template
 			},
 			applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
-		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(templateStruct.Selectors{}),
 	)
 
 	return &template
@@ -154,8 +156,9 @@ func BasicTemplate_WithNameSet(name, set string) *code_template_payload_structs.
 			},
 			applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.Code, "test-code-content"),
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
-		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(templateStruct.Selectors{}),
 	)
 
 	return &template

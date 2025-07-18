@@ -76,6 +76,7 @@ Object:
 			},
 			[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
 		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
@@ -103,7 +104,7 @@ Object:
 				),
 			},
 		),
-		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
+		object_resource_payload_structs.NewResourceConfiguration(),
 	)
 
 	// Assert

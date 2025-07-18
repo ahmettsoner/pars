@@ -118,12 +118,13 @@ func BasicResource(name string) *object_resource_payload_structs.ResourceBaseStr
 			[]label.Label{},
 			[]layerPkg.Layer{},
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
 		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{},
 			[]object_resource_payload_structs.Method{},
 		),
-		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
+		object_resource_payload_structs.NewResourceConfiguration(),
 	)
 
 	return &resource
@@ -152,6 +153,7 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 			[]layerPkg.Layer{layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section{}), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section{})},
 
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
 		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
@@ -179,7 +181,7 @@ func BasicResource_WithName(name string) *object_resource_payload_structs.Resour
 				),
 			},
 		),
-		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
+		object_resource_payload_structs.NewResourceConfiguration(),
 	)
 
 	return &resource
@@ -207,6 +209,7 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 			},
 			[]layerPkg.Layer{layerPkg.NewLayer(0, "presentation:view", []sectionPkg.Section{}), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section{})},
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
 		object_resource_payload_structs.NewResourceObject(
 			[]object_resource_payload_structs.Attribute{
@@ -234,7 +237,7 @@ func BasicResource_WithNameSet(name, set string) *object_resource_payload_struct
 				),
 			},
 		),
-		object_resource_payload_structs.NewResourceConfiguration(object_resource_payload_structs.ChangeTrackers.OnChange),
+		object_resource_payload_structs.NewResourceConfiguration(),
 	)
 
 	return &resource

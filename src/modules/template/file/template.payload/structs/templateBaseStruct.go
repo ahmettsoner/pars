@@ -66,10 +66,6 @@ func (s *TemplateBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 		s.Configurations = tempSpecificationObject.Configurations
 	}
 
-	if _string.IsEmpty(string(s.Configurations.Generate)) {
-		s.Configurations.Generate = ChangeTrackers.OnChange
-	}
-
 	return nil
 }
 

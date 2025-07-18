@@ -84,10 +84,6 @@ func (s *ResourceBaseStruct) UnmarshalYAML(unmarshal func(interface{}) error) er
 		s.Configurations = tempConfigurationObject.Configurations
 	}
 
-	if _string.IsEmpty(string(s.Configurations.Generate)) {
-		s.Configurations.Generate = ChangeTrackers.OnChange
-	}
-
 	return nil
 }
 

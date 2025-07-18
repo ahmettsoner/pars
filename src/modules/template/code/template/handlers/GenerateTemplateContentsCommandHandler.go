@@ -40,8 +40,8 @@ func (s *GenerateTemplateContentsCommandHandler) generate(model code_template_pa
 		return nil, nil
 	}
 
-	templateEngine := engineOperations.NewCodeTemplateOperations(application.GetEnvironment())
-	err = templateEngine.GenerateByTemplate(model)
+	templateEngine := engineOperations.NewTemplateOperations(application.GetEnvironment())
+	err = templateEngine.Generate(model)
 	if err != nil {
 		return nil, err
 	}

@@ -6,6 +6,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/structs"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
 	"github.com/stretchr/testify/assert"
@@ -36,6 +37,7 @@ Set: bar
 		[]label.Label(nil),
 		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -66,6 +68,7 @@ Path: /foo
 		[]label.Label(nil),
 		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -96,6 +99,7 @@ Package: pars/cmd
 		[]label.Label(nil),
 		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -128,6 +132,7 @@ Package:
 		[]label.Label(nil),
 		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -161,6 +166,7 @@ Labels:
 		},
 		[]layerPkg.Layer(nil),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -194,6 +200,7 @@ Layers:
 		[]label.Label(nil),
 		[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -233,6 +240,7 @@ Layers:
 		},
 		[]layerPkg.Layer{layerPkg.NewLayer(0, "layer1", []sectionPkg.Section(nil)), layerPkg.NewLayer(0, "layer2", []sectionPkg.Section(nil))},
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert

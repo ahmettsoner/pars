@@ -6,6 +6,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	layerPkg "parsdevkit.net/application/models/layer"
@@ -24,9 +25,10 @@ type TemplateSpecification struct {
 	Layers          []layerPkg.Layer
 	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Template        Template
+	Generate        structs.ChangeTracker
 }
 
-func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []layerPkg.Layer, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier) TemplateSpecification {
+func NewTemplateSpecification(id int, name, workspace, set string, path string, output Output, _package []string, labels []label.Label, layers []layerPkg.Layer, template Template, workspaceObject applicationWorkspace.WorkspaceIdentifier, generate structs.ChangeTracker) TemplateSpecification {
 	return TemplateSpecification{
 		TemplateIdentifier: NewTemplateIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -37,6 +39,7 @@ func NewTemplateSpecification(id int, name, workspace, set string, path string, 
 		Labels:             labels,
 		Layers:             layers,
 		Template:           template,
+		Generate:           generate,
 	}
 }
 func (s TemplateSpecification) Validate() error {
@@ -89,13 +92,14 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 	}
 
 	var tempObject struct {
-		Set      string           `yaml:"Set"`
-		Path     string           `yaml:"Path"`
-		Output   Output           `yaml:"Output"`
-		Package  interface{}      `yaml:"Package"`
-		Labels   []label.Label    `yaml:"Labels"`
-		Layers   []layerPkg.Layer `yaml:"Layers"`
-		Template Template         `yaml:"Template"`
+		Set      string                `yaml:"Set"`
+		Path     string                `yaml:"Path"`
+		Output   Output                `yaml:"Output"`
+		Package  interface{}           `yaml:"Package"`
+		Labels   []label.Label         `yaml:"Labels"`
+		Layers   []layerPkg.Layer      `yaml:"Layers"`
+		Template Template              `yaml:"Template"`
+		Generate structs.ChangeTracker `yaml:"Generate"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
@@ -111,6 +115,7 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		s.Labels = tempObject.Labels
 		s.Layers = tempObject.Layers
 		s.Template = tempObject.Template
+		s.Generate = tempObject.Generate
 
 		switch packages := tempObject.Package.(type) {
 		case string:
@@ -122,5 +127,8 @@ func (s *TemplateSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		}
 	}
 
+	if _string.IsEmpty(string(s.Generate)) {
+		s.Generate = structs.ChangeTrackers.OnChange
+	}
 	return nil
 }

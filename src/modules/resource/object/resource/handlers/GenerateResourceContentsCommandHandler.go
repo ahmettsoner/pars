@@ -40,7 +40,7 @@ func (s *GenerateResourceContentsCommandHandler) generate(model object_resource_
 		return nil, nil
 	}
 
-	templateEngine := engines.NewCodeTemplateOperations(application.GetEnvironment())
+	templateEngine := engines.NewTemplateOperations(application.GetEnvironment())
 	err = templateEngine.Generate(model)
 	if err != nil {
 		return nil, err

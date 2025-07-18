@@ -6,6 +6,7 @@ import (
 	"parsdevkit.net/application/models/label"
 	layerPkg "parsdevkit.net/application/models/layer"
 	sectionPkg "parsdevkit.net/application/models/section"
+	"parsdevkit.net/application/structs"
 	applicationTemplate "parsdevkit.net/application/structs/template"
 	applicationWorkspace "parsdevkit.net/application/structs/workspace"
 
@@ -42,6 +43,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -77,6 +79,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -113,6 +116,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.Code, "code_sample"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -149,6 +153,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -184,6 +189,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -221,6 +227,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -261,6 +268,7 @@ Template:
 		},
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -301,6 +309,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -342,6 +351,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert
@@ -378,6 +388,7 @@ Template:
 		[]layerPkg.Layer(nil),
 		applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 		applicationWorkspace.WorkspaceIdentifier{},
+		structs.ChangeTrackers.OnChange,
 	)
 
 	// Assert

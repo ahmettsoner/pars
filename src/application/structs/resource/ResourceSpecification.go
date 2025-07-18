@@ -6,6 +6,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	"parsdevkit.net/application/schemas"
+	"parsdevkit.net/application/structs"
 	_string "parsdevkit.net/pkg/utilities/string"
 
 	layerPkg "parsdevkit.net/application/models/layer"
@@ -22,9 +23,10 @@ type ResourceSpecification struct {
 	WorkspaceObject applicationWorkspace.WorkspaceIdentifier
 	Labels          []label.Label
 	Layers          []layerPkg.Layer
+	Generate        structs.ChangeTracker
 }
 
-func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []layerPkg.Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier) ResourceSpecification {
+func NewResourceSpecification(id int, name, workspace, path, set string, _package []string, labels []label.Label, layers []layerPkg.Layer, workspaceObject applicationWorkspace.WorkspaceIdentifier, generate structs.ChangeTracker) ResourceSpecification {
 	return ResourceSpecification{
 		ResourceIdentifier: NewResourceIdentifier(id, name, workspace),
 		WorkspaceObject:    workspaceObject,
@@ -33,6 +35,7 @@ func NewResourceSpecification(id int, name, workspace, path, set string, _packag
 		Package:            _package,
 		Labels:             labels,
 		Layers:             layers,
+		Generate:           generate,
 	}
 }
 
@@ -73,11 +76,12 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		s.ResourceIdentifier = tempIdentifierObject.ResourceIdentifier
 	}
 	var tempObject struct {
-		Path    string           `yaml:"Path"`
-		Set     string           `yaml:"Set"`
-		Package interface{}      `yaml:"Package"`
-		Labels  []label.Label    `yaml:"Labels"`
-		Layers  []layerPkg.Layer `yaml:"Layers"`
+		Path     string                `yaml:"Path"`
+		Set      string                `yaml:"Set"`
+		Package  interface{}           `yaml:"Package"`
+		Labels   []label.Label         `yaml:"Labels"`
+		Layers   []layerPkg.Layer      `yaml:"Layers"`
+		Generate structs.ChangeTracker `yaml:"Generate"`
 	}
 
 	if err := unmarshal(&tempObject); err != nil {
@@ -88,6 +92,7 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 		s.Set = tempObject.Set
 		s.Labels = tempObject.Labels
 		s.Layers = tempObject.Layers
+		s.Generate = tempObject.Generate
 
 		switch packages := tempObject.Package.(type) {
 		case string:
@@ -100,5 +105,8 @@ func (s *ResourceSpecification) UnmarshalYAML(unmarshal func(interface{}) error)
 
 	}
 
+	if _string.IsEmpty(string(s.Generate)) {
+		s.Generate = structs.ChangeTrackers.OnChange
+	}
 	return nil
 }

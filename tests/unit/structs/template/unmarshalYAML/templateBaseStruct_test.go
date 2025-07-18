@@ -5,6 +5,7 @@ import (
 
 	"parsdevkit.net/application/models/label"
 	layerPkg "parsdevkit.net/application/models/layer"
+	"parsdevkit.net/application/structs"
 	templateStruct "parsdevkit.net/application/structs/template"
 	code_template_payload_structs "parsdevkit.net/modules/template/code_template_payload/structs"
 
@@ -53,8 +54,9 @@ Specifications:
 			[]label.Label(nil),
 			[]layerPkg.Layer(nil), applicationTemplate.NewTemplate(applicationTemplate.TemplateSourceTypes.File, "path"),
 			applicationWorkspace.WorkspaceIdentifier{},
+			structs.ChangeTrackers.OnChange,
 		),
-		code_template_payload_structs.NewTemplateConfiguration(code_template_payload_structs.ChangeTrackers.OnChange, templateStruct.Selectors{}),
+		code_template_payload_structs.NewTemplateConfiguration(templateStruct.Selectors{}),
 	)
 
 	// Assert
