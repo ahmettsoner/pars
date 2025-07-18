@@ -1,0 +1,7 @@
+Type: Project
+Kind: Application
+Name: DependencyLatest
+Specifications:
+  Platform: Dotnet
+  Dependencies:
+  - Microsoft.EntityFrameworkCore.Tools
